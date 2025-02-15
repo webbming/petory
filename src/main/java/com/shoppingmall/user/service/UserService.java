@@ -30,6 +30,17 @@ public class UserService {
 
   //유저 생성
   public void registerUser(UserRequestDTO userDTO) {
+    if(userRepository.existsByUserId(userDTO.getUserId())){
+        throw new IllegalStateException("User already exists");
+    }
+    if(userRepository.existsByEmail(userDTO.getEmail())){
+      throw new IllegalStateException("Email already exists");
+    }
+    if(userRepository.existsByUserId(userDTO.getNickname())){
+      throw new IllegalStateException("Nickname already exists");
+    }
+
+
     userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
     User user  = userDTO.toEntity();
     userRepository.save(user);

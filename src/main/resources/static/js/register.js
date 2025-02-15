@@ -16,7 +16,7 @@ const validationRules = {
     validateErrorMessage : "이메일 : 중복된 이메일이 존재합니다."
   },
   nickname: {
-    regex: /^[가-힣]{2,5}$/, // 이름: 한글 2~5자
+    regex: /^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$/, // 이름: 한글 2~5자
     errorMessage: "닉네임 : 닉네임은 특수문자를 제외한 2~10자로 입력해주세요.",
     status : false,
     validateErrorMessage : "닉네임 : 중복된 닉네임이 존재합니다."

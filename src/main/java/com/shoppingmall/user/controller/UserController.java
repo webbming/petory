@@ -61,10 +61,8 @@ public class UserController {
   @PostMapping("/register")
   @ResponseBody
   public ResponseEntity<Map<String, Object>> registerP(@Valid @RequestBody UserRequestDTO userDTO , Errors errors){
-    System.out.println(userDTO.getAddress());
-    System.out.println(userDTO.getQuestion());
-    System.out.println(userDTO.getUserId());
     Map<String , Object> response = new HashMap<>();
+
     if(errors.hasErrors()){
       Map<String,String> errorMap = new HashMap<>();
       for(FieldError error : errors.getFieldErrors()){
@@ -75,10 +73,15 @@ public class UserController {
       return ResponseEntity.badRequest().body(response);
     }
 
-    userService.registerUser(userDTO);
-    response.put("userId" , userDTO.getUserId());
-    response.put("status", "success");
-    return ResponseEntity.ok().body(response);
+    try{
+      userService.registerUser(userDTO);
+      response.put("userId" , userDTO.getUserId());
+      response.put("status", "success");
+      return ResponseEntity.ok().body(response);
+    }catch (IllegalStateException e){
+      response.put("status", "error");
+      return ResponseEntity.badRequest().body(response);
+    }
   }
 
   @PatchMapping("/user/update")
