@@ -16,7 +16,7 @@
   <form id="registerForm">
 
     <div>
-      <input type="text" id="userId" name="userId" placeholder="아이디를 입력해주세요" >
+      <input type="text" id="userId" name="userId" placeholder="아이디를 입력해주세요"  >
     </div>
 
     <div>
@@ -28,7 +28,7 @@
     </div>
 
     <div>
-      <input type="text" id="nickname" name="nickname"  placeholder="닉네임을 입력해주세요" >
+      <input type="text" id="nickname" name="nickname"  placeholder="닉네임을 입력해주세요"  >
     </div>
 
     <div>
@@ -50,11 +50,11 @@
 
     <div>
       <input type="text" id="answer" name="answer" placeholder="질문에 대한 답변 (한글 20자 이내) (아이디 찾기용)"
-             pattern="[가-힣]+" maxlength="20"  title="한글만 입력 가능합니다.">
+             pattern="[가-힣]+" maxlength="20"  title="한글만 입력 가능합니다." >
     </div>
 
     <div>
-      <input type="text" id="address" name="address" placeholder="주소" >
+      <input type="text" id="address" name="address" placeholder="주소"  >
       <button type="button" class="inline-button" onClick="addrFind(event)">주소 찾기</button>
       <span th:if="${address}" th:text="${address}" style="color: red"></span><br>
     </div>

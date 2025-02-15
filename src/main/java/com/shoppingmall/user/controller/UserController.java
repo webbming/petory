@@ -5,7 +5,10 @@ import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.UserService;
 import jakarta.validation.Valid;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,22 +46,27 @@ public class UserController {
   }
 
   // 회원가입 필드별 유효성 검사
-  @PostMapping("/register/check")
+  @PostMapping(value = "/register/check", produces = "application/json")
   @ResponseBody
-  public ResponseEntity<String> checkDuplicate(@RequestBody Map<String , String> request){
-    System.out.println("요청옴");
-
-    System.out.println(request);
-    return ResponseEntity.ok("gimori");
+  public ResponseEntity<Map<String, Boolean>> checkDuplicate(@RequestBody Map<String , String> request){
+    Map<String , Boolean> response = new HashMap<>();
+    String checkField = request.get("fieldName");
+    String checkValue = request.get("fieldValue");
+    boolean result = userService.checkDuplicate(checkField, checkValue);
+    response.put("result" , result);
+    return ResponseEntity.ok().body(response);
   }
 
   // 회원가입 요청 및 최종 검사
   @PostMapping("/register")
   @ResponseBody
   public ResponseEntity<Map<String, Object>> registerP(@Valid @RequestBody UserRequestDTO userDTO , Errors errors){
+    System.out.println(userDTO.getAddress());
+    System.out.println(userDTO.getQuestion());
+    System.out.println(userDTO.getUserId());
     Map<String , Object> response = new HashMap<>();
     if(errors.hasErrors()){
-      Map<String , String> errorMap = new HashMap<>();
+      Map<String,String> errorMap = new HashMap<>();
       for(FieldError error : errors.getFieldErrors()){
         errorMap.put(error.getField(), error.getDefaultMessage());
       }
@@ -89,7 +97,6 @@ public class UserController {
   public String profileG(){
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     String username = auth.getName();
-    System.out.println(auth);
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     String address = userDetails.getAddress();

@@ -159,10 +159,6 @@ span {
   padding: 0;
 }
 
-.input-error{
-  border: 1px solid red;
-}
-
 .errorLi{
   padding: 2px 0;
 }
@@ -200,4 +196,9 @@ select:focus {
   height: 1px;
   background-color: #ddd; /* 연한 회색 */
   margin: 20px 0; /* 위아래 간격 */
+}
+
+.input-error {
+  border: 1px solid red !important;
+  outline: none;
 }

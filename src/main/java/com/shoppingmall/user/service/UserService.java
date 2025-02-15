@@ -18,12 +18,12 @@ public class UserService {
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
 
-  public boolean checkDuplicate(String field, String value) {
-    boolean isDuplicate = switch (field) {
-      case "userId" -> userRepository.existsByUserId(value);
-      case "email" -> userRepository.existsByEmail(value);
-      case "nickname" -> userRepository.existsByNickname(value);
-      default -> throw new IllegalStateException("Unexpected value: " + field);
+  public boolean checkDuplicate(String fieldName, String fieldValue) {
+    boolean isDuplicate = switch (fieldName) {
+      case "userId" -> userRepository.existsByUserId(fieldValue);
+      case "email" -> userRepository.existsByEmail(fieldValue);
+      case "nickname" -> userRepository.existsByNickname(fieldValue);
+      default -> throw new IllegalStateException("Unexpected value: " + fieldName);
     };
     return isDuplicate;
   }

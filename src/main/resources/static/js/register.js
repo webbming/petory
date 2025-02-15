@@ -1,7 +1,8 @@
 const validationRules = {
   userId: {
-    regex: /^[a-zA-Z][a-zA-Z0-9]{5,20}$/, // 아이디: 영문, 숫자 4~12자
+    regex: /^[a-zA-Z][a-zA-Z0-9]{3,20}$/, // 아이디: 영문, 숫자 4~12자
     errorMessage: "아이디 : 영문, 숫자로 4~20자여야 합니다.",
+    status : false,
     validateErrorMessage : "아이디 : 중복된 아이디가 존재합니다."
   },
   password: {
@@ -11,17 +12,21 @@ const validationRules = {
   email : {
     regex : /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     errorMessage : "이메일 : 이메일 형식을 올바르게 입력해주세요.",
+    status : false,
+    validateErrorMessage : "이메일 : 중복된 이메일이 존재합니다."
   },
   nickname: {
     regex: /^[가-힣]{2,5}$/, // 이름: 한글 2~5자
     errorMessage: "닉네임 : 닉네임은 특수문자를 제외한 2~10자로 입력해주세요.",
+    status : false,
+    validateErrorMessage : "닉네임 : 중복된 닉네임이 존재합니다."
   },
   question : {
     required : true,
     errorMessage : "질문 : 보안 질문을 선택해주세요."
   },
   answer : {
-    regex : /^[가-힣]{1,20}$/,
+    regex : /^[가-힣]{2,20}$/,
     errorMessage : "답변 : 답변을 1~20자로 입력해주세요."
   },
   address : {
@@ -30,102 +35,156 @@ const validationRules = {
   }
 };
 
-
-
-
-const registerForm = document.querySelector("#registerForm")
-const errorList1 = document.querySelector("#errorList1")
-const errorList2 = document.querySelector("#errorList2")
-
-registerForm.addEventListener("submit" , async (e) =>{
-  e.preventDefault()
-
-  const form = e.target;
-  const formData = new FormData(form)
-  console.log(formData)
-
-  const response = await fetch("/register" , {
-    method : "POST",
-    headers : {
-      "Content-Type" : "application/json"
-    },
-    body : JSON.stringify(Object.fromEntries(formData))
-  })
-  // 회원가입 실패 시
-  if(!response.ok){
-    errorList1.innerHTML = '';
-    errorList2.innerHTML = '';
-    const errorObject = await response.json()
-
-    Object.keys(errorObject['errors']).forEach(e =>{
-      const li =  document.createElement("li")
-      li.textContent = errorObject['errors'][e];
-
-      if(e === "userId" || e === "nickname" || e === "email" || e=== "password"){
-        errorList1.appendChild(li)
-      }else{
-        errorList2.appendChild(li)
-      }
-    })
-  }else {
-    //회원가입 성공 시
-    const result = await response.json()
-    console.log(result)
-    alert(`${result['userId']} 님 회원가입을 축하합니다 !`);
-
-    const redirect = confirm("로그인 페이지로 이동하시겠습니까?");
-    if (redirect) {
-
-      window.location.href = "/login"; // 로그인 페이지 URL로 변경
-    } else {
-      // 홈페이지로 이동
-      window.location.href = "/home"; // 홈페이지 URL로 변경
-    }
-  }
-})
 const errorState = {};
-const inputs = document.querySelectorAll("input")
+const inputs = document.querySelectorAll("input, select")
+
+function updateErrorMessages(){
+  const errorList1 = document.querySelector("#errorList1")
+  const errorList2 = document.querySelector("#errorList2")
+
+  errorList1.innerHTML = "";
+  errorList2.innerHTML = "";
+
+  Object.keys(errorState).forEach(fieldName =>{
+
+    const inputField = document.querySelector(`[name="${fieldName}"]`)
+    if (!errorState[fieldName]){
+      inputField.classList.remove("input-error")
+      return;
+    }
+
+    const li = document.createElement("li");
+    li.textContent = errorState[fieldName];
+
+    // 닉네임, 아이디, 비밀번호, 이메일 → errorList1에 추가
+    if (["userId", "nickname", "password", "email"].includes(fieldName)) {
+      errorList1.appendChild(li);
+    } else {
+      // 나머지 필드들 → errorList2에 추가
+      errorList2.appendChild(li);
+    }
+    if (inputField) inputField.classList.add("input-error")
+  })
+}
 
 inputs.forEach(input =>{
-  input.addEventListener('blur' , async (e) =>{
+  input.addEventListener("blur" , async (e) =>{
     e.preventDefault();
-    console.log("11")
-    const fieldName = e.target.name
-    const fieldValue = e.target.value
+    const fieldName = e.target.name;
+    const fieldValue = e.target.value.trim()
     const fieldRule = validationRules[fieldName]
 
     if(fieldRule){
-      // 필드 규칙이 존재하면 에러를 모아놓는 errorState를 일단 초기화.
       errorState[fieldName] = null;
+
+      if(fieldRule.required && !fieldValue){
+        errorState[fieldName] = fieldRule.errorMessage;
+      }
+
       if(fieldRule.regex && !fieldRule.regex.test(fieldValue)){
-        errorState[fieldName] = fieldRule.errorMessage
+        errorState[fieldName] = fieldRule.errorMessage;
       }
-
     }
-
+    
     if((fieldName === "userId" || fieldName === "email" || fieldName === "nickname") && !errorState[fieldName]){
-      console.log("여기로오나")
+
       try{
-        const response = await fetch("/register/check" , {
-          method : "POST",
-          headers : {
-            "Content-Type" : "application/json",
-          },
-          body : JSON.stringify({fieldName : fieldValue})
-        });
+          const data = {
+            fieldName : fieldName,
+            fieldValue : fieldValue
+          }
+          const response = await fetch("/register/check" , {
+            method : "POST",
+            headers : {
+              "Content-Type" : "application/json",
+            },
+            body : JSON.stringify(data)
+          });
 
-        const result = await response.json();
-        console.log(result);
+          const result = await response.json();
+          console.log(result)
+          if(result.result){
+            errorState[fieldName] = fieldRule.validateErrorMessage;
+          }else{
+            validationState[fieldName] = true;
+          }
 
-
-      }catch (err) {
-        console.error(err)
-      }
+        }catch (error){
+          console.error(error);
+        }
     }
-
-
+    updateErrorMessages();
   })
 })
+
+const validationState = {
+  userId : false,
+  email: false,
+  nickname : false
+}
+
+
+document.querySelector("#registerForm").addEventListener("submit" , async (e) =>{
+
+  e.preventDefault();
+
+ console.log(errorState)
+  const inputsArray = Array.from(inputs);
+  await Promise.all(inputsArray.map(input => {
+    return new Promise(resolve => {
+      input.addEventListener('blur', resolve, { once: true });
+      input.dispatchEvent(new Event('blur'));
+    });
+  }));
+
+  // 에러가 하나라도 존재한다면 연속적인 폼 제출 차단 ( 백엔드 서버 부하 )
+  if (Object.values(errorState).some(error => error)) {
+    return;
+  }
+
+  // userId , email , nickname 의 중복검사를 전부 완료한 상태인지 다시 확인
+  const isValidationComplete = Object.values(validationState).every(status => status === true);
+  // 완료하지 않았다면 폼 제출 차단
+  if(!isValidationComplete){
+    return;
+  }
+
+
+  const formData = new FormData(e.target);
+  const formObj = Object.fromEntries(formData);
+
+  try{
+
+    const response = await fetch("/register" , {
+      method : "POST",
+      headers : {"Content-Type" : "application/json"},
+      body : JSON.stringify(formObj)
+    });
+
+    if(!response.ok){
+      const result = await response.json();
+      console.log(result)
+    }
+
+    const result = await response.json();
+    alert(`${result.userId} 님 회원가입을 환영합니다!`)
+    const redirect = confirm("로그인 페이지로 이동하시겠습니까 ?")
+    if(redirect){
+      window.location.href = "/login";
+    }
+    else{
+      window.location.href = "/home";
+    }
+
+  }catch(error){
+    console.error(error)
+  }
+})
+
+
+
+/*   */
+
 
 
 
