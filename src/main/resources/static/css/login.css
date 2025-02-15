@@ -1,0 +1,95 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: 'JetBrains Mono', sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 450px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+form div {
+  margin-bottom: 15px;
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border: 1px solid #2669B0;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #577A9E;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px; /* 버튼 위 여백 추가 */
+}
+
+button:hover {
+  background-color: #4676A9;
+}
+
+.message {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.error {
+  margin-top: 20px;
+  color: red;
+  font-size: 12px;
+  text-align: center;
+}
+
+.footer-links {
+  text-align: center; /* 중앙 정렬 */
+  margin-top: 20px; /* 상단 여백 추가 */
+}
+
+.footer-links a {
+  color: #577A9E; /* 링크 색상 */
+  text-decoration: none; /* 밑줄 제거 */
+  margin: 0 10px; /* 좌우 여백 추가 */
+}
+
+.footer-links a:hover {
+  text-decoration: underline; /* 마우스 오버 시 밑줄 추가 */
+}
+.homeIcon:hover{
+  scale: 1.2;
+  transition: 0.3s;
+}
