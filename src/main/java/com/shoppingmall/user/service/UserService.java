@@ -3,10 +3,12 @@ package com.shoppingmall.user.service;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
+import com.shoppingmall.user.exception.DuplicateException;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,8 +31,8 @@ public class UserService {
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
 
+  // 필드 유효성 검사
   public Map<String,String> filedErrorsHandler(Errors errors){
-
     Map<String,String> errorMap = new HashMap<>();
     for(FieldError error : errors.getFieldErrors()){
       errorMap.put(error.getField(), error.getDefaultMessage());
@@ -38,7 +40,9 @@ public class UserService {
     return errorMap;
   }
 
+  // 개별 필드 검사
   public boolean checkDuplicate(String fieldName, String fieldValue) {
+    Map<String,String> errors = new HashMap<>();
     boolean isDuplicate = switch (fieldName) {
       case "userId" -> userRepository.existsByUserId(fieldValue);
       case "email" -> userRepository.existsByEmail(fieldValue);
@@ -48,19 +52,26 @@ public class UserService {
     return isDuplicate;
   }
 
-  //유저 생성
-  public void registerUser(UserRequestDTO userDTO) {
+  // 회원가입 요청시 최종 중복 검사
+  public void checkDuplicate(UserRequestDTO userDTO) {
+    Map<String,String> errors = new HashMap<>();
     if(userRepository.existsByUserId(userDTO.getUserId())){
-        throw new IllegalStateException("User already exists");
+      errors.put("userId", "이미 사용 중인 아이디입니다.");
     }
-    if(userRepository.existsByEmail(userDTO.getEmail())){
-      throw new IllegalStateException("Email already exists");
+    if(userRepository.existsByUserId(userDTO.getEmail())){
+      errors.put("email", "이미 사용 중인 이메일입니다.");
     }
     if(userRepository.existsByUserId(userDTO.getNickname())){
-      throw new IllegalStateException("Nickname already exists");
+      errors.put("nickname", "이미 사용 중인 닉네임입니다.");
     }
+    if(!errors.isEmpty()){
+      throw new DuplicateException(errors);
+    }
+  }
 
-
+  //유저 생성
+  public void registerUser(UserRequestDTO userDTO) {
+    checkDuplicate(userDTO);
     userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
     User user  = userDTO.toEntity();
     userRepository.save(user);
@@ -79,13 +90,10 @@ public class UserService {
 
   //유저 수정
   public void updateUser(UserUpdateDTO userDTO) {
+
+
     User user = userRepository.findByUserId(userDTO.getUserId());
-    if(userRepository.existsByEmail(userDTO.getEmail())){
-      throw new IllegalStateException("Email already exists");
-    }
-    if(userRepository.existsByUserId(userDTO.getNickname())){
-      throw new IllegalStateException("Nickname already exists");
-    }
+
     user.setNickname(userDTO.getNickname());
     user.setEmail(userDTO.getEmail());
     user.setAddress(userDTO.getAddress());

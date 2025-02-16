@@ -2,7 +2,11 @@ import { validationRules } from './validationRules.js';
 
 
 const profileUpdateForm = document.querySelector("#profileUpdateForm")
+const submitButton = document.querySelector(".save-btn")
 
+profileUpdateForm.addEventListener('input' , (e) =>{
+    submitButton.disabled = false;
+})
 
 profileUpdateForm.addEventListener("submit" , async (e) =>{
 
