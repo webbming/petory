@@ -2,6 +2,8 @@ package com.shoppingmall.user.controller;
 
 import com.shoppingmall.config.security.CustomUserDetails;
 import com.shoppingmall.user.dto.UserRequestDTO;
+import com.shoppingmall.user.dto.UserResponseDTO;
+import com.shoppingmall.user.dto.UserUpdateDTO;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.UserService;
 import jakarta.validation.Valid;
@@ -15,6 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -62,14 +65,9 @@ public class UserController {
   @ResponseBody
   public ResponseEntity<Map<String, Object>> registerP(@Valid @RequestBody UserRequestDTO userDTO , Errors errors){
     Map<String , Object> response = new HashMap<>();
-
     if(errors.hasErrors()){
-      Map<String,String> errorMap = new HashMap<>();
-      for(FieldError error : errors.getFieldErrors()){
-        errorMap.put(error.getField(), error.getDefaultMessage());
-      }
       response.put("status", "error");
-      response.put("errors",errorMap);
+      response.put("errors", userService.filedErrorsHandler(errors));
       return ResponseEntity.badRequest().body(response);
     }
 
@@ -79,16 +77,37 @@ public class UserController {
       response.put("status", "success");
       return ResponseEntity.ok().body(response);
     }catch (IllegalStateException e){
-      response.put("status", "error");
+      response.put("status", e.getMessage());
       return ResponseEntity.badRequest().body(response);
     }
   }
 
-  @PatchMapping("/user/update")
-  public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @ModelAttribute UserRequestDTO userDTO , Errors errors){
 
-    return null;
+  @GetMapping("/user/profile")
+  public String profileG(Model model){
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String userId = auth.getName();
+    UserResponseDTO userInfo =  userService.getUser(userId);
+    model.addAttribute("userInfo" , userInfo);
+    return "/user/profile";
+  }
 
+  @PatchMapping("/user/profile/update")
+  public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @RequestBody UserUpdateDTO userDTO , Errors errors){
+    Map<String , Object> response = new HashMap<>();
+    if(errors.hasErrors()){
+      response.put("status", "error");
+      response.put("errors", userService.filedErrorsHandler(errors));
+      return ResponseEntity.badRequest().body(response);
+    }
+    try{
+      userService.updateUser(userDTO);
+      response.put("status", "success");
+      return ResponseEntity.ok().body(response);
+    }catch (IllegalStateException e){
+      response.put("status", e.getMessage());
+      return ResponseEntity.badRequest().body(response);
+    }
   }
 
   @DeleteMapping("/user/delete")
@@ -96,16 +115,7 @@ public class UserController {
     return null;
   }
 
-  @GetMapping("/user/profile")
-  public String profileG(){
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    String username = auth.getName();
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    String address = userDetails.getAddress();
-    System.out.println(address);
-    return "user/profile";
-  }
+
 
 
 
