@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>취소 목록</title>
+</head>
+<body>
+    <h1>취소 목록</h1>
+    <table border="1">
+        <tr>
+            <th>주문번호</th>
+            <th>수령인 이름</th>
+            <th>전화번호</th>
+            <th>주소</th>
+            <th>장바구니 번호</th>
+            <th>사용자 ID</th>
+            <th>총 가격</th>
+            <th>주문 일자</th>
+            <th>취소 일자</th>
+        </tr>
+        <tr th:each="purchase : ${purchases}" th:if="${purchase.cancelAt != null}">
+            <td th:text="${purchase.orderId}"></td>
+            <td th:text="${purchase.reciverName}"></td>
+            <td th:text="${purchase.reciverPhone}"></td>
+            <td th:text="${purchase.reciverAddr}"></td>
+            <td th:text="${purchase.cartId}"></td>
+            <td th:text="${purchase.userId}"></td>
+            <td th:text="${purchase.totalPrice}"></td>
+            <td th:text="${purchase.createAt}"></td>
+            <td th:text="${purchase.cancelAt}"></td>
+        </tr>
+    </table>
+</body>
+</html>

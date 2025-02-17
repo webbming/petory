@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>memberDetail</h1>
+	<p><a href="#" onClick="history.back()"
+	style="text-decoration: none">	
+	(클릭하면 이전페이지로 이동)
+	</a></p>
+	<form action="/order/order" method="post">
+	<table cellpadding="10" border="1" width="300">
+		<tr>
+			<td>주문번호</td>
+			<td><input type="text" name="order_id" th:value="${purchase.orderId}" readonly /></td>
+		</tr>
+		<tr>
+			<td>장바구니 번호</td>
+			<td><input type="text" name="cart_id" th:value="${purchase.cartId}" readonly /></td>
+		</tr>
+		<tr>
+			<td>주문인 id</td>
+			<td><input type="text" name="user_id" th:value="${purchase.userId}" readonly /></td>
+		</tr>
+		<tr>
+			<td>총 가격</td>
+			<td><input type="text" name="total_price" th:value="${purchase.totalPrice}" readonly /></td>
+		</tr>
+		<tr>
+			<td>취소 시간</td>
+			<td><input type="text" name="cancel_at" th:value="${purchase.cancelAt}" readonly /></td>
+		</tr>
+	</table>
+	</form>
+</body>
+</html>
