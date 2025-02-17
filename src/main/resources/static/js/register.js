@@ -93,33 +93,28 @@ inputs.forEach(input =>{
 document.querySelector("#registerForm").addEventListener("submit" , async (e) =>{
 
   e.preventDefault();
-
   const inputsArray = Array.from(inputs);
+
   await Promise.all(inputsArray.map(input => {
     return new Promise(resolve => {
       input.addEventListener('blur', resolve, { once: true });
       input.dispatchEvent(new Event('blur'));
     });
   }));
-
   // 에러가 하나라도 존재한다면 연속적인 폼 제출 차단 ( 백엔드 서버 부하 )
   if (Object.values(errorState).some(error => error)) {
     return;
   }
-
   // userId , email , nickname 의 중복검사를 전부 완료한 상태인지 다시 확인
   const isValidationComplete = Object.values(validationState).every(status => status === true);
   // 완료하지 않았다면 폼 제출 차단
   if(!isValidationComplete){
     return;
   }
-
-
   const formData = new FormData(e.target);
   const formObj = Object.fromEntries(formData);
 
   try{
-
     const response = await fetch("/register" , {
       method : "POST",
       headers : {"Content-Type" : "application/json"},
@@ -130,7 +125,6 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
       const result = await response.json();
       console.log(result)
     }
-
     const result = await response.json();
     alert(`${result.userId} 님 회원가입을 환영합니다!`)
     const redirect = confirm("로그인 페이지로 이동하시겠습니까 ?")
@@ -140,7 +134,6 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
     else{
       window.location.href = "/home";
     }
-
   }catch(error){
     console.error(error)
   }

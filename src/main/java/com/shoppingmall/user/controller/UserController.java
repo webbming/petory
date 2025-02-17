@@ -3,7 +3,6 @@ package com.shoppingmall.user.controller;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
-import com.shoppingmall.user.exception.DuplicateException;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.UserService;
 import jakarta.validation.Valid;
@@ -48,7 +47,9 @@ public class UserController {
     Map<String , Boolean> response = new HashMap<>();
     String checkField = request.get("fieldName");
     String checkValue = request.get("fieldValue");
+    // userService 에게 해당 필드 중복 검사 요청
     boolean result = userService.checkDuplicate(checkField, checkValue);
+    // 반환 결과를 response 객체에 넣고 클라이언트에게 반환
     response.put("result" , result);
     return ResponseEntity.ok().body(response);
   }
@@ -57,21 +58,19 @@ public class UserController {
   @PostMapping("/register")
   @ResponseBody
   public ResponseEntity<Map<String, Object>> registerP(@Valid @RequestBody UserRequestDTO userDTO , Errors errors){
+    // response 객체 생성
     Map<String , Object> response = new HashMap<>();
+    // 에러가 있다면 response 객체에 status 값과 errors 객체를 클라이언트에게 반환
     if(errors.hasErrors()){
       response.put("status", "error");
       response.put("errors", userService.filedErrorsHandler(errors));
       return ResponseEntity.badRequest().body(response);
     }
-    try{
+    // 에러가 없다면 userId와 상태 반환
       userService.registerUser(userDTO);
       response.put("userId" , userDTO.getUserId());
       response.put("status", "success");
       return ResponseEntity.ok().body(response);
-    }catch (DuplicateException e){
-      response.put("status", e.getErrors());
-      return ResponseEntity.badRequest().body(response);
-    }
   }
 
   @GetMapping("/user/profile")
@@ -91,19 +90,25 @@ public class UserController {
       response.put("errors", userService.filedErrorsHandler(errors));
       return ResponseEntity.badRequest().body(response);
     }
-    try{
       userService.updateUser(userDTO);
       response.put("status", "success");
       return ResponseEntity.ok().body(response);
-    }catch (DuplicateException e){
-      response.put("status", e.getErrors());
-      return ResponseEntity.badRequest().body(response);
-    }
   }
+
 
   @DeleteMapping("/user/delete")
   public String DeleteUser(@Valid @ModelAttribute UserRequestDTO userDTO){
     return null;
+  }
+
+  @GetMapping("/find/id")
+  public String findId(){
+    return "user/find-id";
+  }
+
+  @GetMapping("/find/password")
+  public String findPassword(){
+    return "user/find-password";
   }
 
 
