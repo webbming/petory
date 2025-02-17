@@ -37,7 +37,8 @@ public class PurchaseService {
         return Optional.empty();
 	}
     
-    public Map<String, Object> orderList(String cancel) {
+    //전체 인원 목록 확인
+    public Map<String, Object> orderAllList(String cancel) {
     	 List<Purchase> purchases;
     	 String title;
     	 if (cancel.equals("cancel")) {
@@ -58,16 +59,16 @@ public class PurchaseService {
  	    return response;
     }
     
-    //특정 id 기준
+    //특정 id 기준 목록 확인
     public Map<String, Object> orderAllListByUserId(String cancel, String userId){
     	List<Purchase> purchases;
     	String title;
    	 if (cancel.equals("cancel")) {
-	    	purchases = repository.findByIdAndCancelAtIsNotNull(userId);
+	    	purchases = repository.findByUserIdAndCancelAtIsNotNull(userId);
 	    	title = "취소 목록";
 	    }
 	    else if(cancel.equals("order")) {
-		    purchases = repository.findByIdAndCancelAtIsNull(userId);
+		    purchases = repository.findByUserIdAndCancelAtIsNull(userId);
 		    title = "주문 목록";
 	    }
 	    else {
@@ -79,5 +80,4 @@ public class PurchaseService {
         response.put("purchases", purchases);
 	    return response;
    }
-    }
 }

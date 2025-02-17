@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface PurchaseRepository extends JpaRepository<Purchase, Integer>{
+public interface PurchaseRepository extends JpaRepository<Purchase, Long>{
 	
 	List<Purchase> findByUserId(String userId);
 	
@@ -15,7 +15,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Integer>{
 	
 	List<Purchase> findByCancelAtIsNotNull();
 	
-	List<Purchase> findByIdAndCancelAtIsNotNull(String userId);
+	List<Purchase> findByUserIdAndCancelAtIsNotNull(String userId);
 	
-	List<Purchase> findByIdAndCancelAtIsNull(String userId);
+	List<Purchase> findByUserIdAndCancelAtIsNull(String userId);
 }

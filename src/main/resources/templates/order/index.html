@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+<script th:if="${message}" th:inline="javascript">
+        alert([[${message}]]);
+    </script>
 <body>
 	<h1>주문</h1>
 	<form action="/order" method="post">
@@ -46,11 +49,17 @@
     <input type="hidden" name="cancel" value="cancel">
     <button type="submit">취소 목록</button>
 </form>
-<form action="/orderListByUserid" method="GET">
-    <input type="text" name="userId" placeholder="사용자 ID 입력">
-    <button type="submit">검색</button>
-</form>
-	
+	    <form action="/orderList" method="get">
+        <label for="searchOption">검색 종류:</label>
+        <select id="searchOption" name="cancel">
+            <option value="all">전체</option>
+            <option value="cancel">취소</option>
+            <option value="order">주문</option>
+        </select>
+        <input type="text" name="user" placeholder="아이디를 입력해주세요" />
+        <button type="submit">검색</button>
+ </form>
+    
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     function execDaumPostcode() {

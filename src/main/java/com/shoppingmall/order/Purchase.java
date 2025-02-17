@@ -20,7 +20,7 @@ public class Purchase {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
+    private long orderId;
     
     @Column(nullable = false)
     private String reciverAddr;
