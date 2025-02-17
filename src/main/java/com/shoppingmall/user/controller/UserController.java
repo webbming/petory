@@ -66,8 +66,9 @@ public class UserController {
       response.put("errors", userService.filedErrorsHandler(errors));
       return ResponseEntity.badRequest().body(response);
     }
-    // 에러가 없다면 userId와 상태 반환
+    // 에러가 없다면 회원가입 진행
       userService.registerUser(userDTO);
+    // 회원가입 성공 시 response 객체에 상태 값과 userId 담아 반환
       response.put("userId" , userDTO.getUserId());
       response.put("status", "success");
       return ResponseEntity.ok().body(response);

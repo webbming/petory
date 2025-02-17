@@ -11,7 +11,7 @@
       <h1>로그인</h1>
     </div>
 
-    <form action="/login/process" method="post">
+    <form action="/login/process" method="post" id="loginForm">
       <div>
         <label for="username">아이디:</label>
         <input type="text" id="username" name="username" required>
@@ -20,7 +20,10 @@
         <label for="password">비밀번호:</label>
         <input type="password" id="password" name="password" required>
       </div>
-      <button type="submit">로그인</button>
+      <div>
+        <span class="error"></span>
+      </div>
+      <button type="submit" class="loginBtn">로그인</button>
     </form>
 
     <div class="footer-links" style="text-align: center; margin-top: 20px;">
@@ -29,6 +32,7 @@
       <a href="/find/password">비밀번호 찾기</a>
     </div>
   </div>
+  <script src="/js/login.js"></script>
 
 
 </body>
