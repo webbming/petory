@@ -10,4 +10,12 @@ import org.springframework.stereotype.Repository;
 public interface PurchaseRepository extends JpaRepository<Purchase, Integer>{
 	
 	List<Purchase> findByUserId(String userId);
+	
+	List<Purchase> findByCancelAtIsNull();
+	
+	List<Purchase> findByCancelAtIsNotNull();
+	
+	List<Purchase> findByIdAndCancelAtIsNotNull(String userId);
+	
+	List<Purchase> findByIdAndCancelAtIsNull(String userId);
 }

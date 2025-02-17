@@ -34,12 +34,17 @@
 		<button>주문하기</button>
 	</form>
 	
-	
-	<a href="/orderAllList">주문/취소목록</a>
-	<a href="/orderList">주문목록</a>
 <form action="/orderList" method="GET">
-    <input type="hidden" name="cancel" >
-    <button type="submit">취소목록</button>
+    <input type="hidden" name="cancel" value="all">
+    <button type="submit">주문/취소 전체 목록</button>
+</form>
+<form action="/orderList" method="GET">
+    <input type="hidden" name="cancel" value="order">
+    <button type="submit">주문 목록</button>
+</form>
+<form action="/orderList" method="GET">
+    <input type="hidden" name="cancel" value="cancel">
+    <button type="submit">취소 목록</button>
 </form>
 <form action="/orderListByUserid" method="GET">
     <input type="text" name="userId" placeholder="사용자 ID 입력">

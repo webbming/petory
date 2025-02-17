@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,14 @@ public class PurchaseController {
 	@Autowired
 	PurchaseService service;
 	
+	//주문
 	@PostMapping("/order")
 	public String orderList(@ModelAttribute Purchase purchase, Model model, @RequestParam(name = "reciver_addr_detail") String reciveaddr) {
-		purchase.setReciverAddr(purchase.getReciverAddr() + " " + reciveaddr);
-		Purchase savedPurchase = repository.save(purchase);
-		model.addAttribute("purchase", savedPurchase);
+		model.addAttribute("purchase", service.orderList(purchase, reciveaddr));
 	    return "order/order";
 	}
 	
+	//취소
 	@PostMapping("/cancel")
 	public String orderCancel(@RequestParam(name = "orderId") int id, Model model) {
 		Optional<Purchase> purchase = service.orderCancel(id);
@@ -37,30 +38,23 @@ public class PurchaseController {
 		return "order/cancel";
 	}
 	
-	@GetMapping("/orderAllList")
-	public String orderAllList(Model model, @RequestParam(name = "buy", required = false) boolean buy) {
-		List<Purchase> purchases = repository.findAll();
-		 model.addAttribute("purchases", purchases); 
-		System.out.println(purchases);
-		 return "order/orderAllList";
-	}
-	
-	//주문만 /취소된 목록만 확인
+	//확인
 	@GetMapping("/orderList")
-	public String orderList(Model model, @RequestParam(name = "cancel", required = false) Boolean cancel) {
-		List<Purchase> purchases = repository.findAll();
-		model.addAttribute("purchases", purchases); 
-		if(cancel) {
-			return "order/cancelList";
+	public String orderList(Model model, @RequestParam(name = "cancel", required = false) String cancel,@RequestParam(name = "userId", required = false) String userId) {
+		Map<String, Object> response;
+		if (userId == null || userId.isEmpty()) {
+			response = service.orderList(cancel);
+			model.addAttribute("title", response.get("title"));
+			model.addAttribute("purchases", response.get("purchases"));
+			return "order/orderAllList";
 		}
-		return "order/orderList";
-	}
-	
-	@GetMapping("/orderListByUserid")
-	public String orderListbyUserid(Model model, @RequestParam(name = "userId") String userId) {
-		List<Purchase> purchases = repository.findByUserId(userId);
-		System.out.println(purchases);
-	    model.addAttribute("purchases", purchases);
-	    return "order/orderAllList";  // Thymeleaf 템플릿으로 전달
+		
+		else {
+			response = service.orderAllListByUserId(cancel, userId);
+			model.addAttribute("title", response.get("title"));
+			model.addAttribute("purchase", response.get("purchase"));
+			model.addAttribute("userId", userId);
+			return "order/orderAllListByUserId";
+		}
 	}
 }
