@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>게시글 상세 정보</h1>
+    <p><strong>제목:</strong> <span name ="title" th:text="${board.title}"></span></p>
+    <p><strong>카테고리: </strong><span name="categoryId" th:text="${board.categoryId}"></span></p>
+    <p><strong>작성자:</strong> <span th:text="${board.userId}"></span></p>
+    <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+    <p><strong>내용:</strong></p>
+    <p name="content" th:text="${board.content}"></p>
+    
+    <a href="/board/board">목록으로 돌아가기</a>
+    <a th:href="@{/board/update(boardId=${board.boardId})}">수정</a>
+    <a th:href="@{/board/delete(boardId=${board.boardId})}">삭제</a><br>
+    <a th:href="@{/board/like(boardId=${board.boardId})}"><span>좋아요</span></a><span>[[${board.likeCount}]]</span>
+    <h3 >댓글</h3>
+    <hr>
+    
+    <div class="comments" th:each="comment : ${comment}">
+    	<span name="userId" th:text="${comment.userId}"></span>
+    	<span name="createAt" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    	<span name="content" th:text="${comment.content}"></span>
+    	<a th:href="@{/board/commentUpdate(commentId=${comment.commentId})}">수정</a>
+    	<a th:href="@{/board/commentDelete(commentId=${comment.commentId}, boardId=${board.boardId})}">삭제</a>
+    	<a th:href="@{/board/commentLike(commentId=${comment.commentId}, boardId=${board.boardId})}"><span>좋아요</span></a><span>[[${comment.likeCount}]]</span>
+    	<hr>
+    </div>
+    
+    <div class="comment-box">
+        <form action="/board/commentCreate">
+        	<input type="hidden" name="boardId" th:value="${board.boardId}">
+            <label for="comment">댓글 내용:</label>
+            <textarea rows="4" cols="50" id="content" name="content" placeholder="댓글을 작성하세요" required></textarea>
+            <br><br>
+            <button type="submit">댓글 작성</button>
+        </form>
+    </div>
+</body>
+</html>
