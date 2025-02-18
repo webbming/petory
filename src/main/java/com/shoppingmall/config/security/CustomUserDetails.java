@@ -21,6 +21,7 @@ public class CustomUserDetails implements UserDetails {
     return user;
   }
 
+
   public String getAddress() {
     return user.getAddress(); // 주소 정보 반환
   }

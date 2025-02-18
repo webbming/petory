@@ -24,8 +24,16 @@ profileUpdateForm.addEventListener("submit" , async (e) =>{
             body : JSON.stringify(formObj)
         })
         if(!response.ok){
+            const nickNameError = document.querySelector("#nickname-error")
+            const emailError = document.querySelector("#email-error")
             const result = await response.json();
-            console.log(result)
+            console.log(result.status.nickname)
+                nickNameError.innerHTML = "";
+                emailError.innerHTML = "" ;
+                nickNameError.textContent = result.status.nickname
+                emailError.textContent = result.status.email
+
+
         }else{
 
             const result = await response.json();
