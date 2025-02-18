@@ -36,6 +36,8 @@ public class Purchase {
 
     private int totalPrice; // 총 가격
 
+    @CreatedDate// Auditing에 의한 날짜 자동 설정
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createAt; // 주문 생성 시간
 
     private LocalDateTime cancelAt; // 주문 취소 시간

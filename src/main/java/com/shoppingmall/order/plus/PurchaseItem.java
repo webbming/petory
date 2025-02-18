@@ -32,6 +32,8 @@ public class PurchaseItem {
 //    @JoinColumn(name = "product_id") // 상품 ID (FK)
     private Long productId;
 
+    private String productName;
+
     private String option; // 상품 옵션
 
     private int quantity; // 수량
