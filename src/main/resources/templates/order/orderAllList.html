@@ -31,7 +31,7 @@
             <td th:text="${purchase.cancelAt}"></td>
               <td>
         <!-- 취소 일자가 없을 경우에만 취소 버튼을 보여줌 -->
-        <form th:action="@{/order/cancel}" method="post" th:if="${purchase.cancelAt == null}">
+        <form th:action="@{/cancel}" method="post" th:if="${purchase.cancelAt == null}">
             <input type="hidden" th:name="orderId" th:value="${purchase.orderId}" />
             <button type="submit">취소</button>
         </form>

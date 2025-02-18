@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 정보 입력</title>
+</head>
+<body>
+    <h1>주문 정보 입력</h1>
+
+    <form action="/order" method="post" th:object="${purchase}">
+        <table border="1" cellpadding="10">
+            <tr>
+                <td>수령인 주소</td>
+                <td><input type="text" th:field="*{reciverAddr}" placeholder="수령인 주소 입력" required /></td>
+            </tr>
+            <tr>
+                <td>수령인 전화번호</td>
+                <td><input type="text" th:field="*{reciverPhone}" placeholder="수령인 전화번호 입력" required /></td>
+            </tr>
+            <tr>
+                <td>수령인 이름</td>
+                <td><input type="text" th:field="*{reciverName}" placeholder="수령인 이름 입력" required /></td>
+            </tr>
+            <tr>
+                <td>장바구니 ID</td>
+                <td><input type="text" th:field="*{cartId}" placeholder="장바구니 ID 입력" required /></td>
+            </tr>
+            <tr>
+                <td>사용자 ID</td>
+                <td><input type="text" th:field="*{userId}" placeholder="사용자 ID 입력" required /></td>
+            </tr>
+            <tr>
+                <td>총 가격</td>
+                <td><input type="number" th:field="*{totalPrice}" placeholder="총 가격 입력" required /></td>
+            </tr>
+            <tr>
+                <td>배송 여부</td>
+                <td>
+                    <select th:field="*{delivery}">
+                        <option value="true">배송 완료</option>
+                        <option value="false">배송 중</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>취소 시간</td>
+                <td><input type="datetime-local" th:field="*{cancelAt}" /></td>
+            </tr>
+        </table>
+
+        <br>
+        <button type="submit">주문 저장</button>
+    </form>
+
+    <p><a href="#" onClick="history.back()" style="text-decoration: none">이전 페이지로 돌아가기</a></p>
+</body>
+</html>

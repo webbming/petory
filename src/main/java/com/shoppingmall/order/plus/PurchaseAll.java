@@ -1,4 +1,4 @@
-package com.shoppingmall.order;
+package com.shoppingmall.order.plus;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +16,7 @@ import lombok.Data;
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)  // Auditing을 위한 리스너 추가
-public class Purchase {
+public class PurchaseAll {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +35,8 @@ public class Purchase {
     private String userId;  // 필드 이름을 userId로 수정
     
     private String totalPrice;
+    
+    private boolean delivery; 
     
     @CreatedDate// Auditing에 의한 날짜 자동 설정
     @Column(nullable = false, updatable = false)

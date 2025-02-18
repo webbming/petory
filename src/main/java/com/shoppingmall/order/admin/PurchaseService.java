@@ -1,4 +1,4 @@
-package com.shoppingmall.order;
+package com.shoppingmall.order.admin;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -9,6 +9,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shoppingmall.order.plus.PurchaseAll;
+
+import jakarta.persistence.EntityNotFoundException;
+
 
 @Service
 public class PurchaseService {
@@ -18,28 +22,24 @@ public class PurchaseService {
 	
 	
 	//주문
-	public Purchase orderList(Purchase purchase, String reciveaddr) {
+	public PurchaseAll orderList(PurchaseAll purchase, String reciveaddr) {
 		purchase.setReciverAddr(purchase.getReciverAddr() + " " + reciveaddr);
-		Purchase savedPurchase = repository.save(purchase);
+		PurchaseAll savedPurchase = repository.save(purchase);
 		return savedPurchase;
 	}
 	
-    // 주문 취소
-    public Optional<Purchase> orderCancel(int id) {
-        Optional<Purchase> purchaseOptional = repository.findById(id);
-        if (purchaseOptional.isPresent()) {
-            Purchase purchase = purchaseOptional.get();
-            purchase.setCancelAt(LocalDateTime.now()); // 취소 일자 추가
-            repository.save(purchase); // 수정된 주문 저장
-            return Optional.of(purchase); //값이 있을 경우 of 활용
-        }
-        // 주문이 없는 경우, 빈 Optional 반환
-        return Optional.empty();
+	public PurchaseAll orderCancel(long id) {
+	    PurchaseAll purchase = repository.findById(id)
+	            .orElseThrow(() -> new EntityNotFoundException("Order not found with ID: " + id));
+	        purchase.setCancelAt(LocalDateTime.now()); 
+	        repository.save(purchase);
+	        return purchase;
 	}
+
     
     //전체 인원 목록 확인
     public Map<String, Object> orderAllList(String cancel) {
-    	 List<Purchase> purchases;
+    	 List<PurchaseAll> purchases;
     	 String title;
     	 if (cancel.equals("cancel")) {
  	    	purchases = repository.findByCancelAtIsNotNull();
@@ -61,7 +61,7 @@ public class PurchaseService {
     
     //특정 id 기준 목록 확인
     public Map<String, Object> orderAllListByUserId(String cancel, String userId){
-    	List<Purchase> purchases;
+    	List<PurchaseAll> purchases;
     	String title;
    	 if (cancel.equals("cancel")) {
 	    	purchases = repository.findByUserIdAndCancelAtIsNotNull(userId);

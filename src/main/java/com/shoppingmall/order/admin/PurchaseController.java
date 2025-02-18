@@ -1,9 +1,11 @@
-package com.shoppingmall.order;
+package com.shoppingmall.order.admin;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.shoppingmall.order.plus.PurchaseAll;
 
 import java.text.ParsePosition;
 import java.util.List;
@@ -22,16 +24,16 @@ public class PurchaseController {
 	
 	//주문
 	@PostMapping("/order")
-	public String orderList(@ModelAttribute Purchase purchase, Model model, @RequestParam(name = "reciver_addr_detail") String reciveaddr) {
+	public String orderList(@ModelAttribute PurchaseAll purchase, Model model, @RequestParam(name = "reciver_addr_detail") String reciveaddr) {
 		model.addAttribute("purchase", service.orderList(purchase, reciveaddr));
 	    return "order/order";
 	}
 	
 	//취소
 	@PostMapping("/cancel")
-	public String orderCancel(@RequestParam(name = "orderId") int id, Model model) {
-		Optional<Purchase> purchase = service.orderCancel(id);
-	    model.addAttribute(purchase.get());
+	public String orderCancel(@RequestParam(name = "orderId") long id, Model model) {
+		PurchaseAll purchase = service.orderCancel(id);
+	    model.addAttribute("purchase", purchase);
 		return "order/cancel";
 	}
 	

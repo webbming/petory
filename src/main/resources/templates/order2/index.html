@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 정보 입력</title>
+</head>
+<body>
+<a href="/order/delivery">배송</a>
+<a href="/order/orderOneItem">개별상품별 주문</a>
+    <h1>주문 정보 입력</h1>
+
+    <form action="/order" method="post">
+        <table border="1" cellpadding="10">
+            <tr>
+                <td>장바구니 ID</td>
+                <td><input type="text" name="cartId" placeholder="장바구니 ID 입력" required /></td>
+            </tr>
+            <tr>
+                <td>사용자 ID</td>
+                <td><input type="text" name="userId" placeholder="사용자 ID 입력" required /></td>
+            </tr>
+            <tr>
+                <td>총 가격</td>
+                <td><input type="number" name="totalPrice" placeholder="총 가격 입력" required /></td>
+            </tr>
+            <tr>
+                <td>배송 상태</td>
+                <td>
+                    <select name="deliveryStatus">
+                        <option value="배송 완료">배송 완료</option>
+                        <option value="배송 중">배송 중</option>
+                        <option value="취소">취소</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>할인액</td>
+                <td><input type="number" name="discount" placeholder="할인액 입력" required /></td>
+            </tr>
+        </table>
+
+        <br>
+        <button type="submit">주문 저장</button>
+    </form>
+
+    <p><a href="#" onClick="history.back()" style="text-decoration: none">이전 페이지로 돌아가기</a></p>
+</body>
+</html>
