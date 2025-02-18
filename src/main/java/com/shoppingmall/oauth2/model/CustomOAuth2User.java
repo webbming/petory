@@ -1,5 +1,6 @@
-package com.shoppingmall.user.dto;
+package com.shoppingmall.oauth2.model;
 
+import com.shoppingmall.oauth2.dto.OAuth2Response;
 import com.shoppingmall.user.model.UserRoleType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;

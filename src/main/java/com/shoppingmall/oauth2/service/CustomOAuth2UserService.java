@@ -1,9 +1,10 @@
-package com.shoppingmall.user.service;
+package com.shoppingmall.oauth2.service;
 
-import com.shoppingmall.user.dto.CustomOAuth2User;
-import com.shoppingmall.user.dto.GoogleResponse;
-import com.shoppingmall.user.dto.NaverResponse;
-import com.shoppingmall.user.dto.OAuth2Response;
+import com.shoppingmall.oauth2.dto.KakaoResponse;
+import com.shoppingmall.oauth2.model.CustomOAuth2User;
+import com.shoppingmall.oauth2.dto.GoogleResponse;
+import com.shoppingmall.oauth2.dto.NaverResponse;
+import com.shoppingmall.oauth2.dto.OAuth2Response;
 import com.shoppingmall.user.model.UserRoleType;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -19,16 +20,28 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        System.out.println(oAuth2User.getAttributes());
+        System.out.println("OAuth2User Attributes: " + oAuth2User.getAttributes());
         // 네이버 혹은 구글인지 식별을 위한 데이터 로드
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        System.out.println("OAuth2User Attributes: " + oAuth2User.getAttributes());
         OAuth2Response oAuth2Response = null;
+
         if(registrationId.equals("naver")){
              oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
         }else if(registrationId.equals("google")){
             oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
+        }else if(registrationId.equals("kakao")){
+            oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
         }else{
             return null;
+        }
+        if (oAuth2Response != null) {
+            System.out.println("Provider: " + oAuth2Response.getProvider());
+            System.out.println("ProviderId: " + oAuth2Response.getProviderId());
+            System.out.println("Email: " + oAuth2Response.getEmail());
+            System.out.println("Name: " + oAuth2Response.getName());
+        } else {
+            System.out.println("Failed to create OAuth2Response for " + registrationId);
         }
 
         UserRoleType role = UserRoleType.USER;

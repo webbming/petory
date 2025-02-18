@@ -1,4 +1,4 @@
-package com.shoppingmall.user.dto;
+package com.shoppingmall.oauth2.dto;
 
 public interface OAuth2Response {
 
