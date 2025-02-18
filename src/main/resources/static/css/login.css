@@ -1,11 +1,12 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
 body {
   font-family: 'JetBrains Mono', sans-serif;
   background-color: #f4f4f9;
-  margin: 0;
-  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,34 +16,34 @@ body {
 .login-container {
   width: 100%;
   max-width: 450px;
-  background-color: #fff;
+  background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  box-sizing: border-box;
+  text-align: center;
 }
 
 h1 {
-  text-align: center;
   color: #333;
   margin-bottom: 20px;
 }
 
 form div {
   margin-bottom: 15px;
+  text-align: left;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"],
+input[type="password"] {
   width: 100%;
   padding: 12px;
   font-size: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  box-sizing: border-box;
 }
 
 input:focus {
-  border: 1px solid #2669B0;
+  border-color: #2669B0;
   outline: none;
 }
 
@@ -55,41 +56,80 @@ button {
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  margin-top: 10px; /* 버튼 위 여백 추가 */
+  margin-top: 10px;
 }
 
 button:hover {
   background-color: #4676A9;
 }
 
-.message {
-  text-align: center;
-  font-size: 14px;
+.error {
+  color: red;
+  font-size: 12px;
   margin-top: 10px;
 }
 
-.error {
-  margin-top: 20px;
-  color: red;
-  font-size: 12px;
-  text-align: center;
-}
-
 .footer-links {
-  text-align: center; /* 중앙 정렬 */
-  margin-top: 20px; /* 상단 여백 추가 */
+  margin-top: 20px;
 }
 
 .footer-links a {
-  color: #577A9E; /* 링크 색상 */
-  text-decoration: none; /* 밑줄 제거 */
-  margin: 0 10px; /* 좌우 여백 추가 */
+  color: #577A9E;
+  text-decoration: none;
+  margin: 0 10px;
 }
 
 .footer-links a:hover {
-  text-decoration: underline; /* 마우스 오버 시 밑줄 추가 */
+  text-decoration: underline;
 }
-.homeIcon:hover{
-  scale: 1.2;
-  transition: 0.3s;
+
+/* 소셜 로그인 */
+.social-login {
+  margin-top: 20px;
+}
+
+.social-login-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.social-login-title::before,
+.social-login-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: #ccc;
+  margin: 0 10px;
+}
+
+.social-login-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.social-login a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.social-login a:hover {
+  transform: scale(1.1);
+}
+
+.social-login img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
