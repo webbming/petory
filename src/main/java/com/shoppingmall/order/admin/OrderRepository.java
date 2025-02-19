@@ -9,7 +9,7 @@ import com.shoppingmall.order.plus.PurchaseAll;
 
 
 @Repository
-public interface PurchaseRepository extends JpaRepository<PurchaseAll, Long>{
+public interface OrderRepository extends JpaRepository<PurchaseAll, Long>{
 	
 	List<PurchaseAll> findByUserId(String userId);
 	

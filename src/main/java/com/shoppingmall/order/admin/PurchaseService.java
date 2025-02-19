@@ -18,7 +18,7 @@ import jakarta.persistence.EntityNotFoundException;
 public class PurchaseService {
 	
 	@Autowired
-	PurchaseRepository repository;
+	OrderRepository repository;
 	
 	
 	//주문

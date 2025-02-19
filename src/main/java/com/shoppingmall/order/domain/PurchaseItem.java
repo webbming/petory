@@ -2,9 +2,9 @@ package com.shoppingmall.order.domain;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import lombok.Data;
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)  // Auditing을 위한 리스너 추가
@@ -12,11 +12,11 @@ public class PurchaseItem {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderItemId; // 주문 상품 ID (PK)
+    private Long purchaseItemId; // 주문 상품 ID (PK)
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id") // 주문 ID (FK)
-    private Purchase orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "purchase_id") // 주문 ID (FK)
+    private PurchaseList purchaseId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "product_id") // 상품 ID (FK)

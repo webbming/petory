@@ -1,6 +1,6 @@
 package com.shoppingmall.order.dto;
 
-import com.shoppingmall.order.domain.OrderDelivery;
+import com.shoppingmall.order.domain.PurchaseDelivery;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,12 +31,12 @@ public class PurchaseDeliveryDto {
     this.deliveredAt = deliveredAt;
   }
 
-  public static PurchaseDeliveryDto fromEntity(OrderDelivery delivery) {
+  public static PurchaseDeliveryDto fromEntity(PurchaseDelivery delivery) {
     return PurchaseDeliveryDto.builder()
         .deliveryId(delivery.getDeliveryId())
-        .reciverName(delivery.getReciverName())
-        .reciverPhone(delivery.getReciverPhone())
-        .reciverAddr(delivery.getReciverAddr())
+        .reciverName(delivery.getReceiverName())
+        .reciverPhone(delivery.getReceiverPhone())
+        .reciverAddr(delivery.getReceiverAddr())
         .deliveryMessage(delivery.getDeliveryMessage())
         .deliveryStatus(delivery.getDeliveryStatus())
         .deliveredAt(delivery.getDeliveredAt())

@@ -1,17 +1,20 @@
 package com.shoppingmall.order.plus;
 
-import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseItem;
-import com.shoppingmall.order.repository.DeliveryRepository;
-import com.shoppingmall.order.repository.OrderItemRepository;
-import com.shoppingmall.order.repository.OrderRepository;
+import com.shoppingmall.order.domain.PurchaseList;
+import com.shoppingmall.order.dto.PurchaseAllDto;
+import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
+import com.shoppingmall.order.repository.PurchaseItemRepository;
+import com.shoppingmall.order.repository.PurchaseListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @RequestMapping("/order")
 @Controller
@@ -33,22 +36,19 @@ public String orderOneItem() {
 }
 
 @Autowired
-DeliveryRepository delRepo;
+PurchaseDeliveryRepository delRepo;
 @Autowired
-OrderRepository purRepo;
+PurchaseListRepository purRepo;
 @Autowired
-OrderItemRepository itemRepo;
+PurchaseItemRepository itemRepo;
 
 @Autowired
 PurchaseAllService service;
 
 @GetMapping("/order")
-public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseDelivery delivery, @ModelAttribute PurchaseItem item, Model model){
-
+public String order(@ModelAttribute PurchaseList purchase, @ModelAttribute PurchaseDelivery delivery, @ModelAttribute PurchaseItem item, Model model){
 	model.addAttribute("message", service.order(purchase, delivery, item));
-
-	return "order/index";
-
+	model.addAttribute("purchase", service.getOrderDetails(purchase.getPurchaseId()));
+	return "order2/orderResult";
 }
-
 }
