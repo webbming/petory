@@ -1,6 +1,6 @@
 package com.shoppingmall.order.dto;
 
-import com.shoppingmall.order.plus.Purchase;
+import com.shoppingmall.order.domain.OrderList;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +34,7 @@ public class PurchaseDto {
   }
 
   // Entity -> DTO 변환 메서드
-  public static PurchaseDto fromEntity(Purchase purchase) {
+  public static PurchaseDto fromEntity(OrderList purchase) {
     return PurchaseDto.builder()
         .orderId(purchase.getOrderId())
         .cartId(purchase.getCartId())

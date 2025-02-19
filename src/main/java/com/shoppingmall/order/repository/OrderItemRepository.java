@@ -1,7 +1,7 @@
 package com.shoppingmall.order.repository;
 
 
-import com.shoppingmall.order.plus.PurchaseItem;
+import com.shoppingmall.order.domain.PurchaseItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

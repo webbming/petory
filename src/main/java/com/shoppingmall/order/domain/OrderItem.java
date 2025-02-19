@@ -1,18 +1,9 @@
-package com.shoppingmall.order.plus;
+package com.shoppingmall.order.domain;
 
 
-import org.springframework.data.annotation.CreatedDate;
+import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
 @Entity
 @Data
@@ -21,12 +12,11 @@ public class PurchaseItem {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long purchaseItemId; // 주문 상품 ID (PK)
+    private Long orderItemId; // 주문 상품 ID (PK)
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_id") // 주문 ID (FK)
-//    private Purchase purchase;
-    private Long orderId;
+    @JoinColumn(name = "order_id") // 주문 ID (FK)
+    private Purchase orderId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "product_id") // 상품 ID (FK)

@@ -1,6 +1,6 @@
 package com.shoppingmall.order.dto;
 
-import com.shoppingmall.order.plus.PurchaseItem;
+import com.shoppingmall.order.domain.OrderItem;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class PurchaseItemDto {
     this.totalPrice = totalPrice;
   }
 
-  public static PurchaseItemDto fromEntity(PurchaseItem item) {
+  public static PurchaseItemDto fromEntity(OrderItem item) {
     return PurchaseItemDto.builder()
         .purchaseItemId(item.getPurchaseItemId())
         .productId(item.getProductId())

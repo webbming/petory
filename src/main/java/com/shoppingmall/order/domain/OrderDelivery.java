@@ -1,17 +1,10 @@
-package com.shoppingmall.order.plus;
+package com.shoppingmall.order.domain;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Entity
@@ -24,8 +17,8 @@ public class PurchaseDelivery {
     private Long deliveryId; // 배송 ID (PK)
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_id") // 주문 ID (FK)
-    private Long orderId;
+    @JoinColumn(name = "order_id") // 주문 ID (FK)
+    private Purchase orderId;
 
     private String reciverName; // 수령인 이름
 
