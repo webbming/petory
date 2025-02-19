@@ -69,14 +69,40 @@ button:hover {
   margin-top: 10px;
 }
 
-.footer-links {
+/* 아래 영역(아이디 찾기 + 소셜 로그인) 스타일 */
+.login-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   margin-top: 20px;
 }
 
+.footer-links {
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
 .footer-links a {
+  display: inline-block;
   color: #577A9E;
   text-decoration: none;
-  margin: 0 10px;
+  font-size: 13px;
+  margin: 0 4px;
+  position: relative;
+  padding: 0 10px;
+}
+.footer-links a::after {
+  content: "|";  /* 구분선 */
+  color: #aaa;    /* 회색으로 색상 조정 */
+  position: absolute;
+  top: 1px;
+  right: -10px;   /* 약간의 간격 조정 */
+}
+.footer-links a:last-child::after {
+  content: "";  /* 마지막 요소는 | 제거 */
 }
 
 .footer-links a:hover {
@@ -85,7 +111,11 @@ button:hover {
 
 /* 소셜 로그인 */
 .social-login {
-  margin-top: 20px;
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .social-login-title {
@@ -95,6 +125,8 @@ button:hover {
   font-size: 16px;
   font-weight: bold;
   color: #555;
+  width: 100%;
+  text-align: center;
   margin-bottom: 15px;
 }
 
@@ -110,7 +142,7 @@ button:hover {
 .social-login-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
 }
 
 .social-login a {
@@ -122,8 +154,8 @@ button:hover {
   border-radius: 50%;
   overflow: hidden;
   transition: transform 0.2s;
+  margin: 0 5px;
 }
-
 .social-login a:hover {
   transform: scale(1.1);
 }

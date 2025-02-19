@@ -1,5 +1,6 @@
 package com.shoppingmall.oauth2.dto;
 
+// 각 소셜 Response 의 구조를 정의하는 인터페이스
 public interface OAuth2Response {
 
     // 제공자 이름 ( 네이버 혹은 구글 )

@@ -36,8 +36,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     if(!bCryptPasswordEncoder.matches(password, user.getPassword())) {
       throw new BadCredentialsException("비밀번호가 틀립니다.");
     }
-
-    System.out.println("로그인성공~");
     return new UsernamePasswordAuthenticationToken(userId, password, user.getAuthorities());
   }
 

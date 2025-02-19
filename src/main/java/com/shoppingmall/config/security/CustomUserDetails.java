@@ -3,12 +3,11 @@ package com.shoppingmall.config.security;
 import com.shoppingmall.user.model.User;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
+// 유저의 정보를 시큐리티가 식별 가능한 타입으로 되돌려 주기 위한 class
 public class CustomUserDetails implements UserDetails {
 
   private final User user;

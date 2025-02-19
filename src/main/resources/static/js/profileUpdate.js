@@ -1,5 +1,3 @@
-import { validationRules } from './validationRules.js';
-
 
 const profileUpdateForm = document.querySelector("#profileUpdateForm")
 const submitButton = document.querySelector(".save-btn")

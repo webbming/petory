@@ -2,6 +2,7 @@ package com.shoppingmall.oauth2.dto;
 
 import java.util.Map;
 
+// Google 의 응답을 매핑 받는 dto
 public class GoogleResponse implements OAuth2Response{
 
     private final Map<String, Object> attribute;
