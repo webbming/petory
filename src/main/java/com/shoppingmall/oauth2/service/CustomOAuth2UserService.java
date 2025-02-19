@@ -20,10 +20,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        System.out.println("OAuth2User Attributes: " + oAuth2User.getAttributes());
         // 네이버 혹은 구글인지 식별을 위한 데이터 로드
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        System.out.println("OAuth2User Attributes: " + oAuth2User.getAttributes());
         OAuth2Response oAuth2Response = null;
 
         if(registrationId.equals("naver")){
@@ -35,6 +33,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }else{
             return null;
         }
+        // 소셜로그인 디버깅용
         if (oAuth2Response != null) {
             System.out.println("Provider: " + oAuth2Response.getProvider());
             System.out.println("ProviderId: " + oAuth2Response.getProviderId());

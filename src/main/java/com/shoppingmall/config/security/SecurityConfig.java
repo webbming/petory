@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
   private CustomUserDetailsService userDetailsService;
   private CustomAuthenticationFailureHandler failureHandler;
   private CustomOAuth2UserService customOAuth2UserService;
@@ -38,7 +39,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
                 // 인증 안하고 접근할 수 있는 경로
             .requestMatchers("/", "/home", "/login", "/login/oauth2/**", "/logout", "/register/**" ,
-                    "/index.html" , "/find/**" , "/board/**" , "/information"  ).permitAll()
+                    "/index.html" , "/find/**" , "/board/**" , "/information"   ).permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 // 그 외 모든 경로는 인증 필요.
             .anyRequest().authenticated())
@@ -51,8 +52,7 @@ public class SecurityConfig {
                     // 성공시 /home 으로 리다이렉트
                     .defaultSuccessUrl("/home" , true)
                     // 실패시 실패 핸들러호출
-                    .failureHandler(failureHandler)
-                    .permitAll())
+                    .failureHandler(failureHandler))
             // 소셜 로그인 설정 시작
             .oauth2Login(oauth2 -> oauth2
                     // 소셜 로그인 페이지도 /login 경로로 설정

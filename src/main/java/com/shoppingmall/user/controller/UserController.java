@@ -4,7 +4,9 @@ import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
 import com.shoppingmall.user.repository.UserRepository;
+import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,13 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -28,9 +24,12 @@ public class UserController {
 
   private final UserRepository userRepository;
   private UserService userService;
-  public UserController(UserService userService, UserRepository userRepository) {
+  private EmailService emailService;
+
+  public UserController(UserService userService, UserRepository userRepository , EmailService emailService) {
     this.userService = userService;
     this.userRepository = userRepository;
+    this.emailService = emailService;
   }
 
   @GetMapping("/information")
@@ -112,12 +111,37 @@ public class UserController {
     return "user/find-id";
   }
 
+  @PostMapping("/find/id")
+  public Map<String,String> findId(@RequestBody Map<String , String> request){
+    Map<String,String> response = new HashMap<>();
+
+    String question = request.get("userId");
+    String answer = request.get("email");
+    System.out.println(question);
+    System.out.println(answer);
+    String userId = userService.findID(question, answer);
+    response.put("status" , "success");
+    response.put("userId" , userId);
+    return response;
+  }
+
   @GetMapping("/find/password")
   public String findPassword(){
     return "user/find-password";
   }
 
 
+  @PostMapping("/find/password")
+  @ResponseBody
+  public Map<String,String> findPassword(@RequestBody Map<String , String> request) throws MessagingException {
+    Map<String,String> response = new HashMap<>();
+    String userId = request.get("userId");
+    String email = request.get("email");
+    emailService.findPassword(userId , email);
+    response.put("status", "success");
+    response.put("message", "이메일로 임시 비밀번호가 전송 되었습니다. 새로운 비밀번호로 로그인해주세요");
+    return response;
+  }
 
 
 

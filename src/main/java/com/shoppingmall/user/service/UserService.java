@@ -6,19 +6,13 @@ import com.shoppingmall.user.dto.UserUpdateDTO;
 import com.shoppingmall.user.exception.DuplicateException;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
@@ -136,14 +130,19 @@ public class UserService {
   }
 
 
-
-
-
   // 유저 삭제
   public void deleteUser(String userId) {
 
   }
 
+  public String findID(String question , String answer) {
+    User user = userRepository.findByQuestionAndAnswer(question, answer);
+    if(user == null) {
+      throw new UsernameNotFoundException("질문과 답변에 일치하는 회원이 없습니다.");
+    }
+    String userId = user.getUserId();
 
+      return userId.substring(0, userId.length() - 2) + "**";
+  }
 
 }
