@@ -33,6 +33,11 @@ public class UserController {
     this.userRepository = userRepository;
   }
 
+  @GetMapping("/information")
+  public String infoG(){
+      return "user/information";
+    }
+
 
   // 회원가입 페이지
   @GetMapping("/register")
