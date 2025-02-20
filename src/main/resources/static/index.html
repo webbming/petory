@@ -1,6 +1,4 @@
 
-
-
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -25,6 +23,23 @@
         <a href="/information">회원가입</a>
     </div>
     <a href="/board/board">게시판</a>
+
+    <h1>메인 페이지</h1>
+
+
+    <!-- 장바구니로 이동 버튼 -->
+    <div>
+        <button onclick="goToCart()">장바구니로 가기</button>
+    </div>
+
+    <script>
+
+        // 장바구니 페이지로 이동
+        function goToCart() {
+            window.location.href = '/cart';
+        }
+    </script>
 </body>
 </html>
+
 
