@@ -40,7 +40,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
                 // 인증 안하고 접근할 수 있는 경로
                 .requestMatchers("/", "/home", "/login", "/login/oauth2/**", "/logout", "/register/**" ,
-                    "/index.html" , "/find/**" , "/board/**" , "/information"   ).permitAll()
+                    "/index.html" , "/find/**" , "/board/**" , "/information" , "/product/**" , "/cart/**").permitAll()
                 .requestMatchers(HttpMethod.POST , "/find/id").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 // 그 외 모든 경로는 인증 필요.

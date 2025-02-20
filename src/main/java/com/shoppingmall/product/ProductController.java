@@ -35,13 +35,13 @@ public class ProductController {
     }
 
     // 메인 페이지 (전체 상품)
-    @GetMapping({"/", "/products"})
+    @GetMapping({"/product", "/products"})
     public String listProducts(@RequestParam(defaultValue = "newest") String sort, Model model) {
         // 전체상품,모든카테고리, 필터링
     	List<Product> products = productService.listAllProductsSorted(sort);
         model.addAttribute("products", productService.listAllProducts());
         model.addAttribute("categories", categoryService.findAllCategories());
-        return "index";
+        return "index2";
     }
 
     // 상품 등록폼
@@ -137,7 +137,7 @@ public class ProductController {
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("sort", sort); // 정렬 기준 유지
         System.out.println("Sort parameter received: " + sort);
-        return "index";
+        return "index2";
     }
 
     @GetMapping("/products/category/{categoryId}/json")
@@ -161,7 +161,7 @@ public class ProductController {
         model.addAttribute("subcategories", subcats);
         model.addAttribute("categories", categoryService.findAllCategories());
 
-        return "index";
+        return "index2";
     }
 
     //상품 검색(상품이름)
@@ -169,7 +169,7 @@ public class ProductController {
     public String searchProducts(@RequestParam("search") String search, Model model) {
     	List<Product> products = productService.searchProducts(search);
     	model.addAttribute("products", products);
-    	return "index";
+    	return "index2";
     }
     
 

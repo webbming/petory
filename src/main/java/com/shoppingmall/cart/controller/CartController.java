@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +34,9 @@ public class CartController {
     }
 
     // 장바구니 화면 반환
-    @GetMapping
+    @GetMapping("/show")
     public String showCart() {
-        return "cart";
+        return "/cart/cart";
     }
 
     // 장바구니 삭제

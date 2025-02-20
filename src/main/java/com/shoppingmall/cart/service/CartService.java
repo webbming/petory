@@ -3,6 +3,8 @@ package com.shoppingmall.cart.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.shoppingmall.product.Product;
+import com.shoppingmall.product.ProductRepository;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final ProductRepository productRepository;
 
 
     // 장바구니 추가
@@ -33,7 +36,7 @@ public class CartService {
 
     // 사용자별 장바구니 조회
     public List<Cart> getCartList(Long userId) {
-        List<Cart> cartList = cartRepository.findByUserUserId(userId);
+        List<Cart> cartList = cartRepository.findByUserId(userId);
         if (cartList.isEmpty()) {
             throw new IllegalArgumentException("장바구니가 비어있습니다.");
         }
