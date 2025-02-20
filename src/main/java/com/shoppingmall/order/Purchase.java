@@ -14,8 +14,7 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 @Entity
-@Data
-@EntityListeners(AuditingEntityListener.class)  // Auditing을 위한 리스너 추가
+@Data // Auditing을 위한 리스너 추가
 public class Purchase {
     
     @Id
@@ -35,8 +34,7 @@ public class Purchase {
     private String userId;  // 필드 이름을 userId로 수정
     
     private String totalPrice;
-    
-    @CreatedDate// Auditing에 의한 날짜 자동 설정
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createAt;
 
