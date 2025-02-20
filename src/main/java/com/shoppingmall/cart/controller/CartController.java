@@ -27,7 +27,7 @@ public class CartController {
     private final CartService cartService;
 
     // 사용자별 장바구니 조회
-    @GetMapping("/{userId}")
+    @GetMapping
     public ResponseEntity<List<Cart>> getCartList(@PathVariable Long userId) {
         List<Cart> cartList = cartService.getCartList(userId);
         return ResponseEntity.ok(cartList);
