@@ -4,6 +4,11 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+# 빌드 결과물 무시
+target/
+out/
+
+# 개인 설정 파일 무시
 
 ### STS ###
 .apt_generated
