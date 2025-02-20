@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장바구니</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>장바구니</h1>
+
+    <!-- 장바구니 목록 -->
+    <div id="cart-list">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>상품명</th>
+                    <th>수량</th>
+                    <th>가격</th>
+                    <th>총 금액</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+                <tr>
+                    <td>상품 1</td>
+                    <td>2</td>
+                    <td>₩ 5000</td>
+                    <td>₩ 10000</td>
+                    <td>
+                        <button onclick="removeItem(1)">삭제</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>상품 2</td>
+                    <td>1</td>
+                    <td>₩ 3000</td>
+                    <td>₩ 3000</td>
+                    <td>
+                        <button onclick="removeItem(2)">삭제</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 총 금액 계산 -->
+    <div>
+        <h3>총 금액: <span id="total-price">₩ 13000</span></h3>
+    </div>
+
+    <!-- 상품 추가 -->
+    <div>
+        <h2>상품 추가</h2>
+        <form id="add-item-form">
+            <label for="product-id">상품 ID: </label>
+            <input type="number" id="product-id" name="product-id" required><br><br>
+
+            <label for="quantity">수량: </label>
+            <input type="number" id="quantity" name="quantity" min="1" required><br><br>
+
+            <button type="submit">장바구니에 추가</button>
+        </form>
+    </div>
+
+    <!-- 장바구니 삭제 -->
+    <div>
+        <h2>장바구니 비우기</h2>
+        <button onclick="clearCart()">장바구니 비우기</button>
+    </div>
+
+    <script>
+        // 장바구니에 상품 추가 (POST 요청)
+        document.getElementById('add-item-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const productId = document.getElementById('product-id').value;
+            const quantity = document.getElementById('quantity').value;
+
+            fetch(`/cart/1/1/items/${productId}?quantity=${quantity}`, {
+                method: 'POST',
+            })
+            .then(response => response.ok ? alert("상품이 추가되었습니다.") : alert("에러가 발생했습니다."))
+            .catch(error => alert("서버와의 연결에 문제가 있습니다."));
+        });
+
+        // 장바구니에서 상품 삭제 (DELETE 요청)
+        function removeItem(cartItemId) {
+            fetch(`/cart/1/1/items/${cartItemId}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.ok ? alert("상품이 삭제되었습니다.") : alert("에러가 발생했습니다."))
+            .catch(error => alert("서버와의 연결에 문제가 있습니다."));
+        }
+
+        // 장바구니 비우기 (DELETE 요청)
+        function clearCart() {
+            fetch('/cart/1/1', {
+                method: 'DELETE',
+            })
+            .then(response => response.ok ? alert("장바구니가 비워졌습니다.") : alert("에러가 발생했습니다."))
+            .catch(error => alert("서버와의 연결에 문제가 있습니다."));
+        }
+    </script>
+</body>
+</html>
