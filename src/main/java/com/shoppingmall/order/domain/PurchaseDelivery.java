@@ -32,4 +32,3 @@ public class PurchaseDelivery {
     private LocalDateTime deliveredAt; // 배송 완료 시간
 
 }
-

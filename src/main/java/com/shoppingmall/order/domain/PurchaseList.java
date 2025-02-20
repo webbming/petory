@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@EntityListeners(AuditingEntityListener.class)  // Auditing을 위한 리스너 추가
 public class PurchaseList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +20,6 @@ public class PurchaseList {
 
     private String totalPrice; // 총 가격
 
-    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createAt; // 주문 생성 시간
 

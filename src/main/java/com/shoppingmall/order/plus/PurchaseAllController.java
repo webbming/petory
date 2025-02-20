@@ -62,7 +62,7 @@ public String order(@ModelAttribute PurchaseList purchase, @ModelAttribute Purch
 
 	@PostMapping("/admin")
 	public String purchaseListAll(Model model){
-		service.getOrderDetails();
+//		service.getOrderDetails();
 		return "order/orderResultAll";
 }
 }

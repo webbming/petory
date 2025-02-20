@@ -15,7 +15,6 @@ import lombok.Data;
 
 @Entity
 @Data
-@EntityListeners(AuditingEntityListener.class)  // Auditing을 위한 리스너 추가
 public class PurchaseAll {
     
     @Id
@@ -38,7 +37,6 @@ public class PurchaseAll {
     
     private boolean delivery; 
     
-    @CreatedDate// Auditing에 의한 날짜 자동 설정
     @Column(nullable = false, updatable = false)
     private LocalDateTime createAt;
 

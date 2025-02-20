@@ -1,3 +1,4 @@
+package com.shoppingmall.order.admin;
 
 import com.shoppingmall.order.plus.PurchaseAll;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -45,7 +45,7 @@ public class PurchaseAllService {
 		List<PurchaseDelivery> deliveries = new ArrayList<>();
 		List<PurchaseItem> items = new ArrayList<>();
 
-		if(purchaseId!=null){
+//		if(purchaseId!=null){
 		PurchaseList purchase = purRepo.findById(purchaseId)
 				.orElseThrow(() -> new RuntimeException("Purchase not found for id: " + purchaseId));
 		purchases = purRepo.findByPurchaseId(purchaseId);
@@ -65,8 +65,8 @@ public class PurchaseAllService {
 		String formattedDate = purchase.getCreateAt().format(formatter);
 
 
-		}
-		else{
+//		}
+//		else{
 
 
 				return PurchaseAllDto.builder()
@@ -76,7 +76,7 @@ public class PurchaseAllService {
 				.formattedCreateAt(formattedDate)  // 포맷팅된 날짜
 				.build();
 
-	}
+//	}
 	}
 
 }
