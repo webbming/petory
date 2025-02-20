@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>게시판</title>
+</head>
+<style>
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid black; padding: 8px; text-align: left; }
+	th { background-color: #f2f2f2; }
+	.paging {
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    gap: 10px;
+	    margin: 10px;
+	}
+	.current {
+		background-color: yellow;
+	}
+	.search {
+		display: flex;
+	}
+</style>
+<body>
+	<h1>게시판</h1>
+	<form class="search" action="/board/board">
+		<input type="text" name="keyword" th:value="${keyword}" style="width: 300px; height: 30px;">
+		<button type="submit">검색</button>
+	</form><br><br>
+	
+	<a href="/board/write">글쓰기</a>
+	
+	<table>
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>조회수</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="board : ${board.content}">
+                <td th:text="${board.boardId}"></td>
+                <td><a th:href="@{/board/read(boardId=${board.boardId})}" th:text="${board.title}"></a>
+                	<a th:if="${board.commentCount > 0}" th:href="@{/board/read(boardId=${board.boardId})}" th:text="'[' + ${board.commentCount} + ']'"></a></td>
+                <td th:text="${board.userId}"></td>
+                <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${board.viewCount}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="paging">
+        <a th:if="${currentPage > 0}" 
+                th:href="@{/board/board(page=${currentPage - 1}, keyword=${keyword})}">
+            &lt; 이전
+        </a>
+        
+        <div class="pagingNumber">
+            <span th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}" 
+            	th:if="${i >= 0 and i < board.totalPages}">
+	            <a th:href="@{/board/board(page=${i}, keyword=${keyword})}" 
+	                th:text="${i + 1}"
+	                th:classappend="${i == currentPage ? 'current' : ''}"> 
+	            </a> 
+        	</span>
+        </div>
+        
+        <a th:if="${currentPage + 1 < board.totalPages}" 
+                th:href="@{/board/board(page=${currentPage + 1}, keyword=${keyword})}">
+            다음 >
+        </a>
+    </div>
+</body>
+</html>
