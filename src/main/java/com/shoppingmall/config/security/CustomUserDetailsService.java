@@ -20,7 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String userId) {
-    System.out.println("Attempting to load user: " + userId);
     User user = userRepository.findByUserId(userId);
 
     if (user == null) {

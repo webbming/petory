@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,13 +39,14 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
                 // 인증 안하고 접근할 수 있는 경로
-            .requestMatchers("/", "/home", "/login", "/login/oauth2/**", "/logout", "/register/**" ,
+                .requestMatchers("/", "/home", "/login", "/login/oauth2/**", "/logout", "/register/**" ,
                     "/index.html" , "/find/**" , "/board/**" , "/information"   ).permitAll()
-            .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                .requestMatchers(HttpMethod.POST , "/find/id").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 // 그 외 모든 경로는 인증 필요.
-            .anyRequest().authenticated())
+                .anyRequest().authenticated())
                 //폼 로그인 설정 시작
-            .formLogin(form -> form
+                .formLogin(form -> form
                     //로그인 페이지는 /login 경로로 설정
                 .loginPage("/login")
                     //로그인 요청 경로는 /login/process

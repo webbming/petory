@@ -1,4 +1,6 @@
 
+
+
 const findPasswordForm = document.querySelector("#findPasswordForm")
 
 findPasswordForm.addEventListener("submit" , async (e) =>{
@@ -12,7 +14,8 @@ findPasswordForm.addEventListener("submit" , async (e) =>{
         userId : userId,
         email : email
     }
-
+    message.innerHTML = "";
+    message.textContent = "잠시만 기다려 주세요...";
     try{
         const response = await fetch("/find/password" , {
             method : "POST",
@@ -34,8 +37,4 @@ findPasswordForm.addEventListener("submit" , async (e) =>{
     }catch (e){
         console.error("요청 실패 " + e)
     }
-
-
-
-
 })

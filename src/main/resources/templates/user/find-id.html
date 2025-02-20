@@ -15,7 +15,7 @@
         <div>
             <p>회원가입 당시에 입력했던 질문과 답을 입력해주세요</p>
         </div>
-        <form action="/find/id" method="post">
+        <form action="/find/id" method="post" id="findIdForm">
             <div>
                 <select id="question" name="question" >
                     <option value="">보안 질문을 선택하세요</option>
@@ -30,8 +30,11 @@
                 <input type="text" id="answer" name="answer" placeholder="질문에 대한 답변 (한글 20자 이내) (아이디 찾기용)"
                        pattern="[가-힣]+" maxlength="20"  title="한글만 입력 가능합니다." >
             </div>
+            <p class="error"></p>
             <button type="submit">전송</button>
         </form>
+
     </div>
+
 </body>
 </html>

@@ -8,6 +8,8 @@ import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import java.util.HashMap;
 import java.util.Map;
+
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -75,7 +77,9 @@ public class UserService {
       throw new DuplicateException(errors);
     }
   }
+
   //유저 생성
+  @Transactional
   public void registerUser(UserRequestDTO userDTO) {
     // userDTO 의 유저 정보 userId , email , nickname 중복 검사
     // 해당 메서드는 UserRequestDTO 를 인수로 받는 checkDuplicate 메서드 (위에 명시)
@@ -101,6 +105,7 @@ public class UserService {
   }
 
   //유저 수정
+  @Transactional
   public void updateUser(UserUpdateDTO userDTO) {
     Map<String,String> errors = new HashMap<>();
     // 사용자 아이디 불러오기
@@ -131,6 +136,7 @@ public class UserService {
 
 
   // 유저 삭제
+  @Transactional
   public void deleteUser(String userId) {
 
   }

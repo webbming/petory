@@ -121,17 +121,21 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
       body : JSON.stringify(formObj)
     });
 
-    if(!response.ok){
-      const result = await response.json();
-      console.log(result)
-    }
+
     const result = await response.json();
-    alert(`${result.userId} 님 회원가입을 환영합니다!`)
-    const redirect = confirm("로그인 페이지로 이동하시겠습니까 ?")
-    if(redirect){
-      window.location.href = "/login";
+	console.log(result)
+
+    if(!response.ok) {
+      console.error("등록 실패:", result);
+      alert("회원가입 중 오류가 발생했습니다.");
+      return;
     }
-    else{
+
+    alert(`${result.userId} 님 회원가입을 환영합니다!`);
+    const redirect = confirm("로그인 페이지로 이동하시겠습니까?");
+    if(redirect) {
+      window.location.href = "/login";
+    } else {
       window.location.href = "/home";
     }
   }catch(error){

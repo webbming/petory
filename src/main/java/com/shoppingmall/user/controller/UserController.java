@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
+@CrossOrigin(origins = "*")
 public class UserController {
 
   private final UserRepository userRepository;
@@ -112,17 +113,18 @@ public class UserController {
   }
 
   @PostMapping("/find/id")
-  public Map<String,String> findId(@RequestBody Map<String , String> request){
-    Map<String,String> response = new HashMap<>();
-
-    String question = request.get("userId");
-    String answer = request.get("email");
-    System.out.println(question);
-    System.out.println(answer);
+  public String findId(@RequestBody Map<String , String> request , Model model){
+    String question = request.get("question");
+    String answer = request.get("answer");
+    System.out.println("question: " + question);
+    System.out.println("answer: " + answer);
     String userId = userService.findID(question, answer);
-    response.put("status" , "success");
-    response.put("userId" , userId);
-    return response;
+    if(userId != null){
+      model.addAttribute("userId" , userId);
+    }else{
+      model.addAttribute("error" , "조회된 회원이 없습니다.");
+    }
+    return "/user/findResult";
   }
 
   @GetMapping("/find/password")

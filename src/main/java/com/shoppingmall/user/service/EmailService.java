@@ -5,15 +5,12 @@ import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import jakarta.transaction.Transactional;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class EmailService {
@@ -30,13 +27,17 @@ public class EmailService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void findPassword(String userId , String email) throws MessagingException {
         User user = userRepository.findByUserIdAndEmail(userId , email);
         if(user == null) {
             throw new UsernameNotFoundException("회원 정보를 찾을 수 없습니다.");
         }
+        // 랜덤 임시비밀번호 생성기
         String newPass = passwordGenerator.generateTemporaryPassword();
+        //이메일 전송
         sendEmail(email,newPass);
+        // 임시 비밀번호 전송 후 유저의 비밀번호도 임시비밀번호로 변경
         user.setPassword(passwordEncoder.encode(newPass));
         userRepository.save(user);
         System.out.println("임시비밀번호가 전송 되었습니다.");
