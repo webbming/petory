@@ -12,4 +12,9 @@ import java.util.List;
 public interface PurchaseDeliveryRepository extends JpaRepository<PurchaseDelivery, Long> {
   @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchaseId.purchaseId = :purchaseId")
   List<PurchaseDelivery> findByPurchaseId(@Param("purchaseId") Long purchaseId);
+
+
+  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchaseId.purchaseId DESC")
+  List<PurchaseDelivery> findAllOrderByPurchaseIdDesc();
+
 }

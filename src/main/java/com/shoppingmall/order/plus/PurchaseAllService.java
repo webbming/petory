@@ -10,8 +10,10 @@ import com.shoppingmall.order.repository.PurchaseListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -24,9 +26,9 @@ public class PurchaseAllService {
 	@Autowired
 	PurchaseItemRepository itemRepo;
 
-	public String order(PurchaseList purchase, PurchaseDelivery delivery, PurchaseItem item) {
+	public String order(PurchaseList purchase, PurchaseDelivery delivery, PurchaseItem item, String reciveDetailAddr) {
 		purRepo.save(purchase);
-
+		delivery.setReceiverAddr(delivery.getReceiverAddr() + " " + reciveDetailAddr);
 		delivery.setPurchaseId(purchase); // PurchaseDelivery에 PurchaseList 설정
 		delivery.setDeliveryStatus("배송준비중");
 		delRepo.save(delivery);
@@ -37,36 +39,44 @@ public class PurchaseAllService {
 		return "주문해주셔서 감사합니다";
 	}
 	
-	public List<PurchaseAllDto> getOrderDetails(Long purchaseId) {
+	public PurchaseAllDto getOrderDetails(Long purchaseId) {
 		// Purchase 정보 가져오기
+		List<PurchaseList> purchases = new ArrayList<>();
+		List<PurchaseDelivery> deliveries = new ArrayList<>();
+		List<PurchaseItem> items = new ArrayList<>();
+
+		if(purchaseId!=null){
 		PurchaseList purchase = purRepo.findById(purchaseId)
 				.orElseThrow(() -> new RuntimeException("Purchase not found for id: " + purchaseId));
-
-		// Delivery 정보 가져오기 (반환 타입 수정)
-		List<PurchaseDelivery> deliveries = delRepo.findByPurchaseId(purchaseId);  // 반환 타입은 List<PurchaseDelivery>
+		purchases = purRepo.findByPurchaseId(purchaseId);
+		if (purchases.isEmpty()) {
+			throw new RuntimeException("Purchases not found for id: " + purchaseId);
+		}
+		deliveries = delRepo.findByPurchaseId(purchaseId);  // 반환 타입은 List<PurchaseDelivery>
 		if (deliveries.isEmpty()) {
 			throw new RuntimeException("Delivery not found for id: " + purchaseId);
 		}
-		PurchaseDelivery delivery = deliveries.get(0);  // 첫 번째 배송 정보 선택
-
-		// PurchaseItem 정보 가져오기
-		List<PurchaseItem> items = itemRepo.findByPurchaseId(purchaseId);
+		items = itemRepo.findByPurchaseId(purchaseId);
 		if (items.isEmpty()) {
 			throw new RuntimeException("Item not found for id: " + purchaseId);
 		}
+// 날짜 포맷팅
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String formattedDate = purchase.getCreateAt().format(formatter);
 
-		// PurchaseAllDto 객체 생성하여 반환
-		PurchaseAllDto purchaseAllDto = PurchaseAllDto.builder()
-				.purchaseList(purchase)
-				.purchaseDelivery(delivery)
-				.purchaseItems(items)
+
+		}
+		else{
+
+
+				return PurchaseAllDto.builder()
+				.purchaseList(purchases)  // 전체 PurchaseList 리스트
+				.purchaseDelivery(deliveries)  // 전체 PurchaseDelivery 리스트
+				.purchaseItem(items)  // 전체 PurchaseItem 리스트
+				.formattedCreateAt(formattedDate)  // 포맷팅된 날짜
 				.build();
 
-		// 하나의 DTO를 리스트에 담아서 반환
-		List<PurchaseAllDto> dto = new ArrayList<>();
-		dto.add(purchaseAllDto);
-
-		return dto;
+	}
 	}
 
 }

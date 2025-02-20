@@ -11,5 +11,8 @@ import java.util.List;
 public interface PurchaseListRepository extends JpaRepository<PurchaseList, Long> {
     // Purchase 관련 쿼리 메소드
     List<PurchaseList> findByPurchaseId(Long purchaseId);
+
+    List<PurchaseList> findByPurchaseIdOrderByDesc();
+
 }
 
