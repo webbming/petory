@@ -8,11 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.shoppingmall.cart.model.Cart;
 import com.shoppingmall.cart.model.CartItem;
-import com.shoppingmall.cart.model.Product;
-import com.shoppingmall.cart.model.User;
+import com.shoppingmall.user.model.User;
 import com.shoppingmall.cart.repository.CartItemRepository;
 import com.shoppingmall.cart.repository.CartRepository;
-import com.shoppingmall.cart.repository.ProductRepository;
+
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final ProductRepository productRepository;
+
 
     // 장바구니 추가
     public Cart addCart(User user) {
