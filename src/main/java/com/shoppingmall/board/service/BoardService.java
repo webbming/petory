@@ -35,7 +35,7 @@ public class BoardService {
 	}
 	
 	//상세조회(조회수는 session이용 한 명당 1씩만 증가)
-	public Board getPostById(int boardId) {
+	public Board getPostById(Long boardId) {
 		Board board = repository.findById(boardId).orElse(null);
 		int viewCount = board.getViewCount();
 		viewCount++;
@@ -44,7 +44,7 @@ public class BoardService {
     }
 	
 	//게시글 좋아요
-	public void likePost(int boardId) {
+	public void likePost(Long boardId) {
 		Board board = repository.findById(boardId).orElse(null);
 		int likeCount = board.getLikeCount();
 		if(toggle.equals("minus")) {
@@ -60,7 +60,7 @@ public class BoardService {
 	}
 	
 	//수정
-	public Board updatePost(int boardId, String title, String content, String categoryId) {
+	public Board updatePost(Long boardId, String title, String content, String categoryId) {
 		Board board = repository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("Invalid board Id"));
 		board.setTitle(title);
 		board.setContent(content);
@@ -69,7 +69,7 @@ public class BoardService {
 	}
 	
 	//삭제
-	public void deletePost(int board_id) {
+	public void deletePost(Long board_id) {
 		repository.deleteById(board_id);
 	}
 }

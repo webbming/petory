@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.shoppingmall.board.model.Board;
 
 @Repository
-public interface BoardRepository extends JpaRepository<Board, Integer>{
+public interface BoardRepository extends JpaRepository<Board, Long>{
 	//전체 최신순 정렬
 	Page<Board> findAllByOrderByBoardIdDesc(Pageable pageable);
 	
