@@ -10,6 +10,15 @@
     <p><strong>카테고리: </strong><span name="categoryId" th:text="${board.categoryId}"></span></p>
     <p><strong>작성자:</strong> <span th:text="${board.userId}"></span></p>
     <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+    <div th:if="${imagePath}">
+	    <img th:src="@{${imagePath}}" alt="Uploaded Image" width="500"/>
+	</div>
+	
+	<div th:if="${videoPath}">
+	    <video controls>
+	        <source th:src="@{${videoPath}}" type="video/mp4">
+	    </video>
+	</div>
     <p><strong>내용:</strong></p>
     <p name="content" th:text="${board.content}"></p>
     

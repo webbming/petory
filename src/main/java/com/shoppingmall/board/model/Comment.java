@@ -21,7 +21,7 @@ import lombok.Data;
 public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int commentId;
+	private Long commentId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id", referencedColumnName = "boardId", nullable = false)
@@ -37,7 +37,7 @@ public class Comment {
     @Column(updatable = false)
 	private LocalDateTime createdAt;
 	
-	public int getBoardId() {
+	public Long getBoardId() {
 		return board.getBoardId();
 	}
 }

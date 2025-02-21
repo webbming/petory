@@ -7,16 +7,18 @@ import org.springframework.stereotype.Service;
 
 import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.model.Comment;
+import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.board.repository.CommentRepository;
 
 @Service
 public class CommentService {
 	@Autowired
 	CommentRepository repository;
+	BoardRepository boardRepository;
 	String toggle = "minus";
 	
 	//댓글 조회
-	public List<Comment> getComment(int boardId) {
+	public List<Comment> getComment(Long boardId) {
 		return repository.findByBoard_BoardIdOrderByCommentId(boardId);
 	}
 	
@@ -26,13 +28,13 @@ public class CommentService {
 	}
 	
 	//id 검색
-	public Comment getCommentById(int commentId) {
+	public Comment getCommentById(Long commentId) {
 		Comment comment = repository.findById(commentId).orElse(null);
 	    return repository.save(comment);
 	}
 	
 	//게시글 좋아요
-	public void likeComment(int commentId) {
+	public void likeComment(Long commentId) {
 		Comment comment = repository.findById(commentId).orElse(null);
 		int likeCount = comment.getLikeCount();
 		if(toggle.equals("minus")) {
@@ -48,12 +50,12 @@ public class CommentService {
 	}
 	
 	//댓글 삭제
-	public void deleteComment(int commentId) {
+	public void deleteComment(Long commentId) {
 		repository.deleteById(commentId);
 	}
 	
 	//댓글 수
-	public int countComment(int boardId) {
+	public int countComment(Long boardId) {
 		return repository.countByBoardBoardId(boardId);
 	}
 }
