@@ -113,18 +113,17 @@ public class UserController {
   }
 
   @PostMapping("/find/id")
-  public String findId(@RequestBody Map<String , String> request , Model model){
+  @ResponseBody
+  public Map<String,String> findId(@RequestBody Map<String , String> request , Model model){
+    Map<String,String> response = new HashMap<>();
     String question = request.get("question");
     String answer = request.get("answer");
-    System.out.println("question: " + question);
-    System.out.println("answer: " + answer);
-    String userId = userService.findID(question, answer);
-    if(userId != null){
-      model.addAttribute("userId" , userId);
-    }else{
-      model.addAttribute("error" , "조회된 회원이 없습니다.");
-    }
-    return "/user/findResult";
+    System.out.println(question);
+    System.out.println(answer);
+    String userId = userService.findUserId(question, answer);
+    response.put("status", "success");
+    response.put("userId" , userId);
+    return  response;
   }
 
   @GetMapping("/find/password")

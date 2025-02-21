@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +27,13 @@ public class SecurityConfig {
       this.failureHandler = failureHandler;
       this.customOAuth2UserService = customOAuth2UserService;
   }
+
+    @Bean
+    public HttpFirewall allowSemicolonHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowSemicolon(true); // 세미콜론 허용
+        return firewall;
+    }
 
   @Bean
   public BCryptPasswordEncoder passwordEncoder() {
@@ -49,7 +58,7 @@ public class SecurityConfig {
                 .requestMatchers("/order/**").permitAll() // 성호님
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 // 그 외 모든 경로는 인증 필요.
-                .anyRequest().authenticated())
+                .anyRequest().permitAll())
                 //폼 로그인 설정 시작
                 .formLogin(form -> form
                     //로그인 페이지는 /login 경로로 설정
