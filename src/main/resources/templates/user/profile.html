@@ -93,10 +93,35 @@
     .cancel-btn:hover {
       background-color: #bbb;
     }
+
+    .changePassBtn{
+      background-color: #4676A9;
+      color: white;
+    }
+    .removeBtn{
+      background-color: indianred;
+      color: white;
+    }
     .error-message{
       font-size: 12px;
       color: red;
     }
+    .address{
+      position: relative;
+    }
+    .inline-button{
+      position: absolute;
+      width: 70px;
+      height: 25px;
+      font-size: 10px;
+      color: white;
+      background-color: #4676A9;
+      right: 5px;
+      top: tr;
+
+    }
+
+
   </style>
 </head>
 <body>
@@ -119,15 +144,31 @@
     </div>
     <div class="form-group">
       <label for="address">회원 주소</label>
-      <input type="text" id="address" th:field="*{address}">
+      <div class="address">
+        <input type="text" id="address" th:field="*{address}">
+        <button type="button" class="inline-button" onClick="addrFind(event)">주소 찾기</button>
+      </div>
+
     </div>
     <div class="button-group">
       <button type="submit" class="save-btn" disabled>적용</button>
       <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
     </div>
+    <div class="button-group">
+      <button type="button" class="changePassBtn">비밀번호 변경</button>
+      <button type="button" class="removeBtn">회원 탈퇴</button>
+    </div>
   </form>
-  <button type="submit" >회원 탈퇴</button>
+
 </div>
+<script>
+  const addrFind = (event) => {
+    event.preventDefault();
+    let size = "width = 650px, height=550px, top=300px, left=300px, scrollbars=yes";
+    let openUrl = '/addrFind';
+    window.open(openUrl, 'pop', size);
+  }
+</script>
 <script type="module" src="/js/profileUpdate.js"></script>
 </body>
 </html>

@@ -30,6 +30,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
+    // UsernameNotFoundException 예외는 전부 여기서 처리 가능
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Map<String , Object>> UsernameNotFoundExceptionHandler(UsernameNotFoundException e){
         response.clear();

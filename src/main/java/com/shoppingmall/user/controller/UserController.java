@@ -63,6 +63,12 @@ public class UserController {
     return ResponseEntity.ok().body(response);
   }
 
+  //주소검색 팝업연결
+  @GetMapping("/addrFind")
+  public String addrFind() {
+    return "user/address";
+  }
+
   // 회원가입 요청 및 최종 검사
   @PostMapping("/register")
   @ResponseBody
@@ -92,7 +98,6 @@ public class UserController {
       // 일반 사용자
       CustomUserDetails customUserDetails = (CustomUserDetails) principal;
       email = customUserDetails.getEmail();
-      System.out.println(email);
     } else if (principal instanceof CustomOAuth2User) {
       // 소셜 로그인 사용자
       CustomOAuth2User customOAuth2User = (CustomOAuth2User) principal;

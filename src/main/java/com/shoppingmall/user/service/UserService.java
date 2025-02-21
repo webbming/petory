@@ -28,7 +28,6 @@ public class UserService {
     this.userRepository = userRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
-
   // 필드 유효성 검사
   public Map<String,String> filedErrorsHandler(Errors errors){
     // error 객체 생성

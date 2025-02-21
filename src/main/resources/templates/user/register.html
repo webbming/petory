@@ -59,6 +59,14 @@
       <span th:if="${address}" th:text="${address}" style="color: red"></span><br>
     </div>
 
+    <script>
+      const addrFind = (event) => {
+        event.preventDefault();
+        let size = "width = 650px, height=550px, top=300px, left=300px, scrollbars=yes";
+        let openUrl = '/addrFind';
+        window.open(openUrl, 'pop', size);
+      }
+    </script>
 
     <div>
       <ul id="errorList2" class="errorList">

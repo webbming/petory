@@ -56,10 +56,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if(existingUser == null) {
             User user = new User();
-            user.setUserId(oAuth2Response.getProvider() + ":" + oAuth2Response.getProviderId());
+            user.setUserId( oAuth2Response.getProvider()+"&"+oAuth2Response.getProviderId());
             user.setEmail(oAuth2Response.getEmail());
             user.setPassword(passwordGenerator.generateTemporaryPassword());
-            user.setNickname("kakao"+"_"+oAuth2Response.getName());
+            user.setNickname(oAuth2Response.getProvider()+"_"+oAuth2Response.getProviderId().substring(0,4));
             user.setRole(UserRoleType.USER);
             userRepository.save(user);
 

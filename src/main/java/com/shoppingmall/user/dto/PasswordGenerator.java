@@ -4,11 +4,12 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
+// 임시 비밀번호 생성기
 @Component
 public class PasswordGenerator {
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String DIGITS = "0123456789";
-    private static final String SPECIAL_CHARS = "!@^&*=";
+    private static final String SPECIAL_CHARS = "@";
     private static final String ALL_CHARS = LOWERCASE + DIGITS + SPECIAL_CHARS;
     private static final int PASSWORD_LENGTH = 10;
 
