@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 상세 정보</title>
+</head>
+<body>
+<h1>주문 상세정보</h1>
+
+<p>
+    <a href="#" onclick="history.back()" style="text-decoration: none">
+        (클릭하면 이전 페이지로 이동)
+    </a>
+</p>
+
+
+<!-- Purchase 리스트 출력 -->
+<h2>주문 목록</h2>
+<table border="1" cellpadding="10" width="600">
+    <h1>gg</h1>
+    <thead>
+    <tr>
+        <th>주문번호</th>
+        <th>주문자 ID</th>
+        <th>총 가격</th>
+        <th>주문 시간</th>
+        <th>수령인 이름</th>
+        <th>수령인 전화번호</th>
+        <th>배송 상태</th>
+        <th>수령 주소</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="purchase, iterStat : ${purchase}">
+        <td>
+            <a th:href="@{/order/{purchaseId}(purchaseId=${purchase.purchaseId})}"
+               th:text="${purchase.purchaseId}"></a>
+        </td>
+        <td th:text="${purchase.userId}"></td>
+        <td th:text="${purchase.totalPrice}"></td>
+        <td th:text="${purchase.createAt}"></td>
+
+        <!-- 같은 인덱스의 delivery 데이터 출력 -->
+        <td th:text="${delivery[iterStat.index].receiverName}"></td>
+        <td th:text="${delivery[iterStat.index].receiverPhone}"></td>
+        <td th:text="${delivery[iterStat.index].deliveryStatus}"></td>
+        <td th:text="${delivery[iterStat.index].receiverAddr}"></td>
+    </tr>
+    </tbody>
+</table>
+<!-- Delivery 리스트 출력 -->
+<h2>배송 정보</h2>
+<table border="1" cellpadding="10" width="300">
+    <thead>
+    <tr>
+        <th>수령인 이름</th>
+        <th>수령인 전화번호</th>
+        <th>배송 상태</th>
+        <th>배송 주소</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="delivery : ${delivery}">
+        <td th:text="${delivery.receiverName}"></td>
+        <td th:text="${delivery.receiverPhone}"></td>
+        <td th:text="${delivery.deliveryStatus}"></td>
+        <td th:text="${delivery.receiverAddr}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Item 리스트 출력 -->
+<h2>구매 상품</h2>
+<table border="1" cellpadding="10" width="300">
+    <thead>
+    <tr>
+        <th>상품명</th>
+        <th>주문번호</th>
+        <th>수량</th>
+        <th>가격</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${item}">
+        <td th:text="${item.productName}"></td>
+        <td th:text="${item.purchaseId.purchaseId}"></td>
+        <td th:text="${item.quantity}"></td>
+        <td th:text="${item.totalPrice}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

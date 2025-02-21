@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@EntityListeners(AuditingEntityListener.class)  // Auditing을 위한 리스너 추가
 public class PurchaseDelivery {
 
     @Id

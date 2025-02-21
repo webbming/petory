@@ -17,4 +17,7 @@ public interface PurchaseDeliveryRepository extends JpaRepository<PurchaseDelive
   @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchaseId.purchaseId DESC")
   List<PurchaseDelivery> findAllOrderByPurchaseIdDesc();
 
+  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchaseId.purchaseId = :purchaseId")
+  PurchaseDelivery findPurchaseDeliveryByPurchaseId(Long purchaseId);
+
 }

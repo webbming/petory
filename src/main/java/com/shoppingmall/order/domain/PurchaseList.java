@@ -2,14 +2,13 @@ package com.shoppingmall.order.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 public class PurchaseList {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long purchaseId; // 주문 ID (PK)
@@ -20,7 +19,7 @@ public class PurchaseList {
 
     private String totalPrice; // 총 가격
 
-    @Column(nullable = false, updatable = false)
+//    @Column(nullable = false, updatable = false)
     private LocalDateTime createAt; // 주문 생성 시간
 
     private LocalDateTime cancelAt; // 주문 취소 시간

@@ -8,24 +8,24 @@
         alert([[${message}]]);
     </script>
 <body>
-<a href="/order/index2">index2</a>
 	<h1>주문</h1>
-	<form action="/order" method="post">
+	<form action="/order/order" method="get">
 		<div>
-			수령인 이름<input type="text" name="reciverName" placeholder="수령인 이름">
+			수령인 이름<input type="text" name="receiverName" placeholder="수령인 이름">
 		</div>
 		<div>
-			전화번호<input type="tel" name="reciverPhone" placeholder="수령인 전화번호">
+			전화번호<input type="tel" name="receiverPhone" placeholder="수령인 전화번호">
 		</div>
 		<div>
-			주소<input type="text" name="reciverAddr" id="reciver_addr" placeholder="주소를 입력하세요" autocomplete="street-address">
+			주소<input type="text" name="receiverAddr" id="receiver_addr" placeholder="주소를 입력하세요" autocomplete="street-address" readonly>
 		</div>
 	<button onclick="execDaumPostcode()">주소 검색</button>
 		<div>
-			주소<input type="text" name="reciver_addr_detail" placeholder="주소를 입력하세요">
-		<div>
+			상세 주소<input type="text" name="receiver_addr_detail" placeholder="상세 주소를 입력하세요">
 	</div>
-		</div>
+		<div>
+			배송 메시지<input type="text" name="deliveryMessage" placeholder="배송 메시지">
+	</div>
 		<div>
 			장바구니 번호<input type="text" name="cartId" placeholder="카트 번호">
 		</div>
@@ -33,12 +33,21 @@
 			사용자 id<input type="text" name="userId" placeholder="사용자 id">
 		</div>
 		<div>
+			상품명<input type="text" name="productName" placeholder="상품명">
+		</div>
+		<div>
+			수량<input type="text" name="quantity" placeholder="수량">
+		</div>
+		<div>
+			옵션<input type="text" name="option" placeholder="옵션">
+		</div>
+		<div>
 			총 가격<input type="text" name="totalPrice" placeholder="총 가격">
 		</div>
 		<button>주문하기</button>
 	</form>
 	
-<form action="/orderList" method="GET">
+<form action="/order/admin/orderList" method="POST">
     <input type="hidden" name="cancel" value="all">
     <button type="submit">주문/취소 전체 목록</button>
 </form>

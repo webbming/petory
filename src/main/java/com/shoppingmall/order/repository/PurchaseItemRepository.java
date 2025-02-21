@@ -18,5 +18,6 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long
 
   @Query("SELECT d FROM PurchaseItem d ORDER BY d.purchaseId.purchaseId DESC")
   List<PurchaseItem> findAllOrderByPurchaseIdDesc();
+
 }
 

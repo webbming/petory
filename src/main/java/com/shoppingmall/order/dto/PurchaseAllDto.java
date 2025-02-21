@@ -16,13 +16,11 @@ public class PurchaseAllDto {
   private List<PurchaseList> purchaseList; // PurchaseList 리스트
   private List<PurchaseDelivery> purchaseDelivery; // PurchaseDelivery 리스트
   private List<PurchaseItem> purchaseItem; // PurchaseItem 리스트
-  private String formattedCreateAt; // 포맷팅된 날짜
 
   @Builder
-  public PurchaseAllDto(List<PurchaseList> purchaseList, List<PurchaseDelivery> purchaseDelivery, List<PurchaseItem> purchaseItem, String formattedCreateAt) {
+  public PurchaseAllDto(List<PurchaseList> purchaseList, List<PurchaseDelivery> purchaseDelivery, List<PurchaseItem> purchaseItem) {
     this.purchaseList = purchaseList;
     this.purchaseDelivery = purchaseDelivery;
     this.purchaseItem = purchaseItem;
-    this.formattedCreateAt = formattedCreateAt;
   }
 }

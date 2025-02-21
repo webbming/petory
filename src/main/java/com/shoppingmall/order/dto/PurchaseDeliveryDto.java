@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 public class PurchaseDeliveryDto {
 
   private Long deliveryId;
-  private String reciverName;
-  private String reciverPhone;
-  private String reciverAddr;
+  private String receiverName;
+  private String receiverPhone;
+  private String receiverAddr;
   private String deliveryMessage;
   private String deliveryStatus;
   private LocalDateTime deliveredAt;
@@ -23,9 +23,9 @@ public class PurchaseDeliveryDto {
   public PurchaseDeliveryDto(Long deliveryId, String reciverName, String reciverPhone, String reciverAddr,
                              String deliveryMessage, String deliveryStatus, LocalDateTime deliveredAt) {
     this.deliveryId = deliveryId;
-    this.reciverName = reciverName;
-    this.reciverPhone = reciverPhone;
-    this.reciverAddr = reciverAddr;
+    this.receiverName = reciverName;
+    this.receiverPhone = reciverPhone;
+    this.receiverAddr = reciverAddr;
     this.deliveryMessage = deliveryMessage;
     this.deliveryStatus = deliveryStatus;
     this.deliveredAt = deliveredAt;

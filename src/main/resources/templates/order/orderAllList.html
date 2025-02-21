@@ -2,43 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>주문/취소 목록</title>
+    <title>주문 정보 입력</title>
 </head>
 <body>
-    <h1 th:text="${title}"></h1>
-    <table border="1">
-        <tr>
-            <th>주문번호</th>
-            <th>수령인 이름</th>
-            <th>전화번호</th>
-            <th>주소</th>
-            <th>장바구니 번호</th>
-            <th>사용자 ID</th>
-            <th>총 가격</th>
-            <th>주문 일자</th>
-            <th>취소 일자</th>
-            <th>취소</th>            
-        </tr>
-    <tr th:each="purchase : ${purchases}"> 
-            <td th:text="${purchase.orderId}"></td>
-            <td th:text="${purchase.reciverName}"></td>
-            <td th:text="${purchase.reciverPhone}"></td>
-            <td th:text="${purchase.reciverAddr}"></td>
-            <td th:text="${purchase.cartId}"></td>
-            <td th:text="${purchase.userId}"></td>
-            <td th:text="${purchase.totalPrice}"></td>
-            <td th:text="${purchase.createAt}"></td>
-            <td th:text="${purchase.cancelAt}"></td>
-              <td>
-        <!-- 취소 일자가 없을 경우에만 취소 버튼을 보여줌 -->
-        <form th:action="@{/cancel}" method="post" th:if="${purchase.cancelAt == null}">
-            <input type="hidden" th:name="orderId" th:value="${purchase.orderId}" />
-            <button type="submit">취소</button>
-        </form>
-        <!-- 취소 일자가 있으면 '취소 완료'로 변경 -->
-        <span th:unless="${purchase.cancelAt == null}">취소 완료</span>
-    </td>
-        </tr>
-    </table>
+    <h1>주문 정보 입력</h1>
+
+    <form action="/order" method="post" th:object="${purchase}">
+        <table border="1" cellpadding="10">
+            <tr>
+                <td>수령인 주소</td>
+                <td><input type="text" th:field="*{reciverAddr}" placeholder="수령인 주소 입력" required /></td>
+            </tr>
+            <tr>
+                <td>수령인 전화번호</td>
+                <td><input type="text" th:field="*{reciverPhone}" placeholder="수령인 전화번호 입력" required /></td>
+            </tr>
+            <tr>
+                <td>수령인 이름</td>
+                <td><input type="text" th:field="*{reciverName}" placeholder="수령인 이름 입력" required /></td>
+            </tr>
+            <tr>
+                <td>장바구니 ID</td>
+                <td><input type="text" th:field="*{cartId}" placeholder="장바구니 ID 입력" required /></td>
+            </tr>
+            <tr>
+                <td>사용자 ID</td>
+                <td><input type="text" th:field="*{userId}" placeholder="사용자 ID 입력" required /></td>
+            </tr>
+            <tr>
+                <td>총 가격</td>
+                <td><input type="number" th:field="*{totalPrice}" placeholder="총 가격 입력" required /></td>
+            </tr>
+            <tr>
+                <td>배송 여부</td>
+                <td>
+                    <select th:field="*{delivery}">
+                        <option value="true">배송 완료</option>
+                        <option value="false">배송 중</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>취소 시간</td>
+                <td><input type="datetime-local" th:field="*{cancelAt}" /></td>
+            </tr>
+        </table>
+
+        <br>
+        <button type="submit">주문 저장</button>
+    </form>
+
+    <p><a href="#" onClick="history.back()" style="text-decoration: none">이전 페이지로 돌아가기</a></p>
 </body>
 </html>
