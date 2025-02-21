@@ -93,9 +93,9 @@ public class UserService {
   }
 
   // 유저 조회
-  public UserResponseDTO getUser(String userId) {
+  public UserResponseDTO getUser(String email) {
     // 해당하는 유저 검색
-    User user = userRepository.findByUserId(userId);
+    User user = userRepository.findByEmail(email);
     // 유저가 없다면 예외처리
     if(user == null) {
       throw new UsernameNotFoundException("User not found");
