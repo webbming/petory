@@ -1,16 +1,15 @@
 package com.shoppingmall.config.security;
 
 
-import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -39,13 +38,17 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
                 // 인증 안하고 접근할 수 있는 경로
-                .requestMatchers("/", "/home", "/login", "/login/oauth2/**", "/logout", "/register/**" ,
-                    "/index.html" , "/find/**" , "/board/**" , "/information" , "/product/**").permitAll()
-                .requestMatchers("/cart/**").permitAll()
+                .requestMatchers("/", "/home", "/index.html" , "/find/**" , "/information").permitAll()
+                .requestMatchers("/register/**").permitAll()
+                .requestMatchers("/login" , "/login/oauth2/**" , "/logout").permitAll()
                 .requestMatchers(HttpMethod.POST , "/find/id").permitAll()
+                .requestMatchers("/cart/**").permitAll() // 수민님
+                .requestMatchers("/products/**").permitAll() // 진호님
+                .requestMatchers("/board/**").permitAll() // 준서님
+                .requestMatchers("/order/**").permitAll() // 성호님
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                // 그 외 모든 경로는 인증 필요.
-                .anyRequest().authenticated())
+                // 그 외 모든 경로는 인증 필요.authenticated -> permitAll로 바꿈
+                .anyRequest().permitAll())
                 //폼 로그인 설정 시작
                 .formLogin(form -> form
                     //로그인 페이지는 /login 경로로 설정
@@ -59,11 +62,11 @@ public class SecurityConfig {
             // 소셜 로그인 설정 시작
             .oauth2Login(oauth2 -> oauth2
                     // 소셜 로그인 페이지도 /login 경로로 설정
-                            .loginPage("/login")
+                    .loginPage("/login")
                     // 성공시 /home으로 리다이렉트
-                            .defaultSuccessUrl("/home" , true)
-                            .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService)))
-        .logout(logout -> logout
+                    .defaultSuccessUrl("/home" , true)
+                    .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService)))
+            .logout(logout -> logout
             .logoutSuccessUrl("/home")
             .permitAll());
 

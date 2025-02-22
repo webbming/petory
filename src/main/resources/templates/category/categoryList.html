@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 관리</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>카테고리 및 서브카테고리 관리</h1>
+
+    <!-- 카테고리 추가 -->
+    <form th:action="@{/categories/add}" method="post">
+        <input type="text" name="categoryName" placeholder="새 카테고리 이름" required>
+        <button type="submit">카테고리 추가</button>
+    </form>
+
+    <!-- 서브카테고리 추가 -->
+	<form id="subCategoryForm" th:action="@{/categories/{categoryId}/subcategories/add}" method="post">
+	    <select name="categoryId" id="categoryId" onchange="updateAction(this.value)">
+	        <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.categoryName}"></option>
+	    </select>
+	    <input type="text" name="subcategoryName" placeholder="새 서브카테고리 이름" required>
+	    <button type="submit">서브카테고리 추가</button>
+	</form>
+
+    <!-- 카테고리 목록 및 관리 옵션 -->
+    <ul>
+        <li th:each="category : ${categories}">
+            <span th:text="${category.categoryName}"></span>
+            <ul>
+                <li th:each="sub : ${category.subcategories}">
+                    <span th:text="${sub.subcategoryName}"></span>
+                    <button th:onclick="'deleteSubcategory(' + ${category.categoryId} + ',' + ${sub.subcategoryId} + ');'">삭제</button>
+                </li>
+            </ul>
+            <button th:onclick="'deleteCategory(' + ${category.categoryId} + ');'">삭제</button>
+        </li>
+    </ul>
+	<a href="/products">목록으로</a>
+    <script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    // 페이지 로드 시 초기 카테고리 ID로 form action 설정
+	    var initialCategoryId = document.getElementById('categoryId').value;
+	    updateAction(initialCategoryId);
+	});
+	
+	function updateAction(categoryId) {
+	    console.log("Updating form action with categoryId:", categoryId); // 디버깅을 위한 로그
+	    var form = document.getElementById('subCategoryForm');
+	    form.action = '/categories/' + categoryId + '/subcategories/add';
+	    console.log("New form action is:", form.action); // 변경된 action 로그 출력
+	}
+	
+	function deleteCategory(categoryId) {
+	    if (confirm('카테고리를 삭제하시겠습니까?')) {
+	        $.ajax({
+	            url: '/categories/delete/' + categoryId,
+	            method: 'DELETE',
+	            success: function(result) {
+	                alert('카테고리가 삭제되었습니다.');
+	                window.location.reload();
+	            },
+	            error: function(xhr) {
+	                alert('카테고리 삭제 실패: ' + xhr.responseText);
+	            }
+	        });
+	    }
+	}
+	
+	function deleteSubcategory(categoryId, subcategoryId) {
+	    if (confirm('서브카테고리를 삭제하시겠습니까?')) {
+	        $.ajax({
+	            url: `/categories/${categoryId}/subcategories/delete/${subcategoryId}`,
+	            method: 'DELETE',
+	            success: function(result) {
+	                alert('서브카테고리가 삭제되었습니다.');
+	                window.location.reload();
+	            },
+	            error: function(xhr) {
+	                alert('서브카테고리 삭제 실패: ' + xhr.responseText);
+	            }
+	        });
+	    }
+	}
+</script>
+</body>
+</html>

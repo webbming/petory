@@ -35,13 +35,13 @@ public class ProductController {
     }
 
     // 메인 페이지 (전체 상품)
-    @GetMapping({"/product", "/products"})
+    @GetMapping({"/products", "/products"})
     public String listProducts(@RequestParam(defaultValue = "newest") String sort, Model model) {
         // 전체상품,모든카테고리, 필터링
     	List<Product> products = productService.listAllProductsSorted(sort);
-        model.addAttribute("products", productService.listAllProducts());
+        model.addAttribute("products", products);
         model.addAttribute("categories", categoryService.findAllCategories());
-        return "index2";
+        return "/product/index2";
     }
 
     // 상품 등록폼
@@ -50,7 +50,7 @@ public class ProductController {
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("subcategories", categoryService.findAllSubcategories());
         model.addAttribute("product", new Product());
-        return "addProduct";
+        return "/product/addProduct";
     }
 
     // 상품 등록처리
@@ -59,6 +59,7 @@ public class ProductController {
                              @RequestParam("categoryId") Long categoryId,
                              @RequestParam("subcategoryId") Long subcategoryId,
                              @RequestParam("imageFile") MultipartFile file) {
+        System.out.println("요청 도착");
         String imageUrl = uploadFile(file);
         product.setImageUrl(imageUrl);
         productService.saveProduct(product, categoryId, subcategoryId);
@@ -88,7 +89,7 @@ public class ProductController {
         List<Review> reviews = reviewService.getReviewsByProductId(id);
         model.addAttribute("product", product);
         model.addAttribute("reviews", reviews);
-        return "productDetail";
+        return "/product/productDetail";
     }
 
 
@@ -99,7 +100,7 @@ public class ProductController {
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("subcategories", categoryService.findAllSubcategories());
-        return "editProduct";
+        return "/product/editProduct";
     }
 
  // 상품 수정처리
@@ -137,7 +138,7 @@ public class ProductController {
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("sort", sort); // 정렬 기준 유지
         System.out.println("Sort parameter received: " + sort);
-        return "index2";
+        return "/product/index2";
     }
 
     @GetMapping("/products/category/{categoryId}/json")
@@ -150,18 +151,23 @@ public class ProductController {
     }
 
     @GetMapping("/products/subcategory/{subId}")
-    public String getProductsBySubcategory(@PathVariable("subId") Long subId, Model model) {
-        Subcategory sc = categoryService.findSubcategoryById(subId);
-        List<Product> products = categoryService.findProductsBySubcategory(sc);
-        Category parentCategory = sc.getCategory();
-        List<Subcategory> subcats = categoryService.findSubcategoriesByCategory(parentCategory);
+    public String getProductsBySubcategory(
+            @PathVariable("subId") Long subId,
+            @RequestParam(required = false, defaultValue = "newest") String sort,
+            Model model) {
+
+        Subcategory subcategory = categoryService.findSubcategoryById(subId);
+        List<Product> products = productService.findProductsBySubcategory(subcategory, sort);
+        Category parentCategory = subcategory.getCategory();
+        List<Subcategory> subcategories = categoryService.findSubcategoriesByCategory(parentCategory);
 
         model.addAttribute("currentCategory", parentCategory);
         model.addAttribute("products", products);
-        model.addAttribute("subcategories", subcats);
+        model.addAttribute("subcategories", subcategories);
         model.addAttribute("categories", categoryService.findAllCategories());
+        model.addAttribute("sort", sort);  // 정렬 기준 유지
 
-        return "index2";
+        return "/product/index2";
     }
 
     //상품 검색(상품이름)
@@ -169,7 +175,7 @@ public class ProductController {
     public String searchProducts(@RequestParam("search") String search, Model model) {
     	List<Product> products = productService.searchProducts(search);
     	model.addAttribute("products", products);
-    	return "index2";
+    	return "/product/index2";
     }
     
 
@@ -186,7 +192,7 @@ public class ProductController {
     }
     
     // 상품 리뷰 조회 API
-    @GetMapping("/prodycts/{productId}/reviews")
+    @GetMapping("/products/{productId}/reviews")
     public ResponseEntity<List<Review>> getReviews(@PathVariable Long productId) {
     	List<Review> reviews = reviewService.getReviewsByProductId(productId);
     	return ResponseEntity.ok(reviews);
