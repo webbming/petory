@@ -11,16 +11,15 @@ import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Controller
@@ -115,6 +114,7 @@ public class UserController {
   }
 
   @PatchMapping("/user/profile/update")
+  @ResponseBody
   public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @RequestBody UserUpdateDTO userDTO , Errors errors){
     Map<String , Object> response = new HashMap<>();
     if(errors.hasErrors()){
@@ -163,7 +163,7 @@ public class UserController {
 
   @PostMapping("/find/password")
   @ResponseBody
-  public Map<String,String> findPassword(@RequestBody Map<String , String> request) throws MessagingException {
+  public Map<String,String> findPassword(@RequestBody Map<String , String> request) throws MessagingException, MessagingException {
     Map<String,String> response = new HashMap<>();
     String userId = request.get("userId");
     String email = request.get("email");
@@ -173,13 +173,5 @@ public class UserController {
     return response;
   }
 
-
-
-//  @GetMapping("/profile")
-//  public String profileG(){
-//
-//    userService.getUser()
-//    return
-//  }
 
 }

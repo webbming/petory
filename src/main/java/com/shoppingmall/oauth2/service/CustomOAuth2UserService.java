@@ -13,6 +13,7 @@ import com.shoppingmall.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 네이버 혹은 구글인지 식별을 위한 데이터 로드
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = null;
-
+        System.out.println("요청오는중");
+        OAuth2AccessToken token =  userRequest.getAccessToken();
+        String tokenId = token.getTokenValue();
+        System.out.println(tokenId);
         if(registrationId.equals("naver")){
              oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
         }else if(registrationId.equals("google")){
