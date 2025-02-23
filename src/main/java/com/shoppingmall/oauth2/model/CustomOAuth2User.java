@@ -1,7 +1,6 @@
 package com.shoppingmall.oauth2.model;
 
-import com.shoppingmall.oauth2.dto.OAuth2Response;
-import com.shoppingmall.user.model.UserRoleType;
+import com.shoppingmall.user.dto.UserResponseDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -11,14 +10,14 @@ import java.util.Map;
 
 public class CustomOAuth2User implements OAuth2User {
 
-    private final OAuth2Response oAuth2Response;
+    private final UserResponseDTO userResponseDTO;
 
-    private final UserRoleType role;
+    public CustomOAuth2User(UserResponseDTO userResponseDTO) {
+        this.userResponseDTO = userResponseDTO;
 
-    public CustomOAuth2User(OAuth2Response oAuth2Response, UserRoleType role) {
-        this.oAuth2Response = oAuth2Response;
-        this.role = role;
     }
+
+
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -33,7 +32,7 @@ public class CustomOAuth2User implements OAuth2User {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return role.name();
+                return userResponseDTO.getRole().name();
             }
         });
 
@@ -42,11 +41,11 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId().substring(0,4);
+        return userResponseDTO.getUserId();
     }
 
 
-    public OAuth2Response getOAuth2Response() {
-        return oAuth2Response;
+    public UserResponseDTO getOAuth2Response() {
+        return userResponseDTO;
     }
 }

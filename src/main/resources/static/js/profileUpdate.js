@@ -1,22 +1,24 @@
-window.addEventListener("DOMContentLoaded" , async (e) =>{
+window.addEventListener("DOMContentLoaded" , async () =>{
+    console.log("작동은된단다")
     try{
-        const response = await fetch("/api/user/profile" , {credentials: "include"})
+        const response = await fetch("/api/users/profile" , {credentials: "include"})
         if(!response.ok) throw new Error("사용자 정보를 불러오지 못했습니다.")
 
         const data = await response.json();
-        const userId = document.querySelector(".profile-user")
-        const ninckName = document.querySelector("#nickname")
-        const email = document.querySelector("#email")
-        const address = document.querySelector("#address")
+        console.log(data)
+        const userIdInput = document.querySelector(".profile-user")
+        const nickNameInput = document.querySelector("#nickname")
+        const emailInput = document.querySelector("#email")
+        const addressInput = document.querySelector("#address")
 
-        userId.innerText = data.username;
-        ninckName.innerText = data.nickname;
-        email.innerText = data.innerText;
-        address.innerText = data.address;
+        userIdInput.innerText = data.userId
+        nickNameInput.value = data.nickname
+        emailInput.value = data.email
+        addressInput.value = data.address
 
 
     }catch(e){
-
+        console.log(e)
     }
 
 })

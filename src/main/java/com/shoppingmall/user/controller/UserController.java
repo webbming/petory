@@ -35,6 +35,11 @@ public class UserController {
     return "user/register";
   }
 
+  @GetMapping("/profile")
+  public String profileG(@RequestParam(name = "agree" , defaultValue = "false") boolean agree){
+    return "user/profile";
+  }
+
   //주소검색 팝업연결
   @GetMapping("/addr")
   public String addrFind() {

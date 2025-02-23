@@ -1,7 +1,10 @@
 package com.shoppingmall.config.security;
 
 
+import com.shoppingmall.oauth2.CustomSuccessHandler;
 import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
+import com.shoppingmall.user.jwt.JWTUtil;
+import com.shoppingmall.user.jwt.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
@@ -22,11 +28,19 @@ public class SecurityConfig {
   private CustomUserDetailsService userDetailsService;
   private CustomAuthenticationFailureHandler failureHandler;
   private CustomOAuth2UserService customOAuth2UserService;
+  private final CustomSuccessHandler successHandler;
+  private final JWTUtil jwtUtil;
 
-  public SecurityConfig(CustomUserDetailsService userDetailsService, CustomAuthenticationFailureHandler failureHandler, CustomOAuth2UserService customOAuth2UserService) {
+  public SecurityConfig(CustomUserDetailsService userDetailsService,
+                        CustomAuthenticationFailureHandler failureHandler,
+                        CustomOAuth2UserService customOAuth2UserService,
+                        CustomSuccessHandler successHandler,
+                        JWTUtil jwtUtil) {
       this.userDetailsService = userDetailsService;
       this.failureHandler = failureHandler;
       this.customOAuth2UserService = customOAuth2UserService;
+      this.successHandler = successHandler;
+      this.jwtUtil = jwtUtil;
   }
 
 
@@ -45,6 +59,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+    http.httpBasic(auth -> auth.disable());
 
     http
         .csrf(csrf -> csrf.disable())
@@ -76,12 +91,17 @@ public class SecurityConfig {
                     // 소셜 로그인 페이지도 /login 경로로 설정
                     .loginPage("/login")
                     // 성공시 /home으로 리다이렉트
-                    .defaultSuccessUrl("/home" , true)
+                    .successHandler(successHandler)
                     .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService)))
             .logout(logout -> logout
             .logoutSuccessUrl("/home")
             .permitAll());
 
+    http
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+    http .addFilterAfter(new JwtFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
         return http.build();
   }
 

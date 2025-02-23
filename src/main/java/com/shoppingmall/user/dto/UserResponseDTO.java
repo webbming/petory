@@ -1,13 +1,13 @@
 package com.shoppingmall.user.dto;
 
 import com.shoppingmall.user.model.UserRoleType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserResponseDTO {
   private String userId;
   private String email;

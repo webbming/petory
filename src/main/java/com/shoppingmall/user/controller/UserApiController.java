@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -69,12 +70,13 @@ public class UserApiController {
 
     @GetMapping("/profile")
     @Operation(summary = "회원 정보 조회", description = "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
-    public ResponseEntity<?> profileUser(Authentication authentication , HttpSession session){
-        // Principal에서 사용자 정보를 가져옵니다.
-        if(session == null || authentication == null){
+    public ResponseEntity<?> profileG(Authentication authentication ){
+        System.out.println( authentication.getName());
+        if(authentication == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Object principal = authentication.getPrincipal();
+        System.out.println(principal);
         String email;
         if (principal instanceof CustomUserDetails) {
             // 일반 사용자
@@ -83,8 +85,10 @@ public class UserApiController {
         } else if (principal instanceof CustomOAuth2User) {
             // 소셜 로그인 사용자
             CustomOAuth2User customOAuth2User = (CustomOAuth2User) principal;
-            OAuth2Response oAuth2Response = customOAuth2User.getOAuth2Response();
+            UserResponseDTO oAuth2Response = customOAuth2User.getOAuth2Response();
+
             email = oAuth2Response.getEmail();
+            System.out.println(email);
         } else {
             // 기타 사용자 처리 (예: 로그아웃 상태 등)
             throw new RuntimeException("Unknown user type");
