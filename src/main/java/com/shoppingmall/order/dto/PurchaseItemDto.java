@@ -1,8 +1,6 @@
 package com.shoppingmall.order.dto;
 
 import com.shoppingmall.order.domain.PurchaseItem;
-import com.shoppingmall.order.domain.PurchaseList;
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

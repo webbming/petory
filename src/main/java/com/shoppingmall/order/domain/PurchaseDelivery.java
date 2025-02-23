@@ -2,7 +2,6 @@ package com.shoppingmall.order.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,7 @@ public class PurchaseDelivery {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)
-    private PurchaseList purchaseId;
+    private Purchase purchaseId;
 
     private String receiverName; // 수령인 이름
 

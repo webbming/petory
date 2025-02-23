@@ -16,7 +16,7 @@ public class PurchaseItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)
-    private PurchaseList purchaseId;
+    private Purchase purchaseId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "product_id") // 상품 ID (FK)
