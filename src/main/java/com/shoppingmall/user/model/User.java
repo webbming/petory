@@ -45,6 +45,7 @@ public class User {
         .email(email)
         .nickname(nickname)
         .address(address)
+        .role(role)
         .build();
   }
 }

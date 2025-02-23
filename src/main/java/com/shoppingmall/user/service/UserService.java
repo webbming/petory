@@ -4,6 +4,7 @@ import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
 import com.shoppingmall.user.exception.DuplicateException;
+import com.shoppingmall.user.exception.FieldErrorsException;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import java.util.HashMap;
@@ -29,15 +30,15 @@ public class UserService {
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
   // 필드 유효성 검사
-  public Map<String,String> filedErrorsHandler(Errors errors){
+  public void filedErrorsHandler(Errors errors){
     // error 객체 생성
     Map<String,String> errorMap = new HashMap<>();
-    // 유효성 검사에 실패한 필드들을 순회하며 errors 객체에 정보를 put
-    for(FieldError error : errors.getFieldErrors()){
-      errorMap.put(error.getField(), error.getDefaultMessage());
+    if(errors.hasErrors()) {
+      for(FieldError error : errors.getFieldErrors()){
+        errorMap.put(error.getField(), error.getDefaultMessage());
+      }
+      throw new FieldErrorsException(errorMap);
     }
-    // error 객체 반환
-    return errorMap;
   }
 
   // 개별 필드 검사

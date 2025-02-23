@@ -117,7 +117,6 @@
       color: white;
       background-color: #4676A9;
       right: 5px;
-      top: tr;
 
     }
 
@@ -129,23 +128,23 @@
   <h1>회원 정보 수정</h1>
   <div>
     <div class="profile-img">사진</div>
-    <p th:text="${userInfo.userId}" class="profile-user"></p>
+    <p  class="profile-user"></p>
   </div>
-  <form th:action="@{/user/profile/update}" th:object="${userInfo}" method="post" id="profileUpdateForm">
+  <form action="/user/profile/update"  method="post" id="profileUpdateForm">
     <div class="form-group">
       <label for="nickname">회원 닉네임</label>
-      <input type="text" id="nickname" th:field="*{nickname}">
+      <input type="text" id="nickname" >
       <p class="error-message" id="nickname-error"></p>
     </div>
     <div class="form-group">
       <label for="email">회원 이메일</label>
-      <input type="email" id="email" th:field="*{email}">
+      <input type="email" id="email" >
       <p class="error-message" id="email-error"></p>
     </div>
     <div class="form-group">
       <label for="address">회원 주소</label>
       <div class="address">
-        <input type="text" id="address" th:field="*{address}">
+        <input type="text" id="address">
         <button type="button" class="inline-button" onClick="addrFind(event)">주소 찾기</button>
       </div>
 
