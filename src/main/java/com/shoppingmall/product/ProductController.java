@@ -21,6 +21,8 @@ import com.shoppingmall.category.Subcategory;
 import com.shoppingmall.review.Review;
 import com.shoppingmall.review.ReviewService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @Controller
 public class ProductController {
 
@@ -36,6 +38,7 @@ public class ProductController {
 
     // 메인 페이지 (전체 상품)
     @GetMapping({"/products", "/products"})
+    @Operation(summary = "상품 목록 조회", description = "모든 상품을 조회합니다.")
     public String listProducts(@RequestParam(defaultValue = "newest") String sort, Model model) {
         // 전체상품,모든카테고리, 필터링
     	List<Product> products = productService.listAllProductsSorted(sort);
@@ -84,6 +87,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
+    @Operation(summary = "상품 상세 조회", description = "상품 ID를 기반으로 상품 상세 정보를 조회합니다.")
     public String viewProduct(@PathVariable("id") Long id, Model model) {
         Product product = productService.getProductById(id);
         List<Review> reviews = reviewService.getReviewsByProductId(id);
