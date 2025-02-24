@@ -28,6 +28,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     String password = authentication.getCredentials().toString();
     CustomUserDetails user = (CustomUserDetails) userDetailsService.loadUserByUsername(userId);
 
+    System.out.println(userId + "시바언제돼");
+    System.out.println(password);
     if(user == null) {
       throw new UsernameNotFoundException(" 사용자를 찾을 수 없습니다."  + userId);
     }

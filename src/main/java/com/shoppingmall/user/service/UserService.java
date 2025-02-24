@@ -47,7 +47,7 @@ public class UserService {
     // 프론트엔드는 boolean 값을 받아서 중복이 있는지 없는지 판단 후에 사용자에게 알림.
     boolean isDuplicate = switch (fieldName) {
       case "userId" -> userRepository.existsByUserId(fieldValue);
-      case "email" -> userRepository.existsByEmail(fieldValue);
+      case "email" -> userRepository.existsByEmailAndAccountType(fieldValue , "NORMAL");
       case "nickname" -> userRepository.existsByNickname(fieldValue);
       // 해당하는 3가지 필드 중 아무것도 아니라면 예외 처리
       default -> throw new IllegalStateException("Unexpected value: " + fieldName);
@@ -65,7 +65,7 @@ public class UserService {
       errors.put("userId", "이미 사용 중인 아이디입니다.");
     }
     // 이메일이 이미 있다면 해당 메시지 put
-    if(userRepository.existsByEmail(userDTO.getEmail())){
+    if(userRepository.existsByEmailAndAccountType(userDTO.getEmail() , "NORMAL")){
       errors.put("email", "이미 사용 중인 이메일입니다.");
     }
     // 닉네임이 이미 있다면 해당 메시지 put
@@ -86,16 +86,18 @@ public class UserService {
     checkDuplicate(userDTO);
     // userDTO 의 유저 정보 비밀번호 암호화
     userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
+
     // userDTO 를 엔티티로 변환
     User user  = userDTO.toEntity();
+    user.setAccountType("NORMAL");
     // 유저 저장
     userRepository.save(user);
   }
 
   // 유저 조회
-  public UserResponseDTO getUser(String email) {
+  public UserResponseDTO getUser(String email , String accountType) {
     // 해당하는 유저 검색
-    User user = userRepository.findByEmail(email);
+    User user = userRepository.findByEmailAndAccountType(email , accountType);
     // 유저가 없다면 예외처리
     if(user == null) {
       throw new UsernameNotFoundException("User not found");

@@ -5,7 +5,7 @@ import com.shoppingmall.oauth2.CustomSuccessHandler;
 import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
 import com.shoppingmall.user.jwt.JWTUtil;
 import com.shoppingmall.user.jwt.JwtFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,13 +13,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -83,7 +87,7 @@ public class SecurityConfig {
                     //로그인 요청 경로는 /login/process
                     .loginProcessingUrl("/login/process")
                     // 성공시 /home 으로 리다이렉트
-                    .defaultSuccessUrl("/home" , true)
+                        .successHandler(successHandler)
                     // 실패시 실패 핸들러호출
                     .failureHandler(failureHandler))
             // 소셜 로그인 설정 시작
@@ -97,13 +101,28 @@ public class SecurityConfig {
             .logoutSuccessUrl("/home")
             .permitAll());
 
+    // 세션 생성 x 설정 (jwt 방식 이용)
     http
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-    http .addFilterAfter(new JwtFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
-        return http.build();
+    // 직접 만든 jwt 필터를 usernamePassword 필터 전에 배치
+    http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+    // 프론트엔드 개발시에 cors 에러 localhost:3000 포트 허용
+    http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+          CorsConfiguration configuration = new CorsConfiguration();
+
+          configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://mydomain.com"));
+          configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+          configuration.setAllowCredentials(true);
+          configuration.setAllowedHeaders(Collections.singletonList("*"));
+          configuration.setMaxAge(3600L);
+
+          configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
+
+          return configuration;
+    }));
+      return http.build();
   }
-
-
 }

@@ -1,11 +1,13 @@
 package com.shoppingmall.user.controller;
 
 import com.shoppingmall.config.security.CustomUserDetails;
+import com.shoppingmall.config.security.CustomUserDetailsService;
 import com.shoppingmall.oauth2.dto.OAuth2Response;
 import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
+import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
@@ -13,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.aspectj.apache.bcel.generic.ObjectType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -71,31 +74,25 @@ public class UserApiController {
     @GetMapping("/profile")
     @Operation(summary = "회원 정보 조회", description = "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
     public ResponseEntity<?> profileG(Authentication authentication ){
-        System.out.println( authentication.getName());
-        if(authentication == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         Object principal = authentication.getPrincipal();
-        System.out.println(principal);
-        String email;
-        if (principal instanceof CustomUserDetails) {
-            // 일반 사용자
-            CustomUserDetails customUserDetails = (CustomUserDetails) principal;
-            email = customUserDetails.getEmail();
-        } else if (principal instanceof CustomOAuth2User) {
-            // 소셜 로그인 사용자
-            CustomOAuth2User customOAuth2User = (CustomOAuth2User) principal;
-            UserResponseDTO oAuth2Response = customOAuth2User.getOAuth2Response();
 
-            email = oAuth2Response.getEmail();
-            System.out.println(email);
-        } else {
-            // 기타 사용자 처리 (예: 로그아웃 상태 등)
-            throw new RuntimeException("Unknown user type");
+        String email;
+        String accountType;
+
+        if (principal instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) principal;
+            email = userDetails.getEmail();
+            accountType = userDetails.getAccountType();
+
+        }else{
+            CustomOAuth2User oAuth2User = (CustomOAuth2User) principal;
+            email = oAuth2User.getEmail();
+            accountType = oAuth2User.getAccountType();
         }
-        // 이메일을 사용하여 사용자 정보
-        UserResponseDTO userInfo = userService.getUser(email);
-        return ResponseEntity.status(HttpStatus.OK).body(userInfo);
+
+       User user = userRepository.findByEmailAndAccountType(email, accountType);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user.toDTO());
     }
 
     @PatchMapping("/profile")

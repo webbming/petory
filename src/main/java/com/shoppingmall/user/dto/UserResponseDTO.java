@@ -13,6 +13,7 @@ public class UserResponseDTO {
   private String email;
   private String nickname;
   private String address;
+  private String accountType;
   private UserRoleType role;
 
 }

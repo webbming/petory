@@ -1,5 +1,6 @@
 package com.shoppingmall.oauth2;
 
+import com.shoppingmall.config.security.CustomUserDetails;
 import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import com.shoppingmall.user.jwt.JWTUtil;
 import jakarta.servlet.ServletException;
@@ -27,17 +28,35 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        CustomOAuth2User customOAuth2Details = (CustomOAuth2User) authentication.getPrincipal();
-        String userId =  customOAuth2Details.getName();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
-        String role =auth.getAuthority();
+        String userId = null;
+        String email = null;
+        String role = null;
+        String account = null;
+        if(authentication.getPrincipal() instanceof CustomOAuth2User) {
+            System.out.println("소셜사용자 발급 시작합니다");
+            CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            userId =  customOAuth2User.getName();
+            email = customOAuth2User.getEmail();
+            account = customOAuth2User.getAccountType();
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            role = authorities.iterator().next().getAuthority();
+            System.out.println("account type : " + account);
 
-        String token = jwtUtil.createJwt(userId , role , 60*60*60L );
+        }else{
+            System.out.println("일반 사용자 발급 시작합니다");
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            userId = customUserDetails.getUsername();
+            email = customUserDetails.getEmail();
+            account = customUserDetails.getAccountType();
+            System.out.println(account);
+            role = customUserDetails.getAuthorities().iterator().next().getAuthority();
 
+        }
+
+        String token = jwtUtil.createJwt(userId, email ,account, role,3600L );
         response.addCookie(createCookie("Authorization", token));
         response.sendRedirect("http://localhost:8080/home");
+
 
     }
 

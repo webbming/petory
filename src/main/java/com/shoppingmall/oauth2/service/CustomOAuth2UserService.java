@@ -48,25 +48,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
-        String userId = oAuth2Response.getProvider()+ " " +oAuth2Response.getProviderId();
-        User existingUser = userRepository.findByEmail(oAuth2Response.getEmail());
+        // 소셜 로그인 유저의 이메일과 똑같은 유저가 db에 존재하는지 확인.
+        User newUser = userRepository.findByEmailAndAccountType(oAuth2Response.getEmail(), "SOCIAL");
+        // 존재하지 않는다면  생성하고 소셜로그인 유저의 정보를 저장
+        if(newUser == null) {
 
-        if(existingUser == null) {
             User user = new User();
-            user.setUserId(userId);
+            user.setUserId(oAuth2Response.getProvider()+ "_" +oAuth2Response.getProviderId());
             user.setEmail(oAuth2Response.getEmail());
             user.setPassword(passwordGenerator.generateTemporaryPassword());
-            user.setNickname(oAuth2Response.getProvider()+"_"+oAuth2Response.getProviderId().substring(0,4));
+            user.setNickname(oAuth2Response.getProvider()+"_"+oAuth2Response.getName());
+            user.setAccountType("SOCIAL");
             user.setRole(UserRoleType.USER);
 
             userRepository.save(user);
 
             return new CustomOAuth2User(user.toDTO());
+        // 존재하면 저장하지 않고 닉네임만 업데이트 한 후에 return
         }else{
-            existingUser.setNickname(oAuth2Response.getName());
-            userRepository.save(existingUser);
-
-            return new CustomOAuth2User(existingUser.toDTO());
+            System.out.println(newUser.getUserId());
+            return new CustomOAuth2User(newUser.toDTO());
         }
 
      }
