@@ -75,22 +75,20 @@ public class UserApiController {
     @Operation(summary = "회원 정보 조회", description = "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
     public ResponseEntity<?> profileG(Authentication authentication ){
         Object principal = authentication.getPrincipal();
-
-        String email;
+        String userId;
         String accountType;
-
-        if (principal instanceof CustomUserDetails) {
-            CustomUserDetails userDetails = (CustomUserDetails) principal;
-            email = userDetails.getEmail();
+        // 유저가 일반 회원이라면
+        if (principal instanceof CustomUserDetails userDetails) {
+            userId = userDetails.getUsername();
             accountType = userDetails.getAccountType();
 
-        }else{
+        }else{ // 유저가 소셜 회원이라면
             CustomOAuth2User oAuth2User = (CustomOAuth2User) principal;
-            email = oAuth2User.getEmail();
+            userId = oAuth2User.getName();
             accountType = oAuth2User.getAccountType();
         }
 
-       User user = userRepository.findByEmailAndAccountType(email, accountType);
+       User user = userRepository.findByUserIdAndAccountType(userId, accountType);
 
         return ResponseEntity.status(HttpStatus.OK).body(user.toDTO());
     }
@@ -98,6 +96,11 @@ public class UserApiController {
     @PatchMapping("/profile")
     @Operation(summary = "회원 정보 수정(업데이트)", description = "요청시 nickname , email , address 를 정보로 요청")
     public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @RequestBody UserUpdateDTO userDTO , Errors errors){
+        System.out.println("요청옴");
+        System.out.println(userDTO.getUserId());
+        System.out.println(userDTO.getNickname());
+        System.out.println(userDTO.getEmail());
+        System.out.println(userDTO.getAddress());
         Map<String , Object> response = new HashMap<>();
         userService.filedErrorsHandler(errors);
         userService.updateUser(userDTO);

@@ -87,7 +87,7 @@ public class SecurityConfig {
                     //로그인 요청 경로는 /login/process
                     .loginProcessingUrl("/login/process")
                     // 성공시 /home 으로 리다이렉트
-                        .successHandler(successHandler)
+                        .defaultSuccessUrl("/home")
                     // 실패시 실패 핸들러호출
                     .failureHandler(failureHandler))
             // 소셜 로그인 설정 시작
@@ -95,7 +95,7 @@ public class SecurityConfig {
                     // 소셜 로그인 페이지도 /login 경로로 설정
                     .loginPage("/login")
                     // 성공시 /home으로 리다이렉트
-                    .successHandler(successHandler)
+                    .defaultSuccessUrl("/home")
                     .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService)))
             .logout(logout -> logout
             .logoutSuccessUrl("/home")
@@ -104,10 +104,11 @@ public class SecurityConfig {
     // 세션 생성 x 설정 (jwt 방식 이용)
     http
             .sessionManagement(session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                            .maximumSessions(1)
+                            .expiredUrl("/login")
+                        );
 
-    // 직접 만든 jwt 필터를 usernamePassword 필터 전에 배치
-    http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
     // 프론트엔드 개발시에 cors 에러 localhost:3000 포트 허용
     http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {

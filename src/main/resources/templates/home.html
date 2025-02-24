@@ -11,34 +11,10 @@
   <a href="/users/profile">프로필</a>
   <div  sec:authorize="isAuthenticated()">
     <span  th:text="|${#authentication.name}님 환영합니다 |"></span>
-    <button id="logout-button">로그아웃</button>
+    <button onclick="window.location.href='/logout'">로그아웃</button>
   </div>
   <div sec:authorize="!isAuthenticated()">
     <a href="/login">로그인</a>
   </div>
-
-
-<script>
-  document.getElementById('logout-button').addEventListener('click', function(event) {
-    event.preventDefault(); // 기본 동작 방지
-
-    // JWT를 클라이언트 측에서 삭제
-    localStorage.removeItem('token'); // localStorage에서 삭제
-    // 또는
-    // sessionStorage.removeItem('token'); // sessionStorage에서 삭제
-    // 또는
-    // JWT가 쿠키에 저장되어 있다면
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-    // 로그아웃 요청 전송
-    const logoutForm = document.createElement('form');
-    logoutForm.method = 'POST';
-    logoutForm.action = '/logout'; // Spring Security의 로그아웃 엔드포인트
-
-    // 로그아웃 요청 전송
-    document.body.appendChild(logoutForm);
-    logoutForm.submit();
-  });
-</script>
 </body>
 </html>

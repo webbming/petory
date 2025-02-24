@@ -113,6 +113,7 @@ public class UserService {
     // 사용자 아이디 불러오기
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String userId = authentication.getName();
+    System.out.println(userId);
     // 해당하는 유저 검색
     User user = userRepository.findByUserId(userId);
 

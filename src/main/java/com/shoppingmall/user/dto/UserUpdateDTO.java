@@ -3,11 +3,15 @@ package com.shoppingmall.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserUpdateDTO {
 
         @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9]{3,20}$" ,  message = "아이디 : 영문, 숫자로 4~20자여야 합니다." )

@@ -1,27 +1,35 @@
-window.addEventListener("DOMContentLoaded" , async () =>{
-    console.log("작동은된단다")
-    try{
-        const response = await fetch("/api/users/profile" , {credentials: "include"})
-        if(!response.ok) throw new Error("사용자 정보를 불러오지 못했습니다.")
+ async function loadUserData() {
+     console.log("작동은된단다")
+     try {
+         const response = await fetch("/api/users/profile", {credentials: "include"})
+         if (!response.ok) throw new Error("사용자 정보를 불러오지 못했습니다.")
 
-        const data = await response.json();
-        console.log(data)
-        const userIdInput = document.querySelector(".profile-user")
-        const nickNameInput = document.querySelector("#nickname")
-        const emailInput = document.querySelector("#email")
-        const addressInput = document.querySelector("#address")
+         const data = await response.json();
+         console.log(data)
+         const userIdInput = document.querySelector(".profile-user")
+         const nickNameInput = document.querySelector("#nickname")
+         const emailInput = document.querySelector("#email")
+         const addressInput = document.querySelector("#address")
 
-        userIdInput.innerText = data.userId
-        nickNameInput.value = data.nickname
-        emailInput.value = data.email
-        addressInput.value = data.address
+         userIdInput.innerText = data.userId
+         nickNameInput.value = data.nickname
+         emailInput.value = data.email
+         addressInput.value = data.address
 
 
-    }catch(e){
-        console.log(e)
-    }
+     } catch (e) {
+         console.log(e)
+     }
+ }
 
-})
+ loadUserData()
+     .then(() =>{
+         console.log("사용자 정보 완료")
+     }).catch((error)=>{
+         console.error("사용자 정보 로드 실패" , error)
+ })
+
+
 
 
 
@@ -40,8 +48,9 @@ profileUpdateForm.addEventListener("submit" , async (e) =>{
     if(redirect){
         const formData = new FormData(e.target);
         const formObj = Object.fromEntries(formData);
+        console.log(formObj)
 
-        const response = await fetch("/api/user/profile" , {
+        const response = await fetch("/api/users/profile" , {
             method : "PATCH" ,
             headers : {
                 "Content-Type" : "application/json"
@@ -57,14 +66,11 @@ profileUpdateForm.addEventListener("submit" , async (e) =>{
                 emailError.innerHTML = "" ;
                 nickNameError.textContent = result.status.nickname
                 emailError.textContent = result.status.email
-
-
         }else{
-
             const result = await response.json();
             console.log(result)
             alert("수정되었습니다");
-            window.location.href = "/user/profile";
+            window.location.href = "/users/profile";
 
         }
     }
