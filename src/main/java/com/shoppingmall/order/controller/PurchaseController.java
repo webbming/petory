@@ -9,14 +9,15 @@ import com.shoppingmall.order.repository.PurchaseItemRepository;
 import com.shoppingmall.order.repository.PurchaseListRepository;
 import com.shoppingmall.order.service.PurchaseAllService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/order")
-@org.springframework.stereotype.Controller
+@Controller
 public class PurchaseController {
 
-@GetMapping("/order")
+@GetMapping
 public String index() {
 	return "order/index";
 }
