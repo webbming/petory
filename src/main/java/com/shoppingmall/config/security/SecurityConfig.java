@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/order/**").permitAll() // 성호님
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 // 그 외 모든 경로는 인증 필요.
-                .anyRequest().authenticated())
+                .anyRequest().permitAll())
                 //폼 로그인 설정 시작
                 .formLogin(form -> form
                     //로그인 페이지는 /login 경로로 설정

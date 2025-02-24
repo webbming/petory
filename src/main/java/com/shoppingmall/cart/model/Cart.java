@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.shoppingmall.user.model.User;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,8 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,15 +34,20 @@ public class Cart {
     @Column(name = "cart_id")
     private Long cartId; // PK
     
-//    @OneToOne(fetch = FetchType.LAZY)  
-//    @JoinColumn(name = "user_id")
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user; // 회원
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartItem> cartItems = new ArrayList<>();
    
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true; // 장바구니 활성화 상태
+    
+    public Cart(User user) {
+    	this.user = user;
+    }
+    
     public void addCartItem(CartItem cartItem) {
     	this.cartItems.add(cartItem);
     	cartItem.setCart(this);
@@ -63,4 +69,5 @@ public class Cart {
                 .map(CartItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
 }
