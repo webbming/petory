@@ -111,14 +111,14 @@
         </form>
     </div>
     <div class="filter-container" th:if="${currentCategory != null}">
-        <label for="sortFilter">정렬:</label>
-        <select id="sortFilter">
-            <option value="newest" th:selected="${sort == 'newest'}">신제품순</option>
-            <option value="priceLowHigh" th:selected="${sort == 'priceLowHigh'}">낮은 가격순</option>
-            <option value="priceHighLow" th:selected="${sort == 'priceHighLow'}">높은 가격순</option>
-            <option value="rating" th:selected="${sort == 'rating'}">평점순</option>
-        </select>
-    </div>
+	    <label for="sortFilter">정렬:</label>
+	    <select id="sortFilter" onchange="changeSort()">
+	        <option value="newest" th:selected="${sort == 'newest'}">신제품순</option>
+	        <option value="priceLowHigh" th:selected="${sort == 'priceLowHigh'}">낮은 가격순</option>
+	        <option value="priceHighLow" th:selected="${sort == 'priceHighLow'}">높은 가격순</option>
+	        <option value="rating" th:selected="${sort == 'rating'}">평점순</option>
+	    </select>
+	</div>
     <div class="container">
         <div class="sidebar">
             <h2>대분류</h2>
@@ -134,6 +134,7 @@
                text-decoration:none; border-radius:4px;">
                 상품 추가하기
             </a>
+            <li><a href="/categories" style="color: #4CAF50; font-weight: bold;">카테고리 관리</a></li>
         </div>
         
         <div class="top-subcategories" th:if="${currentCategory != null}">
@@ -166,49 +167,24 @@
 		</div>
     </div>
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const sortFilter = document.getElementById("sortFilter");
+    function changeSort() {
+        let selectedSort = document.getElementById("sortFilter").value;
+        let currentUrl = window.location.pathname;
 
-        sortFilter.addEventListener("change", function() {
-            const pathParts = window.location.pathname.split('/');
-            let categoryId = null;
-            let subcategoryId = null;
+        let categoryId = null;
+        let subcategoryId = null;
 
-            if (pathParts.includes('category')) {
-                categoryId = pathParts[pathParts.findIndex(part => part === 'category') + 1];
-            }
-            if (pathParts.includes('subcategory')) {
-                subcategoryId = pathParts[pathParts.findIndex(part => part === 'subcategory') + 1];
-            }
-
-            const sort = this.value;
-            let url = categoryId ? `/products/category/${categoryId}/json?sort=${sort}` : `/products/subcategory/${subcategoryId}/json?sort=${sort}`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => updateProductList(data))
-                .catch(error => console.error('Error fetching the products:', error));
-        });
-
-        function updateProductList(products) {
-            const productList = document.querySelector('.product-list');
-            productList.innerHTML = ''; // 상품 목록을 초기화
-            products.forEach(product => {
-                const ratingDisplay = product.averageRating ? `평점: ${product.averageRating}` : '평점 정보 없음';
-                productList.innerHTML += `
-                    <div class="product-card">
-                        <img src="${product.imageUrl || '/images/default.jpg'}" alt="Product Image" />
-                        <h3>${product.productName}</h3>
-                        <p class="price">${product.price}원</p>
-                        <p>${product.description}</p>
-                        <p>${ratingDisplay}</p>
-                        <p>(${product.category.categoryName} / ${product.subcategory.subcategoryName})</p>
-                        <a href="/products/${product.productId}" class="details-link">자세히 보기</a>
-                    </div>
-                `;
-            });
+        if (currentUrl.includes("/category/")) {
+            categoryId = currentUrl.split("/").pop();
+            window.location.href = `/products/category/${categoryId}?sort=${selectedSort}`;
+        } else if (currentUrl.includes("/subcategory/")) {
+            subcategoryId = currentUrl.split("/").pop();
+            window.location.href = `/products/subcategory/${subcategoryId}?sort=${selectedSort}`;
+        } else {
+            window.location.href = `/products?sort=${selectedSort}`;
         }
-    });
+    }
+
     </script>
 </body>
 </html>

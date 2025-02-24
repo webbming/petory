@@ -5,27 +5,38 @@
     <title>상품 수정</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-    $(document).ready(function(){
-        $("select[name='categoryId']").change(function(){
-            var categoryId = $(this).val();
-            $.ajax({
-                url: '/categories/subcategories/' + categoryId,
-                type: 'GET',
-                success: function(data) {
-                    var subSelect = $("select[name='subcategoryId']");
-                    subSelect.empty();
-                    $.each(data, function(index, subcat){
-                        subSelect.append($('<option></option>').attr('value', subcat.subcategoryId).text(subcat.subcategoryName));
-                    });
-                },
-                error: function(error) {
-                    console.log('Error loading subcategories: ', error);
-                }
-            });
-        });
-    });
-</script>
-
+	$(document).ready(function() {
+	    $("select[name='categoryId']").change(function() {
+	        var categoryId = $(this).val();
+	        $.ajax({
+	            url: `/categories/${categoryId}/subcategories/json`, // 경로 확인 필요
+	            type: 'GET',
+	            success: function(data) {
+	                var subSelect = $("select[name='subcategoryId']");
+	                subSelect.empty(); // 기존 옵션 초기화
+	                if (data.length === 0) {
+	                    subSelect.append($('<option>', {
+	                        value: '',
+	                        text: 'No subcategories available' // 서브카테고리가 없을 경우
+	                    }));
+	                } else {
+	                    data.forEach(function(subcat) {
+	                        subSelect.append($('<option>', {
+	                            value: subcat.subcategoryId,
+	                            text: subcat.subcategoryName
+	                        }));
+	                    });
+	                }
+	            },
+	            error: function(xhr) {
+	                console.error('Error loading subcategories: ', xhr.responseText);
+	            }
+	        });
+	    });
+	    // 페이지 로딩 시 초기 카테고리 선택
+	    $("select[name='categoryId']").trigger('change');
+	});
+	</script>
 </head>
 <body>
     <h1>상품 수정</h1>

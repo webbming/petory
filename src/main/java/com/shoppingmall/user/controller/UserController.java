@@ -1,5 +1,8 @@
 package com.shoppingmall.user.controller;
 
+import com.shoppingmall.config.security.CustomUserDetails;
+import com.shoppingmall.oauth2.dto.OAuth2Response;
+import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
@@ -13,6 +16,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -80,11 +84,28 @@ public class UserController {
   }
 
   @GetMapping("/user/profile")
-  public String profileG(Model model){
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    String userId = auth.getName();
-    UserResponseDTO userInfo =  userService.getUser(userId);
-    model.addAttribute("userInfo" , userInfo);
+  public String profileG(Authentication authentication , Model model){
+    // Principal에서 사용자 정보를 가져옵니다.
+    Object principal = authentication.getPrincipal();
+    String email;
+    if (principal instanceof CustomUserDetails) {
+      // 일반 사용자
+      CustomUserDetails customUserDetails = (CustomUserDetails) principal;
+      email = customUserDetails.getEmail();
+      System.out.println(email);
+    } else if (principal instanceof CustomOAuth2User) {
+      // 소셜 로그인 사용자
+      CustomOAuth2User customOAuth2User = (CustomOAuth2User) principal;
+      OAuth2Response oAuth2Response = customOAuth2User.getOAuth2Response();
+      email = oAuth2Response.getEmail();
+    } else {
+      // 기타 사용자 처리 (예: 로그아웃 상태 등)
+      throw new RuntimeException("Unknown user type");
+    }
+    // 이메일을 사용하여 사용자 정보
+    UserResponseDTO userInfo = userService.getUser(email);
+    model.addAttribute("userInfo", userInfo);
+
     return "/user/profile";
   }
 
@@ -103,7 +124,10 @@ public class UserController {
 
 
   @DeleteMapping("/user/delete")
-  public String DeleteUser(@Valid @ModelAttribute UserRequestDTO userDTO){
+  public String DeleteUser(String password , Authentication auth){
+
+    auth.getName();
+
     return null;
   }
 
@@ -113,18 +137,17 @@ public class UserController {
   }
 
   @PostMapping("/find/id")
-  public String findId(@RequestBody Map<String , String> request , Model model){
+  @ResponseBody
+  public Map<String,String> findId(@RequestBody Map<String , String> request , Model model){
+    Map<String,String> response = new HashMap<>();
     String question = request.get("question");
     String answer = request.get("answer");
-    System.out.println("question: " + question);
-    System.out.println("answer: " + answer);
-    String userId = userService.findID(question, answer);
-    if(userId != null){
-      model.addAttribute("userId" , userId);
-    }else{
-      model.addAttribute("error" , "조회된 회원이 없습니다.");
-    }
-    return "/user/findResult";
+    System.out.println(question);
+    System.out.println(answer);
+    String userId = userService.findUserId(question, answer);
+    response.put("status", "success");
+    response.put("userId" , userId);
+    return  response;
   }
 
   @GetMapping("/find/password")

@@ -75,6 +75,36 @@ public class CategoryService {
 	            return productRepository.findByCategoryOrderByCreatedAtDesc(category); // 기본 정렬: 신제품순
 	    }
 	}
+	// 상품 카테고리 생성
+	public Category createCategory(String categoryName) {
+		Category newCategory = new Category();
+		newCategory.setCategoryName(categoryName);
+		return categoryRepository.save(newCategory);
+	}
+	
+	// 상품 서브카테고리 생성
+	public Subcategory createSubcategory(Long categoryId, String subcategoryName) {
+		Category category = findCategoryById(categoryId);
+		Subcategory newSubcategory = new Subcategory();
+		newSubcategory.setCategory(category);
+		newSubcategory.setSubcategoryName(subcategoryName);
+		return subcategoryRepository.save(newSubcategory);
+	}
+	
+	// 카테고리 삭제
+	public void deleteCategory(Long categoryId) {
+	    // 먼저 해당 카테고리의 모든 서브카테고리를 찾아 삭제
+	    Category category = findCategoryById(categoryId);
+	    List<Subcategory> subcategories = findSubcategoriesByCategory(category);
+	    subcategoryRepository.deleteAll(subcategories);  // 모든 서브카테고리 삭제
 
+	    // 모든 서브카테고리가 삭제된 후, 카테고리 삭제
+	    categoryRepository.delete(category);
+	}
 
+	
+	// 서브 카테고리 삭제
+	public void deleteSubcategory(Long subcategoryId) {
+		subcategoryRepository.deleteById(subcategoryId);
+	}
 }

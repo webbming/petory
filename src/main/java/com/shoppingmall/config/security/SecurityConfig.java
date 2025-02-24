@@ -1,16 +1,17 @@
 package com.shoppingmall.config.security;
 
 
-import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
+
+import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +25,14 @@ public class SecurityConfig {
       this.userDetailsService = userDetailsService;
       this.failureHandler = failureHandler;
       this.customOAuth2UserService = customOAuth2UserService;
+  }
+
+
+  @Bean
+  public HttpFirewall allowSemicolonHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowSemicolon(true); // 세미콜론 허용
+        return firewall;
   }
 
   @Bean
@@ -44,11 +53,12 @@ public class SecurityConfig {
                 .requestMatchers("/login" , "/login/oauth2/**" , "/logout").permitAll()
                 .requestMatchers(HttpMethod.POST , "/find/id").permitAll()
                 .requestMatchers("/cart/**").permitAll() // 수민님
-                .requestMatchers("/product/**").permitAll() // 진호님
+                .requestMatchers("/products/**").permitAll() // 진호님
                 .requestMatchers("/board/**").permitAll() // 준서님
                 .requestMatchers("/order/**").permitAll() // 성호님
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                // 그 외 모든 경로는 인증 필요.
+
+                // 그 외 모든 경로는 인증 필요.authenticated -> permitAll로 바꿈
                 .anyRequest().permitAll())
                 //폼 로그인 설정 시작
                 .formLogin(form -> form

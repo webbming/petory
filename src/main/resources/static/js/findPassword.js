@@ -1,6 +1,4 @@
 
-
-
 const findPasswordForm = document.querySelector("#findPasswordForm")
 
 findPasswordForm.addEventListener("submit" , async (e) =>{
@@ -38,3 +36,4 @@ findPasswordForm.addEventListener("submit" , async (e) =>{
         console.error("요청 실패 " + e)
     }
 })
+

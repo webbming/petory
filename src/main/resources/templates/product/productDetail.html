@@ -28,9 +28,9 @@
 	</div>
     <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
     <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
-        <input type="hidden" name="_method" value="delete">
-        <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
-    </form>
+	    <input type="hidden" name="_method" value="delete">
+	    <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
+	</form>
     <a href="/products">목록으로</a>
 </body>
 </html>
