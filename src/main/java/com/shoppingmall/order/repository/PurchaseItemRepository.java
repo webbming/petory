@@ -11,11 +11,13 @@ import java.util.List;
 
 @Repository
 public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long> {
-  @Query("SELECT i FROM PurchaseItem i WHERE i.purchaseId.purchaseId = :purchaseId")
+  @Query("SELECT i FROM PurchaseItem i WHERE i.purchase.purchaseId = :purchaseId")
   List<PurchaseItem> findByPurchaseId(@Param("purchaseId") Long purchaseId);
 
-  @Query("SELECT d FROM PurchaseItem d ORDER BY d.purchaseId.purchaseId DESC")
+  @Query("SELECT d FROM PurchaseItem d ORDER BY d.purchase.purchaseId DESC")
   List<PurchaseItem> findAllOrderByPurchaseIdDesc();
 
+  @Query("SELECT d FROM PurchaseItem d WHERE d.purchase.userId = :userId ORDER BY d.purchase.purchaseId DESC")
+  List<PurchaseItem> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId);
 }
 

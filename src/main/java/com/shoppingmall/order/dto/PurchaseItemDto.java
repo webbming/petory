@@ -20,10 +20,11 @@ public class PurchaseItemDto {
   private int totalPrice; // 해당 상품 총 가격
   private LocalDateTime createAt; // 주문 생성 시간
   private LocalDateTime cancelAt; // 주문 취소 시간
+  private String userId;
 
   @Builder
   public PurchaseItemDto(Long orderItemId, Long productId, String productName, String option, int quantity,
-                         int price, int totalPrice, LocalDateTime createAt, LocalDateTime cancelAt) {
+                         int price, int totalPrice, LocalDateTime createAt, LocalDateTime cancelAt, String userId) {
     this.orderItemId = orderItemId;
     this.productId = productId;
     this.productName = productName;
@@ -33,6 +34,7 @@ public class PurchaseItemDto {
     this.totalPrice = totalPrice;
     this.createAt = createAt;
     this.cancelAt = cancelAt;
+    this.userId = userId;
   }
 
   public static PurchaseItemDto fromEntity(PurchaseItem item) {
@@ -46,6 +48,7 @@ public class PurchaseItemDto {
             .totalPrice(item.getTotalPrice())
             .createAt(item.getCreateAt())
             .cancelAt(item.getCancelAt())
+            .userId(item.getUserId())
             .build();
   }
 }

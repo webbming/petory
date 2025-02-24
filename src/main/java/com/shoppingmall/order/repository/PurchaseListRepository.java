@@ -12,6 +12,11 @@ public interface PurchaseListRepository extends JpaRepository<Purchase, Long> {
     // Purchase 관련 쿼리 메소드
     List<Purchase> findByPurchaseId(Long purchaseId);
 
+
+    List<String> findIdByUserId(String userId);
+
+    List<Purchase> findByUserIdOrderByPurchaseIdDesc(String userId);
+
 //    List<PurchaseList> findByPurchaseIdOrderByDesc();
 
 }

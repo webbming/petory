@@ -32,7 +32,7 @@
 	</thead>
 	<tbody>
 	<tr th:each="purchase, iterStat : ${purchase}">
-		<td><a th:href="@{/order/order/{purchaseId}(purchaseId=${purchase.purchaseId})}" th:text="${purchase.purchaseId}"></a></td>
+		<td><a th:href="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" th:text="${purchase.purchaseId}"></a></td>
 		<td th:text="${purchase.userId}"></td>
 		<td th:text="${purchase.totalPrice}"></td>
 		<td th:text="${purchase.createAt}"></td>

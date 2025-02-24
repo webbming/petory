@@ -23,6 +23,7 @@
 		<th>주문자 ID</th>
 		<th>총 가격</th>
 		<th>주문 시간</th>
+		<th>주문 취소</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -31,6 +32,17 @@
 		<td th:text="${purchase.userId}"></td>
 		<td th:text="${purchase.totalPrice}"></td>
 		<td th:text="${purchase.createAt}"></td>
+		<td>
+    <span th:if="${purchase.cancelAt == null}">
+        <form th:action="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" method="post">
+            <button type="submit">주문 취소</button>
+        </form>
+    </span>
+			<span th:unless="${purchase.cancelAt == null}">
+        취소 완료
+    </span>
+		</td>
+
 	</tr>
 	</tbody>
 </table>

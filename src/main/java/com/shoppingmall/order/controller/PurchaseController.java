@@ -33,15 +33,9 @@ public String orderOneItem() {
 }
 
 @Autowired
-PurchaseDeliveryRepository delRepo;
-@Autowired
-PurchaseListRepository purRepo;
-@Autowired
-PurchaseItemRepository itemRepo;
-
-@Autowired
 PurchaseAllService service;
 
+//주문번호 기준 주문검색
 @GetMapping("/order")
 public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseDelivery delivery,
 										@ModelAttribute PurchaseItem item,
@@ -52,11 +46,20 @@ public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseD
 	model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
 	model.addAttribute("purchase", purchaseAllDto.getPurchase());
 	model.addAttribute("item", purchaseAllDto.getPurchaseItem());
-//	model.addAttribute("orderTime", purchaseAllDto);
 
 	return "order/orderResult";
 }
 
+@GetMapping("/orders/{purchaseId}")
+public String orderByPurchaseId(@PathVariable Long purchaseId, Model model){
+	PurchaseAllDto purchaseAllDto = service.getOrderDetails(purchaseId);
+	model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
+	model.addAttribute("purchase", purchaseAllDto.getPurchase());
+	model.addAttribute("item", purchaseAllDto.getPurchaseItem());
+	return "order/orderResult";
+}
+
+	//전체 회원 리스트 주문 검색
 @PostMapping("/admin/orderList")
 public String orderAll(Model model){
 		model.addAttribute("purchase", service.allList().getPurchase());
@@ -65,30 +68,30 @@ public String orderAll(Model model){
 	return "order/orderResultAll";
 	}
 
-	@GetMapping("/order/{purchaseId}")
-	public String orderDetail(@PathVariable Long purchaseId, Model model){
-	System.out.println(purchaseId);
-	PurchaseAllDto purchaseAllDto = service.getOrderDetails(purchaseId);
-		model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
-		model.addAttribute("purchase", purchaseAllDto.getPurchase());
-		model.addAttribute("item", purchaseAllDto.getPurchaseItem());
-		return "order/orderResult";
-	}
-//	@PostMapping("/order/{}")
-//	public String orderDetail(@RequestParam("PurchaseItemId") Long purchaseItemId,
-//							  Model model){
-//		System.out.println(purchaseItemId);
-//		model.addAttribute("item", service.orderDetail(purchaseItemId));
-//		System.out.println(service.orderDetail(purchaseItemId).getProductName());
-//		return "order/index";
-//
-//}
-
+//배송상태 변경
 	@PostMapping("/admin/deiveryChange")
 	public String deliveryChange(@RequestParam("deliveryState")String deliveryState,
 								 @RequestParam("purchaseId")Long purchaseId,
 										 Model model){
 	model.addAttribute("message",service.deliveryChange(deliveryState, purchaseId));
 	return "order/index";
+	}
+
+	@PostMapping("/orders/{purchaseId}")
+	public String orderCancel(@PathVariable Long purchaseId, Model model){
+		System.out.println(purchaseId);
+	service.orderCancel(purchaseId);
+	model.addAttribute("message", "취소되었습니다");
+	return "order/index";
+	}
+
+	//userId 기준 주문 검색
+	@GetMapping("/orders/userId")
+	public String orderListByUserId(@RequestParam(name = "userId") String userId, Model model){
+	 PurchaseAllDto purchaseAllDto = service.orderListByUserId(userId);
+		model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
+		model.addAttribute("purchase", purchaseAllDto.getPurchase());
+		model.addAttribute("item", purchaseAllDto.getPurchaseItem());
+	return "order/orderListByUserId";
 	}
 }

@@ -15,7 +15,9 @@ public class PurchaseDelivery {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)
-    private Purchase purchaseId;
+    private Purchase purchase;
+
+    private String userId;
 
     private String receiverName; // 수령인 이름
 

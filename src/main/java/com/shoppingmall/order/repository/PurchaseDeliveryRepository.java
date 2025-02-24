@@ -10,14 +10,17 @@ import java.util.List;
 
 @Repository
 public interface PurchaseDeliveryRepository extends JpaRepository<PurchaseDelivery, Long> {
-  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchaseId.purchaseId = :purchaseId")
+  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.purchaseId = :purchaseId")
   List<PurchaseDelivery> findByPurchaseId(@Param("purchaseId") Long purchaseId);
 
 
-  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchaseId.purchaseId DESC")
+  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
   List<PurchaseDelivery> findAllOrderByPurchaseIdDesc();
 
-  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchaseId.purchaseId = :purchaseId")
+  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.purchaseId = :purchaseId")
   PurchaseDelivery findPurchaseDeliveryByPurchaseId(Long purchaseId);
+
+  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.userId = :userId ORDER BY d.purchase.purchaseId DESC")
+  List<PurchaseDelivery> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId);
 
 }
