@@ -27,6 +27,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     String userId = authentication.getName();
     String password = authentication.getCredentials().toString();
 
+    System.out.println("프로바이더" + userId);
     CustomUserDetails user = (CustomUserDetails) userDetailsService.loadUserByUsername(userId);
 
     if(user == null) {
@@ -36,7 +37,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     if(!bCryptPasswordEncoder.matches(password, user.getPassword())) {
       throw new BadCredentialsException("비밀번호가 틀립니다.");
     }
-    return new UsernamePasswordAuthenticationToken(userId, password, user.getAuthorities());
+    return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
   }
 
   @Override

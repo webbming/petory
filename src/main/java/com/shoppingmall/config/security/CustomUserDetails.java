@@ -20,14 +20,15 @@ public class CustomUserDetails implements UserDetails {
     return user;
   }
 
-
-  public String getAddress() {
-    return user.getAddress(); // 주소 정보 반환
+  public String getEmail() {
+    return user.getEmail(); // 이메일 반환
   }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
    return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
   }
+
 
   @Override
   public String getPassword() {

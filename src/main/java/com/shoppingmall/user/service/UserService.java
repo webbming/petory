@@ -93,9 +93,9 @@ public class UserService {
   }
 
   // 유저 조회
-  public UserResponseDTO getUser(String userId) {
+  public UserResponseDTO getUser(String email) {
     // 해당하는 유저 검색
-    User user = userRepository.findByUserId(userId);
+    User user = userRepository.findByEmail(email);
     // 유저가 없다면 예외처리
     if(user == null) {
       throw new UsernameNotFoundException("User not found");
@@ -141,14 +141,12 @@ public class UserService {
 
   }
 
-  public String findID(String question , String answer) {
+  public String findUserId(String question , String answer) {
     User user = userRepository.findByQuestionAndAnswer(question, answer);
     if(user == null) {
       throw new UsernameNotFoundException("질문과 답변에 일치하는 회원이 없습니다.");
     }
-    String userId = user.getUserId();
-
-      return userId.substring(0, userId.length() - 2) + "**";
+      return user.getUserId();
   }
 
 }

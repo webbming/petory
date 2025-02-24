@@ -5,7 +5,12 @@ import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import com.shoppingmall.oauth2.dto.GoogleResponse;
 import com.shoppingmall.oauth2.dto.NaverResponse;
 import com.shoppingmall.oauth2.dto.OAuth2Response;
+import com.shoppingmall.user.dto.PasswordGenerator;
+import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.model.UserRoleType;
+import com.shoppingmall.user.repository.UserRepository;
+import com.shoppingmall.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -14,6 +19,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+    @Autowired
+    private PasswordGenerator passwordGenerator;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @Override
@@ -43,7 +52,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             System.out.println("Failed to create OAuth2Response for " + registrationId);
         }
 
-        UserRoleType role = UserRoleType.USER;
-        return new CustomOAuth2User(oAuth2Response , role);
+        User existingUser = userRepository.findByEmail(oAuth2Response.getEmail());
+
+        if(existingUser == null) {
+            User user = new User();
+            user.setUserId(oAuth2Response.getProvider() + ":" + oAuth2Response.getProviderId());
+            user.setEmail(oAuth2Response.getEmail());
+            user.setPassword(passwordGenerator.generateTemporaryPassword());
+            user.setNickname("kakao"+"_"+oAuth2Response.getName());
+            user.setRole(UserRoleType.USER);
+            userRepository.save(user);
+
+            return new CustomOAuth2User(oAuth2Response , UserRoleType.USER);
+        }else{
+            return new CustomOAuth2User(oAuth2Response , existingUser.getRole());
+        }
+
      }
 }

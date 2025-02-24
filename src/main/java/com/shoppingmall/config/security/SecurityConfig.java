@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
 
@@ -23,6 +25,14 @@ public class SecurityConfig {
       this.userDetailsService = userDetailsService;
       this.failureHandler = failureHandler;
       this.customOAuth2UserService = customOAuth2UserService;
+  }
+
+
+  @Bean
+  public HttpFirewall allowSemicolonHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowSemicolon(true); // 세미콜론 허용
+        return firewall;
   }
 
   @Bean
