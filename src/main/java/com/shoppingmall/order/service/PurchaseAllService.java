@@ -11,9 +11,7 @@ import com.shoppingmall.order.repository.PurchaseListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +51,6 @@ public class PurchaseAllService {
 		List<PurchaseDelivery> deliveries = deliveryRepo.findAllOrderByPurchaseIdDesc();
 		List<PurchaseItem> items =itemRepo.findAllOrderByPurchaseIdDesc();
 
-//		List<String> purchaseIdList = purRepo.findIdByUserId();
 		return PurchaseAllDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
@@ -109,7 +106,6 @@ public class PurchaseAllService {
 		List<PurchaseDelivery> deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId);
 		List<PurchaseItem> items =itemRepo.findByUserIdOrderByPurchaseIdDesc(userId);
 
-//		List<String> purchaseIdList = purRepo.findIdByUserId();
 		return PurchaseAllDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
