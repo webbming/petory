@@ -74,7 +74,7 @@ public String orderAll(Model model){
 								 @RequestParam("purchaseId")Long purchaseId,
 										 Model model){
 	model.addAttribute("message",service.deliveryChange(deliveryState, purchaseId));
-	return "order/index";
+	return "redirect:/order";
 	}
 
 	@PostMapping("/orders/{purchaseId}")
@@ -82,7 +82,7 @@ public String orderAll(Model model){
 		System.out.println(purchaseId);
 	service.orderCancel(purchaseId);
 	model.addAttribute("message", "취소되었습니다");
-	return "order/index";
+	return "redirect:/order";
 	}
 
 	//userId 기준 주문 검색

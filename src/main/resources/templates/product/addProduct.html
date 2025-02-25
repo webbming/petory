@@ -2,51 +2,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>상품 추가</title>
+    <title>새 상품 추가</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    $(document).ready(function(){
-        $("select[name='categoryId']").change(function(){
-            var categoryId = $(this).val();
-            $.ajax({
-                url: '/categories/subcategories/' + categoryId,
-                type: 'GET',
-                success: function(data) {
-                    var subSelect = $("select[name='subcategoryId']");
-                    subSelect.empty();
-                    $.each(data, function(index, subcat){
-                        subSelect.append($('<option></option>').attr('value', subcat.subcategoryId).text(subcat.subcategoryName));
-                    });
-                },
-                error: function(error) {
-                    console.log('Error loading subcategories: ', error);
-                }
-            });
-        });
-    });
-</script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px 0;
+            color: #333;
+        }
+        .form-container {
+            width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        label {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"], select, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        a {
+            text-decoration: none;
+            color: #2196f3;
+            font-size: 14px;
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>새 상품 추가</h1>
-    <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
-        <label>상품명: <input type="text" name="productName" required /></label><br>
-        <label>가격: <input type="number" name="price" required /></label><br>
-        <label>옵션: <input type="text" name="option" /></label><br>
-        <label>내용: <input type="text" name="content" /></label><br>
-        <label>설명: <input type="text" name="description" /></label><br>
-        <label>이미지 선택: <input type="file" name="imageFile" /></label><br>
-        <label>카테고리:
-            <select name="categoryId">
-                <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.categoryName}"></option>
-            </select>
-        </label><br>
-        <label>서브카테고리:
-            <select name="subcategoryId">
-                <option th:each="sub : ${subcategories}" th:value="${sub.subcategoryId}" th:text="${sub.subcategoryName}"></option>
-            </select>
-        </label><br>
-        <input type="submit" value="등록" />
-    </form>
-    <a href="/products">목록으로 돌아가기</a>
+    <div class="form-container">
+        <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
+            <label>상품명: <input type="text" name="productName" required /></label>
+            <label>가격: <input type="number" name="price" required /></label>
+            <label>옵션: <input type="text" name="option" /></label>
+            <label>내용: <input type="text" name="content" /></label>
+            <label>설명: <input type="text" name="description" /></label>
+            <label>이미지 선택: <input type="file" name="imageFile" /></label>
+            <label>카테고리:
+                <select name="categoryId">
+                    <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.categoryName}"></option>
+                </select>
+            </label>
+            <label>서브카테고리:
+                <select name="subcategoryId">
+                    <option th:each="sub : ${subcategories}" th:value="${sub.subcategoryId}" th:text="${sub.subcategoryName}"></option>
+                </select>
+            </label>
+            <input type="submit" value="등록" />
+        </form>
+        <a href="/products">목록으로 돌아가기</a>
+    </div>
 </body>
 </html>
