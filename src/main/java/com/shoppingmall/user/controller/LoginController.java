@@ -8,7 +8,7 @@ public class LoginController {
 
 
   @GetMapping("/login")
-  public String loginG(){
+  public String loginG() {
     return "user/login";
   }
 }

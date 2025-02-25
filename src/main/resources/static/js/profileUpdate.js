@@ -76,3 +76,42 @@ profileUpdateForm.addEventListener("submit" , async (e) =>{
     }
 
 })
+
+
+
+// 회원 탈퇴
+
+ const removeBtn = document.querySelector(".removeBtn")
+
+ removeBtn.addEventListener("click", async (e) =>{
+
+     const password = prompt("비밀번호를 입력해주세요.")
+
+     if(password) {
+         const userOk = confirm("정말 탈퇴 하시겠습니까? 탈퇴시 복구가 되지 않습니다.")
+
+         if(userOk){
+             try {
+                 const response = await fetch("/api/users", {
+                     method: "DELETE",
+                     headers: {
+                         "Content-Type": "application/json"
+                     },
+                     body: JSON.stringify({password: password})
+                 })
+
+                 if (!response.ok) {
+                     alert("비밀번호가 일치하지 않습니다.")
+                 }
+
+                 alert("회원 탈퇴가 완료되었습니다.")
+                 window.location.href ="/home";
+
+             } catch (e) {
+                 console.log(e)
+             }
+         }
+
+     }
+
+ })

@@ -41,7 +41,7 @@ public class ProductController {
     	List<Product> products = productService.listAllProductsSorted(sort);
         model.addAttribute("products", productService.listAllProducts());
         model.addAttribute("categories", categoryService.findAllCategories());
-        return "index2";
+        return "product/index2";
     }
 
     // 상품 등록폼
@@ -50,7 +50,7 @@ public class ProductController {
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("subcategories", categoryService.findAllSubcategories());
         model.addAttribute("product", new Product());
-        return "addProduct";
+        return "product/addProduct";
     }
 
     // 상품 등록처리
@@ -88,7 +88,7 @@ public class ProductController {
         List<Review> reviews = reviewService.getReviewsByProductId(id);
         model.addAttribute("product", product);
         model.addAttribute("reviews", reviews);
-        return "productDetail";
+        return "product/productDetail";
     }
 
 
@@ -99,7 +99,7 @@ public class ProductController {
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("subcategories", categoryService.findAllSubcategories());
-        return "editProduct";
+        return "product/editProduct";
     }
 
  // 상품 수정처리
@@ -137,7 +137,7 @@ public class ProductController {
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("sort", sort); // 정렬 기준 유지
         System.out.println("Sort parameter received: " + sort);
-        return "index2";
+        return "product/index2";
     }
 
     @GetMapping("/products/category/{categoryId}/json")
@@ -161,7 +161,7 @@ public class ProductController {
         model.addAttribute("subcategories", subcats);
         model.addAttribute("categories", categoryService.findAllCategories());
 
-        return "index2";
+        return "product/index2";
     }
 
     //상품 검색(상품이름)
@@ -169,7 +169,7 @@ public class ProductController {
     public String searchProducts(@RequestParam("search") String search, Model model) {
     	List<Product> products = productService.searchProducts(search);
     	model.addAttribute("products", products);
-    	return "index2";
+    	return "product/index2";
     }
     
 

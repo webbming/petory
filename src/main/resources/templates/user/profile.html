@@ -12,6 +12,7 @@
       align-items: center;
       height: 100vh;
     }
+
     .container {
       background: white;
       padding: 40px;
@@ -21,11 +22,13 @@
       max-width: 450px;
       text-align: center;
     }
+
     h1 {
       font-size: 22px;
       margin-bottom: 30px;
       color: #222;
     }
+
     .profile-img {
       width: 100px;
       height: 100px;
@@ -38,14 +41,17 @@
       font-size: 14px;
       color: #777;
     }
-    .profile-user{
+
+    .profile-user {
       font-size: 14px;
       color: #777;
     }
+
     .form-group {
       margin-bottom: 15px;
       text-align: left;
     }
+
     label {
       font-size: 14px;
       font-weight: bold;
@@ -53,6 +59,7 @@
       color: #555;
       margin-bottom: 5px;
     }
+
     input {
       width: 100%;
       padding: 12px;
@@ -62,12 +69,14 @@
       background-color: #f8f8f8;
       box-sizing: border-box;
     }
+
     .button-group {
       display: flex;
       justify-content: space-between;
       margin-top: 20px;
       width: 100%;
     }
+
     button {
       width: 48%;
       padding: 12px;
@@ -77,10 +86,12 @@
       cursor: pointer;
       transition: background 0.3s;
     }
+
     .save-btn {
       background-color: #ccc;
       color: white;
     }
+
     .save-btn:not(:disabled) {
       background-color: #4CAF50; /* 활성화 시 색상 */
       color: white;
@@ -90,34 +101,44 @@
       background-color: #ddd;
       color: #333;
     }
+
     .cancel-btn:hover {
       background-color: #bbb;
     }
 
-    .changePassBtn{
+    .changePassBtn {
       background-color: #4676A9;
       color: white;
     }
-    .removeBtn{
+
+    .removeBtn {
       background-color: indianred;
       color: white;
     }
-    .error-message{
+
+    .error-message {
       font-size: 12px;
       color: red;
     }
-    .address{
+
+    .address {
       position: relative;
     }
-    .inline-button{
+
+    .inline-button {
       position: absolute;
       width: 70px;
-      height: 25px;
-      font-size: 10px;
+      height: 30px;
+      text-align: center;
+      vertical-align: center;
       color: white;
       background-color: #4676A9;
+      top: 50%;
       right: 5px;
-
+      transform: translateY(-50%);
+      font-size: 13px;
+      padding: 4px 8px;
+      cursor: pointer;
     }
 
 
@@ -128,26 +149,25 @@
   <h1>회원 정보 수정</h1>
   <div>
     <div class="profile-img">사진</div>
-    <p  class="profile-user"></p>
+    <p class="profile-user"></p>
   </div>
-  <form  id="profileUpdateForm">
+  <form id="profileUpdateForm">
     <div class="form-group">
       <label for="nickname">회원 닉네임</label>
-      <input type="text" id="nickname" name="nickname" >
+      <input type="text" id="nickname" name="nickname">
       <p class="error-message" id="nickname-error"></p>
     </div>
     <div class="form-group">
       <label for="email">회원 이메일</label>
-      <input type="email" id="email" name="email" >
+      <input type="email" id="email" name="email">
       <p class="error-message" id="email-error"></p>
     </div>
     <div class="form-group">
       <label for="address">회원 주소</label>
       <div class="address">
-        <input type="text" id="address" name="address">
+        <input type="text" id="address" name="address" readonly>
         <button type="button" class="inline-button" onClick="addrFind(event)">주소 찾기</button>
       </div>
-
     </div>
     <div class="button-group">
       <button type="submit" class="save-btn" disabled>적용</button>
@@ -164,8 +184,13 @@
   const addrFind = (event) => {
     event.preventDefault();
     let size = "width = 650px, height=550px, top=300px, left=300px, scrollbars=yes";
-    let openUrl = '/addrFind';
+    let openUrl = '/users/addr';
     window.open(openUrl, 'pop', size);
+  }
+</script>
+<script>
+  function receiveData(data) {
+    document.getElementById('address').value = `${data.address}`;
   }
 </script>
 <script type="module" src="/js/profileUpdate.js"></script>

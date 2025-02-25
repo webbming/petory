@@ -9,37 +9,38 @@
 
 
 <body>
-<div class="register-container" >
+<div class="register-container">
   <div>
     <h2>회원가입</h2>
   </div>
   <form id="registerForm">
 
     <div>
-      <input type="text" id="userId" name="userId" placeholder="아이디를 입력해주세요"  >
+      <input type="text" id="userId" name="userId" placeholder="아이디를 입력해주세요">
     </div>
 
     <div>
-      <input type="password" id="password" name="password" placeholder="비밀번호" >
+      <input type="password" id="password" name="password" placeholder="비밀번호">
     </div>
 
     <div>
-      <input type="text" id="email" name="email" placeholder="example@domain.com (비밀번호 찾기 등 본인 확인용) " >
+      <input type="text" id="email" name="email"
+             placeholder="example@domain.com (비밀번호 찾기 등 본인 확인용) ">
     </div>
 
     <div>
-      <input type="text" id="nickname" name="nickname"  placeholder="닉네임을 입력해주세요"  >
+      <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요">
     </div>
 
     <div>
-      <ul id="errorList1" class="errorList" >
+      <ul id="errorList1" class="errorList">
 
       </ul>
     </div>
     <hr class="section-divider">
 
     <div>
-      <select id="question" name="question" >
+      <select id="question" name="question">
         <option value="">보안 질문을 선택하세요</option>
         <option value="q1">어릴 적 살던 동네는?</option>
         <option value="q2">초등학교 때 가장 친했던 친구의 이름은?</option>
@@ -50,11 +51,11 @@
 
     <div>
       <input type="text" id="answer" name="answer" placeholder="질문에 대한 답변 (한글 20자 이내) (아이디 찾기용)"
-             pattern="[가-힣]+" maxlength="20"  title="한글만 입력 가능합니다." >
+             pattern="[가-힣]+" maxlength="20" title="한글만 입력 가능합니다.">
     </div>
 
     <div>
-      <input type="text" id="address" name="address" placeholder="주소"  readonly >
+      <input type="text" id="address" name="address" placeholder="주소" readonly>
       <button type="button" class="inline-button" onClick="addrFind(event)">주소 찾기</button>
     </div>
 

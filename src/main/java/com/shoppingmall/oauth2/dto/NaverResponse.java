@@ -5,10 +5,10 @@ import java.util.Map;
 // Naver 의 응답을 매핑 받는 dto
 public class NaverResponse implements OAuth2Response {
 
-    private final Map<String , Object> attribute;
+    private final Map<String, Object> attribute;
 
-    public NaverResponse(Map<String , Object> attribute) {
-        this.attribute = (Map<String , Object>) attribute.get("response");
+    public NaverResponse(Map<String, Object> attribute) {
+        this.attribute = (Map<String, Object>) attribute.get("response");
     }
 
     @Override

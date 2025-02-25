@@ -14,10 +14,10 @@ public class CustomOAuth2User implements OAuth2User {
 
     public CustomOAuth2User(UserResponseDTO userResponseDTO) {
         this.userResponseDTO = userResponseDTO;
-        System.out.println("Created CustomOAuth2User with email: 여긴 생성자 " + userResponseDTO.getEmail());
+        System.out.println(
+            "Created CustomOAuth2User with email: 여긴 생성자 " + userResponseDTO.getEmail());
 
     }
-
 
 
     @Override
@@ -49,7 +49,7 @@ public class CustomOAuth2User implements OAuth2User {
         return userResponseDTO.getEmail();
     }
 
-    public String getAccountType(){
+    public String getAccountType() {
         return userResponseDTO.getAccountType();
     }
 

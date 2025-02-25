@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
 
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -26,23 +25,24 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+        Authentication authentication) throws IOException, ServletException {
 
         String userId = null;
         String email = null;
         String role = null;
         String account = null;
-        if(authentication.getPrincipal() instanceof CustomOAuth2User) {
+        if (authentication.getPrincipal() instanceof CustomOAuth2User) {
             System.out.println("소셜사용자 발급 시작합니다");
             CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-            userId =  customOAuth2User.getName();
+            userId = customOAuth2User.getName();
             email = customOAuth2User.getEmail();
             account = customOAuth2User.getAccountType();
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             role = authorities.iterator().next().getAuthority();
             System.out.println("account type : " + account);
 
-        }else{
+        } else {
             System.out.println("일반 사용자 발급 시작합니다");
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             userId = customUserDetails.getUsername();
@@ -53,7 +53,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         }
 
-        String token = jwtUtil.createJwt(userId, email ,account, role,3600L );
+        String token = jwtUtil.createJwt(userId, email, account, role, 3600L);
         response.addCookie(createCookie("Authorization", token));
         response.sendRedirect("http://localhost:8080/home");
 
@@ -61,9 +61,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
 
-    private Cookie createCookie(String key , String value){
-        Cookie cookie = new Cookie(key , value);
-        cookie.setMaxAge(60*60*60);
+    private Cookie createCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(60 * 60 * 60);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 

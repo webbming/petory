@@ -15,9 +15,10 @@ import lombok.Setter;
 @Setter
 @Builder
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"email", "accountType"})
+    @UniqueConstraint(columnNames = {"email", "accountType"})
 })
 public class User {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -37,7 +38,7 @@ public class User {
   private UserRoleType role;
 
 
-  public UserResponseDTO toDTO(){
+  public UserResponseDTO toDTO() {
     return UserResponseDTO.builder()
         .userId(userId)
         .email(email)

@@ -1,15 +1,10 @@
 package com.shoppingmall.exhandler;
 
-import com.shoppingmall.user.controller.UserController;
+
 import com.shoppingmall.user.exception.DuplicateException;
 import com.shoppingmall.user.exception.FieldErrorsException;
-import com.shoppingmall.user.service.UserService;
-import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,12 +19,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
-    private final Map<String , Object> response = new HashMap<>();
+    private final Map<String, Object> response = new HashMap<>();
 
     // 중복 예외 핸들러
     // Duplicate 예외는 전부 여기서 처리 가능
     @ExceptionHandler(DuplicateException.class)
-    public ResponseEntity<Map<String , Object>> DuplicateExceptionHandler(DuplicateException e) {
+    public ResponseEntity<Map<String, Object>> DuplicateExceptionHandler(DuplicateException e) {
         response.clear();
         response.put("status", "error");
         response.put("error", e.getErrors());
@@ -38,19 +33,28 @@ public class GlobalExceptionHandler {
 
     // UsernameNotFoundException 예외는 전부 여기서 처리 가능
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Map<String , Object>> UsernameNotFoundExceptionHandler(UsernameNotFoundException e){
+    public ResponseEntity<Map<String, Object>> UsernameNotFoundExceptionHandler(
+        UsernameNotFoundException e) {
         response.clear();
         response.put("status", "error");
-        response.put("message" , e.getMessage());
+        response.put("message", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @ExceptionHandler(FieldErrorsException.class)
-    public ResponseEntity<Map<String , Object>> FieldErrorsExceptionHandler(FieldErrorsException e){
+    public ResponseEntity<Map<String, Object>> FieldErrorsExceptionHandler(FieldErrorsException e) {
         response.clear();
         response.put("status", "error");
-        response.put("message" ,e.getErrors());
+        response.put("message", e.getErrors());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> IllegalStateExceptionHandler(IllegalStateException e) {
+        response.clear();
+        response.put("status", "error");
+        response.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
 
