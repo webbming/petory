@@ -3,34 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 상세</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .product-image {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .product-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .price {
+            color: #e91e63;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .reviews {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+        }
+        .review {
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>상품 상세</h1>
-    <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
-    <p>상품명: <span th:text="${product.productName}"></span></p>
-    <p>가격: <span th:text="${product.price} + '원'"></span></p>
-    <p>옵션: <span th:text="${product.option}"></span></p>
-    <p>내용: <span th:text="${product.content}"></span></p>
-    <p>설명: <span th:text="${product.description}"></span></p>
-    <p>카테고리: <span th:text="${product.category.categoryName}"></span></p>
-    <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post">
-    	<input type="number" name="rating" placeholder="평점 (1-5)" required min="1" max="5">
-    	<textarea name="comment" placeholder="리뷰를 입력하세요" required></textarea>
-    	<button type="submit">리뷰 등록!</button>
-    </form>
-    <div>
-    <h3>리뷰 목록</h3>
-    <div th:each="review : ${reviews}">
-        <p th:text="'평점: ' + ${review.rating}"></p>
-        <p th:text="${review.comment}"></p>
-        <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
-	    </div>
-	</div>
-    <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
-    <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
-	    <input type="hidden" name="_method" value="delete">
-	    <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
-	</form>
-    <a href="/products">목록으로</a>
+    <div class="container">
+        <h1>상품 상세</h1>
+        <div class="product-image">
+            <img th:src="@{${product.imageUrl}}" alt="Product Image" style="max-width: 400px;"/>
+        </div>
+        <div class="product-info">
+            <p><strong>상품명:</strong> <span th:text="${product.productName}"></span></p>
+            <p><strong>가격:</strong> <span class="price" th:text="${product.price} + '원'"></span></p>
+            <p><strong>옵션:</strong> <span th:text="${product.option}"></span></p>
+            <p><strong>설명:</strong> <span th:text="${product.description}"></span></p>
+        </div>
+        <div class="reviews">
+            <h3>리뷰</h3>
+            <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post">
+                <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required>
+                <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
+                <button type="submit">리뷰 등록</button>
+            </form>
+            <div th:each="review : ${reviews}" class="review">
+                <p th:text="'평점: ' + ${review.rating}"></p>
+                <p th:text="${review.comment}"></p>
+                <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
+            </div>
+        </div>
+        <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
+        <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
+        </form>
+        <a href="/products">목록으로 돌아가기</a>
+    </div>
 </body>
 </html>
