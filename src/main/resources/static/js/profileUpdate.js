@@ -100,13 +100,18 @@ profileUpdateForm.addEventListener("submit" , async (e) =>{
                      body: JSON.stringify({password: password})
                  })
 
-                 if (!response.ok) {
+                 if(response.status === 400){
+                     alert("소셜회원은 탈퇴 불가합니다.")
+                 }
+
+                 if (response.status === 401) {
                      alert("비밀번호가 일치하지 않습니다.")
                  }
 
-                 alert("회원 탈퇴가 완료되었습니다.")
-                 window.location.href ="/home";
-
+                 if(response.status === 200){
+                     alert("회원 탈퇴가 완료되었습니다.")
+                     window.location.href ="/home";
+                 }
              } catch (e) {
                  console.log(e)
              }

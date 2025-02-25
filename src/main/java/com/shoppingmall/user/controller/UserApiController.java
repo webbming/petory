@@ -141,7 +141,11 @@ public class UserApiController {
   public ResponseEntity<?> DeleteUser(@RequestBody Map<String, String> password,
       Authentication authentication,
       HttpServletRequest request, HttpServletResponse response) {
+
     String userPass = password.get("password");
+    if(authentication.getPrincipal() instanceof CustomOAuth2User) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
     if (!authentication.isAuthenticated()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
