@@ -3,12 +3,14 @@ package com.shoppingmall.oauth2.dto;
 import java.util.Map;
 
 // Kakao 의 응답을 매핑 받는 dto
-public class KakaoResponse implements OAuth2Response{
+public class KakaoResponse implements OAuth2Response {
+
     private final Map<String, Object> attribute;
 
     public KakaoResponse(Map<String, Object> attribute) {
         this.attribute = attribute;
     }
+
     @Override
     public String getProvider() {
         return "kakao";
@@ -22,7 +24,7 @@ public class KakaoResponse implements OAuth2Response{
     @Override
     public String getEmail() {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attribute.get("kakao_account");
-        if (kakaoAccount != null && (Boolean)kakaoAccount.get("has_email")) {
+        if (kakaoAccount != null && (Boolean) kakaoAccount.get("has_email")) {
             return (String) kakaoAccount.get("email");
         }
         return null;

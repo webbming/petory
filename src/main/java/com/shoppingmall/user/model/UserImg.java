@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class UserImg {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +21,7 @@ public class UserImg {
     private String url;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id" , referencedColumnName = "id" , nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     public void updateUrl(String url) {

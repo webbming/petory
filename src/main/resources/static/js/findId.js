@@ -13,7 +13,7 @@ findIdForm.addEventListener("submit" , async (e) =>{
         answer : answer
     }
 
-    const response = await fetch("/find/id" , {
+    const response = await fetch("/api/users/find/id" , {
         method : "POST" ,
         headers : {
             "Content-Type" : "application/json"

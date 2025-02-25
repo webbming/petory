@@ -14,10 +14,11 @@ import java.util.Map;
 
 @Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
+
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        System.out.println("로그인 실패" + exception.getMessage());
-        Map<String , String> responseBody = new HashMap<>();
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+        AuthenticationException exception) throws IOException, ServletException {
+        Map<String, String> responseBody = new HashMap<>();
         responseBody.put("status", "fail");
         responseBody.put("message", "아이디와 비밀번호를 찾을 수 없습니다.");
 

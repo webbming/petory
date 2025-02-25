@@ -15,7 +15,7 @@ findPasswordForm.addEventListener("submit" , async (e) =>{
     message.innerHTML = "";
     message.textContent = "잠시만 기다려 주세요...";
     try{
-        const response = await fetch("/find/password" , {
+        const response = await fetch("/api/users/find/pass" , {
             method : "POST",
             headers : {
                 'Content-Type': 'application/json'
