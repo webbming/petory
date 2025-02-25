@@ -11,14 +11,14 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class PurchaseAllDto {
+public class PurchaseDto {
 
   private List<Purchase> purchase; // PurchaseList 리스트
   private List<PurchaseDelivery> purchaseDelivery; // PurchaseDelivery 리스트
   private List<PurchaseItem> purchaseItem; // PurchaseItem 리스트
 
   @Builder
-  public PurchaseAllDto(List<Purchase> purchase, List<PurchaseDelivery> purchaseDelivery, List<PurchaseItem> purchaseItem) {
+  public PurchaseDto(List<Purchase> purchase, List<PurchaseDelivery> purchaseDelivery, List<PurchaseItem> purchaseItem) {
     this.purchase = purchase;
     this.purchaseDelivery = purchaseDelivery;
     this.purchaseItem = purchaseItem;

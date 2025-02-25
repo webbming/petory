@@ -3,17 +3,16 @@ package com.shoppingmall.order.service;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseItem;
 import com.shoppingmall.order.domain.Purchase;
-import com.shoppingmall.order.dto.PurchaseAllDto;
-import com.shoppingmall.order.dto.PurchaseItemDto;
+import com.shoppingmall.order.dto.PurchaseDto;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseItemRepository;
-import com.shoppingmall.order.repository.PurchaseListRepository;
+import com.shoppingmall.order.repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -22,7 +21,7 @@ public class PurchaseAllService {
 	@Autowired
 	PurchaseDeliveryRepository deliveryRepo;
 	@Autowired
-	PurchaseListRepository purchaseRepo;
+	PurchaseRepository purchaseRepo;
 	@Autowired
 	PurchaseItemRepository itemRepo;
 
@@ -45,13 +44,13 @@ public class PurchaseAllService {
 		return "주문해주셔서 감사합니다";
 	}
 
-	//전체 주문 /취소 검색
-	public PurchaseAllDto allList(){
+	//전체 주문 / 취소 검색
+	public PurchaseDto allList(){
 		List<Purchase> purchases = purchaseRepo.findAll(Sort.by(Sort.Direction.DESC, "purchaseId"));
 		List<PurchaseDelivery> deliveries = deliveryRepo.findAllOrderByPurchaseIdDesc();
 		List<PurchaseItem> items =itemRepo.findAllOrderByPurchaseIdDesc();
 
-		return PurchaseAllDto.builder()
+		return PurchaseDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
 				.purchaseItem(items)
@@ -59,8 +58,8 @@ public class PurchaseAllService {
 
 	}
 
-	//주문번호 기준 주문기록 검색
-	public PurchaseAllDto getOrderDetails(Long purchaseId) {
+	//주문번호 기준 모든 주문기록 검색
+	public PurchaseDto getOrderDetails(Long purchaseId) {
 
 		Purchase purchase = purchaseRepo.findById(purchaseId)
 				.orElseThrow(() -> new RuntimeException("Purchase not found for id: " + purchaseId));
@@ -76,44 +75,42 @@ public class PurchaseAllService {
 		if (items.isEmpty()) {
 			throw new RuntimeException("Item not found for id: " + purchaseId);
 		}
-			return PurchaseAllDto.builder()
+			return PurchaseDto.builder()
 					.purchase(purchases)  // 전체 PurchaseList 리스트
 					.purchaseDelivery(deliveries)  // 전체 PurchaseDelivery 리스트
 					.purchaseItem(items)  // 전체 PurchaseItem 리스트
 					.build();
 	}
 
-		public PurchaseItemDto orderDetail(Long purchaseItemId){
-			Optional<PurchaseItem> purchaseItem = itemRepo.findById(purchaseItemId);
+	//userId별 주문 검색
+	public PurchaseDto orderListByUserId(String userId, String purchaseState){
+		List<Purchase> purchases;
+		List<PurchaseDelivery> deliveries;
+		List<PurchaseItem> items;
 
-			PurchaseItem item = purchaseItem.get();
-
-			return PurchaseItemDto.builder()
-					.orderItemId(item.getPurchaseItemId())
-					.productId(item.getProductId())
-					.productName(item.getProductName())
-					.option(item.getOption())
-					.quantity(item.getQuantity())
-					.price(item.getPrice())
-					.totalPrice(item.getTotalPrice())
-					.createAt(item.getCreateAt())
-					.cancelAt(item.getCancelAt())
-					.build();
-	}
-
-	public PurchaseAllDto orderListByUserId(String userId){
-		List<Purchase> purchases =  purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId);
-		List<PurchaseDelivery> deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId);
-		List<PurchaseItem> items =itemRepo.findByUserIdOrderByPurchaseIdDesc(userId);
-
-		return PurchaseAllDto.builder()
+		if(purchaseState.isEmpty() || purchaseState==null){
+			purchases =  purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId);
+			deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId);
+			items =itemRepo.findByUserIdOrderByPurchaseIdDesc(userId);
+		}
+		else if(purchaseState.equals("cancel")){
+			purchases = purchaseRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
+			deliveries = deliveryRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
+			items = itemRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
+		}
+		else{
+			purchases = purchaseRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
+			deliveries = deliveryRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
+			items = itemRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
+		}
+		return PurchaseDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
 				.purchaseItem(items)
 				.build();
 	}
 
-
+	//배송 상태 변경
 	public String deliveryChange(String deliveryState, Long purchaseId){
 		 PurchaseDelivery changeState = deliveryRepo.findPurchaseDeliveryByPurchaseId(purchaseId);
 		if(deliveryState.equals("onDelivery")){
@@ -129,11 +126,24 @@ public class PurchaseAllService {
 			deliveryRepo.save(changeState);
 		return "주문상태 변경: " + deliveryState;
 	}
-
-	public String orderCancel(Long purchaseId){
+	
+//주문 취소
+	public String purchaseCancel(Long purchaseId){
 		List<Purchase> purchases = purchaseRepo.findByPurchaseId(purchaseId);
+		List<PurchaseDelivery> deliveries = deliveryRepo.findByPurchaseId(purchaseId);
+		List<PurchaseItem> items = itemRepo.findByPurchaseId(purchaseId);
 		Purchase purchase = purchases.get(0);
+		PurchaseDelivery delivery = deliveries.get(0);
+		PurchaseItem item = items.get(0);
+
+		item.setCancelAt(LocalDateTime.now());
+		delivery.setCancelAt(LocalDateTime.now());
 		purchase.setCancelAt(LocalDateTime.now());
+
+		deliveryRepo.save(delivery);
+		itemRepo.save(item);
+		purchaseRepo.save(purchase);
 		return "취소되었습니다";
 	}
+
 }

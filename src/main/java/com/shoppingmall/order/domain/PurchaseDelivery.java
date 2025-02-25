@@ -29,6 +29,8 @@ public class PurchaseDelivery {
 
     private String deliveryStatus; // 배송 상태
 
+    private LocalDateTime cancelAt; // 주문 취소 시간
+
     private LocalDateTime deliveredAt; // 배송 완료 시간
 
 }

@@ -19,5 +19,11 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long
 
   @Query("SELECT d FROM PurchaseItem d WHERE d.purchase.userId = :userId ORDER BY d.purchase.purchaseId DESC")
   List<PurchaseItem> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId);
+
+  @Query("SELECT d FROM PurchaseItem d WHERE d.purchase.cancelAt IS NOT NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
+  List<PurchaseItem> findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(String userId);
+
+  @Query("SELECT d FROM PurchaseItem d WHERE d.purchase.cancelAt IS NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
+  List<PurchaseItem> findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(String userId);
 }
 
