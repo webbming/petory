@@ -1,6 +1,8 @@
 package com.shoppingmall.board.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -29,15 +31,15 @@ public class Comment {
 	
 	private String userId;
 	
+	private String nickname;
+	
 	private String content;
 	
 	private int likeCount = 0;
 	
+	private List<Long> likeContain = new ArrayList<Long>();
+	
 	@CreationTimestamp
     @Column(updatable = false)
 	private LocalDateTime createdAt;
-	
-	public Long getBoardId() {
-		return board.getBoardId();
-	}
 }

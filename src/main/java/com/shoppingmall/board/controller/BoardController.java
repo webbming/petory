@@ -5,53 +5,56 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.model.Comment;
-import com.shoppingmall.board.repository.BoardRepository;
-import com.shoppingmall.board.repository.CommentRepository;
 import com.shoppingmall.board.service.BoardService;
 import com.shoppingmall.board.service.CommentService;
 import com.shoppingmall.user.model.User;
+import com.shoppingmall.user.repository.UserRepository;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
 @RequestMapping("/board")
+@Tag(name = "Response Estimate", description = "Response Estimate API")
 public class BoardController {
 	@Autowired
 	private BoardService boardService;
 	@Autowired
 	private CommentService commentService;
-	
-	@Value("${file.upload-dir}")
-    private String uploadDir;
+	@Autowired
+	private UserRepository userRepository;
 	
 	//리스트 조회
 	@GetMapping("/board")
     public String getBoardByKeyword(@RequestParam(name = "page", defaultValue = "0") int page,
                            @RequestParam(name = "size", defaultValue = "2") int size,
                            @RequestParam(name = "keyword", defaultValue = "") String keyword,
+                           @RequestParam(name = "category", defaultValue="") String category,
                            Model model) {
-		Page<Board> board = boardService.getPostByKeyword(keyword, page, size);
+		Page<Board> board = boardService.getPostByKeyword(keyword, category, page, size);
 		
 		board.forEach(i -> {
 			Long boardId = i.getBoardId();
@@ -66,52 +69,72 @@ public class BoardController {
 	
 	//작성페이지 이동
 	@GetMapping("/write")
-	public String writePostPage() {
+	public String writePostPage(Authentication auth, Model model) {
+		try {
+	        if (auth == null || !auth.isAuthenticated()) {
+	            return "redirect:/login";
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        model.addAttribute("errorMessage", "게시글을 불러오는 중 오류가 발생했습니다.");
+	    }
 		return "board/write";
 	}
 	
 	//등록
 	@PostMapping("/write")
-	public String writePost(@RequestParam("file") MultipartFile file, @ModelAttribute Board board, @RequestParam("imageFile") MultipartFile imageFile,
-            @RequestParam("videoFile") MultipartFile videoFile, Model model) throws IllegalStateException, IOException {
-		String filename = StringUtils.cleanPath(file.getOriginalFilename());
-        File targetFile = new File(uploadDir + File.separator + filename);
-        
-        if (!imageFile.isEmpty()) {
-            String imagePath = saveFile(imageFile);
-            model.addAttribute("imagePath", imagePath);
-        }
-
-        // 동영상 파일 처리
-        if (!videoFile.isEmpty()) {
-            String videoPath = saveFile(videoFile);
-            model.addAttribute("videoPath", videoPath);
-        }
-
-        // 파일을 지정된 위치에 저장
-        file.transferTo(targetFile);
+	public String writePost(@ModelAttribute Board board, Authentication auth, Model model) {
+        String nickname = userRepository.findByUserId(auth.getName()).getNickname();
+        board.setUserId(auth.getName());
+        board.setNickname(nickname);
 
 		boardService.savePost(board);
 		model.addAttribute("board", board);
 		return "board/read";
 	}
 	
-	private String saveFile(MultipartFile file) throws IOException {
-        String filename = file.getOriginalFilename();
-        Path path = Paths.get(uploadDir + File.separator + filename);
-        Files.createDirectories(path.getParent()); // 부모 디렉토리가 없으면 생성
-        file.transferTo(path); // 파일 저장
-        return path.toString();
+	@PostMapping("/board/images")
+	@ResponseBody
+    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("upload") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "파일이 없습니다."));
+        }
+
+        try {
+            // 파일 이름 설정
+            String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+            Path path = Paths.get("src/main/resources/static/images/" + fileName);
+
+            // 파일을 서버 디렉토리에 저장
+            Files.write(path, file.getBytes());
+
+            // 클라이언트에 반환할 이미지 URL
+            String fileUrl = "/images/" + fileName;
+            return ResponseEntity.ok(Map.of("url", fileUrl));
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(Map.of("error", "파일 저장 실패"));
+        }
     }
 	
 	//상세페이지 이동
 	@GetMapping("/read")
-	public String readPost(@RequestParam("boardId") Long boardId, Model model) {
-		Board board = boardService.getPostById(boardId);
-		List<Comment> comment = commentService.getComment(boardId);
-		model.addAttribute("board", board);
-		model.addAttribute("comment", comment);
-		return "board/read";
+	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
+	    try {
+	        if (auth == null || !auth.isAuthenticated()) {
+	            return "redirect:/login";
+	        }
+	        else {
+		        User user = userRepository.findByUserId(auth.getName());
+		        Board board = boardService.viewPost(boardId, user);
+		        List<Comment> comment = commentService.getComment(boardId);
+		        model.addAttribute("board", board);
+		        model.addAttribute("comment", comment);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        model.addAttribute("errorMessage", "게시글을 불러오는 중 오류가 발생했습니다.");
+	    }
+	    return "board/read";
 	}
 	
 	//수정페이지 이동
@@ -143,15 +166,17 @@ public class BoardController {
 	
 	//게시글 좋아요
 	@GetMapping("/like")
-	public String likePost(@RequestParam("boardId") Long boardId) {
-		boardService.likePost(boardId);
+	public String likePost(Authentication auth, @RequestParam("boardId") Long boardId) {
+		User user = userRepository.findByUserId(auth.getName());
+		boardService.likePost(boardId, user);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
 	
 	//댓글 좋아요
 	@GetMapping("/commentLike")
-	public String likeComment(@RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId) {
-		commentService.likeComment(commentId);
+	public String likeComment(Authentication auth, @RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId) {
+		User user = userRepository.findByUserId(auth.getName());
+		commentService.likeComment(commentId, user);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
 	

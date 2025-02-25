@@ -15,8 +15,10 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
 	Page<Board> findAllByOrderByBoardIdDesc(Pageable pageable);
 	
 	//키워드 검색
-	@Query("SELECT b FROM Board b WHERE b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR b.userId LIKE %:keyword% ORDER BY boardId DESC")
-	Page<Board> searchBoards(@Param("keyword") String keyword, Pageable pageable);
-	
-	
+	@Query("SELECT b FROM Board b WHERE " +
+		       "(LOWER(b.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+		       "OR LOWER(b.content) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+		       "OR LOWER(b.userId) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+		       "AND (:category = '' OR b.categoryId = :category) ORDER BY createdAt DESC")
+	Page<Board> searchBoards(@Param("keyword") String keyword, @Param("category") String category, Pageable pageable);
 }

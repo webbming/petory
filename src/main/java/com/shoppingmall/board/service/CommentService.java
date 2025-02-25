@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.model.Comment;
 import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.board.repository.CommentRepository;
+import com.shoppingmall.user.model.User;
 
 @Service
 public class CommentService {
@@ -34,19 +34,26 @@ public class CommentService {
 	}
 	
 	//게시글 좋아요
-	public void likeComment(Long commentId) {
+	public void likeComment(Long commentId, User user) {
 		Comment comment = repository.findById(commentId).orElse(null);
-		int likeCount = comment.getLikeCount();
-		if(toggle.equals("minus")) {
+		List<Long> container = comment.getLikeContain();
+		
+		if(!container.contains(user.getId())) {
+			container.add(user.getId());
+			comment.setLikeContain(container);
+			int likeCount = comment.getLikeCount();
 			likeCount++;
-			toggle = "plus";
+			comment.setLikeCount(likeCount);
+			repository.save(comment);
 		}
 		else {
+			container.remove(user.getId());
+			comment.setLikeContain(container);
+			int likeCount = comment.getLikeCount();
 			likeCount--;
-			toggle = "minus";
+			comment.setLikeCount(likeCount);
+			repository.save(comment);
 		}
-		comment.setLikeCount(likeCount);
-	    repository.save(comment);
 	}
 	
 	//댓글 삭제
