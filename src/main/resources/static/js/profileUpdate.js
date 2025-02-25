@@ -1,9 +1,5 @@
 
-const addressBtn = document.querySelector(".addressBtn");
 
-addressBtn.addEventListener("click" , (e) =>{
-  addrFind();
-})
 
 async function loadUserData() {
   console.log("작동은된단다")

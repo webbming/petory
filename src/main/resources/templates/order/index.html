@@ -76,7 +76,7 @@
     	event.preventDefault();
         new daum.Postcode({
             oncomplete: function(data) {
-                document.getElementById("reciver_addr").value = data.address;
+                document.getElementById("receiver_addr").value = data.address;
             }
         }).open();
     }
