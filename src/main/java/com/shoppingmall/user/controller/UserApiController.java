@@ -143,7 +143,7 @@ public class UserApiController {
       HttpServletRequest request, HttpServletResponse response) {
 
     String userPass = password.get("password");
-    if(authentication.getPrincipal() instanceof CustomOAuth2User) {
+    if (authentication.getPrincipal() instanceof CustomOAuth2User) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
     if (!authentication.isAuthenticated()) {
