@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.shoppingmall.category.Category;
 import com.shoppingmall.category.CategoryService;
+import com.shoppingmall.category.Subcategory;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -89,5 +90,17 @@ public class ProductService {
         }
     }
 
+    public List<Product> findProductsBySubcategory(Subcategory subcategory, String sort) {
+        switch (sort) {
+            case "priceLowHigh":
+                return productRepository.findBySubcategoryOrderByPriceAsc(subcategory);
+            case "priceHighLow":
+                return productRepository.findBySubcategoryOrderByPriceDesc(subcategory);
+            case "rating":
+                return productRepository.findBySubcategoryOrderByAverageRatingDesc(subcategory);
+            default:
+                return productRepository.findBySubcategoryOrderByCreatedAtDesc(subcategory); // 기본 정렬: 신제품순
+        }
+    }
 
 }
