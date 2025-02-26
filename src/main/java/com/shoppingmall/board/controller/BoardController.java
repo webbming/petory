@@ -25,8 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartRequest;
 
+import com.nimbusds.jose.shaded.gson.Gson;
 import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.model.Comment;
 import com.shoppingmall.board.service.BoardService;
@@ -35,6 +37,7 @@ import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/board")
@@ -93,27 +96,36 @@ public class BoardController {
 		return "board/read";
 	}
 	
-	@PostMapping("/board/images")
+	@PostMapping("/images")
 	@ResponseBody
-    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("upload") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "파일이 없습니다."));
-        }
+    public String uploadImage(MultipartHttpServletRequest request, HttpServletRequest req) throws IllegalStateException, IOException {
+		// url을 반환하기 위한 hashmap
+		Map<String, Object> map = new HashMap<>();
 
-        try {
-            // 파일 이름 설정
-            String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
-            Path path = Paths.get("src/main/resources/static/images/" + fileName);
+		// 이미지 정보를 받아주는 코드
+		MultipartFile uploadFile = request.getFile("upload");
 
-            // 파일을 서버 디렉토리에 저장
-            Files.write(path, file.getBytes());
+		String originalFileName = uploadFile.getOriginalFilename();
 
-            // 클라이언트에 반환할 이미지 URL
-            String fileUrl = "/images/" + fileName;
-            return ResponseEntity.ok(Map.of("url", fileUrl));
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body(Map.of("error", "파일 저장 실패"));
-        }
+		String ext = originalFileName.substring(originalFileName.indexOf("."));
+				
+		String uploadDir = System.getProperty("user.dir") + "/uploads";
+	    
+	    File folder = new File(uploadDir);
+	    if (!folder.exists()) {
+	        folder.mkdirs();
+	    }
+
+	    String newFileName = UUID.randomUUID() + ext;
+	    File file = new File(uploadDir, newFileName);
+
+	    uploadFile.transferTo(file);
+				
+	    String fileUrl = "/uploads/" + newFileName;
+	    map.put("url", fileUrl);
+				
+
+		return new Gson().toJson(map);
     }
 	
 	//상세페이지 이동

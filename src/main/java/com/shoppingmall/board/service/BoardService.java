@@ -36,8 +36,6 @@ public class BoardService {
 		return repository.searchBoards(keyword, category, pageable);
 	}
 	
-	//조회수 증가
-	
 	//상세조회
 	public Board viewPost(Long boardId, User user) {
 		Board board = repository.findById(boardId).orElse(null);

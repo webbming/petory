@@ -37,6 +37,7 @@ public class Comment {
 	
 	private int likeCount = 0;
 	
+	@Column(length = 1000)
 	private List<Long> likeContain = new ArrayList<Long>();
 	
 	@CreationTimestamp

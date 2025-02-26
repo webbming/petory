@@ -44,10 +44,12 @@ public class Board {
 	
 	private int viewCount = 0;
 	
+	@Column(length = 1000)
 	private List<Long> viewContain = new ArrayList<Long>();
 	
 	private int likeCount = 0;
 	
+	@Column(length = 1000)
 	private List<Long> likeContain = new ArrayList<Long>();
 	
 	@CreationTimestamp
