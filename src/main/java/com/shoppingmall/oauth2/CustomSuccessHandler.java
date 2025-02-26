@@ -33,7 +33,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = null;
         String account = null;
         if (authentication.getPrincipal() instanceof CustomOAuth2User) {
-            System.out.println("소셜사용자 발급 시작합니다");
             CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
             userId = customOAuth2User.getName();
             email = customOAuth2User.getEmail();
@@ -43,7 +42,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             System.out.println("account type : " + account);
 
         } else {
-            System.out.println("일반 사용자 발급 시작합니다");
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             userId = customUserDetails.getUsername();
             email = customUserDetails.getEmail();
