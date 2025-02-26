@@ -47,9 +47,13 @@
 		<button>주문하기</button>
 	</form>
 	
-<form action="/order/admin/orderList" method="POST">
-    <input type="hidden" name="cancel" value="all">
-    <button type="submit">주문/취소 전체 목록</button>
+<form action="/order/admin/orderList" method="get">
+	<label for="searchAll">관리자용 전체 주문 관리:</label>
+	<select id="searchAll" name="purchaseState">
+		<option value="all">전체</option>
+		<option value="cancel">취소</option>
+		<option value="purchase">주문</option>
+		<button type="submit">조회</button>
 </form>
 <form action="/orderList" method="GET">
     <input type="hidden" name="cancel" value="order">
@@ -60,12 +64,12 @@
     <button type="submit">취소 목록</button>
 </form>
 	    <form action="order/orders/userId" method="get">
-<!--        <label for="searchOption">검색 종류:</label>-->
-<!--        <select id="searchOption" name="cancel">-->
-<!--            <option value="all">전체</option>-->
-<!--            <option value="cancel">취소</option>-->
-<!--            <option value="order">주문</option>-->
-<!--        </select>-->
+        <label for="searchOption">검색 종류:</label>
+        <select id="searchOption" name="purchaseState">
+            <option value="all">전체</option>
+            <option value="cancel">취소</option>
+            <option value="purchase">주문</option>
+        </select>
         <input type="text" name="userId" placeholder="아이디를 입력해주세요" />
         <button type="submit">검색</button>
  </form>

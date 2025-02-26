@@ -3,6 +3,8 @@ package com.shoppingmall.order.service;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseItem;
 import com.shoppingmall.order.domain.Purchase;
+import com.shoppingmall.order.dto.DeliveryChangeDto;
+import com.shoppingmall.order.dto.PurchaseDeliveryDto;
 import com.shoppingmall.order.dto.PurchaseDto;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseItemRepository;
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -45,10 +46,26 @@ public class PurchaseAllService {
 	}
 
 	//전체 주문 / 취소 검색
-	public PurchaseDto allList(){
-		List<Purchase> purchases = purchaseRepo.findAll(Sort.by(Sort.Direction.DESC, "purchaseId"));
-		List<PurchaseDelivery> deliveries = deliveryRepo.findAllOrderByPurchaseIdDesc();
-		List<PurchaseItem> items =itemRepo.findAllOrderByPurchaseIdDesc();
+	public PurchaseDto purchaseList(String purchasestate){
+		List<Purchase> purchases;
+		List<PurchaseDelivery> deliveries;
+		List<PurchaseItem> items;
+
+		if(purchasestate.equals("all")){
+			purchases = purchaseRepo.findAll(Sort.by(Sort.Direction.DESC, "purchaseId"));
+			deliveries = deliveryRepo.findAllOrderByPurchaseIdDesc();
+			items =itemRepo.findAllOrderByPurchaseIdDesc();
+		}
+		else if(purchasestate.equals("cancel")){
+			purchases = purchaseRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
+			deliveries = deliveryRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
+			items = itemRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
+		}
+		else{
+			purchases = purchaseRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
+			deliveries = deliveryRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
+			items = itemRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
+		}
 
 		return PurchaseDto.builder()
 				.purchase(purchases)
@@ -58,28 +75,18 @@ public class PurchaseAllService {
 
 	}
 
-	//주문번호 기준 모든 주문기록 검색
+	//주문번호로 상세 주문 검색
 	public PurchaseDto getOrderDetails(Long purchaseId) {
 
-		Purchase purchase = purchaseRepo.findById(purchaseId)
-				.orElseThrow(() -> new RuntimeException("Purchase not found for id: " + purchaseId));
 		List<Purchase> purchases = purchaseRepo.findByPurchaseId(purchaseId);
-		if (purchases.isEmpty()) {
-			throw new RuntimeException("Purchases not found for id: " + purchaseId);
-		}
-		List<PurchaseDelivery> deliveries  = deliveryRepo.findByPurchaseId(purchaseId);  // 반환 타입은 List<PurchaseDelivery>
-		if (deliveries.isEmpty()) {
-			throw new RuntimeException("Delivery not found for id: " + purchaseId);
-		}
+		List<PurchaseDelivery> deliveries  = deliveryRepo.findByPurchaseId(purchaseId);
 		List<PurchaseItem> items = itemRepo.findByPurchaseId(purchaseId);
-		if (items.isEmpty()) {
-			throw new RuntimeException("Item not found for id: " + purchaseId);
-		}
-			return PurchaseDto.builder()
-					.purchase(purchases)  // 전체 PurchaseList 리스트
-					.purchaseDelivery(deliveries)  // 전체 PurchaseDelivery 리스트
-					.purchaseItem(items)  // 전체 PurchaseItem 리스트
-					.build();
+
+		return PurchaseDto.builder()
+				.purchase(purchases)
+				.purchaseDelivery(deliveries)
+				.purchaseItem(items)
+				.build();
 	}
 
 	//userId별 주문 검색
@@ -88,7 +95,7 @@ public class PurchaseAllService {
 		List<PurchaseDelivery> deliveries;
 		List<PurchaseItem> items;
 
-		if(purchaseState.isEmpty() || purchaseState==null){
+		if(purchaseState.equals("all")){
 			purchases =  purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId);
 			deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId);
 			items =itemRepo.findByUserIdOrderByPurchaseIdDesc(userId);
@@ -145,5 +152,28 @@ public class PurchaseAllService {
 		purchaseRepo.save(purchase);
 		return "취소되었습니다";
 	}
-
+	
+	//배송정보 수정 관련
+	public PurchaseDeliveryDto receiverChange(DeliveryChangeDto dto, String state){
+		System.out.print(dto.getPurchaseId());
+	 	List<PurchaseDelivery> receiver = deliveryRepo.findByPurchaseId(dto.getPurchaseId());
+		 PurchaseDelivery receiverChanse = receiver.get(0);
+		 if(state.equals("change")){
+			 receiverChanse.setReceiverName(dto.getReceiverName());
+			 receiverChanse.setReceiverPhone(dto.getReceiverPhone());
+				 if(dto.getDetailAddr()==null){
+					 dto.setDetailAddr("");
+				 }
+			 receiverChanse.setReceiverAddr(dto.getReceiverAddr() + "  " + dto.getDetailAddr());
+			 receiverChanse.setDeliveryMessage(dto.getDeliveryMessage());
+			 deliveryRepo.save(receiverChanse);
+		 }
+		return PurchaseDeliveryDto.builder()
+				.deliveryId(receiverChanse.getDeliveryId())
+				.receiverName(receiverChanse.getReceiverName())
+				.receiverAddr(receiverChanse.getReceiverAddr())
+				.receiverPhone(receiverChanse.getReceiverPhone())
+				.deliveryMessage(receiverChanse.getDeliveryMessage())
+				.build();
+	}
 }

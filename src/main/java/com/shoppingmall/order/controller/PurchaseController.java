@@ -1,8 +1,11 @@
 package com.shoppingmall.order.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseItem;
 import com.shoppingmall.order.domain.Purchase;
+import com.shoppingmall.order.dto.DeliveryChangeDto;
+import com.shoppingmall.order.dto.PurchaseDeliveryDto;
 import com.shoppingmall.order.dto.PurchaseDto;
 import com.shoppingmall.order.service.PurchaseAllService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +22,6 @@ public String index() {
 	return "order/index";
 }
 
-@GetMapping("/delivery")
-public String delivery() {
-	return "order/delivery";
-}
-
-@GetMapping("/orderOneItem")
-public String orderOneItem() {
-	return "order/orderOneItem";
-}
-
 @Autowired
 PurchaseAllService service;
 
@@ -43,7 +36,6 @@ public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseD
 	model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
 	model.addAttribute("purchase", purchaseDto.getPurchase());
 	model.addAttribute("item", purchaseDto.getPurchaseItem());
-
 	return "order/orderResult";
 }
 
@@ -57,12 +49,12 @@ public String orderByPurchaseId(@PathVariable Long purchaseId, Model model){
 	return "order/orderResult";
 }
 
-//전체 회원 리스트 주문 검색
-@PostMapping("/admin/orderList")
-public String orderAll(Model model){
-		model.addAttribute("purchase", service.allList().getPurchase());
-		model.addAttribute("delivery", service.allList().getPurchaseDelivery());
-		model.addAttribute("item", service.allList().getPurchaseItem());
+//전체 회원 리스트 주문 검색(전체별, 취소별, 주문요청별)
+@GetMapping("/admin/orderList")
+public String orderAll(@RequestParam(name = "purchaseState") String purchaseState, Model model){
+		model.addAttribute("purchase", service.purchaseList(purchaseState).getPurchase());
+		model.addAttribute("delivery", service.purchaseList(purchaseState).getPurchaseDelivery());
+		model.addAttribute("item", service.purchaseList(purchaseState).getPurchaseItem());
 	return "order/orderResultAll";
 	}
 
@@ -85,11 +77,32 @@ public String orderAll(Model model){
 	//userId 기준 주문 검색
 	@GetMapping("/orders/userId")
 	public String orderListByUserId(@RequestParam(name = "userId") String userId
-																	,@RequestParam(name = "orderState", required = false) String orderState, Model model){
-	 PurchaseDto purchaseDto = service.orderListByUserId(userId, orderState);
+									,@RequestParam(name = "purchaseState", required = false) String purchaseState, Model model){
+		if (purchaseState == null) {
+			purchaseState = "all";
+		}
+	PurchaseDto purchaseDto = service.orderListByUserId(userId, purchaseState);
 		model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
 		model.addAttribute("purchase", purchaseDto.getPurchase());
 		model.addAttribute("item", purchaseDto.getPurchaseItem());
 	return "order/orderListByUserId";
 	}
+	
+	//수령인 정보 변경
+	@GetMapping("/orders/receiver")
+	public String receiverChange(@ModelAttribute DeliveryChangeDto deliveryChangeDto,
+								 @RequestParam(name="state", required = false, defaultValue = "show") String state,
+								 Model model){
+	System.out.println(state);
+	System.out.println(deliveryChangeDto.getPurchaseId());
+	model.addAttribute("delivery", service.receiverChange(deliveryChangeDto, state));
+	Long purchaseId = deliveryChangeDto.getPurchaseId();
+		if(state.equals("show")){
+			model.addAttribute("purchaseId", deliveryChangeDto.getPurchaseId());
+			return "order/receiverChange";
+			}
+	return "redirect:/order";
+	}
 }
+
+

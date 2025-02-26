@@ -22,13 +22,13 @@ public class PurchaseDeliveryDto {
   private String userId;
 
   @Builder
-  public PurchaseDeliveryDto(Long deliveryId, String reciverName, String reciverPhone, String reciverAddr,
+  public PurchaseDeliveryDto(Long deliveryId, String receiverName, String receiverPhone, String receiverAddr,
                              String deliveryMessage, String deliveryStatus, LocalDateTime deliveredAt, String userId
                               ,LocalDateTime cancelAt) {
     this.deliveryId = deliveryId;
-    this.receiverName = reciverName;
-    this.receiverPhone = reciverPhone;
-    this.receiverAddr = reciverAddr;
+    this.receiverName = receiverName;
+    this.receiverPhone = receiverPhone;
+    this.receiverAddr = receiverAddr;
     this.deliveryMessage = deliveryMessage;
     this.deliveryStatus = deliveryStatus;
     this.deliveredAt = deliveredAt;
@@ -39,9 +39,9 @@ public class PurchaseDeliveryDto {
   public static PurchaseDeliveryDto fromEntity(PurchaseDelivery delivery) {
     return PurchaseDeliveryDto.builder()
         .deliveryId(delivery.getDeliveryId())
-        .reciverName(delivery.getReceiverName())
-        .reciverPhone(delivery.getReceiverPhone())
-        .reciverAddr(delivery.getReceiverAddr())
+        .receiverName(delivery.getReceiverName())
+        .receiverPhone(delivery.getReceiverPhone())
+        .receiverAddr(delivery.getReceiverAddr())
         .deliveryMessage(delivery.getDeliveryMessage())
         .deliveryStatus(delivery.getDeliveryStatus())
         .deliveredAt(delivery.getDeliveredAt())
