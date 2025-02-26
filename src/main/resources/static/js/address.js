@@ -8,5 +8,3 @@ const addrFind = (event) => {
   let openUrl = '/users/addr';
   window.open(openUrl, 'pop', size);
 }
-
-export {receiveData , addrFind};

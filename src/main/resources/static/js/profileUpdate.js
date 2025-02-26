@@ -1,12 +1,7 @@
 
-const addressBtn = document.querySelector(".addressBtn");
-
-addressBtn.addEventListener("click" , (e) =>{
-  addrFind();
-})
 
 async function loadUserData() {
-  console.log("작동은된단다")
+
   try {
     const response = await fetch("/api/users/profile",
         {credentials: "include"})
