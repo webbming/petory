@@ -4,9 +4,6 @@ package com.shoppingmall.config.security;
 import com.shoppingmall.oauth2.CustomSuccessHandler;
 import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
 import com.shoppingmall.user.jwt.JWTUtil;
-import com.shoppingmall.user.jwt.JwtFilter;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,21 +12,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.MultipartFilter;
-
 import java.util.Arrays;
 import java.util.Collections;
 
 import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
+
 
 @Configuration
 @EnableWebSecurity
