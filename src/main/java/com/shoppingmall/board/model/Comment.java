@@ -1,6 +1,8 @@
 package com.shoppingmall.board.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -21,7 +23,7 @@ import lombok.Data;
 public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int commentId;
+	private Long commentId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id", referencedColumnName = "boardId", nullable = false)
@@ -29,15 +31,16 @@ public class Comment {
 	
 	private String userId;
 	
+	private String nickname;
+	
 	private String content;
 	
 	private int likeCount = 0;
 	
+	@Column(length = 1000)
+	private List<Long> likeContain = new ArrayList<Long>();
+	
 	@CreationTimestamp
     @Column(updatable = false)
 	private LocalDateTime createdAt;
-	
-	public int getBoardId() {
-		return board.getBoardId();
-	}
 }
