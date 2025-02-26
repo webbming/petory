@@ -59,12 +59,25 @@ profileUpdateForm.addEventListener("submit", async (e) => {
     if (!response.ok) {
       const nickNameError = document.querySelector("#nickname-error")
       const emailError = document.querySelector("#email-error")
+      const addressError = document.querySelector("#address-error")
       const result = await response.json();
-      console.log(result.status.nickname)
+
       nickNameError.innerHTML = "";
       emailError.innerHTML = "";
-      nickNameError.textContent = result.status.nickname
-      emailError.textContent = result.status.email
+      addressError.innerHTML = "";
+
+      if (result.message) {
+          if (result.message.nickname) {
+            nickNameError.textContent = result.message.nickname;
+          }
+          if (result.message.email) {
+            emailError.textContent = result.message.email;
+          }
+          if (result.message.address) {
+            addressError.textContent = result.message.address;
+          }
+      }
+
     } else {
       const result = await response.json();
       console.log(result)

@@ -101,6 +101,8 @@ public class UserApiController {
   @Operation(summary = "회원 정보 수정(업데이트)", description = "요청시 nickname , email , address 를 정보로 요청")
   public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @RequestBody UserUpdateDTO userDTO,
       Errors errors) {
+    System.out.println("요청옴");
+    System.out.println(userDTO.getEmail());
     Map<String, Object> response = new HashMap<>();
     userService.filedErrorsHandler(errors);
     userService.updateUser(userDTO);
