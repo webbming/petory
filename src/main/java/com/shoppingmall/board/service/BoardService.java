@@ -1,6 +1,7 @@
 package com.shoppingmall.board.service;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,23 +32,38 @@ public class BoardService {
     }
 	
 	//검색
-	public Page<Board> getPostByKeyword(String keyword, String category, int page, int size){
+	public Page<Board> getPostByKeyword(String keyword, String category, String orderby, String bydate, LocalDateTime startDate, int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
-		return repository.searchBoards(keyword, category, pageable);
+		return repository.searchBoards(keyword, category, orderby, bydate, startDate, pageable);
 	}
+	
+	//날짜 검색
+	public LocalDateTime getStartDateForPeriod(String bydate) {
+        LocalDateTime now = LocalDateTime.now();
+        switch (bydate) {
+            case "1개월":
+                return now.minusMonths(1);
+            case "3개월":
+                return now.minusMonths(3);
+            case "전체":
+                return null;
+            default:
+                throw new IllegalArgumentException("Invalid period");
+        }
+    }
 	
 	//상세조회
 	public Board viewPost(Long boardId, User user) {
 		Board board = repository.findById(boardId).orElse(null);
-		List<Long> container = board.getViewContain();
+		Set<Long> container = board.getViewContain();
 		
 		if(!container.contains(user.getId())) {
-			List<Long> viewContain = board.getViewContain();
-			viewContain.add(user.getId());
-			board.setViewContain(viewContain);
+			container.add(user.getId());
+			board.setViewContain(container);
 			int viewCount = board.getViewCount();
 			viewCount++;
 			board.setViewCount(viewCount);
+			board.setViewContain(container);
 			return repository.save(board);
 		}
 		else {
@@ -69,8 +85,7 @@ public class BoardService {
 	//게시글 좋아요
 	public void likePost(Long boardId, User user) {
 		Board board = repository.findById(boardId).orElse(null);
-		System.out.println(board.getUserId());
-		List<Long> container = board.getLikeContain();
+		Set<Long> container = board.getLikeContain();
 		
 		if(!container.contains(user.getId())) {
 			container.add(user.getId());
@@ -91,11 +106,12 @@ public class BoardService {
 	}
 	
 	//수정
-	public Board updatePost(Long boardId, String title, String content, String categoryId) {
+	public Board updatePost(Long boardId, String title, String content, String categoryId, String hashtag) {
 		Board board = repository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("Invalid board Id"));
 		board.setTitle(title);
 		board.setContent(content);
 		board.setCategoryId(categoryId);
+		board.setHashtag(hashtag);
 		return repository.save(board);
 	}
 	

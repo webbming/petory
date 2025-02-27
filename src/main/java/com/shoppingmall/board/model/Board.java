@@ -1,64 +1,69 @@
 package com.shoppingmall.board.model;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.hibernate.annotations.CreationTimestamp;
+import com.shoppingmall.user.model.User;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
 @Entity
 @Table(name = "board")
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter
 public class Board {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long boardId;
-	
-	private String userId;
-	
-	private String nickname;
-	
-	@Column(nullable = false, length = 20)
-	private String title;
-	
-	@Column(nullable = false)
-	private String content;
-	
-	private String hashtag;
-	
-	private int commentCount = 0;
-	
-	private int viewCount = 0;
-	
-	@Column(length = 1000)
-	private List<Long> viewContain = new ArrayList<Long>();
-	
-	private int likeCount = 0;
-	
-	@Column(length = 1000)
-	private List<Long> likeContain = new ArrayList<Long>();
-	
-	@CreationTimestamp
-    @Column(updatable = false)
-	private LocalDateTime createdAt;
-	
-	@Column(nullable = false)
-	private String categoryId;
-	
-	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Comment> comments;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "board_id")
+    private Long boardId;
+
+    @Column(nullable = false, length = 50)
+    private String title;
+
+    @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column(length = 100)
+    private String hashtag;
+
+    @Column(name = "comment_count", nullable = false)
+    private Integer commentCount = 0;
+
+    @Column(name = "view_count")
+    private Integer viewCount = 0;
+
+    @Column(name = "like_count")
+    private Integer likeCount = 0;
+
+    @Lob
+    @Column(name = "view_contain")
+    private Set<Long> viewContain = new HashSet<Long>();
+
+    @Lob
+    @Column(name = "like_contain")
+    private Set<Long> likeContain = new HashSet<Long>();
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "category_id", length = 20)
+    private String categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -1,6 +1,7 @@
 package com.shoppingmall.board.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class CommentService {
 	//게시글 좋아요
 	public void likeComment(Long commentId, User user) {
 		Comment comment = repository.findById(commentId).orElse(null);
-		List<Long> container = comment.getLikeContain();
+		Set<Long> container = comment.getLikeContain();
 		
 		if(!container.contains(user.getId())) {
 			container.add(user.getId());

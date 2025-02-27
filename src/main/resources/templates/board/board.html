@@ -60,6 +60,15 @@
             <h1>게시판</h1>
             <form class="search" action="/board/board">
                 <input type="text" name="keyword" th:value="${keyword}" style="width: 300px; height: 30px;">
+                <select name="orderby">
+                	<option th:selected="${orderby == '최신순'}">최신순</option>
+                	<option th:selected="${orderby == '인기순'}">인기순</option>
+                </select>
+                <select name="bydate">
+                	<option th:selected="${bydate == '1개월'}">1개월</option>
+                	<option th:selected="${bydate == '3개월'}">3개월</option>
+                	<option th:selected="${bydate == '전체'}">전체</option>
+                </select>
                 <button type="submit">검색</button>
             </form><br><br>
             

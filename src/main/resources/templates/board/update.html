@@ -3,31 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.2.1/ckeditor5.css" crossorigin>
+<style>
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+        }
+        .card {
+            padding: 40px;
+            border-radius: 12px;
+            background-color: #ffffff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4e73df;
+            margin-bottom: 20px;
+        }
+        .form-control, .form-select, .hashtag-input {
+            border-radius: 10px;
+            border: 1px solid #ced4da;
+            padding: 12px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .form-control:focus, .form-select:focus, .hashtag-input:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 8px rgba(78, 115, 223, 0.5);
+        }
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            width: 48%;
+        }
+        .btn-primary:hover {
+            background-color: #375a7f;
+            border-color: #375a7f;
+        }
+        .btn-secondary {
+            background-color: #f1f3f5;
+            border-color: #ced4da;
+            width: 48%;
+        }
+        .btn-secondary:hover {
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+        .d-flex {
+            margin-top: 20px;
+            justify-content: space-between;
+        }
+        .mb-3 label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .hashtag-note {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .ck.ck-editor {
+            max-width: 100%;
+        }
+        .ck-editor__editable {
+            min-height: 300px;
+        }
+    </style>
 </head>
 <body>
-	<h1>글 수정</h1>
-	<form action="/board/update" method="POST">
-		<input type="hidden" name="boardId" th:value="${board.boardId}">
-		<div class="form-group">
-			<label for="title">제목</label> 
-			<input type="text" id="title" name="title" th:value="${board.title}" placeholder="제목을 입력하세요" required>
-		</div>
-		
-		<div class="form-group">
-			<select id="categoryId" name="categoryId">
-				<option value="반슐랭" th:selected="${board.categoryId == '반슐랭'}">반슐랭</option>
-				<option value="육아팁" th:selected="${board.categoryId == '육아팁'}">육아팁</option>
-				<option value="일상공유" th:selected="${board.categoryId == '일상공유'}">일상공유</option>
-				<option value="상품후기" th:selected="${board.categoryId == '상품후기'}">상품후기</option>
-			</select>
-		</div>
+    <div class="container">
+        <div class="card">
+            <h2 class="text-center">📝 게시글 작성/수정</h2>
+            <form action="/board/update" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="boardId" th:value="${board.boardId}">
+                
+                <!-- 제목 입력 -->
+                <div class="mb-3">
+                    <label for="title" class="form-label">제목</label>
+                    <input type="text" id="title" name="title" th:value="${board.title}" class="form-control" placeholder="제목을 입력하세요" required>
+                </div>
 
-		<div class="form-group">
-			<label for="content">내용</label>
-			<textarea id="content" name="content" rows="10" placeholder="내용을 입력하세요" required>[[${board.content}]]</textarea>
-		</div>
+                <!-- 카테고리 선택 -->
+                <div class="mb-3">
+                    <label for="categoryId" class="form-label">카테고리</label>
+                    <select id="categoryId" name="categoryId" class="form-select">
+                        <option value="반슐랭" th:selected="${board.categoryId == '반슐랭'}">반슐랭</option>
+                        <option value="육아팁" th:selected="${board.categoryId == '육아팁'}">육아팁</option>
+                        <option value="일상공유" th:selected="${board.categoryId == '일상공유'}">일상공유</option>
+                    </select>
+                </div>
 
-		<button type="submit">수정</button>
-	</form>
+                <!-- CKEditor 입력 -->
+                <div class="mb-3">
+                    <label for="editor" class="form-label">내용</label>
+                    <textarea id="editor" name="content" rows="10" class="form-control" placeholder="내용을 입력하세요" required>[[${board.content}]]</textarea>
+                </div>
+
+                <!-- 해시태그 입력 -->
+                <div class="mb-3">
+                    <label for="hashtags" class="form-label">해시태그</label>
+                    <input type="text" id="hashtags" name="hashtag" class="hashtag-input" th:value="${board.hashtag}" placeholder="예: #육아 #일상">
+                    <div class="hashtag-note">여러 해시태그를 입력할 경우, 공백으로 구분해주세요.</div>
+                </div>
+
+                <!-- 버튼 -->
+                <div class="d-flex">
+                    <button type="submit" class="btn btn-primary">✅ 게시글 작성</button>
+                    <a th:href="@{/board/board(keyword=${keyword}, category=${category})}" class="btn btn-secondary">❌ 취소</a>
+                </div>
+            </form>
+        </div>
+    </div>
+<script src="https://cdn.ckeditor.com/ckeditor5/44.2.1/ckeditor5.umd.js" crossorigin></script>
+<script src="https://cdn.ckbox.io/ckbox/2.6.1/ckbox.js" crossorigin></script>
+<script src="/js/main.js"></script>
+<script>
+/*
+    // CKEditor 초기화
+    ClassicEditor.create( document.querySelector( '#editor' ), {
+    	plugins: ['Font', 'FontSize'],
+        removePlugins: ['Heading'],
+        extraPlugins: [uploadAdapterPlugin],
+        language: "ko",
+        toolbar: [
+            'bold', 'italic', 'fontSize', 'link', '|',
+            'bulletedList', 'numberedList', '|',
+            'imageUpload', 'blockQuote', 'undo', 'redo', '|'
+        ],
+        fontSize: {
+            options: [
+                10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40
+            ]
+        },
+    });
+*/
+    // 이미지 업로드 어댑터 클래스
+    class UploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+        upload() {
+            return this.loader.file.then(file => new Promise((resolve, reject) => {
+                this._initRequest();
+                this._initListeners(resolve, reject, file);
+                this._sendRequest(file);
+            }));
+        }
+
+        _initRequest() {
+            this.xhr = new XMLHttpRequest();
+            this.xhr.open('POST', '/board/images', true);
+            this.xhr.responseType = 'json';
+        }
+
+        _initListeners(resolve, reject, file) {
+            const xhr = this.xhr;
+            const loader = this.loader;
+            const genericErrorText = '파일을 업로드 할 수 없습니다.';
+
+            xhr.addEventListener('error', () => reject(genericErrorText));
+            xhr.addEventListener('abort', () => reject());
+            xhr.addEventListener('load', () => {
+                const response = xhr.response;
+                if (!response || response.error) {
+                    return reject(response && response.error ? response.error.message : genericErrorText);
+                }
+
+                resolve({
+                    default: response.url // 업로드된 파일 주소
+                });
+            });
+        }
+
+        _sendRequest(file) {
+            const data = new FormData();
+            data.append('upload', file);
+            this.xhr.send(data);
+        }
+    }
+
+    // CKEditor에 이미지 업로드 기능 추가
+    function uploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return new UploadAdapter(loader);
+        };
+    }
+</script>
 </body>
 </html>
