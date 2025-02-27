@@ -1,18 +1,8 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-.header{
-    position: fixed;
-    height: 50px;
-}
-.sign-section{
-    height: 100vh;
+
+.pm-section{
     padding-top: 100px;
     margin: 0 150px 0 150px;
     padding-bottom: 100px;
-
 }
 .section-wrap{
     width: 600px;
@@ -20,12 +10,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
-.sign-form{
+.content-form{
     padding: 20px 110px 60px;
 }
-.find-account{
+.content-wrap{
     width: 410px;
     height: 376px;
 }
@@ -44,7 +33,7 @@ h2{
     margin-bottom: 20px;
 }
 
-input , select{
+.find-input , .find-select{
     width: 100%;
     padding: 15px;
     margin-bottom: 15px;
@@ -53,7 +42,7 @@ input , select{
     font-size: 15px;
 }
 
-input:focus {
+.find-input:focus {
     outline: none;
     border-color: #4285f4;
 }
@@ -65,18 +54,7 @@ input:focus {
     margin-bottom: 15px;
     text-align: center;
 }
-.findBtn{
-    width: 100%;
-    padding: 15px;
-    background-color: #4e9eff;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
+
 .input-box{
     margin-bottom: 10px;
 }

@@ -13,4 +13,9 @@ public class HomeController {
     return "home";
   }
 
+  @GetMapping("/header")
+  public String header() {
+    return "headerFragment/header";
+  }
+
 }

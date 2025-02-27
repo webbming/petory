@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+body {
+  height: 100vh;
+  background-color: #ffffff;
+
+}
+.main-Btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #4e9eff;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
