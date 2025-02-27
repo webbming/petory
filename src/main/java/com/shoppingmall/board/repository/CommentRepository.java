@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 import com.shoppingmall.board.model.Comment;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Integer>{
+public interface CommentRepository extends JpaRepository<Comment, Long>{
 	
 	//전체 최신순 정렬
-	List<Comment> findByBoard_BoardIdOrderByCommentId(int boardId);
+	List<Comment> findByBoard_BoardIdOrderByCommentId(Long boardId);
 	
 	//댓글 수
-	int countByBoardBoardId(int boardId);
+	int countByBoardBoardId(Long boardId);
 }

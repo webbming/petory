@@ -229,99 +229,99 @@
     </style>
 </head>
 <body>
-    <!-- 헤더 -->
-    <div class="header">
-        <div class="logo">PETPIX</div>
-        <div class="search-container">
-            <form th:action="@{/products/search}" method="get">
-                <input type="text" placeholder="상품 검색" name="search">
-                <button type="submit">검색</button>
-            </form>
-        </div>
+<!-- 헤더 -->
+<div class="header">
+  <div class="logo">PETPIX</div>
+  <div class="search-container">
+    <form th:action="@{/products/search}" method="get">
+      <input type="text" placeholder="상품 검색" name="search">
+      <button type="submit">검색</button>
+    </form>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 사이드바: 카테고리, 소분류, 정렬 -->
+  <div class="sidebar">
+    <h2>카테고리</h2>
+    <ul class="category-list">
+      <li th:each="cat : ${categories}">
+        <a th:href="@{'/products/category/' + ${cat.categoryId}}">
+          <span class="category-icon">🛒</span>
+          <span th:text="${cat.categoryName}"></span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- 소분류 -->
+    <div class="top-subcategories" th:if="${currentCategory != null}">
+      <h3 th:text="${currentCategory.categoryName}">대분류명</h3>
+      <ul class="subcategory-list">
+        <li>
+          <a th:href="@{'/products/category/' + ${currentCategory.categoryId}}">🐶전체</a>
+        </li>
+        <li th:each="sub : ${subcategories}">
+          <a th:href="@{'/products/subcategory/' + ${sub.subcategoryId}}">
+            <span class="subcategory-icon">🐶</span>
+            <span th:text="${sub.subcategoryName}"></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- 필터 정렬 -->
+    <div class="filter-container">
+      <label for="sortFilter">정렬:</label>
+      <select id="sortFilter" onchange="changeSort()">
+        <option value="newest" th:selected="${sort == 'newest'}">신제품순</option>
+        <option value="priceLowHigh" th:selected="${sort == 'priceLowHigh'}">낮은 가격순</option>
+        <option value="priceHighLow" th:selected="${sort == 'priceHighLow'}">높은 가격순</option>
+        <option value="rating" th:selected="${sort == 'rating'}">평점순</option>
+      </select>
     </div>
 
-    <div class="container">
-    	
-        <!-- 사이드바: 카테고리, 소분류, 정렬 -->
-        <div class="sidebar">
-            <h2>카테고리</h2>
-            <ul class="category-list">
-                <li th:each="cat : ${categories}">
-                    <a th:href="@{'/products/category/' + ${cat.categoryId}}">
-                        <span class="category-icon">🛒</span>
-                        <span th:text="${cat.categoryName}"></span>
-                    </a>
-                </li>
-            </ul>
-
-            <!-- 소분류 -->
-			<div class="top-subcategories" th:if="${currentCategory != null}">
-			    <h3 th:text="${currentCategory.categoryName}">대분류명</h3>
-			    <ul class="subcategory-list">
-			        <li>
-			            <a th:href="@{'/products/category/' + ${currentCategory.categoryId}}">🐶전체</a>
-			        </li>
-			        <li th:each="sub : ${subcategories}">
-			            <a th:href="@{'/products/subcategory/' + ${sub.subcategoryId}}">
-			                <span class="subcategory-icon">🐶</span> 
-			                <span th:text="${sub.subcategoryName}"></span>
-			            </a>
-			        </li>
-			    </ul>
-			</div>
-            <!-- 필터 정렬 -->
-            <div class="filter-container">
-                <label for="sortFilter">정렬:</label>
-                <select id="sortFilter" onchange="changeSort()">
-                    <option value="newest" th:selected="${sort == 'newest'}">신제품순</option>
-                    <option value="priceLowHigh" th:selected="${sort == 'priceLowHigh'}">낮은 가격순</option>
-                    <option value="priceHighLow" th:selected="${sort == 'priceHighLow'}">높은 가격순</option>
-                    <option value="rating" th:selected="${sort == 'rating'}">평점순</option>
-                </select>
-            </div>
-
-            <!-- 버튼들 -->
-            <div class="button-container">
-                <a href="/products/add">상품 추가하기</a>
-                <a href="/categories">카테고리 관리</a>
-            </div>
-        </div>
-
-        <!-- 상품 리스트 -->
-        <div class="product-list">
-            <div class="product-card" th:each="product : ${products}">
-                <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
-                <h3 th:text="${product.productName}">상품명</h3>
-                <p class="price" th:text="${product.price} + '원'">가격</p>
-                <p th:text="${product.description}">설명</p>
-                <p th:if="${product.averageRating != null}" th:text="'평점: ' + ${product.averageRating}">평점</p>
-                <p th:text="'(' + ${product.category.categoryName} + ' / ' + ${product.subcategory.subcategoryName} + ')'">
-                    (카테고리 / 소분류)
-                </p>
-                <a th:href="@{'/products/' + ${product.productId}}" class="details-link">자세히 보기</a>
-            </div>
-        </div>
+    <!-- 버튼들 -->
+    <div class="button-container">
+      <a href="/products/add">상품 추가하기</a>
+      <a href="/categories">카테고리 관리</a>
     </div>
+  </div>
+  <!-- 상품 리스트 -->
+  <div class="product-list">
+    <div class="product-card" th:each="product : ${products}">
+      <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
+      <h3 th:text="${product.productName}">상품명</h3>
+      <p class="price" th:text="${product.price} + '원'">가격</p>
+      <p th:text="${product.description}">설명</p>
+      <p th:if="${product.averageRating != null}" th:text="'평점: ' + ${product.averageRating}">평점</p>
+      <p th:text="'(' + ${product.category.categoryName} + ' / ' + ${product.subcategory.subcategoryName} + ')'">
+        (카테고리 / 소분류)
+      </p>
+      <a th:href="@{'/products/' + ${product.productId}}" class="details-link">자세히 보기</a>
+    </div>
+  </div>
+</div>
 
-    <script>
-        // 정렬 기능
-        function changeSort() {
-            let selectedSort = document.getElementById("sortFilter").value;
-            let currentUrl = window.location.pathname;
+<script>
+  // 정렬 기능
+  function changeSort() {
+    let selectedSort = document.getElementById("sortFilter").value;
+    let currentUrl = window.location.pathname;
 
-            let categoryId = null;
-            let subcategoryId = null;
+    let categoryId = null;
+    let subcategoryId = null;
 
-            if (currentUrl.includes("/category/")) {
-                categoryId = currentUrl.split("/").pop();
-                window.location.href = '/products/category/' + categoryId + '?sort=' + selectedSort;
-            } else if (currentUrl.includes("/subcategory/")) {
-                subcategoryId = currentUrl.split("/").pop();
-                window.location.href = '/products/subcategory/' + subcategoryId + '?sort=' + selectedSort;
-            } else {
-                window.location.href = '/products?sort=' + selectedSort;
-            }
-        }
-    </script>
+    if (currentUrl.includes("/category/")) {
+      categoryId = currentUrl.split("/").pop();
+      window.location.href = '/products/category/' + categoryId + '?sort=' + selectedSort;
+    } else if (currentUrl.includes("/subcategory/")) {
+      subcategoryId = currentUrl.split("/").pop();
+      window.location.href = '/products/subcategory/' + subcategoryId + '?sort=' + selectedSort;
+    } else {
+      window.location.href = '/products?sort=' + selectedSort;
+    }
+  }
+</script>
+>>>>>>> user
 </body>
 </html>

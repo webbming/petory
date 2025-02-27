@@ -1,6 +1,7 @@
 package com.shoppingmall.board.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,9 +26,11 @@ import lombok.NoArgsConstructor;
 public class Board {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int boardId;
+	private Long boardId;
 	
 	private String userId;
+	
+	private String nickname;
 	
 	@Column(nullable = false, length = 20)
 	private String title;
@@ -41,7 +44,13 @@ public class Board {
 	
 	private int viewCount = 0;
 	
+	@Column(length = 1000)
+	private List<Long> viewContain = new ArrayList<Long>();
+	
 	private int likeCount = 0;
+	
+	@Column(length = 1000)
+	private List<Long> likeContain = new ArrayList<Long>();
 	
 	@CreationTimestamp
     @Column(updatable = false)

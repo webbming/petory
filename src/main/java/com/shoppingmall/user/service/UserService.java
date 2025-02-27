@@ -112,6 +112,7 @@ public class UserService {
   public void updateUser(UserUpdateDTO userDTO) {
     Map<String, String> errors = new HashMap<>();
     // 사용자 아이디 불러오기
+    System.out.println(userDTO.getUserId());
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String userId = authentication.getName();
     System.out.println(userId);

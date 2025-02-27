@@ -3,15 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+	.content p {
+		margin: 0;
+	}
+</style>
 </head>
 <body>
 	<h1>게시글 상세 정보</h1>
     <p><strong>제목:</strong> <span name ="title" th:text="${board.title}"></span></p>
     <p><strong>카테고리: </strong><span name="categoryId" th:text="${board.categoryId}"></span></p>
-    <p><strong>작성자:</strong> <span th:text="${board.userId}"></span></p>
+    <p><strong>작성자:</strong> <span th:text="${board.nickname}"></span></p>
     <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
     <p><strong>내용:</strong></p>
-    <p name="content" th:text="${board.content}"></p>
+    <span name="content" th:utext="${board.content}" class="content"></span><br>
     
     <a href="/board/board">목록으로 돌아가기</a>
     <a th:href="@{/board/update(boardId=${board.boardId})}">수정</a>
@@ -21,7 +26,7 @@
     <hr>
     
     <div class="comments" th:each="comment : ${comment}">
-    	<span name="userId" th:text="${comment.userId}"></span>
+    	<span name="nickname" th:text="${comment.nickname}"></span>
     	<span name="createAt" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
     	<span name="content" th:text="${comment.content}"></span>
     	<a th:href="@{/board/commentUpdate(commentId=${comment.commentId})}">수정</a>
