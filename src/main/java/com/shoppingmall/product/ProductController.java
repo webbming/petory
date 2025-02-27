@@ -2,9 +2,11 @@ package com.shoppingmall.product;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Authenticator;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shoppingmall.cart.service.CartService;
 import com.shoppingmall.category.Category;
 import com.shoppingmall.category.CategoryService;
 import com.shoppingmall.category.Subcategory;
@@ -27,11 +30,13 @@ import io.swagger.v3.oas.annotations.Operation;
 public class ProductController {
 
     private final ProductService productService;
+    private final CartService cartService;
     private final CategoryService categoryService;
     private final ReviewService reviewService;
 
-    public ProductController(ProductService productService, CategoryService categoryService, ReviewService reviewService) {
+    public ProductController(ProductService productService, CartService cartService, CategoryService categoryService, ReviewService reviewService) {
         this.productService = productService;
+        this.cartService = cartService;
         this.categoryService = categoryService;
         this.reviewService = reviewService;
     }
@@ -46,6 +51,7 @@ public class ProductController {
         model.addAttribute("categories", categoryService.findAllCategories());
         return "/product/index2";
     }
+    
 
     // 상품 등록폼
     @GetMapping("/products/add")
@@ -85,7 +91,7 @@ public class ProductController {
         }
         return null;
     }
-
+  
     @GetMapping("/products/{id}")
     @Operation(summary = "상품 상세 조회", description = "상품 ID를 기반으로 상품 상세 정보를 조회합니다.")
     public String viewProduct(@PathVariable("id") Long id, Model model) {
@@ -95,6 +101,7 @@ public class ProductController {
         model.addAttribute("reviews", reviews);
         return "/product/productDetail";
     }
+  
 
 
     // 상품 수정폼

@@ -2,6 +2,7 @@ package com.shoppingmall.cart.model;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.shoppingmall.product.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +30,7 @@ public class CartItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_item_id")
-    private Long cartItemId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_id", nullable = false)
@@ -41,7 +42,7 @@ public class CartItem {
     
 
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(nullable = false)
     private BigDecimal price;  // 개별 상품 가격

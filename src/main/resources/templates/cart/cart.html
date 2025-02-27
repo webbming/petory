@@ -1,106 +1,108 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>장바구니</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>장바구니</h1>
 
-    <!-- 장바구니 목록 -->
-    <div id="cart-list">
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>상품명</th>
-                    <th>수량</th>
-                    <th>가격</th>
-                    <th>총 금액</th>
-                    <th>삭제</th>
-                </tr>
-            </thead>
-            <tbody>
-            
-                <tr>
-                    <td>상품 1</td>
-                    <td>2</td>
-                    <td>₩ 5000</td>
-                    <td>₩ 10000</td>
-                    <td>
-                        <button onclick="removeItem(1)">삭제</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>상품 2</td>
-                    <td>1</td>
-                    <td>₩ 3000</td>
-                    <td>₩ 3000</td>
-                    <td>
-                        <button onclick="removeItem(2)">삭제</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <form th:action="@{'/cart/' + ${id} + '/items/update'}" method="post">
+        <div th:each="item : ${cartItems}">
+  
+            <input type="hidden" name="productId" th:value="${item.product.productId}" data-item-id="${item.id}">
+            <input type="hidden" name="cartId" th:value="${id}">
+    
+            <!-- 상품 이미지, 상품명, 가격, 옵션, 내용, 설명, 수량 -->
+            <img th:src="@{${item.product.imageUrl}}" alt="Product Image"/>
+            <p>상품명: <span th:text="${item.product.productName}"></span></p>
+            <p>가격: <span th:text="${item.product.price}"></span></p>
+            <p>옵션: <span th:text="${item.product.option}"></span></p>
+    		<p>내용: <span th:text="${item.product.content}"></span></p>
+    		<p>설명: <span th:text="${item.product.description}"></span></p>
+    
+            <label for="quantity">수량:</label>
+            <button type="button" class="decrease" data-item-id="${item.id}" >-</button>
+            <input type="number" name="quantity" th:value="${item.quantity}" min="1" data-item-id="${item.id}"> 
+          	<button type="button" class="increase" data-item-id="${item.id}" >+</button>
+            <p>합계: <span th:text="${item.product.price * item.quantity}" data-item-id="${item.id}"></span> 원</p>
+    
+            <button type="submit">수정</button>
+            <button>삭제</button>
+        </div>
+    
+        <button type="submit" formaction="@{'/cart/' + ${id} + '/checkout'}">주문하기</button>
+    </form>
 
-    <!-- 총 금액 계산 -->
-    <div>
-        <h3>총 금액: <span id="total-price">₩ 13000</span></h3>
-    </div>
-
-    <!-- 상품 추가 -->
-    <div>
-        <h2>상품 추가</h2>
-        <form id="add-item-form">
-            <label for="product-id">상품 ID: </label>
-            <input type="number" id="product-id" name="product-id" required><br><br>
-
-            <label for="quantity">수량: </label>
-            <input type="number" id="quantity" name="quantity" min="1" required><br><br>
-
-            <button type="submit">장바구니에 추가</button>
-        </form>
-    </div>
-
-    <!-- 장바구니 삭제 -->
-    <div>
-        <h2>장바구니 비우기</h2>
-        <button onclick="clearCart()">장바구니 비우기</button>
-    </div>
-
-    <script>
-        // 장바구니에 상품 추가 (POST 요청)
-        document.getElementById('add-item-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const productId = document.getElementById('product-id').value;
-            const quantity = document.getElementById('quantity').value;
-
-            fetch(`/cart/1/1/items/${productId}?quantity=${quantity}`, {
-                method: 'POST',
-            })
-            .then(response => response.ok ? alert("상품이 추가되었습니다.") : alert("에러가 발생했습니다."))
-            .catch(error => alert("서버와의 연결에 문제가 있습니다."));
-        });
-
-        // 장바구니에서 상품 삭제 (DELETE 요청)
-        function removeItem(cartItemId) {
-            fetch(`/cart/1/1/items/${cartItemId}`, {
-                method: 'DELETE',
-            })
-            .then(response => response.ok ? alert("상품이 삭제되었습니다.") : alert("에러가 발생했습니다."))
-            .catch(error => alert("서버와의 연결에 문제가 있습니다."));
-        }
-
-        // 장바구니 비우기 (DELETE 요청)
-        function clearCart() {
-            fetch('/cart/1/1', {
-                method: 'DELETE',
-            })
-            .then(response => response.ok ? alert("장바구니가 비워졌습니다.") : alert("에러가 발생했습니다."))
-            .catch(error => alert("서버와의 연결에 문제가 있습니다."));
-        }
-    </script>
 </body>
+<script>
+    $(".increase").click(function() {
+        var itemId = $(this).data("item-id");
+        var quantityInput = $("input[data-item-id='" + itemId + "']");
+        var currentQuantity = parseInt(quantityInput.val());
+
+        // 수량 증가
+        quantityInput.val(currentQuantity + 1);
+        
+        // 서버로 업데이트 요청
+        updateQuantity(itemId, quantityInput.val());
+
+        // 합계 재계산 (가격 * 수량)
+        updateTotal(itemId);
+    });
+
+    $(".decrease").click(function() {
+        var itemId = $(this).data("item-id");
+        var quantityInput = $("input[data-item-id='" + itemId + "']");
+        var currentQuantity = parseInt(quantityInput.val());
+
+        if (currentQuantity > 1) {
+            // 수량 감소
+            quantityInput.val(currentQuantity - 1);
+            
+            // 서버로 업데이트 요청
+            updateQuantity(itemId, quantityInput.val());
+
+            // 합계 재계산 (가격 * 수량)
+            updateTotal(itemId);
+        }
+    });
+
+    function updateQuantity(itemId, quantity) {
+        var cartId = $("input[name='cartId']").val();
+        var productId = $("input[name='productId'][data-item-id='" + itemId + "']").val();  // productId를 올바르게 추출
+
+        console.log("cartId:", cartId);  // 디버깅용
+        console.log("productId:", productId);  // 디버깅용
+
+        $.ajax({
+            url: '/cart/' + cartId + '/items/' + productId + '/update',
+            method: 'PUT',
+            data: {
+                quantity: quantity
+            },
+            success: function(response) {
+                console.log("수량이 업데이트되었습니다.");
+                alert(response);
+            },
+            error: function(xhr, status, error) {
+                alert("수량 업데이트에 실패했습니다: " + error);
+            }
+        });
+    }
+
+    function updateTotal(itemId) {
+        var quantityInput = $("input[data-item-id='" + itemId + "']");
+        var quantity = parseInt(quantityInput.val());
+        var price = parseFloat($("span.product-price[data-item-id='" + itemId + "']").text());  // 가격 값 가져오기
+        
+        var total = quantity * price;
+
+        // 합계 업데이트
+        $("span[data-item-id='" + itemId + "']").text(total + " 원");
+    }
+</script>
+
 </html>

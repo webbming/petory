@@ -13,11 +13,19 @@
     <p>내용: <span th:text="${product.content}"></span></p>
     <p>설명: <span th:text="${product.description}"></span></p>
     <p>카테고리: <span th:text="${product.category.categoryName}"></span></p>
+    
+    <form th:action="@{/cart/{id}/items/{productId}/add(id=${id}, productId=${product.productId})}" method="post">
+    	<label for="quantity">수량:</label>
+    	<input type="number" name="quantity" value="1" min="1" required>
+    	<button type="submit">장바구니에 담기</button>
+    </form>
+    
     <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post">
     	<input type="number" name="rating" placeholder="평점 (1-5)" required min="1" max="5">
     	<textarea name="comment" placeholder="리뷰를 입력하세요" required></textarea>
     	<button type="submit">리뷰 등록!</button>
     </form>
+    
     <div>
     <h3>리뷰 목록</h3>
     <div th:each="review : ${reviews}">
@@ -31,6 +39,7 @@
 	    <input type="hidden" name="_method" value="delete">
 	    <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
 	</form>
+	
     <a href="/products">목록으로</a>
 </body>
 </html>
