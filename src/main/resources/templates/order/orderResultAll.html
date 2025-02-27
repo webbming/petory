@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>주문 상세 정보</title>
+</head>
+<body>
+<h1>주문 상세정보</h1>
+
+<p>
+	<a href="#" onclick="history.back()" style="text-decoration: none">
+		(클릭하면 이전 페이지로 이동)
+	</a>
+</p>
+
+<!-- Purchase 리스트 출력 -->
+<h2>주문 목록</h2>
+<h4>주문 번호 클릭시 상세 내용 확인 가능</h4>
+<table border="1" cellpadding="10" width="100%">
+	<thead>
+	<tr>
+		<th>주문번호</th>
+		<th>주문자 ID</th>
+		<th>총 가격</th>
+		<th>주문 시간</th>
+		<th>수령인 이름</th>
+		<th>수령인 전화번호</th>
+		<th>수령 주소</th>
+		<th>배송 상태</th>
+		<th>배송 상태 변경</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr th:each="purchase, iterStat : ${purchase}">
+		<td><a th:href="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" th:text="${purchase.purchaseId}"></a></td>
+		<td th:text="${purchase.userId}"></td>
+		<td th:text="${purchase.totalPrice}"></td>
+		<td th:text="${purchase.createAt}"></td>
+
+		<!-- 같은 인덱스의 delivery 데이터 출력 -->
+		<td th:text="${delivery[iterStat.index].receiverName}"></td>
+		<td th:text="${delivery[iterStat.index].receiverPhone}"></td>
+		<td th:text="${delivery[iterStat.index].receiverAddr}"></td>
+		<td th:text="${delivery[iterStat.index].deliveryStatus}"></td>
+		<td>
+			<form action="/order/admin/deiveryChange" method="POST">
+				<input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}"/>
+				<select id="deliveryState" name="deliveryState">
+					<option value="onDelivery">배송중</option>
+					<option value="stopDelivery">배송취소</option>
+					<option value="finDelivery">배송완료</option>
+				</select>
+				<button type="submit">배송상태 변경</button>
+			</form>
+		</td>
+	</tr>
+	</tbody>
+</table>
+</body>
+</html>

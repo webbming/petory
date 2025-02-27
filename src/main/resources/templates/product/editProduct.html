@@ -4,49 +4,32 @@
     <meta charset="UTF-8">
     <title>상품 수정</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    $(document).ready(function(){
-        $("select[name='categoryId']").change(function(){
-            var categoryId = $(this).val();
-            $.ajax({
-                url: '/categories/subcategories/' + categoryId,
-                type: 'GET',
-                success: function(data) {
-                    var subSelect = $("select[name='subcategoryId']");
-                    subSelect.empty();
-                    $.each(data, function(index, subcat){
-                        subSelect.append($('<option></option>').attr('value', subcat.subcategoryId).text(subcat.subcategoryName));
-                    });
-                },
-                error: function(error) {
-                    console.log('Error loading subcategories: ', error);
-                }
-            });
-        });
-    });
-</script>
-
+    <style>
+        /* 위와 동일한 스타일 */
+    </style>
 </head>
 <body>
     <h1>상품 수정</h1>
-    <form th:action="@{'/products/edit/' + ${product.productId}}" method="post" enctype="multipart/form-data">
-        <label>상품명: <input type="text" name="productName" th:value="${product.productName}" required /></label><br>
-        <label>가격: <input type="number" name="price" th:value="${product.price}" required /></label><br>
-        <label>옵션: <input type="text" name="option" th:value="${product.option}" /></label><br>
-        <label>내용: <input type="text" name="content" th:value="${product.content}" /></label><br>
-        <label>설명: <input type="text" name="description" th:value="${product.description}" /></label><br>
-        <label>이미지 선택: <input type="file" name="imageFile" /></label><br>
-        <label>카테고리:
-            <select name="categoryId">
-                <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.categoryName}" th:selected="${cat.categoryId == product.category.categoryId}"></option>
-            </select>
-        </label><br>
-        <label>서브카테고리:
-            <select name="subcategoryId">
-                <option th:each="sub : ${subcategories}" th:value="${sub.subcategoryId}" th:text="${sub.subcategoryName}"></option>
-            </select>
-        </label><br>
-        <input type="submit" value="수정 완료" />
-    </form>
+    <div class="form-container">
+        <form th:action="@{'/products/edit/' + ${product.productId}}" method="post" enctype="multipart/form-data">
+            <label>상품명: <input type="text" name="productName" th:value="${product.productName}" required /></label>
+            <label>가격: <input type="number" name="price" th:value="${product.price}" required /></label>
+            <label>옵션: <input type="text" name="option" th:value="${product.option}" /></label>
+            <label>내용: <input type="text" name="content" th:value="${product.content}" /></label>
+            <label>설명: <input type="text" name="description" th:value="${product.description}" /></label>
+            <label>이미지 선택: <input type="file" name="imageFile" /></label>
+            <label>카테고리:
+                <select name="categoryId">
+                    <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.categoryName}" th:selected="${cat.categoryId == product.category.categoryId}"></option>
+                </select>
+            </label>
+            <label>서브카테고리:
+                <select name="subcategoryId">
+                    <option th:each="sub : ${subcategories}" th:value="${sub.subcategoryId}" th:text="${sub.subcategoryName}"></option>
+                </select>
+            </label>
+            <input type="submit" value="수정 완료" />
+        </form>
+    </div>
 </body>
 </html>

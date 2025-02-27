@@ -24,6 +24,10 @@ public class CustomUserDetails implements UserDetails {
     return user.getEmail(); // 이메일 반환
   }
 
+  public String getAccountType(){
+    return user.getAccountType();
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
    return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));

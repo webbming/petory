@@ -6,6 +6,7 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 
 @Configuration
 public class CustomClientRegistrationRepository {
+
     private final SocialClientRegistration socialClientRegistration;
 
     public CustomClientRegistrationRepository(SocialClientRegistration socialClientRegistration) {
@@ -13,7 +14,9 @@ public class CustomClientRegistrationRepository {
     }
 
     public ClientRegistrationRepository clientRegistrationRepository() {
-        return new InMemoryClientRegistrationRepository(socialClientRegistration.naverClientRegistration() , socialClientRegistration.googleClientRegistration());
+        return new InMemoryClientRegistrationRepository(
+            socialClientRegistration.naverClientRegistration(),
+            socialClientRegistration.googleClientRegistration());
     }
 }
 

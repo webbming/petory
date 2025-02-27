@@ -63,7 +63,7 @@ inputs.forEach(input =>{
             fieldName : fieldName,
             fieldValue : fieldValue
           }
-          const response = await fetch("/register/check" , {
+          const response = await fetch("/api/users/check" , {
             method : "POST",
             headers : {
               "Content-Type" : "application/json",
@@ -115,7 +115,7 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
   const formObj = Object.fromEntries(formData);
 
   try{
-    const response = await fetch("/register" , {
+    const response = await fetch("/api/users" , {
       method : "POST",
       headers : {"Content-Type" : "application/json"},
       body : JSON.stringify(formObj)
