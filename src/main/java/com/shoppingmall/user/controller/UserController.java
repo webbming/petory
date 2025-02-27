@@ -1,10 +1,13 @@
 package com.shoppingmall.user.controller;
 
+import com.shoppingmall.user.dto.UserProfileDTO;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500", allowCredentials = "true")
@@ -38,12 +41,15 @@ public class UserController {
 	}
 
 	@GetMapping("/profile")
-	public String profileG(@RequestParam(name = "agree", defaultValue = "false") boolean agree) {
+	public String profileG(Authentication authentication, Model model) {
+		String userId = authentication.getName();
+		UserProfileDTO info =  userService.getMyPageInfo(userId);
+		model.addAttribute("user", info);
 		return "user/profile";
 	}
 
 	@GetMapping("/profile/update")
-	public String profileUpdate(@RequestParam(name = "agree", defaultValue = "false") boolean agree) {
+	public String profileUpdate() {
 		return "user/chageProfile";
 	}
 

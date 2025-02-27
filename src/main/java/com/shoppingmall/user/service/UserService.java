@@ -1,13 +1,17 @@
 package com.shoppingmall.user.service;
 
+import com.shoppingmall.cart.repository.CartRepository;
+import com.shoppingmall.user.dto.UserProfileDTO;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
 import com.shoppingmall.user.exception.DuplicateException;
 import com.shoppingmall.user.exception.FieldErrorsException;
+import com.shoppingmall.user.model.Pet;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.transaction.Transactional;
@@ -24,6 +28,7 @@ public class UserService {
 
   private UserRepository userRepository;
   private BCryptPasswordEncoder bCryptPasswordEncoder;
+  private CartRepository cartRepository;
 
   public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
     this.userRepository = userRepository;
@@ -105,6 +110,20 @@ public class UserService {
     }
     // 유저 정보 반환
     return user.toDTO();
+  }
+
+  public UserProfileDTO getMyPageInfo(String userId){
+    User user = userRepository.findByUserId(userId);
+    if (user == null) {
+      throw new UsernameNotFoundException("User not found");
+    }
+
+    int quantity = user.getCart().getTotalQuantity();
+    System.out.println(quantity);
+    String nickname = user.getNickname();
+
+
+    return new UserProfileDTO(nickname , quantity);
   }
 
   //유저 수정

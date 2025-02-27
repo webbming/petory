@@ -1,22 +1,79 @@
-* {
-  margin: 0;
+* { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; font-family: 'Pretendard', -apple-system,Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a,
+abbr, address, big, cite, code, del, dfn, em, font, img, ins, q, s, samp, small,
+strike, strong, sub, sup, tt, var, b, u, i, ul, ol, li, dl, dt, dd, table, caption,
+tbody, tfoot, thead, tr, th, td, fieldset, fo7m, label, legend, input, button, textarea, select {
+  margin:0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Noto Sans KR', sans-serif;
-  list-style: none;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background-color: #fff;
+  margin: 0; height: 100%;
+  font-size: 14px;
+  min-height: auto;
+  color: #343434;
+  /* 스크롤 바 밀림 현상  항상 스크롤바 표시로 */
+  overflow-y: scroll;
+}
+input, select, textarea {
+  border: 1px solid #ccc; height: 40px; padding: 5px 15px; /*font-family:"Droid Sans";*/ outline: none; font-size: 1em;
+}
+textarea {
+  resize: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #333;
+}
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url(https://img.lifet.co.kr/icon/select_down.svg);
+  background-position: right 20px center;
+  background-repeat: no-repeat;
+  padding-right: 50px;
+}
+select::-ms-expand {display: none;}
+select.holder {color: #c9c9c9;}
+select.holder option {color: #343434;}
+input::placeholder, textarea::placeholder {color: #c3c3c3;}
+input[type="text"] {width:100%;}
+input[name="title"] {font-size: 21px; font-weight: 800; text-align: center;}
+input[type="password" i] { /*font-family:"Droid Sans";*/ }
+input[type="password" i]::placeholder {font-family: 'Pretendard', -apple-system,Arial, sans-serif;}
+input[type="search" i]::-webkit-search-cancel-button { -webkit-appearance: none; width: 30px; height: 30px; background-image: url(https://img.lifet.co.kr/icon/close_b.svg); background-size: contain; cursor: pointer;}
+button {color: #343434; border: 0; cursor:pointer; background-color: transparent;}
+em { font-style: inherit; }
+ul, ol { list-style: none; }
+a { text-decoration: none; color: currentColor; cursor: pointer; }
+i { font-style: inherit; }
+
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.text-left {text-align: left;}
+.text-center {text-align: center}
+.text-right {text-align: right;}
+.ellipsis2 { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.2em; height: 2.4em;}
+
+
+
+/* 공통적인 css 부분 나중에 다른곳으로*/
 
 .pm-section{
   width: 1200px;
   margin: 0 auto;
   padding: 60px 0 100px;
 }
-body {
-  height: 100vh;
-  background-color: #ffffff;
-  color: #343434;
-  font-size: 14px;
-}
+
+
 .main-Btn {
   width: 100%;
   padding: 15px;

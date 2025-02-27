@@ -17,7 +17,7 @@
             <div class="img">
               <div class="profile-img"></div>
             </div>
-            <strong class="nickname">진후님</strong>
+            <strong class="nickname" th:text="${user.nickname}"></strong>
             <button type="button" class="profile_btn">설정</button>
           </div>
           <div class="mypage_top_content">
@@ -28,7 +28,7 @@
               </div>
               <div class="inner">
                 <span>장바구니 물품</span>
-                <strong>2개</strong>
+                <strong th:text="${user.cartQuantity}+'개'"></strong>
               </div>
               <div class="inner">
                 <span>멤버십</span>
