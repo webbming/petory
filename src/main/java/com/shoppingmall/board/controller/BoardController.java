@@ -2,10 +2,7 @@ package com.shoppingmall.board.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +10,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 
 import com.nimbusds.jose.shaded.gson.Gson;
 import com.shoppingmall.board.model.Board;
@@ -56,14 +50,20 @@ public class BoardController {
                            @RequestParam(name = "size", defaultValue = "2") int size,
                            @RequestParam(name = "keyword", defaultValue = "") String keyword,
                            @RequestParam(name = "category", defaultValue="") String category,
+                           @RequestParam(name = "orderby", defaultValue="최신순") String orderby,
+                           @RequestParam(name = "bydate", defaultValue="전체") String bydate,
                            Model model) {
-		Page<Board> board = boardService.getPostByKeyword(keyword, category, page, size);
+		LocalDateTime startDate = boardService.getStartDateForPeriod(bydate);
+		Page<Board> board = boardService.getPostByKeyword(keyword, category, orderby, bydate, startDate, page, size);
 		
 		board.forEach(i -> {
 			Long boardId = i.getBoardId();
 			i.setCommentCount(commentService.countComment(boardId));
 		});
 		
+		model.addAttribute("bydate", bydate);
+		model.addAttribute("orderby", orderby);
+		model.addAttribute("category", category);
         model.addAttribute("board", board);
         model.addAttribute("currentPage", page);
         model.addAttribute("keyword", keyword);
@@ -88,7 +88,7 @@ public class BoardController {
 	@PostMapping("/write")
 	public String writePost(@ModelAttribute Board board, Authentication auth, Model model) {
         String nickname = userRepository.findByUserId(auth.getName()).getNickname();
-        board.setUserId(auth.getName());
+        board.setUser(userRepository.findByUserId(auth.getName()));
         board.setNickname(nickname);
 
 		boardService.savePost(board);
@@ -96,6 +96,7 @@ public class BoardController {
 		return "board/read";
 	}
 	
+	//이미지 업로드
 	@PostMapping("/images")
 	@ResponseBody
     public String uploadImage(MultipartHttpServletRequest request, HttpServletRequest req) throws IllegalStateException, IOException {
@@ -139,6 +140,7 @@ public class BoardController {
 		        User user = userRepository.findByUserId(auth.getName());
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
+		        System.out.println("board : " + board);
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
 	        }
@@ -163,9 +165,10 @@ public class BoardController {
 			@RequestParam("boardId") Long boardId, 
 			@RequestParam("title") String title, 
 			@RequestParam("content") String content, 
-			@RequestParam("categoryId") String categoryId, 
+			@RequestParam("categoryId") String categoryId,
+			@RequestParam("hashtag") String hashtag,
 			Model model) {
-		boardService.updatePost(boardId, title, content, categoryId);
+		boardService.updatePost(boardId, title, content, categoryId, hashtag);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
 	
@@ -199,7 +202,7 @@ public class BoardController {
 		Board board = boardService.getPostById(boardId);
 		comment.setContent(content);
 		comment.setBoard(board);
-		comment.setUserId(board.getUserId());
+		comment.setUser(userRepository.findByUserId(board.getUser().getUserId()));
 		commentService.saveComment(comment);
 		return "redirect:/board/read?boardId=" + boardId;
 	}

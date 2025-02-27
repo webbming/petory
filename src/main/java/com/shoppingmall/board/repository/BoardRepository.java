@@ -1,5 +1,7 @@
 package com.shoppingmall.board.repository;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +20,11 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
 	@Query("SELECT b FROM Board b WHERE " +
 		       "(LOWER(b.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
 		       "OR LOWER(b.content) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-		       "OR LOWER(b.userId) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-		       "AND (:category = '' OR b.categoryId = :category) ORDER BY createdAt DESC")
-	Page<Board> searchBoards(@Param("keyword") String keyword, @Param("category") String category, Pageable pageable);
+		       "OR LOWER(b.user.userId) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+		       "AND (:category = '' OR b.categoryId = :category) " +
+		       "AND (:bydate = '전체' OR b.createdAt >= :startDate) ORDER BY" +
+		       "  CASE WHEN :orderby = '인기순' THEN b.likeCount ELSE 0 END DESC, " +
+		       "  b.createdAt DESC")
+	Page<Board> searchBoards(@Param("keyword") String keyword, @Param("category") String category, 
+			@Param("orderby") String orderby, @Param("bydate") String bydate, @Param("startDate") LocalDateTime startDate, Pageable pageable);
 }
