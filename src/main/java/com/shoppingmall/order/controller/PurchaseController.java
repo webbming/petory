@@ -42,11 +42,15 @@ public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseD
 
 	//주문번호 기준 주문검색
 @GetMapping("/orders/{purchaseId}")
-public String orderByPurchaseId(@PathVariable Long purchaseId, Model model){
+public String orderByPurchaseId(@PathVariable Long purchaseId,
+																@RequestParam(name="admin", required = false, defaultValue = "user") String admin, Model model){
 	PurchaseDto purchaseDto = service.getOrderDetails(purchaseId);
 	model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
 	model.addAttribute("purchase", purchaseDto.getPurchase());
 	model.addAttribute("item", purchaseDto.getPurchaseProduct());
+	if(admin.equals("admin")){
+		return "order/adminOrderResult";
+	}
 	return "order/orderResult";
 }
 
@@ -88,7 +92,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 		model.addAttribute("purchase", purchaseDto.getPurchase());
 		model.addAttribute("item", purchaseDto.getPurchaseProduct());
 		if(admin.equals("admin")){
-			return "order/adminOrderResult";
+			return "order/adminOrderByUserId";
 		}
 	return "order/orderListByUserId";
 	}
@@ -98,10 +102,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 	public String receiverChange(@ModelAttribute DeliveryChangeDto deliveryChangeDto,
 								 @RequestParam(name="state", required = false, defaultValue = "show") String state,
 								 Model model){
-	System.out.println(state);
-	System.out.println(deliveryChangeDto.getPurchaseId());
 	model.addAttribute("delivery", service.receiverChange(deliveryChangeDto, state));
-	Long purchaseId = deliveryChangeDto.getPurchaseId();
 		if(state.equals("show")){
 			model.addAttribute("purchaseId", deliveryChangeDto.getPurchaseId());
 			return "order/receiverChange";

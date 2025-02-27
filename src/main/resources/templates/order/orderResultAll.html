@@ -34,7 +34,9 @@
 		</thead>
 		<tbody>
 		<tr th:each="purchase, iterStat : ${purchase}">
-			<td><a th:href="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" th:text="${purchase.purchaseId}"></a></td>
+			<td>   <a th:href="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId}, admin='admin')}"
+					  th:text="${purchase.purchaseId}">
+			</a></td>
 			<td th:text="${purchase.cancelAt != null ? '취소' : '주문'}"></td>
 			<td><a th:href="@{/order/orders/userId?userId={userId}&admin={admin}(userId=${purchase.userId}, admin='admin')}" th:text="${purchase.userId}"></a></td>
 			<td th:text="${purchase.totalPrice}"></td>
