@@ -1,232 +1,232 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>메인 페이지</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f7fc;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            grid-template-rows: auto 1fr;
-            height: 100vh;
-            gap: 1rem;
-            padding: 1rem;
-        }
-        /* 헤더 */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #2196f3;
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-        .header .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        /* 검색창 */
-        .search-container {
-            display: flex;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .search-container input {
-            padding: 0.7rem;
-            margin-right: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 250px;
-            transition: border-color 0.3s;
-        }
-        .search-container input:focus {
-            border-color: #1976d2;
-        }
-        .search-container button {
-            padding: 0.7rem 1.5rem;
-            background-color: #1976d2;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .search-container button:hover {
-            background-color: #1565c0;
-        }
-        /* 사이드바 */
-        .sidebar {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem;
-        }
-        .sidebar h2 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        /* 카테고리 리스트 항목 */
-		.category-list li {
-		    margin: 12px 0;
-		    padding: 15px 20px;
-		    background-color: #e3f2fd;
-		    border-radius: 8px;
-		    cursor: pointer;
-		    display: flex;
-		    align-items: center;
-		    transition: background-color 0.3s, box-shadow 0.3s;
-		    width: 100%; /* 항목을 꽉 차게 설정 */
-		    font-size: 1.1rem; /* 글씨 크기 키우기 */
-		}
-        .category-list li:hover {
-		    background-color: #2196f3;
-		    color: white;
-		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		}
-		
-		.category-list li a {
-		    color: inherit;
-		    text-decoration: none;
-		    font-weight: bold;
-		    display: flex;
-		    align-items: center;
-		    width: 100%;
-		}
-		
-		.category-list li .category-icon {
-		    margin-right: 15px; /* 아이콘 간격 넓히기 */
-		    font-size: 1.5rem; /* 아이콘 크기 키우기 */
-		}
-        /* 필터 정렬 */
-        .filter-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-top: 1rem;
-        }
-        .filter-container label {
-            margin-right: 10px;
-            font-weight: bold;
-        }
-        .filter-container select {
-            padding: 0.5rem;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        /* 상품 카드 */
-        .product-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1rem;
-            padding: 1rem;
-        }
-        .product-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow: hidden;
-            text-align: center;
-            padding: 1rem;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-        }
-        .product-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-        .product-card h3 {
-            margin: 1rem 0;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-        .product-card .price {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #e91e63;
-        }
-        .product-card a.details-link {
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            background-color: #2196f3;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .product-card a.details-link:hover {
-            background-color: #1976d2;
-        }
-        /* 버튼 스타일 */
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-top: 1rem;
-        }
-        .button-container a {
-            padding: 0.8rem 1.2rem;
-            background-color: #1976d2;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            text-align: center;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        .button-container a:hover {
-            background-color: #1565c0;
-        }
-        	/* 소분류 카테고리 */
-		.subcategory-list li {
-		    margin: 12px 0;
-		    padding: 15px 20px;
-		    background-color: #e3f2fd;
-		    border-radius: 8px;
-		    cursor: pointer;
-		    display: flex;
-		    align-items: center;
-		    transition: background-color 0.3s, box-shadow 0.3s;
-		    width: 100%; /* 항목을 꽉 차게 설정 */
-		    font-size: 1.1rem; /* 글씨 크기 키우기 */
-		}
-		
-		.subcategory-list li:hover {
-		    background-color: #2196f3;
-		    color: white;
-		    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-		}
-		
-		.subcategory-list li a {
-		    color: inherit;
-		    text-decoration: none;
-		    font-weight: bold;
-		    display: flex;
-		    align-items: center;
-		    width: 100%;
-		}
-		
-		.subcategory-list li .subcategory-icon {
-		    margin-right: 15px; /* 아이콘 간격 넓히기 */
-		    font-size: 1.5rem; /* 아이콘 크기 키우기 */
-		} 	
-    </style>
+  <meta charset="UTF-8">
+  <title>메인 페이지</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f7fc;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      grid-template-rows: auto 1fr;
+      height: 100vh;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    /* 헤더 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2196f3;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .header .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    /* 검색창 */
+    .search-container {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .search-container input {
+      padding: 0.7rem;
+      margin-right: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 250px;
+      transition: border-color 0.3s;
+    }
+    .search-container input:focus {
+      border-color: #1976d2;
+    }
+    .search-container button {
+      padding: 0.7rem 1.5rem;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .search-container button:hover {
+      background-color: #1565c0;
+    }
+    /* 사이드바 */
+    .sidebar {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem;
+    }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    /* 카테고리 리스트 항목 */
+    .category-list li {
+      margin: 12px 0;
+      padding: 15px 20px;
+      background-color: #e3f2fd;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      width: 100%; /* 항목을 꽉 차게 설정 */
+      font-size: 1.1rem; /* 글씨 크기 키우기 */
+    }
+    .category-list li:hover {
+      background-color: #2196f3;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-list li a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .category-list li .category-icon {
+      margin-right: 15px; /* 아이콘 간격 넓히기 */
+      font-size: 1.5rem; /* 아이콘 크기 키우기 */
+    }
+    /* 필터 정렬 */
+    .filter-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-top: 1rem;
+    }
+    .filter-container label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    .filter-container select {
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    /* 상품 카드 */
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .product-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      overflow: hidden;
+      text-align: center;
+      padding: 1rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .product-card h3 {
+      margin: 1rem 0;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    .product-card .price {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #e91e63;
+    }
+    .product-card a.details-link {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #2196f3;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .product-card a.details-link:hover {
+      background-color: #1976d2;
+    }
+    /* 버튼 스타일 */
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .button-container a {
+      padding: 0.8rem 1.2rem;
+      background-color: #1976d2;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .button-container a:hover {
+      background-color: #1565c0;
+    }
+    /* 소분류 카테고리 */
+    .subcategory-list li {
+      margin: 12px 0;
+      padding: 15px 20px;
+      background-color: #e3f2fd;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      width: 100%; /* 항목을 꽉 차게 설정 */
+      font-size: 1.1rem; /* 글씨 크기 키우기 */
+    }
+
+    .subcategory-list li:hover {
+      background-color: #2196f3;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .subcategory-list li a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .subcategory-list li .subcategory-icon {
+      margin-right: 15px; /* 아이콘 간격 넓히기 */
+      font-size: 1.5rem; /* 아이콘 크기 키우기 */
+    }
+  </style>
 </head>
 <body>
 <!-- 헤더 -->
@@ -286,12 +286,13 @@
       <a href="/categories">카테고리 관리</a>
     </div>
   </div>
+
   <!-- 상품 리스트 -->
   <div class="product-list">
     <div class="product-card" th:each="product : ${products}">
       <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
       <h3 th:text="${product.productName}">상품명</h3>
-      <p class="price" th:text="${product.price} + '원'">가격</p>
+      <p class="price" th:text="${#numbers.formatInteger(product.price, 0)} + '원'">가격</p>
       <p th:text="${product.description}">설명</p>
       <p th:if="${product.averageRating != null}" th:text="'평점: ' + ${product.averageRating}">평점</p>
       <p th:text="'(' + ${product.category.categoryName} + ' / ' + ${product.subcategory.subcategoryName} + ')'">
@@ -322,6 +323,5 @@
     }
   }
 </script>
->>>>>>> user
 </body>
 </html>

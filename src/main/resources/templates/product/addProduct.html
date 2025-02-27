@@ -65,7 +65,8 @@
         <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
             <label>상품명: <input type="text" name="productName" required /></label>
             <label>가격: <input type="number" name="price" required /></label>
-            <label>옵션: <input type="text" name="option" /></label>
+            <!-- 옵션 여러개입력 쉼표로 구분 -->
+            <label>옵션: <input type="text" name="option" placeholder="예: S,M,L,XL"/></label> 
             <label>내용: <input type="text" name="content" /></label>
             <label>설명: <input type="text" name="description" /></label>
             <label>이미지 선택: <input type="file" name="imageFile" /></label>
