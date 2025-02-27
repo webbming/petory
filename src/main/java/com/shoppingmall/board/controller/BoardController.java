@@ -140,7 +140,7 @@ public class BoardController {
 		        User user = userRepository.findByUserId(auth.getName());
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
-		        System.out.println("board : " + board);
+		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
 	        }
