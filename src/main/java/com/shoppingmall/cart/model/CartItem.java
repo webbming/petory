@@ -2,6 +2,7 @@ package com.shoppingmall.cart.model;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.shoppingmall.product.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,21 +30,19 @@ public class CartItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_item_id")
-    private Long cartItemId;
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
     
-//    @Column(name = "product_id", nullable = false)
-//    private Long productId;
 
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(nullable = false)
     private BigDecimal price;  // 개별 상품 가격
@@ -56,6 +55,11 @@ public class CartItem {
         return  BigDecimal.valueOf(this.quantity).multiply(this.price);  // 총 가격 계산
     }
     
+    // 수량과 가격에 대한 유효성 검증 (선택 사항)
+    public boolean isValid() {
+    	return this.quantity > 0 && this.price.compareTo(BigDecimal.ZERO) > 0;
+    }
+
     public CartItem(Cart cart, Product product, int quantity, BigDecimal price) {
         this.cart = cart;
         this.product = product;
@@ -63,8 +67,4 @@ public class CartItem {
         this.price = price;
     }
     
-//    // 수량과 가격에 대한 유효성 검증 (선택 사항)
-//    public boolean isValid() {
-//        return this.quantity > 0 && this.price > 0;  // 유효한 수량과 가격만 허용
-//    }
 }

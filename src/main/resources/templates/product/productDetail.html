@@ -47,6 +47,7 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <div class="container">
         <h1>상품 상세</h1>
         <div class="product-image">
@@ -58,6 +59,11 @@
             <p><strong>옵션:</strong> <span th:text="${product.option}"></span></p>
             <p><strong>설명:</strong> <span th:text="${product.description}"></span></p>
         </div>
+        <form th:action="@{/cart/{id}/items/{productId}/add(id=${id}, productId=${product.productId})}" method="post">
+            <label for="quantity">수량:</label>
+            <input type="number" name="quantity" value="1" min="1" required id="quantity">
+            <button type="submit">장바구니에 담기</button>
+        </form>
         <div class="reviews">
             <h3>리뷰</h3>
             <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post">
