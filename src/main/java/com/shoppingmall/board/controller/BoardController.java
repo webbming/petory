@@ -197,9 +197,12 @@ public class BoardController {
 	
 	//댓글 등록
 	@GetMapping("/commentCreate")
-	public String commentCreate(@RequestParam("content") String content, @RequestParam("boardId") Long boardId) {
+	public String commentCreate(Authentication auth, @RequestParam("content") String content, @RequestParam("boardId") Long boardId) {
+		User user = userRepository.findByUserId(auth.getName());
 		Comment comment = new Comment();
 		Board board = boardService.getPostById(boardId);
+		comment.setUser(user);
+		comment.setNickname(user.getNickname());
 		comment.setContent(content);
 		comment.setBoard(board);
 		comment.setUser(userRepository.findByUserId(board.getUser().getUserId()));
