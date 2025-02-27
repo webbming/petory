@@ -1,7 +1,7 @@
 package com.shoppingmall.order.controller;
 
 import com.shoppingmall.order.domain.PurchaseDelivery;
-import com.shoppingmall.order.domain.PurchaseItem;
+import com.shoppingmall.order.domain.PurchaseProduct;
 import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.dto.DeliveryChangeDto;
 import com.shoppingmall.order.dto.PurchaseDto;
@@ -29,14 +29,14 @@ PurchaseService service;
 //주문 요청
 @GetMapping("/order")
 public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseDelivery delivery,
-										@ModelAttribute PurchaseItem item,
+										@ModelAttribute PurchaseProduct item,
 										@RequestParam(name = "receiver_addr_detail") String receiveDetailAddr,
 										Model model){
 	model.addAttribute("message", service.order(purchase, delivery, item, receiveDetailAddr));
 	PurchaseDto purchaseDto = service.getOrderDetails(purchase.getPurchaseId());
 	model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
 	model.addAttribute("purchase", purchaseDto.getPurchase());
-	model.addAttribute("item", purchaseDto.getPurchaseItem());
+	model.addAttribute("item", purchaseDto.getPurchaseProduct());
 	return "order/orderResult";
 }
 
@@ -46,7 +46,7 @@ public String orderByPurchaseId(@PathVariable Long purchaseId, Model model){
 	PurchaseDto purchaseDto = service.getOrderDetails(purchaseId);
 	model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
 	model.addAttribute("purchase", purchaseDto.getPurchase());
-	model.addAttribute("item", purchaseDto.getPurchaseItem());
+	model.addAttribute("item", purchaseDto.getPurchaseProduct());
 	return "order/orderResult";
 }
 
@@ -55,7 +55,7 @@ public String orderByPurchaseId(@PathVariable Long purchaseId, Model model){
 public String orderAll(@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState, Model model){
 		model.addAttribute("purchase", service.purchaseList(purchaseState).getPurchase());
 		model.addAttribute("delivery", service.purchaseList(purchaseState).getPurchaseDelivery());
-		model.addAttribute("item", service.purchaseList(purchaseState).getPurchaseItem());
+		model.addAttribute("item", service.purchaseList(purchaseState).getPurchaseProduct());
 	return "order/orderResultAll";
 	}
 
@@ -86,7 +86,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 	PurchaseDto purchaseDto = service.orderListByUserId(userId, purchaseState);
 		model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
 		model.addAttribute("purchase", purchaseDto.getPurchase());
-		model.addAttribute("item", purchaseDto.getPurchaseItem());
+		model.addAttribute("item", purchaseDto.getPurchaseProduct());
 		if(admin.equals("admin")){
 			return "order/adminOrderResult";
 		}
@@ -109,5 +109,3 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 	return "redirect:/order";
 	}
 }
-
-

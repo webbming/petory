@@ -1,6 +1,7 @@
 package com.shoppingmall.order.dto;
 
 import com.shoppingmall.order.domain.PurchaseDelivery;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PurchaseDeliveryDto {
 
   private Long deliveryId;
