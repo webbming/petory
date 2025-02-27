@@ -42,6 +42,11 @@ public class UserController {
 		return "user/profile";
 	}
 
+	@GetMapping("/profile/update")
+	public String profileUpdate(@RequestParam(name = "agree", defaultValue = "false") boolean agree) {
+		return "user/chageProfile";
+	}
+
 	//주소검색 팝업연결
 	@GetMapping("/addr")
 	public String addrFind() {

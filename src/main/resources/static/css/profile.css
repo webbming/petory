@@ -1,87 +1,268 @@
 
-.pm-section{
-  height: 100vh;
-  padding-top: 100px;
-  margin: 0 150px 0 150px;
-  padding-bottom: 100px;
-
-}
-.section-wrap{
-  width: 600px;
-  margin: 0 auto;
+.mypage-top{
   display: flex;
-  justify-content: center;
-  align-items: center;
 
 }
-.content-form{
-  padding: 20px 110px 60px;
+.user .img{
+  overflow: hidden;
+  display: flex;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 16px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #F6F6F6;
 }
-.content-wrap{
-  width: 410px;
-  height: 376px;
+
+button{
+  border: 0;
+  cursor: pointer;
 }
-h1{
-  color: #343434;
-  margin-bottom: 20px;
-  font-size: 30px;
-}
-h2{
-  color: #343434;
+.user strong{
+  display: block;
+  margin: 4px 0 12px;
   font-size: 20px;
-  margin-bottom: 30px;
+  font-weight: 600;
+  line-height: 130%;
 }
-.alert{
-  color: #888;;
-  margin-bottom: 20px;
+.user > button{
+  color: #9A9A9A;
+  line-height: 100%;
+  border-bottom: 1px solid #9A9A9A;
+  background: none;
 }
 
-input , select{
+.user{
+  position: relative;
+  width: 170px;
+  height: 223px;
+  margin-right: 30px;
+  padding: 30px 0 0;
+  text-align: center;
+  border-radius: 13px;
+  border: 1px solid #D9D9D9;
+}
+.mypage_top_content{
+  display: flex;
+  align-items: center;
   width: 100%;
-  padding: 15px;
-  margin-bottom: 15px;
-  border: 1px solid #dadada;
-  border-radius: 5px;
+  height: 223px;
+  border-radius: 15px;
+  background-color: #E3EFFF;
+}
+
+.inner-wrap{
+  display: flex;
+  justify-content: left;
+  width: 577px;
+}
+.inner{
+  width: 173px;
+  border-left: 0;
+  text-align: center;
+}
+.inner span{
+  display: block;
+  font-size: 20px;
+}
+.mypage_top_content .inner strong{
+  margin-top: 10px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.inner-rig{
+  flex: 1;
+  margin-right: 60px;
+}
+.inner-rig p{
+  font-size: 20px;
+  line-height: 130%;
+}
+
+.inner-rig p strong{
+  float: right;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.inner-rig p + p {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #C3D2E5;
+}
+
+/*mypage 아래 부분*/
+
+.mypage-bottom-content{
+  display: flex;
+  margin-top: 37px;
+}
+
+.mypage-bottom-content > .left{
+  width: 200px;
+}
+.mypage-bottom-content .left ul li{
+  margin-bottom: 26px;
+}
+
+.mypage-bottom-content .left ul li span{
+  display: block;
+  margin-bottom: 13px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.mypage-bottom-content .left ul li a{
+  display: block;
+  margin-bottom: 13px;
   font-size: 15px;
 }
 
-input:focus {
-  outline: none;
-  border-color: #4285f4;
+a{
+  text-decoration: none;
+  color: currentColor;
+  cursor: pointer;
 }
 
-.error {
+
+
+.mypage-bottom-content .right_info{
+  width: 100%;
+}
+
+.mypage-bottom-content .right_info h2{
   display: block;
-  color: #e74c3c;
-  font-size: 14px;
-  margin-bottom: 15px;
+  padding-bottom: 0;
+  font-size: 20px;
+  border: 0;
+}
+.mypage-bottom-content h2{
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+.new_pet{
+  position: relative;
+  float: right;
+  margin-top: -67px;
+  color: #68A5FE;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 21px;
+}
+.new_pet::before {
+  content: '';
+  display: inline-block;
+  vertical-align: -2px;
+  width: 18px;
+  height: 18px;
+  margin-right: 7px;
+  background: url(https://img.lifet.co.kr/icon/icon_plus.png) no-repeat center center;
+  background-size: 100%;
+}
+
+.animal_list{
+  margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.animal_list > div:last-child {
+  position: relative;
+  padding: 0;
+  box-shadow: none;
+}
+
+.right_info .animal_list > div:last-child .profile_add{
+  display: inline-block;
+  width: 202px;
+  height: 248px;
+  padding-top: 167px;
+  color: #CECECE;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border-radius: 15px;
+}
+
+.mypage-bottom-content .right_info h2.border{
+  padding-bottom: 14px;
+  border-bottom: 2px solid #e3e3e3;
+}
+
+.like_area{
+  position: relative;
+}
+
+.more{
+  position: absolute;
+  right: 0;
+  top: 2px;
+  padding-right: 22px;
+  font-weight: 500;
+  font-size: 18px;
+  background: url(https://img.lifet.co.kr/icon/mypage_arrow.svg) no-repeat right 6px center;
+  background-size: 8px;
+}
+
+/* 모달 기능 */
+
+.modal {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* 모달 내부 컨텐츠 */
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px;
+  border-radius: 8px;
   text-align: center;
 }
 
-.input-box{
-  margin-bottom: 10px;
+/* 닫기 버튼 */
+.close {
+  float: right;
+  font-size: 25px;
+  cursor: pointer;
 }
-.find-wrap{
-  margin-top : 30px;
-}
-.findBtn{
-  margin-top: 30px;
-}
-.find-finish{
-  border: 1px solid #dadada;
-  padding: 15px;
+
+/* 입력 필드 & 버튼 스타일 */
+#newNickname {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  margin-bottom: 20px;
-  color: #343434;
 }
-.find-result{
-  border: 1px solid #dadada;
+
+#saveNickname {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #4e9eff;
+  color: white;
+  border: none;
   border-radius: 5px;
-  padding: 15px;
-  color: #343434;
+  cursor: pointer;
 }
-.result-container{
-  margin-top: 30px;
-  text-align: center;
-  padding: 15px;
+
+#saveNickname:hover {
+  background-color: #ff6347;
 }
+
+
+
+
+
+

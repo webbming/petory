@@ -3,11 +3,19 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Noto Sans KR', sans-serif;
+  list-style: none;
+}
+
+.pm-section{
+  width: 1200px;
+  margin: 0 auto;
+  padding: 60px 0 100px;
 }
 body {
   height: 100vh;
   background-color: #ffffff;
-
+  color: #343434;
+  font-size: 14px;
 }
 .main-Btn {
   width: 100%;

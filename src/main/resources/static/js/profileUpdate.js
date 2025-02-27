@@ -3,7 +3,7 @@
 async function loadUserData() {
 
   try {
-    const response = await fetch("/api/users/profile",
+    const response = await fetch("/api/users/profile/update",
         {credentials: "include"})
     if (!response.ok) {
       throw new Error("사용자 정보를 불러오지 못했습니다.")
@@ -49,7 +49,7 @@ profileUpdateForm.addEventListener("submit", async (e) => {
     const formObj = Object.fromEntries(formData);
     console.log(formObj)
 
-    const response = await fetch("/api/users/profile", {
+    const response = await fetch("/api/users/profile/update", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"
