@@ -17,14 +17,11 @@ public class PurchaseDeliveryDto {
   private String receiverAddr;
   private String deliveryMessage;
   private String deliveryStatus;
-  private LocalDateTime cancelAt; // 주문 취소 시간
   private LocalDateTime deliveredAt;
-  private String userId;
 
   @Builder
   public PurchaseDeliveryDto(Long deliveryId, String receiverName, String receiverPhone, String receiverAddr,
-                             String deliveryMessage, String deliveryStatus, LocalDateTime deliveredAt, String userId
-                              ,LocalDateTime cancelAt) {
+                             String deliveryMessage, String deliveryStatus, LocalDateTime deliveredAt, String userId,LocalDateTime cancelAt) {
     this.deliveryId = deliveryId;
     this.receiverName = receiverName;
     this.receiverPhone = receiverPhone;
@@ -32,8 +29,6 @@ public class PurchaseDeliveryDto {
     this.deliveryMessage = deliveryMessage;
     this.deliveryStatus = deliveryStatus;
     this.deliveredAt = deliveredAt;
-    this.userId = userId;
-    this.cancelAt = cancelAt;
   }
 
   public static PurchaseDeliveryDto fromEntity(PurchaseDelivery delivery) {
@@ -45,8 +40,6 @@ public class PurchaseDeliveryDto {
         .deliveryMessage(delivery.getDeliveryMessage())
         .deliveryStatus(delivery.getDeliveryStatus())
         .deliveredAt(delivery.getDeliveredAt())
-        .userId(delivery.getUserId())
-        .cancelAt(delivery.getCancelAt())
         .build();
   }
 }

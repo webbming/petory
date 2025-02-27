@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>주문 상세 정보</title>
+	<link rel="stylesheet" href="/css/orderOneReseult.css">
+</head>
+<body>
+
+<h1>관리자용 주문 상세정보</h1>
+
+<p>
+	<a href="/order" class="button">메인페이지로</a> <a href="/order/admin/orderList" class="button">주문목록</a>
+</p>
+
+
+<div class="container">
+	<!-- Purchase 리스트 출력 -->
+	<h2>주문 목록</h2>
+	<table>
+		<thead>
+		<tr>
+			<th>주문번호</th>
+			<th>주문자 ID</th>
+			<th>총 가격</th>
+			<th>주문/취소 시간</th>
+			<th>주문/취소 현황</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="purchase : ${purchase}">
+			<td th:text="${purchase.purchaseId}"></td>
+			<td th:text="${purchase.userId}"></td>
+			<td th:text="${purchase.totalPrice}"></td>
+			<td th:utext="${purchase.cancelAt != null ? '취소 시각: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : '주문 시각: ' + #temporals.format(purchase.createAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></td>
+			<td th:text="${purchase.cancelAt != null ? '취소' : '주문'}"></td>
+		</tr>
+		</tbody>
+	</table>
+
+	<!-- Delivery 리스트 출력 -->
+	<h2>배송 정보</h2>
+	<table>
+		<thead>
+		<tr>
+			<th>수령인 이름</th>
+			<th>수령인 전화번호</th>
+			<th>주소</th>
+			<th>요청 사항</th>
+			<th>상태</th>
+			<th>상태 변경</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="delivery : ${delivery}">
+			<td th:text="${delivery.receiverName}"></td>
+			<td th:text="${delivery.receiverPhone}"></td>
+			<td th:text="${delivery.receiverAddr}"></td>
+			<td th:text="${delivery.deliveryMessage}"></td>
+			<td th:text="${delivery.deliveryStatus}"></td>
+			<td>
+			<form action="/order/admin/deiveryChange" method="POST">
+				<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}"/>
+				<select id="deliveryState" name="deliveryState">
+					<option value="onDelivery">배송중</option>
+					<option value="stopDelivery">배송취소</option>
+					<option value="finDelivery">배송완료</option>
+				</select>
+				<button type="submit">배송상태 변경</button>
+			</form>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+
+	<!-- Item 리스트 출력 -->
+	<h2>구매 상품</h2>
+	<table>
+		<thead>
+		<tr>
+			<th>상품명</th>
+			<th>옵션</th>
+			<th>수량</th>
+			<th>가격</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="item : ${item}">
+			<td th:text="${item.productName}"></td>
+			<td th:text="${item.option == null ? '없음': item.option}"></td>
+			<td th:text="${item.quantity}"></td>
+			<td th:text="${item.totalPrice}"></td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+</body>
+</html>

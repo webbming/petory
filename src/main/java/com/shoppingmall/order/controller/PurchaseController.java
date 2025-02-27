@@ -1,13 +1,11 @@
 package com.shoppingmall.order.controller;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseItem;
 import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.dto.DeliveryChangeDto;
-import com.shoppingmall.order.dto.PurchaseDeliveryDto;
 import com.shoppingmall.order.dto.PurchaseDto;
-import com.shoppingmall.order.service.PurchaseAllService;
+import com.shoppingmall.order.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,8 +20,11 @@ public String index() {
 	return "order/index";
 }
 
+@GetMapping("/purchase")
+public String purchase(){ return "order/purchaseReady";}
+
 @Autowired
-PurchaseAllService service;
+PurchaseService service;
 
 //주문 요청
 @GetMapping("/order")
@@ -51,7 +52,7 @@ public String orderByPurchaseId(@PathVariable Long purchaseId, Model model){
 
 //전체 회원 리스트 주문 검색(전체별, 취소별, 주문요청별)
 @GetMapping("/admin/orderList")
-public String orderAll(@RequestParam(name = "purchaseState") String purchaseState, Model model){
+public String orderAll(@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState, Model model){
 		model.addAttribute("purchase", service.purchaseList(purchaseState).getPurchase());
 		model.addAttribute("delivery", service.purchaseList(purchaseState).getPurchaseDelivery());
 		model.addAttribute("item", service.purchaseList(purchaseState).getPurchaseItem());
@@ -77,7 +78,8 @@ public String orderAll(@RequestParam(name = "purchaseState") String purchaseStat
 	//userId 기준 주문 검색
 	@GetMapping("/orders/userId")
 	public String orderListByUserId(@RequestParam(name = "userId") String userId
-									,@RequestParam(name = "purchaseState", required = false) String purchaseState, Model model){
+									,@RequestParam(name = "purchaseState", required = false) String purchaseState
+									,@RequestParam(name = "admin", required = false, defaultValue = "user") String admin, Model model){
 		if (purchaseState == null) {
 			purchaseState = "all";
 		}
@@ -85,6 +87,9 @@ public String orderAll(@RequestParam(name = "purchaseState") String purchaseStat
 		model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
 		model.addAttribute("purchase", purchaseDto.getPurchase());
 		model.addAttribute("item", purchaseDto.getPurchaseItem());
+		if(admin.equals("admin")){
+			return "order/adminOrderResult";
+		}
 	return "order/orderListByUserId";
 	}
 	

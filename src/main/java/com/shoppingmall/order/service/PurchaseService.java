@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @Service
-public class PurchaseAllService {
+public class PurchaseService {
 
 	@Autowired
 	PurchaseDeliveryRepository deliveryRepo;

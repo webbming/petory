@@ -1,0 +1,117 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    text-align: center; /* 모든 내용 가운데 정렬 */
+}
+
+h1 {
+    color: #333;
+    margin-top: 20px;
+}
+
+p {
+    margin-top: 10px;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    color: #444;
+    margin-top: 40px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    table-layout: fixed; /* 셀 크기를 일정하게 유지 */
+}
+
+th, td {
+    padding: 12px;
+    text-align: center; /* 셀 내 텍스트 가운데 정렬 */
+    border: 1px solid #ddd;
+    white-space: normal; /* 텍스트가 셀을 넘지 않도록 설정 */
+    word-wrap: break-word; /* 셀 크기를 넘을 경우 띄어쓰기 단위로 줄 바꿈 */
+}
+
+th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.button {
+display: inline-block;
+background-color: #2196F3; /* 선명한 하늘색 */
+color: white; /* 흰색 텍스트 */
+padding: 10px 15px;
+text-align: center;
+border-radius: 4px;
+text-decoration: none;
+cursor: pointer;
+}
+
+.button:hover {
+background-color: #1976D2; /* 마우스를 올렸을 때 조금 더 진한 하늘색 */
+}
+
+
+select, button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+select {
+    width: 100%; /* 셀의 너비를 100%로 설정 */
+    box-sizing: border-box; /* 패딩을 포함한 크기 계산 */
+    max-width: 150px; /* 최대 너비를 설정하여 드롭다운이 셀을 넘지 않도록 함 */
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+    }
+    .container {
+        width: 90%;
+    }
+}
