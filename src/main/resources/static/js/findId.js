@@ -28,7 +28,7 @@ findIdForm.addEventListener("submit" , async (e) =>{
 
     if (response.ok){
         // 사용자 아이디를 페이지에 표시
-        userDisplay.textContent = `당신의 아이디는: ${result.userId}`;
+        userDisplay.textContent = `조회된 아이디 : ${result.userId}`;
         resultContainer.style.display = "block"; // 결과 컨테이너 보이기
 
     }else{

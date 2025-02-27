@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.shoppingmall.user.model.User;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,18 +31,23 @@ import lombok.Setter;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_id")
-    private Long cartId; // PK
+    @Column(name = "cart_id", nullable = false)
+    private Long id; // PK
     
-//    @OneToOne(fetch = FetchType.LAZY)  
-//    @JoinColumn(name = "user_id")
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user; // 회원
-    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartItem> cartItems = new ArrayList<>();
    
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true; // 장바구니 활성화 상태
+    
+    public Cart(User user) {
+    	this.user = user;
+    }
+    
     public void addCartItem(CartItem cartItem) {
     	this.cartItems.add(cartItem);
     	cartItem.setCart(this);
@@ -63,4 +69,5 @@ public class Cart {
                 .map(CartItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
 }

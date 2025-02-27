@@ -7,13 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.shoppingmall.cart.model.Cart;
+import com.shoppingmall.user.model.User;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-
-	Optional<Cart> findById(Long cartId); // Optional<Cart> 반환
-	
-	// 유저 아이디로 장바구니 조회
-	List<Cart> findByUserId(Long userId);
-
+	Optional<Cart> findByUserAndIsActiveTrue(User user);
+    Optional<Cart> findByIdAndUser(Long cartId, User user);
+    Optional<Cart> findById(Long Id);
 }

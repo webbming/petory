@@ -1,167 +1,148 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
-body {
-  font-family: 'JetBrains Mono', sans-serif;
-  background-color: #f4f4f9;
+.login-wrap{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
+
 .login-container {
-  width: 100%;
-  max-width: 450px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 450px;
   padding: 20px;
-  text-align: center;
 }
 
 h1 {
-  color: #333;
-  margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-form div {
+.login-input {
+  width: 100%;
+  padding: 15px;
   margin-bottom: 15px;
-  text-align: left;
-}
-
-input[type="text"],
-input[type="password"] {
-  width: 100%;
-  padding: 12px;
+  border: 1px solid #dadada;
+  border-radius: 5px;
   font-size: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
 }
 
-input:focus {
-  border-color: #2669B0;
+.login-input:focus {
   outline: none;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #577A9E;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-button:hover {
-  background-color: #4676A9;
+  border-color: #4285f4;
 }
 
 .error {
-  color: red;
-  font-size: 12px;
-  margin-top: 10px;
+  display: block;
+  color: #e74c3c;
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-/* 아래 영역(아이디 찾기 + 소셜 로그인) 스타일 */
+
 .login-footer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin-top: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .footer-links {
-  width: 100%;
-  max-width: 300px;
-  text-align: center;
-  margin-bottom: 15px;
+  display: flex;
+  gap: 20px;
 }
 
 .footer-links a {
-  display: inline-block;
-  color: #577A9E;
+  color: #555;
   text-decoration: none;
-  font-size: 13px;
-  margin: 0 4px;
-  position: relative;
-  padding: 0 10px;
-}
-.footer-links a::after {
-  content: "|";  /* 구분선 */
-  color: #aaa;    /* 회색으로 색상 조정 */
-  position: absolute;
-  top: 1px;
-  right: -10px;   /* 약간의 간격 조정 */
-}
-.footer-links a:last-child::after {
-  content: "";  /* 마지막 요소는 | 제거 */
-}
-
-.footer-links a:hover {
-  text-decoration: underline;
-}
-
-/* 소셜 로그인 */
-.social-login {
-  width: 100%;
-  max-width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-size: 14px;
 }
 
 .social-login-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: #555;
-  width: 100%;
   text-align: center;
-  margin-bottom: 15px;
+  position: relative;
+  margin: 30px 0;
 }
 
-.social-login-title::before,
-.social-login-title::after {
+.social-login-title::before {
   content: "";
-  flex: 1;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
   height: 1px;
-  background-color: #ccc;
-  margin: 0 10px;
+  background-color: #dadada;
+  z-index: -1;
+}
+
+.social-login-title span {
+  background-color: #f5f6f7;
+  padding: 0 10px;
+  font-size: 14px;
+  color: #666;
 }
 
 .social-login-buttons {
   display: flex;
   justify-content: center;
   gap: 10px;
+  margin-bottom: 20px;
 }
 
-.social-login a {
+.social-login-buttons a {
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.social-login-buttons a:hover{
+  scale: 1.2;
+}
+
+.social-login-buttons img {
+  max-height: 50px;
+  width: auto;
+}
+
+.simple-login-button {
+  display: inline-block;
+  background-color: #333;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.promotion-banner {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 15px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  overflow: hidden;
-  transition: transform 0.2s;
-  margin: 0 5px;
-}
-.social-login a:hover {
-  transform: scale(1.1);
+  justify-content: space-between;
+  margin-top: 30px;
 }
 
-.social-login img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.promotion-text {
+  flex: 1;
 }
+
+.promotion-text p:first-child {
+  margin: 0;
+  color: #333;
+}
+
+.promotion-text p:nth-child(2) {
+  margin: 5px 0;
+  color: #4e9eff;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.promotion-text p:last-child {
+  margin: 5px 0 0;
+  color: #888;
+  font-size: 12px;
+}
+

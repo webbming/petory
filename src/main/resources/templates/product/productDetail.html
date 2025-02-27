@@ -1,82 +1,247 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>상품 상세</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7fc;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            border-radius: 8px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .product-image {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .product-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .price {
-            color: #e91e63;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .reviews {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 4px;
-        }
-        .review {
-            margin-bottom: 15px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>상품 상세</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .product-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .product-image {
+      width: 50%;
+      text-align: center;
+    }
+    .product-image img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    .product-info {
+      width: 50%;
+    }
+    .price {
+      color: #e91e63;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .add-to-cart {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .reviews {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f1f1f1;
+      border-radius: 4px;
+    }
+    .review {
+      background: white;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .star {
+      color: gold;
+    }
+
+    .option-list {
+      margin-top: 10px;
+    }
+    .option-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f9f9f9;
+      padding: 8px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+    .option-item button {
+      background: #e91e63;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+  </style>
+  <script>
+    function updatePrice() {
+      var price = parseInt(document.getElementById('product-price').innerText.replace('원', ''));
+      var quantity = parseInt(document.getElementById('quantity').value);
+      var totalPrice = price * quantity;
+      document.getElementById('total-price').innerText = totalPrice + '원';
+    }
+
+    function calculateAverageRating() {
+      let ratings = document.querySelectorAll('.review-rating');
+      let total = 0;
+      let count = ratings.length;
+
+      ratings.forEach(rating => {
+        total += parseInt(rating.dataset.rating);
+      });
+
+      let avg = count > 0 ? (total / count).toFixed(1) : 0;
+      document.getElementById('average-rating').innerText = avg + "점";
+
+      let stars = '⭐'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+      document.getElementById('average-stars').innerText = stars;
+    }
+
+    document.addEventListener("DOMContentLoaded", calculateAverageRating);
+
+    let selectedOptions = [];
+
+    function addOption() {
+      const selectBox = document.getElementById("product-option");
+      const selectedText = selectBox.options[selectBox.selectedIndex].text;
+      const selectedValue = selectBox.value;
+
+      if (!selectedValue) return;
+      if (selectedOptions.some(opt => opt.value === selectedValue)) {
+        alert("이미 선택한 옵션입니다.");
+        return;
+      }
+
+      selectedOptions.push({
+        value: selectedValue,
+        text: selectedText,
+        quantity: 1
+      });
+      updateOptionList();
+    }
+
+    function updateOptionList() {
+      const container = document.getElementById("selected-options");
+      container.innerHTML = "";
+
+      selectedOptions.forEach((opt, index) => {
+        const optionRow = document.createElement("div");
+        optionRow.classList.add("option-item");
+        optionRow.innerHTML = `
+                    <span><strong>${opt.text}</strong></span>
+                    <button onclick="changeQuantity(${index}, -1)">-</button>
+                    <span>${opt.quantity}</span>
+                    <button onclick="changeQuantity(${index}, 1)">+</button>
+                    <button onclick="removeOption(${index})">X</button>
+                `;
+        container.appendChild(optionRow);
+      });
+      updateTotalPrice();
+    }
+
+    function changeQuantity(index, change) {
+      selectedOptions[index].quantity += change;
+      if (selectedOptions[index].quantity < 1) {
+        selectedOptions[index].quantity = 1;
+      }
+      updateOptionList();
+    }
+
+    function removeOption(index) {
+      selectedOptions.splice(index, 1);
+      updateOptionList();
+    }
+
+    function updateTotalPrice() {
+      let basePrice = parseInt(document.getElementById('product-price').innerText.replace('원', ''));
+      let totalQuantity = selectedOptions.reduce((sum, opt) => sum + opt.quantity, 0);
+      let total = basePrice * totalQuantity;
+      document.getElementById("total-price").innerText = total + "원";
+    }
+  </script>
 </head>
 <body>
-    <div class="container">
-        <h1>상품 상세</h1>
-        <div class="product-image">
-            <img th:src="@{${product.imageUrl}}" alt="Product Image" style="max-width: 400px;"/>
-        </div>
-        <div class="product-info">
-            <p><strong>상품명:</strong> <span th:text="${product.productName}"></span></p>
-            <p><strong>가격:</strong> <span class="price" th:text="${product.price} + '원'"></span></p>
-            <p><strong>옵션:</strong> <span th:text="${product.option}"></span></p>
-            <p><strong>설명:</strong> <span th:text="${product.description}"></span></p>
-        </div>
-        <div class="reviews">
-            <h3>리뷰</h3>
-            <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post">
-                <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required>
-                <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
-                <button type="submit">리뷰 등록</button>
-            </form>
-            <div th:each="review : ${reviews}" class="review">
-                <p th:text="'평점: ' + ${review.rating}"></p>
-                <p th:text="${review.comment}"></p>
-                <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
-            </div>
-        </div>
-        <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
-        <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
-            <input type="hidden" name="_method" value="delete">
-            <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
-        </form>
-        <a href="/products">목록으로 돌아가기</a>
+<div class="container">
+  <h1>상품 상세</h1>
+  <div class="product-container">
+    <div class="product-image">
+      <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
     </div>
+    <div class="product-info">
+      <p><strong>상품명:</strong> <span th:text="${product.productName}"></span></p>
+      <p><strong>가격:</strong> <span id="product-price" class="price" th:text="${product.price} + '원'"></span></p>
+      <p><strong>내용:</strong> <span th:text="${product.content}"></span></p> <!-- 내용은 원래 자리 유지 -->
+      <p><strong>옵션:</strong>
+        <select id="product-option" onchange="addOption()">
+          <option value="">옵션을 선택하세요</option>
+          <option th:each="opt : ${#strings.arraySplit(product.option, ',')}"
+                  th:text="${opt}" th:value="${opt}" th:data-price="1000"></option>
+        </select>
+      </p>
+      <div id="selected-options" class="option-list"></div>
+
+      <p><strong>총 가격:</strong> <span id="total-price">0원</span></p>
+
+      <form th:action="@{'/cart/add'}" method="post">
+        <input type="hidden" name="productId" th:value="${product.productId}"/>
+        <input type="hidden" name="quantity" id="quantity-value" th:value="1"/>
+        <button type="submit" class="add-to-cart">장바구니 담기</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 설명은 리뷰 위에 남겨둠 -->
+  <div class="product-description">
+    <h3>상품 설명</h3>
+    <p><span th:text="${product.description}"></span></p>
+  </div>
+
+  <div class="reviews">
+    <h3>리뷰</h3>
+    <p><strong>평균 평점:</strong> <span id="average-rating">0점</span> (<span id="average-stars"></span>)</p>
+    <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post">
+      <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required>
+      <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
+      <button type="submit">리뷰 등록</button>
+    </form>
+    <div th:each="review : ${reviews}" class="review">
+      <p class="review-rating" th:data-rating="${review.rating}">
+        <strong>평점:</strong>
+        <span>
+	                    <span th:text="${#strings.repeat('⭐', review.rating)}"></span>
+	                    <span th:text="${#strings.repeat('☆', 5 - review.rating)}"></span>
+	                </span>
+        (<span th:text="${review.rating}"></span>점)
+      </p>
+      <p th:text="${review.comment}"></p>
+      <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
+    </div>
+  </div>
+
+  <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
+  <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
+  </form>
+  <a href="/products">목록으로 돌아가기</a>
+</div>
 </body>
 </html>

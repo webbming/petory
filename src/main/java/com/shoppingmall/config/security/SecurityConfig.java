@@ -88,7 +88,7 @@ public class SecurityConfig {
                 // 팀원별 기능 페이지 - 모두 접근 가능 설정
                 // ex) /cart/** -> cart 부터 아래의 하위 경로 허용
                 // ex) /cart    -> cart 경로 허용
-                .requestMatchers("/cart/**").permitAll()                                           // 수민님
+                .requestMatchers("/cart/**", "/cart/cart/**").permitAll()                                           // 수민님
                 .requestMatchers("/product/**" , "/products/**").permitAll() // 진호님
                 .requestMatchers("/board/**").permitAll()                                          // 준서님
                 .requestMatchers("/order/**").permitAll()// 성호님
@@ -127,7 +127,7 @@ public class SecurityConfig {
 
         // 세션 관리 설정
         http.sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // 필요시 세션 생성
                 .maximumSessions(1)                                       // 최대 세션 수 제한
                 .expiredUrl("/login")                                     // 세션 만료 시 리다이렉트 경로
         );

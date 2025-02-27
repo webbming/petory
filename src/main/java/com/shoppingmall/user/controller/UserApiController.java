@@ -135,7 +135,7 @@ public class UserApiController {
     String email = request.get("email");
     emailService.findPassword(userId, email);
     response.put("status", "success");
-    response.put("message", "이메일로 임시 비밀번호가 전송 되었습니다. 새로운 비밀번호로 로그인해주세요");
+    response.put("message", "이메일로 임시 비밀번호가 전송 되었습니다.<br> 새로운 비밀번호로 로그인해주세요.");
     return response;
   }
 
