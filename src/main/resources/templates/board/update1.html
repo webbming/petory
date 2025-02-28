@@ -7,12 +7,7 @@
 	.content p {
 		margin: 0;
 	}
-	.ck-content img {
-	  max-width: 100%;
-	  height: auto;
-	}
 </style>
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.2.1/ckeditor5.css" crossorigin>
 </head>
 <body>
 	<div th:if="${board == null}">
@@ -25,12 +20,12 @@
 	    <p><strong>작성자:</strong> <span th:text="${board.nickname}"></span></p>
 	    <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
 	    <p><strong>내용:</strong></p>
-		<div name="content" th:utext="${board.content}" class="content ck-content"></div>
+	    <div name="content" th:utext="${board.content}" class="content"></div><br>
 	    
-	    <a th:href="@{/board/board(page=${page})}">목록으로 돌아가기</a>
+	    <a href="/board/board">목록으로 돌아가기</a>
 	    <a th:href="@{/board/update(boardId=${board.boardId})}">수정</a>
 	    <a th:href="@{/board/delete(boardId=${board.boardId})}">삭제</a><br>
-	    <a th:href="@{/board/like(boardId=${board.boardId}, page=${page})}"><span>좋아요</span></a><span>[[${board.likeCount}]]</span>
+	    <a th:href="@{/board/like(boardId=${board.boardId})}"><span>좋아요</span></a><span>[[${board.likeCount}]]</span>
 	    <h3 >댓글</h3>
 	    <hr>
 	    
@@ -40,7 +35,7 @@
 	    	<span name="content" th:text="${comment.content}"></span>
 	    	<a th:href="@{/board/commentUpdate(commentId=${comment.commentId})}">수정</a>
 	    	<a th:href="@{/board/commentDelete(commentId=${comment.commentId}, boardId=${board.boardId})}">삭제</a>
-	    	<a th:href="@{/board/commentLike(commentId=${comment.commentId}, boardId=${board.boardId}, page=${page})}"><span>좋아요</span></a><span>[[${comment.likeCount}]]</span>
+	    	<a th:href="@{/board/commentLike(commentId=${comment.commentId}, boardId=${board.boardId})}"><span>좋아요</span></a><span>[[${comment.likeCount}]]</span>
 	    	<hr>
 	    </div>
 	    

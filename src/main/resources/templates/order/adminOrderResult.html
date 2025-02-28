@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="/css/orderOneReseult.css">
 </head>
 <body>
-<h1>주문 상세정보</h1>
+<h1>관리자용 주문번호별 상세정보</h1>
 
 <p>
 	<a href="/order">메인페이지로</a>
@@ -31,14 +31,7 @@
 		<td th:text="${purchase.totalPrice}"></td>
 		<td th:utext="${purchase.cancelAt != null ? '취소 시각: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : '주문 시각: ' + #temporals.format(purchase.createAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></td>
 		<td>
-				<span th:if="${purchase.cancelAt == null}">
-					<form th:action="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" method="post">
-						<button type="submit" class="button">주문 취소</button>
-					</form>
-				</span>
-			<span th:unless="${purchase.cancelAt == null}">
-					취소 완료
-				</span>
+			<span th:text="${purchase.cancelAt != null ? '취소' : '주문'}"></span>
 		</td>
 	</tr>
 	</tbody>
@@ -65,14 +58,14 @@
 		<td th:text="${delivery.receiverAddr}"></td>
 		<td th:text="${delivery.deliveryMessage}"></td>
 		<td>
-			<form th:action="@{/order/orders/receiver}" method="get">
-				<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}">
-				<span th:if="${delivery.deliveryStatus == '배송준비중'}">
-					<input type="submit" class="button" th:value="정보수정">
-				</span>
-				<span th:if="${delivery.deliveryStatus != '배송준비중'}">
-					<span th:text="${delivery.deliveryStatus}"></span>
-				</span>
+			<form action="/order/admin/deiveryChange" method="POST">
+				<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}"/>
+				<select id="deliveryState" name="deliveryState">
+					<option value="onDelivery">배송중</option>
+					<option value="stopDelivery">배송취소</option>
+					<option value="finDelivery">배송완료</option>
+				</select>
+				<button type="submit">변경</button>
 			</form>
 		</td>
 	</tr>

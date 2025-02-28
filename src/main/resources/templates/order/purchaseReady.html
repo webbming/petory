@@ -26,20 +26,27 @@
 		<div>
 			배송 메시지<input type="text" name="deliveryMessage" placeholder="배송 메시지">
 	</div>
-		<div>
-			장바구니 번호<input type="text" name="cartId" placeholder="카트 번호">
-		</div>
-		<div>
-			사용자 id<input type="text" name="userId" placeholder="사용자 id">
-		</div>
-		<div>
-			상품명<input type="text" name="productName" placeholder="상품명">
-		</div>
-		<div>
-			수량<input type="text" name="quantity" placeholder="수량">
-		</div>
-		<div>
-			옵션<input type="text" name="option" placeholder="옵션">
+		<div th:each="product, productStat : ${products}">
+			<div>
+				<label>상품명:</label>
+				<input type="text" name="productName" th:value="${product.name}" readonly />
+			</div>
+
+			<div>
+				<label>옵션:</label>
+				<ul>
+					<li th:each="option, optionStat : ${product.options}">
+						<input type="text" name="option" th:value="${option}" readonly />
+					</li>
+					<li th:if="${product.options == null or #lists.isEmpty(product.options)}">
+						<input type="text" name="option" value="옵션 없음" readonly />
+					</li>
+				</ul>
+			</div>
+			<div>
+				<label>수량:</label>
+				<input type="text" name="quantity" th:value="${product.quantity}" readonly />
+			</div>
 		</div>
 		<div>
 			총 가격<input type="text" name="totalPrice" placeholder="총 가격">
@@ -47,26 +54,8 @@
 		<button>주문하기</button>
 	</form>
 	
-<form action="/order/admin/orderList" method="get">
-	<label for="searchAll">관리자용 전체 주문 관리:</label>
-	<select id="searchAll" name="purchaseState">
-		<option value="all">전체</option>
-		<option value="cancel">취소</option>
-		<option value="purchase">주문</option>
-	</select>
-		<button type="submit">조회</button>
-</form>
-	    <form action="order/orders/userId" method="get">
-        <label for="searchOption">검색 종류:</label>
-        <select id="searchOption" name="purchaseState">
-            <option value="all">전체</option>
-            <option value="cancel">취소</option>
-            <option value="purchase">주문</option>
-        </select>
-        <input type="text" name="userId" placeholder="아이디를 입력해주세요" />
-        <button type="submit">검색</button>
  </form>
-<a href="/order/purchase">주문넘겨주는 페이지</a>
+    
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     function execDaumPostcode() {

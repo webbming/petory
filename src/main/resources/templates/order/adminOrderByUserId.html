@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>주문 상세 정보</title>
+	<link rel="stylesheet" href="/css/adminOrderResult.css">
+</head>
+<body>
+
+
+<h1>관리자용 id별 주문정보</h1>
+
+<p>
+	<a href="/order" class="button">메인페이지로</a> <a href="/order/admin/orderList" class="button">주문목록</a>
+</p>
+
+<div class="container">
+	<h2>주문 상세정보</h2>
+	<table>
+		<thead>
+		<tr>
+			<th>주문번호</th>
+			<th>주문 정보</th>
+			<th>배송 정보</th>
+			<th>구매 상품</th>
+		</tr>
+		</thead>
+		<tbody>
+		<!-- 주문번호당 하나의 행 -->
+		<tr th:each="purchase : ${purchase}">
+			<!-- 주문번호 -->
+			<td th:text="${purchase.purchaseId}"></td>
+
+			<!-- 주문 정보 -->
+			<td class="info-cell">
+				<div class="info-section">
+					<strong>주문자 ID:</strong> <span th:text="${purchase.userId}"></span>
+				</div>
+				<div class="info-section">
+					<strong>총 가격:</strong> <span th:text="${purchase.totalPrice}"></span>
+				</div>
+				<div class="info-section">
+					<strong>주문/취소 시간:</strong> <br>
+					<span th:utext="${purchase.cancelAt != null ? '취소 시각: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : '주문 시각: ' + #temporals.format(purchase.createAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></span>
+				</div>
+				<div class="info-section">
+					<strong>주문/취소 현황:</strong> <span th:text="${purchase.cancelAt != null ? '취소' : '주문'}"></span>
+				</div>
+			</td>
+
+			<!-- 배송 정보 -->
+			<td class="info-cell" th:each="delivery : ${delivery}" th:if="${delivery.purchase.purchaseId == purchase.purchaseId}">
+				<div class="info-section">
+					<strong>수령인:</strong> <span th:text="${delivery.receiverName}"></span>
+				</div>
+				<div class="info-section">
+					<strong>전화번호:</strong> <span th:text="${delivery.receiverPhone}"></span>
+				</div>
+				<div class="info-section">
+					<strong>주소:</strong> <span th:text="${delivery.receiverAddr}"></span>
+				</div>
+				<div class="info-section">
+					<strong>요청사항:</strong> <span th:text="${delivery.deliveryMessage}"></span>
+				</div>
+				<div class="info-section">
+					<strong>배송상태:</strong> <span th:text="${delivery.deliveryStatus}"></span>
+				</div>
+				<div class="info-section">
+					<form action="/order/admin/deiveryChange" method="POST" class="status-form">
+						<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}"/>
+						<select id="deliveryState" name="deliveryState">
+							<option value="onDelivery">배송중</option>
+							<option value="stopDelivery">배송취소</option>
+							<option value="finDelivery">배송완료</option>
+						</select>
+						<button type="submit">변경</button>
+					</form>
+				</div>
+			</td>
+
+			<!-- 구매 상품 -->
+			<td class="info-cell">
+				<div th:each="currentItem : ${item}" th:if="${currentItem.purchase != null and currentItem.purchase.purchaseId == purchase.purchaseId}" class="product-item">
+					<div><strong>상품명:</strong> <span th:text="${currentItem.productName}"></span></div>
+					<div><strong>옵션:</strong> <span th:text="${currentItem.option == null ? '없음': currentItem.option}"></span></div>
+					<div><strong>수량:</strong> <span th:text="${currentItem.quantity}"></span></div>
+					<div><strong>가격:</strong> <span th:text="${currentItem.totalPrice}"></span></div>
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>

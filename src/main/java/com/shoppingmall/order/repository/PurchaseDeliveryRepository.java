@@ -28,4 +28,10 @@ public interface PurchaseDeliveryRepository extends JpaRepository<PurchaseDelive
 
   @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.cancelAt IS NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
   List<PurchaseDelivery> findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(String userId);
+
+  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
+  List<PurchaseDelivery> findByCancelAtIsNotNullOrderByPurchaseIdDesc();
+
+  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
+  List<PurchaseDelivery> findByCancelAtIsNullOrderByPurchaseIdDesc();
 }

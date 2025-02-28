@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class PurchaseItem {
+public class PurchaseProduct {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long purchaseItemId; // 주문 상품 ID (PK)
+    private Long purchaseProductId; // 주문 상품 ID (PK)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)

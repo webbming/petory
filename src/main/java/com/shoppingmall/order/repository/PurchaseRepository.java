@@ -2,7 +2,6 @@ package com.shoppingmall.order.repository;
 
 import com.shoppingmall.order.domain.Purchase;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,5 +20,9 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
   List<Purchase> findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(String userId);
 
   List<Purchase> findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(String userId);
+
+    List<Purchase> findByCancelAtIsNotNullOrderByPurchaseIdDesc();
+
+    List<Purchase> findByCancelAtIsNullOrderByPurchaseIdDesc();
 }
 
