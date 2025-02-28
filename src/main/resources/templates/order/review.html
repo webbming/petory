@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 작성</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            resize: none;
+        }
+        input[type="file"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .preview-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #imagePreview {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>리뷰 작성</h1>
+
+<div class="container">
+    <!-- 리뷰 폼 -->
+    <form action="/admin/submitReview" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="reviewText">리뷰 내용:</label>
+            <textarea id="reviewText" name="reviewText" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="imageUpload">이미지 선택:</label>
+            <input type="file" id="imageUpload" name="image" accept="image/*" onchange="previewImage(event)">
+        </div>
+
+        <div class="preview-container">
+            <h3>업로드된 이미지 미리보기</h3>
+            <img id="imagePreview" src="" alt="미리보기">
+        </div>
+
+        <button type="submit">리뷰 제출</button>
+    </form>
+</div>
+
+<script>
+    // 이미지 미리보기
+    function previewImage(event) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                var imagePreview = document.getElementById('imagePreview');
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';  // 이미지 표시
+            };
+
+            reader.readAsDataURL(file); // 이미지를 읽음
+        }
+    }
+</script>
+
+</body>
+</html>

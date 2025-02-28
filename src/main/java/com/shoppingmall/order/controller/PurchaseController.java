@@ -23,6 +23,9 @@ public String index() {
 @GetMapping("/purchase")
 public String purchase(){ return "order/purchaseReady";}
 
+	@GetMapping("/review")
+	public String review(){return "order/review";}
+
 @Autowired
 PurchaseService service;
 
