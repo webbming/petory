@@ -5,6 +5,7 @@ import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,16 +42,17 @@ public class UserController {
 	}
 
 	@GetMapping("/profile")
-	public String profileG(Authentication authentication, Model model) {
+	public String profileG(Authentication authentication, HttpSession session) {
 		String userId = authentication.getName();
+		System.out.println(userId);
 		UserProfileDTO info =  userService.getMyPageInfo(userId);
-		model.addAttribute("user", info);
+		session.setAttribute("user", info);
 		return "user/profile";
 	}
 
 	@GetMapping("/profile/update")
 	public String profileUpdate() {
-		return "user/chageProfile";
+		return "user/userInfoDetail";
 	}
 
 	//주소검색 팝업연결

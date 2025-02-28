@@ -117,7 +117,6 @@ public class UserService {
     if (user == null) {
       throw new UsernameNotFoundException("User not found");
     }
-
     int quantity = user.getCart().getTotalQuantity();
     System.out.println(quantity);
     String nickname = user.getNickname();
