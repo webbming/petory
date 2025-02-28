@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>주문 상세 정보</title>
     <link rel="stylesheet" href="/css/orderAllList.css">
+    <link rel="stylesheet" href="/css/review.css">
 </head>
 <body>
 <div class="container">
@@ -31,7 +32,7 @@
             <td><a th:href="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" class="button">상세보기</a></td>
             <td>
                 <span th:if="${delivery[iterStat.index].deliveryStatus == '배송완료' && purchase.cancelAt == null}">
-                    <a th:href="@{/review/write/{purchaseId}(purchaseId=${purchase.purchaseId})}" class="button">리뷰작성</a>
+                    <button class="button" data-purchase-id="${purchase.purchaseId}" onclick="openModal(this)">리뷰작성</button>
                 </span>
                 <span th:if="${purchase.cancelAt != null}">주문취소</span>
             </td>
@@ -39,5 +40,34 @@
         </tbody>
     </table>
 </div>
+
+<!-- 리뷰 모달 -->
+<div id="reviewModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>리뷰 작성</h2>
+        <form action="/review/submit" method="POST">
+            <input type="hidden" id="purchaseId" name="purchaseId" value="">
+
+            <label for="rating">평점:</label>
+            <div class="stars" id="starRating" onclick="setRating(event)">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <input type="hidden" id="rating" name="rating" value="">
+
+            <br><br>
+            <label for="comment">댓글:</label><br>
+            <textarea id="comment" name="comment" rows="4" cols="50" required></textarea><br><br>
+            <button type="submit" class="button">리뷰 제출</button>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript 파일 임포트 -->
+<script src="/js/review.js"></script>
 </body>
 </html>
