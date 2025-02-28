@@ -131,7 +131,7 @@ public class BoardController {
 	
 	//상세페이지 이동
 	@GetMapping("/read")
-	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
+	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, @RequestParam("page") int page, Model model) {
 	    try {
 	        if (auth == null || !auth.isAuthenticated()) {
 	            return "redirect:/login";
@@ -143,6 +143,7 @@ public class BoardController {
 		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
+		        model.addAttribute("page", page);
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -181,18 +182,18 @@ public class BoardController {
 	
 	//게시글 좋아요
 	@GetMapping("/like")
-	public String likePost(Authentication auth, @RequestParam("boardId") Long boardId) {
+	public String likePost(Authentication auth, @RequestParam("boardId") Long boardId, @RequestParam("page") int page) {
 		User user = userRepository.findByUserId(auth.getName());
 		boardService.likePost(boardId, user);
-		return "redirect:/board/read?boardId=" + boardId;
+		return "redirect:/board/read?boardId=" + boardId + "&page=" + page;
 	}
 	
 	//댓글 좋아요
 	@GetMapping("/commentLike")
-	public String likeComment(Authentication auth, @RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId) {
+	public String likeComment(Authentication auth, @RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId, @RequestParam("page") int page) {
 		User user = userRepository.findByUserId(auth.getName());
 		commentService.likeComment(commentId, user);
-		return "redirect:/board/read?boardId=" + boardId;
+		return "redirect:/board/read?boardId=" + boardId + "&page=" + page;
 	}
 	
 	//댓글 등록

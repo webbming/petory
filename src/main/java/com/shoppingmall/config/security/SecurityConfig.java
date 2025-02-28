@@ -72,6 +72,13 @@ public class SecurityConfig {
 
         // CSRF 보호 비활성화
         http.csrf(csrf -> csrf.disable());
+        
+        http
+        	.rememberMe(remember -> remember
+            .key("uniqueAndSecret") // 보안 키 설정
+            .tokenValiditySeconds(7 * 24 * 60 * 60) // 7일 동안 유지
+            .rememberMeParameter("remember-me") // 체크박스 파라미터 (기본값: remember-me)
+        );
 
         // URL 기반 접근 권한 설정
         http.authorizeHttpRequests(auth -> auth

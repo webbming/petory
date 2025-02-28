@@ -59,6 +59,7 @@
         <div class="content">
             <h1>게시판</h1>
             <form class="search" action="/board/board">
+            	<input type="hidden" name="category" th:value="${category}">
                 <input type="text" name="keyword" th:value="${keyword}" style="width: 300px; height: 30px;">
                 <select name="orderby">
                 	<option th:selected="${orderby == '최신순'}">최신순</option>
@@ -89,7 +90,7 @@
                     <tr th:each="board : ${board.content}">
                         <td th:text="${board.boardId}"></td>
                         <td>
-                            <a th:href="@{/board/read(boardId=${board.boardId})}" th:text="${board.title}"></a>
+                            <a th:href="@{/board/read(boardId=${board.boardId}, page=${currentPage})}" th:text="${board.title}"></a>
                             <a th:if="${board.commentCount > 0}" th:href="@{/board/read(boardId=${board.boardId})}" th:text="'[' + ${board.commentCount} + ']'" ></a>
                         </td>
                         <td th:text="${board.nickname}"></td>
@@ -105,7 +106,7 @@
                 
                 <div class="pagingNumber">
                     <span th:each="i : ${#numbers.sequence((currentPage / 10) * 10, ((currentPage / 10) + 1) * 10 - 1)}" th:if="${i >= 0 and i < board.totalPages}">
-                        <a th:href="@{/board/board(page=${i}, keyword=${keyword}, category=${category})}" th:text="${i + 1}" th:classappend="${i == currentPage ? 'current' : ''}"></a>
+                        <a th:href="@{/board/board(page=${i}, keyword=${keyword}, category=${category}, orderby=${orderby})}" th:text="${i + 1}" th:classappend="${i == currentPage ? 'current' : ''}"></a>
                     </span>
                 </div>
                 <a th:if="${currentPage + 1 < board.totalPages}" th:href="@{/board/board(page=${currentPage + 1}, keyword=${keyword}, category=${category})}">&gt;</a>
