@@ -1,6 +1,6 @@
 package com.shoppingmall.user.controller;
 
-import com.shoppingmall.user.dto.UserProfileDTO;
+import com.shoppingmall.user.dto.MypageTopInfoDTO;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
@@ -9,13 +9,7 @@ import com.shoppingmall.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500", allowCredentials = "true")
 @Controller
@@ -54,7 +48,7 @@ public class UserController {
 		}
 		String userId = authentication.getName();
 		System.out.println(userId);
-		UserProfileDTO info =  userService.getMyPageInfo(userId);
+		MypageTopInfoDTO info =  userService.getMyPageTopInfo(userId);
 		session.setAttribute("user", info);
 		return "user/profile";
 	}

@@ -1,27 +1,26 @@
 package com.shoppingmall.user.service;
 
 import com.shoppingmall.cart.repository.CartRepository;
-import com.shoppingmall.user.dto.UserProfileDTO;
+import com.shoppingmall.user.dto.MypageTopInfoDTO;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
 import com.shoppingmall.user.exception.DuplicateException;
-import com.shoppingmall.user.exception.FieldErrorsException;
 import com.shoppingmall.user.model.Pet;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
+
 
 @Service
 public class UserService {
@@ -35,17 +34,6 @@ public class UserService {
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
 
-  // 필드 유효성 검사
-  public void filedErrorsHandler(Errors errors) {
-    // error 객체 생성
-    Map<String, String> errorMap = new HashMap<>();
-    if (errors.hasErrors()) {
-      for (FieldError error : errors.getFieldErrors()) {
-        errorMap.put(error.getField(), error.getDefaultMessage());
-      }
-      throw new FieldErrorsException(errorMap);
-    }
-  }
 
   // 개별 필드 검사
   public boolean checkDuplicate(String fieldName, String fieldValue) {
@@ -102,28 +90,28 @@ public class UserService {
   }
 
   // 유저 조회
-  public UserResponseDTO getUser(String email, String accountType) {
+  public UserResponseDTO getUser(String userId) {
     // 해당하는 유저 검색
-    User user = userRepository.findByEmailAndAccountType(email, accountType);
+    User user = userRepository.findByUserId(userId);
     // 유저가 없다면 예외처리
     if (user == null) {
-      throw new UsernameNotFoundException("User not found");
+      throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
     }
     // 유저 정보 반환
     return user.toDTO();
   }
 
-  public UserProfileDTO getMyPageInfo(String userId){
+
+  public MypageTopInfoDTO getMyPageTopInfo(String userId){
     User user = userRepository.findByUserId(userId);
     if (user == null) {
-      throw new UsernameNotFoundException("User not found");
+      throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
     }
-    int quantity = user.getCart().getTotalQuantity();
-    System.out.println(quantity);
     String nickname = user.getNickname();
+    int quantity = user.getCart().getTotalQuantity();
+    int couponCount = 3;
 
-
-    return new UserProfileDTO(nickname , quantity);
+    return new MypageTopInfoDTO(nickname , quantity , couponCount );
   }
 
   //유저 수정

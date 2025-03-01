@@ -20,18 +20,18 @@
                 <div class="img">
                   <div class="profile-img"></div>
                 </div>
-                <strong class="nickname" th:text="${session.user.nickname}" ></strong>
+                <strong class="nickname"></strong>
                 <button type="button" class="profile_btn">설정</button>
               </div>
               <div class="mypage_top_content">
                 <div class="inner-wrap">
                   <div class="inner">
                     <span>쿠폰</span>
-                    <strong>1개</strong>
+                    <strong class="coupon">1개</strong>
                   </div>
                   <div class="inner">
                     <span>장바구니 물품</span>
-                    <strong th:text="${session.user.cartQuantity}+'개'"></strong>
+                    <strong class="cartQuantity"></strong>
                   </div>
                   <div class="inner">
                     <span>멤버십</span>
@@ -113,23 +113,23 @@
                           <h2 class="border">회원 정보</h2>
                           <div class="field">
                               <h5>닉네임</h5>
-                              <div class="result"  th:text="${session.user.nickname}">김진후</div>
+                              <div class="result user-nickname"></div>
                           </div>
                           <div class="field">
                               <h5>이메일</h5>
-                              <div class="result" th:text="${session.userinfo.email}"></div>
+                              <div class="result user-email"></div>
                           </div>
                           <div class="field">
                               <h5>주소</h5>
-                              <div class="result"  th:text="${session.userinfo.address}">김진후</div>
+                              <div class="result user-address"></div>
                           </div>
                           <div class="field">
                               <h5>가입 날짜</h5>
-                              <div class="result" th:text="${#temporals.format(session.userinfo.createdAt, 'yyyy년 M월 d일 HH:mm분')}"></div>
+                              <div class="result user-created"></div>
                           </div>
                           <div class="field">
                               <h5>회원 분류</h5>
-                              <div class="result" th:text="${session.userinfo.accountType}"></div>
+                              <div class="result user-type"></div>
                           </div>
                       </section>
                       <section class="user_agreement_section">
@@ -157,5 +157,6 @@
 
 <script src="/js/address.js"></script>
 <script src="/js/profile.js"></script>
+<script src="/js/userInfo.js"></script>
 </body>
 </html>

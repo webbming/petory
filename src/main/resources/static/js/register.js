@@ -73,7 +73,7 @@ inputs.forEach(input =>{
 
           const result = await response.json();
           console.log(result)
-          if(result.result){
+          if(result.data.result){
             errorState[fieldName] = fieldRule.validateErrorMessage;
           }else{
             validationState[fieldName] = true;
@@ -144,8 +144,6 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
 })
 
 
-
-/*   */
 
 
 

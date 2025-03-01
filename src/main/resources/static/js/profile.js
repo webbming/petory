@@ -1,4 +1,39 @@
-document.addEventListener("DOMContentLoaded", function () {
+let mypageTopInfo = null;
+
+
+async function loadTopInfo(){
+  console.log("히히")
+  try{
+    const response = await fetch("/api/users/me/profile/MyPageTopInfo" ,{
+      method : "GET",
+      credentials:"include"
+    });
+
+    if(response.status === 200){
+      mypageTopInfo = await response.json()
+      updateMyPageTopInfo(mypageTopInfo)
+    }
+
+  }catch (e){
+    console.error(e)
+  }
+}
+
+
+function updateMyPageTopInfo(data) {
+  document.querySelector(".nickname").textContent = data.data.nickname
+  document.querySelector(".coupon").textContent = data.data.couponCount + "개"
+  document.querySelector(".cartQuantity").textContent = data.data.cartQuantity + "개"
+
+}
+
+
+window.onload = loadTopInfo
+
+
+
+
+document.addEventListener("DOMContentLoaded", async (e) => {
   const modal = document.getElementById("nicknameModal");
   const btn = document.querySelector(".profile_btn"); // "설정" 버튼
   const closeBtn = document.querySelector(".close");
@@ -56,4 +91,11 @@ document.addEventListener("DOMContentLoaded", function () {
       modal.style.display = "none";
     }
   });
+
+
+
+
+
+
+
 });

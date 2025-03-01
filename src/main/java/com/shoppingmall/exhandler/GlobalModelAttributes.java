@@ -4,6 +4,8 @@ import com.shoppingmall.cart.service.CartService;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,13 +25,14 @@ public class GlobalModelAttributes {
     }
 
     @ModelAttribute
-    public void addAttributes(Model model , Principal principal) {
-        if(principal != null) {
-            User user = userRepository.findByUserId(principal.getName());
-            System.out.println(user.getUserId());
-            model.addAttribute("userinfo", user);
-            model.addAttribute("cartCount" , user.getCart().getTotalQuantity());
-            System.out.println("Model attributes: " + model.asMap().keySet());
+    public void addAttributes(HttpServletRequest request, Model model , Authentication authentication) {
+        String username = authentication.getName();
+        String uri = request.getRequestURI();
+        if (uri.startsWith("http://localhost:8080/users/me")) {
+            // "/users/me" 하위 경로에 대해서만 모델 데이터 추가
+            User user = userRepository.findByUserId(username);
+            model.addAttribute("userInfo", user.toDTO());
+            System.out.println("잘 담았답니다" + model.getAttribute("userInfo"));
         }
     }
 }

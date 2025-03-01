@@ -16,6 +16,7 @@ public class DuplicateException extends RuntimeException {
         this.errors = errors;
     }
 
+
     public Map<String, String> getErrors() {
         return errors;
     }

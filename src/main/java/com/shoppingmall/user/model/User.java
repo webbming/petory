@@ -73,6 +73,7 @@ public class User {
         .nickname(nickname)
         .address(address)
         .accountType(accountType)
+            .createdAt(createdAt)
         .role(role)
         .build();
   }

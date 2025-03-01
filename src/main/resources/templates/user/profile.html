@@ -16,6 +16,8 @@
   <section class="pm-section">
     <!-- 공통 상단 영역 -->
 
+    <!--/*@thymesVar id="userInfo" type=""*/-->
+    <div th:text="${userInfo}"></div>
 
     <div th:replace="headerFragment/mypage-common :: mypage-top"></div>
 
