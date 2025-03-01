@@ -1,6 +1,7 @@
 package com.shoppingmall.user.controller;
 
 import com.shoppingmall.user.dto.UserProfileDTO;
+import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
@@ -10,6 +11,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500", allowCredentials = "true")
 @Controller
@@ -41,8 +47,11 @@ public class UserController {
 		return "user/register";
 	}
 
-	@GetMapping("/profile")
+	@GetMapping("/me")
 	public String profileG(Authentication authentication, HttpSession session) {
+		if(authentication == null) {
+			return null;
+		}
 		String userId = authentication.getName();
 		System.out.println(userId);
 		UserProfileDTO info =  userService.getMyPageInfo(userId);
@@ -50,9 +59,15 @@ public class UserController {
 		return "user/profile";
 	}
 
-	@GetMapping("/profile/update")
-	public String profileUpdate() {
-		return "user/userInfoDetail";
+	@GetMapping("/me/profile")
+	public String profileUpdate(Authentication authentication , HttpSession session) {
+		if(authentication == null) {
+			return null;
+		}
+		User user = userRepository.findByUserId(authentication.getName());
+		user.setCreatedAt(user.getCreatedAt().withSecond(0).withNano(0));
+		session.setAttribute("userinfo", user);
+		return "user/profile-userInfo";
 	}
 
 	//주소검색 팝업연결

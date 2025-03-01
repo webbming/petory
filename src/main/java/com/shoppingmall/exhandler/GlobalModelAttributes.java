@@ -26,8 +26,10 @@ public class GlobalModelAttributes {
     public void addAttributes(Model model , Principal principal) {
         if(principal != null) {
             User user = userRepository.findByUserId(principal.getName());
-            model.addAttribute("user", user);
+            System.out.println(user.getUserId());
+            model.addAttribute("userinfo", user);
             model.addAttribute("cartCount" , user.getCart().getTotalQuantity());
+            System.out.println("Model attributes: " + model.asMap().keySet());
         }
     }
 }

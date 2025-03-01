@@ -219,6 +219,7 @@ a{
   background-color: rgba(0, 0, 0, 0.4);
 }
 
+
 /* 모달 내부 컨텐츠 */
 .modal-content {
   background-color: #fff;
@@ -271,20 +272,18 @@ a{
   width: 129px;
   margin-bottom: 0;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .user_details_section .field{
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-
+  margin-bottom: 15px;
 }
 
 .result {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 18px;
-  line-height: 1.5em;
 }
 
 .user_agreement_section{

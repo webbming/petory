@@ -65,17 +65,19 @@ public class UserApiController {
       @Valid @RequestBody UserRequestDTO userDTO, Errors errors) {
     // response 객체 생성
     Map<String, String> response = new HashMap<>();
-    // 에러가 있다면 response 객체에 status 값과 errors 객체를 클라이언트에게 반환
-    userService.filedErrorsHandler(errors);
-    // 에러가 없다면 회원가입 진행
-    userService.registerUser(userDTO);
+
+    if(errors.hasErrors()) {
+      return ResponseEntity.badRequest().body(getValidationErrors(errors));
+    }
+
+    userService.registerUser(userDTO );
     // 회원가입 성공 시 response 객체에 상태 값과 userId 담아 반환
     response.put("userId", userDTO.getUserId());
     response.put("status", "success");
     return ResponseEntity.ok().body(response);
   }
 
-  @GetMapping("/profile/update")
+  @GetMapping("/me/profile")
   @Operation(summary = "회원 정보 조회", description = "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
   public ResponseEntity<?> profileG(Authentication authentication) {
     Object principal = authentication.getPrincipal();
@@ -96,8 +98,17 @@ public class UserApiController {
 
     return ResponseEntity.status(HttpStatus.OK).body(user.toDTO());
   }
+  @PostMapping("/me/profile/nickname")
+  public ResponseEntity<?> UpdateNickname(@RequestBody Map<String, String> request , Authentication authentication ) {
 
-  @PatchMapping("/profile/update")
+    String nickname = request.get("nickname");
+    System.out.println(request);
+    userService.userNicknameUpdate(nickname , authentication);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+
+  @PatchMapping("/me/profile")
   @Operation(summary = "회원 정보 수정(업데이트)", description = "요청시 nickname , email , address 를 정보로 요청")
   public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @RequestBody UserUpdateDTO userDTO,
       Errors errors) {
@@ -175,5 +186,12 @@ public class UserApiController {
     }
 
     return ResponseEntity.ok().build();
+  }
+
+  private Map<String, String> getValidationErrors(Errors errors) {
+    Map<String, String> errorMap = new HashMap<>();
+    errors.getFieldErrors().forEach(error ->
+            errorMap.put(error.getField(), error.getDefaultMessage()));
+    return errorMap;
   }
 }

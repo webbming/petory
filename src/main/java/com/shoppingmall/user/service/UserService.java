@@ -58,6 +58,7 @@ public class UserService {
       // 해당하는 3가지 필드 중 아무것도 아니라면 예외 처리
       default -> throw new IllegalStateException("Unexpected value: " + fieldName);
     };
+
     // boolean 값 반환
     return isDuplicate;
   }
@@ -86,10 +87,10 @@ public class UserService {
 
   //유저 생성
   @Transactional
-  public void registerUser(UserRequestDTO userDTO) {
+  public void registerUser(UserRequestDTO userDTO ) {
     // userDTO 의 유저 정보 userId , email , nickname 중복 검사
     // 해당 메서드는 UserRequestDTO 를 인수로 받는 checkDuplicate 메서드 (위에 명시)
-    checkDuplicate(userDTO);
+    checkDuplicate(userDTO); // 2. 중복 검사
     // userDTO 의 유저 정보 비밀번호 암호화
     userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
 
@@ -183,6 +184,25 @@ public class UserService {
       throw new UsernameNotFoundException("질문과 답변에 일치하는 회원이 없습니다.");
     }
     return user.getUserId();
+  }
+
+  public void userNicknameUpdate(String nickname , Authentication authentication) {
+      User user = getCurrentUser(authentication);
+      if(userRepository.existsByNickname(nickname) && !nickname.equals(user.getNickname())) {
+        throw new DuplicateException();
+      }
+
+      user.setNickname(nickname);
+      userRepository.save(user);
+  }
+
+
+  public User getCurrentUser(Authentication authentication) {
+    User user = userRepository.findByUserId(authentication.getName());
+    if (user == null) {
+      throw new UsernameNotFoundException("User not found");
+    }
+    return user;
   }
 
 }

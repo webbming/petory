@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeBtn = document.querySelector(".close");
   const saveBtn = document.getElementById("saveNickname");
   const nicknameField = document.querySelector(".nickname");
+  const error = document.querySelector(".error")
 
   // 모달 열기
   btn.addEventListener("click", function () {
@@ -15,12 +16,35 @@ document.addEventListener("DOMContentLoaded", function () {
     modal.style.display = "none";
   });
 
+  const nicknameInput = document.querySelector("#newNickname")
+  nicknameInput.addEventListener('change', (e) =>{
+    saveBtn.disabled = false;
+  })
+
   // 저장 버튼 클릭 시 닉네임 변경
-  saveBtn.addEventListener("click", function () {
+  saveBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
     const newNickname = document.getElementById("newNickname").value.trim();
     if (newNickname) {
-      nicknameField.textContent = newNickname + "님";
+
+      const response = await fetch("/api/users/me/profile/nickname" , {
+        method:"POST",
+        headers:{
+          "Content-Type" : "application/json"
+        },
+        body : JSON.stringify({nickname : newNickname})
+
+      })
+
+      if(response.status === 400){
+        error.style.display = "block"
+        return;
+      }
+      error.style.display = "none"
+      nicknameField.textContent = newNickname;
       modal.style.display = "none"; // 모달 닫기
+
+
     } else {
       alert("닉네임을 입력하세요!");
     }
