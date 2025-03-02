@@ -9,9 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBoardDTO {
+public class UserBoardListDTO {
     private Long boardId;
     private String title;
     private String content;
+    private Integer viewCount;
+    private Integer likeCount;
+    private Integer commentCount;
 
 }

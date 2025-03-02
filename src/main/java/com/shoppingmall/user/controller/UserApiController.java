@@ -1,7 +1,6 @@
 package com.shoppingmall.user.controller;
 
 import com.shoppingmall.board.model.Board;
-import com.shoppingmall.config.security.CustomUserDetails;
 import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import com.shoppingmall.user.dto.*;
 import com.shoppingmall.user.exception.FieldErrorsException;
@@ -22,11 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,19 +188,22 @@ public class UserApiController {
 
   @GetMapping("/me/activities/{type}")
   public ResponseEntity<ApiResponse<?>> getActivities(@PathVariable String type , Authentication authentication) {
-    System.out.println(type);
       Map<String, Object> response = new HashMap<>();
+      User user = userService.getCurrentUser(authentication);
       if (type.equals("boards")) {
-          User user = userService.getCurrentUser(authentication);
-          List<Board> boards = user.getBoards();
-
-          List<UserBoardDTO> boardsDtos = user.getBoards().stream()
-                          .map(board -> new UserBoardDTO(board.getBoardId() , board.getTitle() , board.getContent())).collect(Collectors.toList());
-
+          List<UserBoardListDTO> boardsDtos = user.getBoards().stream()
+                          .map(board -> new UserBoardListDTO(board.getBoardId(),
+                                  board.getTitle() ,
+                                  board.getContent() ,
+                                  board.getViewCount() ,
+                                  board.getCommentCount() ,
+                                  board.getLikeCount())).collect(Collectors.toList());
 
           response.put("boards" , boardsDtos);
 
+      }else if(type.equals("comments")){
 
+      }else{
 
       }
       return ResponseEntity.ok(ApiResponse.success(response));
