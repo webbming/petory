@@ -47,6 +47,7 @@ public class UserController {
 		System.out.println(userId);
 		UserProfileDTO info =  userService.getMyPageInfo(userId);
 		session.setAttribute("user", info);
+		session.setAttribute("userId", userId);
 		return "user/profile";
 	}
 

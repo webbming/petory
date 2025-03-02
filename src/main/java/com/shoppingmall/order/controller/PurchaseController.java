@@ -6,12 +6,14 @@ import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.dto.DeliveryChangeDto;
 import com.shoppingmall.order.dto.PurchaseDto;
 import com.shoppingmall.order.service.PurchaseService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -70,7 +72,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 		model.addAttribute("purchase", service.purchaseList(purchaseState).getPurchase());
 		model.addAttribute("delivery", service.purchaseList(purchaseState).getPurchaseDelivery());
 		model.addAttribute("item", service.purchaseList(purchaseState).getPurchaseProduct());
-	return "order/orderResultAll";
+	return "headerFragment/order/mypage-admin-purchaseAndDelivery";
 	}
 
 	//배송상태 변경
@@ -91,7 +93,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 
 	//userId 기준 주문 검색
 	@GetMapping("/orders/userId")
-	public String orderListByUserId(@RequestParam(name = "userId") String userId,
+	public String orderListByUserId(Authentication authentication, HttpSession httpSession,
 																	@RequestParam(name = "purchaseState", required = false) String purchaseState,
 																	@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
 																	@RequestParam(name = "page", defaultValue = "0") int page,
@@ -99,7 +101,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 		if (purchaseState == null) {
 			purchaseState = "all";
 		}
-
+		String userId = authentication.getName();
 		PurchaseDto purchaseDto = service.orderListByUserId(userId, purchaseState);
 
 		int pageSize = 3; // 페이지당 3개
@@ -119,7 +121,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 		if (admin.equals("admin")) {
 			return "order/adminOrderByUserId";
 		}
-		return "order/orderListByUserId";
+		return "headerFragment/order/mypage-common-purchaseAndDelivery";
 	}
 
 
