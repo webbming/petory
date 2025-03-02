@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
-<div th:replace="headerFragment/header :: headerFragment"></div>
+<div th:replace="fragment/header :: headerFragment"></div>
   <h1> 메인 홈페이지 </h1>
   <a href="/users/me">프로필</a>
   <div  sec:authorize="isAuthenticated()">

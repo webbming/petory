@@ -22,6 +22,7 @@ loginForm.addEventListener("submit" , async(e) =>{
         const result = await response.json();
         const error = document.querySelector(".error")
         error.innerHTML = "";
+        error.style.display = "block"
         error.textContent = result.message
     } else {
         // 성공했지만 리다이렉트 정보가 없는 경우

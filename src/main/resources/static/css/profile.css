@@ -263,32 +263,7 @@ a{
 }
 
 
-.sign-wrap{
-  width: auto;
 
-}
-
-.field h5{
-  width: 129px;
-  margin-bottom: 0;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.user_details_section .field{
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.result {
-  font-weight: 500;
-  font-size: 18px;
-}
-
-.user_agreement_section{
-  margin-top: 60px ;
-}
 
 
 

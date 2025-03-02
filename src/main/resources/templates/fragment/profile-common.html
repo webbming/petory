@@ -5,12 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <title>회원 정보 수정</title>
-  <link rel="stylesheet" href="/css/profile.css">
-  <link rel="stylesheet" href="/css/header.css">
-  <link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
-<div th:replace="headerFragment/header :: headerFragment"></div>
+<div th:replace="fragment/header :: headerFragment"></div>
 <div class="container">
   <div class="nav-bar"></div>
   <section class="pm-section">
@@ -140,8 +137,25 @@
                       </section>
                   </div>
               </div>
-
-
+        <!-- 회원 활동           -->
+                <div class="right_info" th:fragment="mypage-activities">
+                    <h2 class="border_none">나의 활동</h2>
+                    <article class="consult__tab">
+                        <ul class="tab">
+                            <li><a class="active" data-type="boards">작성한 글</a></li>
+                            <li><a data-type="comments">댓글단 글</a></li>
+                            <li><a data-type="likes">좋아요한 글</a></li>
+                        </ul>
+                    </article>
+                    <div class="activities_content">
+                        <ul>
+                            <div class="myboard_empty">
+                                <p>작성한 글이 없습니다</p>
+                                <a class="btn_line" href="/">커뮤니티 둘러보기</a>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
         </div>
   </section>
 </div>
@@ -154,9 +168,5 @@
                 <button id="saveNickname" disabled>저장</button>
               </div>
             </div>
-
-<script src="/js/address.js"></script>
-<script src="/js/profile.js"></script>
-<script src="/js/userInfo.js"></script>
 </body>
 </html>

@@ -50,18 +50,19 @@ public class UserController {
 		System.out.println(userId);
 		MypageTopInfoDTO info =  userService.getMyPageTopInfo(userId);
 		session.setAttribute("user", info);
-		return "user/profile";
+		return "user/profile/profile";
 	}
 
 	@GetMapping("/me/profile")
-	public String profileUpdate(Authentication authentication , HttpSession session) {
+	public String profileInfo(Authentication authentication , HttpSession session) {
 		if(authentication == null) {
 			return null;
 		}
-		User user = userRepository.findByUserId(authentication.getName());
-		user.setCreatedAt(user.getCreatedAt().withSecond(0).withNano(0));
-		session.setAttribute("userinfo", user);
-		return "user/profile-userInfo";
+		return "user/profile/profile-userInfo";
+	}
+	@GetMapping("/me/activities")
+	public String profileActivities() {
+		return "user/profile/profile-activities";
 	}
 
 	//주소검색 팝업연결

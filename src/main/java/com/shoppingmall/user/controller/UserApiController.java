@@ -1,11 +1,9 @@
 package com.shoppingmall.user.controller;
 
+import com.shoppingmall.board.model.Board;
 import com.shoppingmall.config.security.CustomUserDetails;
 import com.shoppingmall.oauth2.model.CustomOAuth2User;
-import com.shoppingmall.user.dto.ApiResponse;
-import com.shoppingmall.user.dto.MypageTopInfoDTO;
-import com.shoppingmall.user.dto.UserRequestDTO;
-import com.shoppingmall.user.dto.UserUpdateDTO;
+import com.shoppingmall.user.dto.*;
 import com.shoppingmall.user.exception.FieldErrorsException;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
@@ -30,7 +28,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -188,6 +188,27 @@ public class UserApiController {
 
     return ResponseEntity.ok().build();
   }
+
+  @GetMapping("/me/activities/{type}")
+  public ResponseEntity<ApiResponse<?>> getActivities(@PathVariable String type , Authentication authentication) {
+    System.out.println(type);
+      Map<String, Object> response = new HashMap<>();
+      if (type.equals("boards")) {
+          User user = userService.getCurrentUser(authentication);
+          List<Board> boards = user.getBoards();
+
+          List<UserBoardDTO> boardsDtos = user.getBoards().stream()
+                          .map(board -> new UserBoardDTO(board.getBoardId() , board.getTitle() , board.getContent())).collect(Collectors.toList());
+
+
+          response.put("boards" , boardsDtos);
+
+
+
+      }
+      return ResponseEntity.ok(ApiResponse.success(response));
+  }
+
 
   public void filedErrorsHandler(BindingResult bindingResult) {
     Map<String, String> errors = new HashMap<>();
