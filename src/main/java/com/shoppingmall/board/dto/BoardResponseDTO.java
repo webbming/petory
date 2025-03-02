@@ -1,15 +1,13 @@
-package com.shoppingmall.user.dto;
+package com.shoppingmall.board.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBoardListDTO {
+public class BoardResponseDTO {
     private Long boardId;
     private String title;
     private String nickname;

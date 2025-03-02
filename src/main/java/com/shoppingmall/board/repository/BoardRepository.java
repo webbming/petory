@@ -1,7 +1,10 @@
 package com.shoppingmall.board.repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
+import com.shoppingmall.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,4 +30,8 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
 		       "  b.createdAt DESC")
 	Page<Board> searchBoards(@Param("keyword") String keyword, @Param("category") String category, 
 			@Param("orderby") String orderby, @Param("bydate") String bydate, @Param("startDate") LocalDateTime startDate, Pageable pageable);
+
+
+	@Query(value = "SELECT * FROM board WHERE like_contain LIKE CONCAT('%', :userId, '%')", nativeQuery = true)
+	List<Board> findBoardsLikedByUser(Long userId);
 }

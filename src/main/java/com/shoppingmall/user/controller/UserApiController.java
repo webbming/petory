@@ -1,6 +1,8 @@
 package com.shoppingmall.user.controller;
 
+import com.shoppingmall.board.dto.BoardResponseDTO;
 import com.shoppingmall.board.model.Board;
+import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import com.shoppingmall.user.dto.*;
 import com.shoppingmall.user.exception.FieldErrorsException;
@@ -28,7 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/users")
@@ -37,13 +39,14 @@ public class UserApiController {
   private final UserRepository userRepository;
   private final UserService userService;
   private final EmailService emailService;
+  private final BoardRepository boardRepository;
 
   public UserApiController(UserService userService, UserRepository userRepository,
-      EmailService emailService) {
+                           EmailService emailService, BoardRepository boardRepository) {
     this.userService = userService;
     this.userRepository = userRepository;
     this.emailService = emailService;
-
+    this.boardRepository = boardRepository;
   }
 
   // 회원가입 필드별 유효성 검사
@@ -191,29 +194,37 @@ public class UserApiController {
   public ResponseEntity<ApiResponse<?>> getActivities(@PathVariable String type , Authentication authentication) {
       Map<String, Object> response = new HashMap<>();
       User user = userService.getCurrentUser(authentication);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
       if (type.equals("boards")) {
-          List<UserBoardListDTO> boardsDtos = user.getBoards().stream()
-                          .map(board -> new UserBoardListDTO(board.getBoardId(),
-                                  board.getTitle() ,
-                                  board.getNickname(),
-                                  board.getContent() ,
-                                  board.getViewCount() ,
-                                  board.getCommentCount(),
-                                  board.getLikeCount(),
-                                  board.getCreatedAt().format(formatter))).collect(Collectors.toList());
+          List<BoardResponseDTO> boardsDtos = user.getBoards().stream()
+                          .map(Board::toDTO).toList();
 
           response.put("boards" , boardsDtos);
 
       }else if(type.equals("comments")){
 
-      }else{
+          List<BoardResponseDTO> boardsDtos = user.getComments().stream()
+                  .map(comment -> comment.getBoard().toDTO())
+                          .distinct().toList();
+
+        response.put("boards" , boardsDtos);
+
+      }else if(type.equals("likes")){
+
+          List<BoardResponseDTO> boardsDtos = boardRepository.findAll().stream()
+                          .filter(board -> {
+                            Set<Long> likes = board.getLikeContain();
+                            return likes != null && likes.contains(user.getId());
+                          })
+                                  .map(Board::toDTO).toList();
+
+        response.put("boards" , boardsDtos);
 
       }
       return ResponseEntity.ok(ApiResponse.success(response));
   }
 
 
+  // 에러 핸들링 메소드
   public void filedErrorsHandler(BindingResult bindingResult) {
     Map<String, String> errors = new HashMap<>();
     for(FieldError fieldError : bindingResult.getFieldErrors()) {

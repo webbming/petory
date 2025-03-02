@@ -61,7 +61,6 @@ document.addEventListener("DOMContentLoaded" , async (e) =>{
                                         </div>
                                 </div>
                             </div>
-                            
                         </a>
                     </li>
                 `).join("");
