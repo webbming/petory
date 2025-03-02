@@ -7,9 +7,16 @@ import com.shoppingmall.order.dto.DeliveryChangeDto;
 import com.shoppingmall.order.dto.PurchaseDto;
 import com.shoppingmall.order.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/order")
 @Controller
@@ -23,8 +30,8 @@ public String index() {
 @GetMapping("/purchase")
 public String purchase(){ return "order/purchaseReady";}
 
-	@GetMapping("/review")
-	public String review(){return "order/review";}
+@GetMapping("/review")
+public String review(){return "order/review";}
 
 @Autowired
 PurchaseService service;
@@ -84,22 +91,39 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 
 	//userId 기준 주문 검색
 	@GetMapping("/orders/userId")
-	public String orderListByUserId(@RequestParam(name = "userId") String userId
-									,@RequestParam(name = "purchaseState", required = false) String purchaseState
-									,@RequestParam(name = "admin", required = false, defaultValue = "user") String admin, Model model){
+	public String orderListByUserId(@RequestParam(name = "userId") String userId,
+																	@RequestParam(name = "purchaseState", required = false) String purchaseState,
+																	@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
+																	@RequestParam(name = "page", defaultValue = "0") int page,
+																	Model model) {
 		if (purchaseState == null) {
 			purchaseState = "all";
 		}
-	PurchaseDto purchaseDto = service.orderListByUserId(userId, purchaseState);
-		model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
-		model.addAttribute("purchase", purchaseDto.getPurchase());
-		model.addAttribute("item", purchaseDto.getPurchaseProduct());
-		if(admin.equals("admin")){
+
+		PurchaseDto purchaseDto = service.orderListByUserId(userId, purchaseState);
+
+		int pageSize = 3; // 페이지당 3개
+		int start = page * pageSize;
+		int end = Math.min(start + pageSize, purchaseDto.getPurchase().size());
+
+		List<Purchase> pagedPurchases = purchaseDto.getPurchase().subList(start, end);
+		List<PurchaseDelivery> pagedDeliveries = purchaseDto.getPurchaseDelivery().subList(start, end);
+		List<PurchaseProduct> pagedProducts = purchaseDto.getPurchaseProduct().subList(start, end);
+
+		model.addAttribute("delivery", pagedDeliveries);
+		model.addAttribute("purchase", pagedPurchases);
+		model.addAttribute("item", pagedProducts);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", (int) Math.ceil((double) purchaseDto.getPurchase().size() / pageSize));
+
+		if (admin.equals("admin")) {
 			return "order/adminOrderByUserId";
 		}
-	return "order/orderListByUserId";
+		return "order/orderListByUserId";
 	}
-	
+
+
+
 	//수령인 정보 변경
 	@GetMapping("/orders/receiver")
 	public String receiverChange(@ModelAttribute DeliveryChangeDto deliveryChangeDto,
@@ -112,4 +136,5 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 			}
 	return "redirect:/order";
 	}
+
 }
