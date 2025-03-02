@@ -192,35 +192,8 @@ public class UserApiController {
 
   @GetMapping("/me/activities/{type}")
   public ResponseEntity<ApiResponse<?>> getActivities(@PathVariable String type , Authentication authentication) {
-      Map<String, Object> response = new HashMap<>();
-      User user = userService.getCurrentUser(authentication);
-      if (type.equals("boards")) {
-          List<BoardResponseDTO> boardsDtos = user.getBoards().stream()
-                          .map(Board::toDTO).toList();
 
-          response.put("boards" , boardsDtos);
-
-      }else if(type.equals("comments")){
-
-          List<BoardResponseDTO> boardsDtos = user.getComments().stream()
-                  .map(comment -> comment.getBoard().toDTO())
-                          .distinct().toList();
-
-        response.put("boards" , boardsDtos);
-
-      }else if(type.equals("likes")){
-
-          List<BoardResponseDTO> boardsDtos = boardRepository.findAll().stream()
-                          .filter(board -> {
-                            Set<Long> likes = board.getLikeContain();
-                            return likes != null && likes.contains(user.getId());
-                          })
-                                  .map(Board::toDTO).toList();
-
-        response.put("boards" , boardsDtos);
-
-      }
-      return ResponseEntity.ok(ApiResponse.success(response));
+      return ResponseEntity.ok(ApiResponse.success(userService.getActivities(type,authentication)));
   }
 
 

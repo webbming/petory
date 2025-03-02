@@ -46,8 +46,8 @@ document.addEventListener("DOMContentLoaded" , async (e) =>{
                         <a href="/board/read?boardId=${item.boardId}">
                             <div class="wrap">
                                 <div class="top">
+                                    <span>${item.categoryId}</span>
                                     <h3 class="tit">${item.title}</h3>
-                                    <p>${item.content}</p>
                                 </div>
                                 <div class="bottom">
                                         <div class="date">
@@ -56,8 +56,8 @@ document.addEventListener("DOMContentLoaded" , async (e) =>{
                                             <span>조회 수 <strong>${item.viewCount}</strong></span>
                                         </div>
                                         <div class="like">
-                                            <span>좋아요 수 <strong>${item.likeCount}</strong></span>
-                                            <span>댓글 수 <strong>${item.commentCount}</strong></span>
+                                            <span>💗 <strong>${item.likeCount}</strong></span>
+                                            <span>💬 <strong>${item.commentCount}</strong></span>
                                         </div>
                                 </div>
                             </div>

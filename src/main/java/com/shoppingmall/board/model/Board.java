@@ -1,9 +1,11 @@
 package com.shoppingmall.board.model;
 
 import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.user.utils.TimeUtils;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -72,16 +74,17 @@ public class Board {
     }
 
     public BoardResponseDTO toDTO(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd / HH-mm");
         return BoardResponseDTO.builder()
                 .boardId(boardId)
                 .title(title)
+                .categoryId(categoryId)
                 .nickname(nickname)
                 .content(content)
                 .commentCount(commentCount)
                 .viewCount(viewCount)
                 .likeCount(likeCount)
-                .createAt(createdAt.format(formatter))
+                .createAt(TimeUtils.getTimeAgo(LocalDate.from(createdAt)))
                 .build();
     }
 }

@@ -3,7 +3,6 @@ package com.shoppingmall.user.dto;
 import com.shoppingmall.user.model.UserRoleType;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,5 +19,4 @@ public class UserResponseDTO {
   private String accountType;
   private LocalDateTime createdAt;
   private UserRoleType role;
-
 }

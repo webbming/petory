@@ -10,6 +10,7 @@ import lombok.*;
 public class BoardResponseDTO {
     private Long boardId;
     private String title;
+    private String categoryId;
     private String nickname;
     private String content;
     private Integer viewCount;

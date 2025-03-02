@@ -1,19 +1,19 @@
 package com.shoppingmall.user.service;
 
+import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.board.model.Board;
+import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.cart.repository.CartRepository;
 import com.shoppingmall.user.dto.MypageTopInfoDTO;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.dto.UserUpdateDTO;
 import com.shoppingmall.user.exception.DuplicateException;
-import com.shoppingmall.user.model.Pet;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,31 +21,34 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class UserService {
 
   private UserRepository userRepository;
+  private BoardRepository boardRepository;
   private BCryptPasswordEncoder bCryptPasswordEncoder;
-  private CartRepository cartRepository;
 
-  public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+  public UserService(
+      UserRepository userRepository,
+      BoardRepository boardRepository,
+      BCryptPasswordEncoder bCryptPasswordEncoder) {
     this.userRepository = userRepository;
+    this.boardRepository = boardRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
   }
-
 
   // 개별 필드 검사
   public boolean checkDuplicate(String fieldName, String fieldValue) {
     // 해당 fieldName 에 맞는 코드 연결 후 fieldValue 검색
     // 프론트엔드는 boolean 값을 받아서 중복이 있는지 없는지 판단 후에 사용자에게 알림.
-    boolean isDuplicate = switch (fieldName) {
-      case "userId" -> userRepository.existsByUserId(fieldValue);
-      case "email" -> userRepository.existsByEmailAndAccountType(fieldValue, "NORMAL");
-      case "nickname" -> userRepository.existsByNickname(fieldValue);
-      // 해당하는 3가지 필드 중 아무것도 아니라면 예외 처리
-      default -> throw new IllegalStateException("Unexpected value: " + fieldName);
-    };
+    boolean isDuplicate =
+        switch (fieldName) {
+          case "userId" -> userRepository.existsByUserId(fieldValue);
+          case "email" -> userRepository.existsByEmailAndAccountType(fieldValue, "NORMAL");
+          case "nickname" -> userRepository.existsByNickname(fieldValue);
+          // 해당하는 3가지 필드 중 아무것도 아니라면 예외 처리
+          default -> throw new IllegalStateException("Unexpected value: " + fieldName);
+        };
 
     // boolean 값 반환
     return isDuplicate;
@@ -73,9 +76,9 @@ public class UserService {
     }
   }
 
-  //유저 생성
+  // 유저 생성
   @Transactional
-  public void registerUser(UserRequestDTO userDTO ) {
+  public void registerUser(UserRequestDTO userDTO) {
     // userDTO 의 유저 정보 userId , email , nickname 중복 검사
     // 해당 메서드는 UserRequestDTO 를 인수로 받는 checkDuplicate 메서드 (위에 명시)
     checkDuplicate(userDTO); // 2. 중복 검사
@@ -101,8 +104,7 @@ public class UserService {
     return user.toDTO();
   }
 
-
-  public MypageTopInfoDTO getMyPageTopInfo(String userId){
+  public MypageTopInfoDTO getMyPageTopInfo(String userId) {
     User user = userRepository.findByUserId(userId);
     if (user == null) {
       throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
@@ -111,29 +113,27 @@ public class UserService {
     int quantity = user.getCart().getTotalQuantity();
     int couponCount = 3;
 
-    return new MypageTopInfoDTO(nickname , quantity , couponCount );
+    return new MypageTopInfoDTO(nickname, quantity, couponCount);
   }
 
-  //유저 수정
+  // 유저 수정
   @Transactional
   public void updateUser(UserUpdateDTO userDTO) {
     Map<String, String> errors = new HashMap<>();
     // 사용자 아이디 불러오기
-    System.out.println(userDTO.getUserId());
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String userId = authentication.getName();
-    System.out.println(userId);
     // 해당하는 유저 검색
     User user = userRepository.findByUserId(userId);
 
     // db의 유저 정보와 수정한 유저의 정보가 같지 않고 중복된 이메일이 있을때
-    if (!user.getEmail().equals(userDTO.getEmail()) && userRepository.existsByEmail(
-        userDTO.getEmail())) {
+    if (!user.getEmail().equals(userDTO.getEmail())
+        && userRepository.existsByEmail(userDTO.getEmail())) {
       errors.put("email", "이미 사용 중인 이메일입니다.");
     }
     // db의 유저 정보와 수정한 유저의 정보가 같지 않고 중복된 아이디가 있을때
-    if (!user.getNickname().equals(userDTO.getNickname()) && userRepository.existsByNickname(
-        userDTO.getNickname())) {
+    if (!user.getNickname().equals(userDTO.getNickname())
+        && userRepository.existsByNickname(userDTO.getNickname())) {
       errors.put("nickname", "이미 사용 중인 닉네임입니다.");
     }
     // 에러가 하나라도 있으면 예외 처리
@@ -148,24 +148,23 @@ public class UserService {
     userRepository.save(user);
   }
 
-
   // 유저 삭제
   @Transactional
-  public void deleteUser(String userId , String password) {
+  public void deleteUser(String userId, String password) {
 
     User user = userRepository.findByUserId(userId);
     if (user == null) {
       throw new UsernameNotFoundException("회원이 존재 하지 않습니다.");
     }
 
-    if(!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+    if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
       throw new IllegalStateException("비밀번호가 일치 하지 않습니다.");
     }
 
     userRepository.delete(user);
-
   }
 
+  // 질문과 답변에 맞는 유저 찾는 기능
   public String findUserId(String question, String answer) {
     User user = userRepository.findByQuestionAndAnswer(question, answer);
     if (user == null) {
@@ -174,17 +173,18 @@ public class UserService {
     return user.getUserId();
   }
 
-  public void userNicknameUpdate(String nickname , Authentication authentication) {
-      User user = getCurrentUser(authentication);
-      if(userRepository.existsByNickname(nickname) && !nickname.equals(user.getNickname())) {
-        throw new DuplicateException();
-      }
+  // 유저의 닉네임을 업데이트 하는 기능
+  public void userNicknameUpdate(String nickname, Authentication authentication) {
+    User user = getCurrentUser(authentication);
+    if (userRepository.existsByNickname(nickname) && !nickname.equals(user.getNickname())) {
+      throw new DuplicateException();
+    }
 
-      user.setNickname(nickname);
-      userRepository.save(user);
+    user.setNickname(nickname);
+    userRepository.save(user);
   }
 
-
+  // 현재 사용자의 회원 정보를 가져오는 기능
   public User getCurrentUser(Authentication authentication) {
     User user = userRepository.findByUserId(authentication.getName());
     if (user == null) {
@@ -193,4 +193,41 @@ public class UserService {
     return user;
   }
 
+  // 작성한 게시물 목록 , 좋아요한 게시물 목록 , 댓글 쓴 게시물 목록을 가져오는 기능
+  public Map<String, Object> getActivities(String type, Authentication authentication) {
+
+    Map<String, Object> response = new HashMap<>();
+    List<BoardResponseDTO> boardsDtos = null;
+    User user = getCurrentUser(authentication);
+    if (type.equals("boards")) {
+      boardsDtos = user.getBoards().stream().map(Board::toDTO).toList();
+
+      response.put("boards", boardsDtos);
+
+    } else if (type.equals("comments")) {
+
+      boardsDtos =
+          user.getComments().stream()
+              .map(comment -> comment.getBoard().toDTO())
+              .distinct()
+              .toList();
+
+      response.put("boards", boardsDtos);
+
+    } else if (type.equals("likes")) {
+
+      boardsDtos =
+          boardRepository.findAll().stream()
+              .filter(
+                  board -> {
+                    Set<Long> likes = board.getLikeContain();
+                    return likes != null && likes.contains(user.getId());
+                  })
+              .map(Board::toDTO)
+              .toList();
+
+      response.put("boards", boardsDtos);
+    }
+    return response;
+  }
 }
