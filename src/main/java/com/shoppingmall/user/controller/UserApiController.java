@@ -24,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -190,14 +191,17 @@ public class UserApiController {
   public ResponseEntity<ApiResponse<?>> getActivities(@PathVariable String type , Authentication authentication) {
       Map<String, Object> response = new HashMap<>();
       User user = userService.getCurrentUser(authentication);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
       if (type.equals("boards")) {
           List<UserBoardListDTO> boardsDtos = user.getBoards().stream()
                           .map(board -> new UserBoardListDTO(board.getBoardId(),
                                   board.getTitle() ,
+                                  board.getNickname(),
                                   board.getContent() ,
                                   board.getViewCount() ,
-                                  board.getCommentCount() ,
-                                  board.getLikeCount())).collect(Collectors.toList());
+                                  board.getCommentCount(),
+                                  board.getLikeCount(),
+                                  board.getCreatedAt().format(formatter))).collect(Collectors.toList());
 
           response.put("boards" , boardsDtos);
 

@@ -12,9 +12,11 @@ import lombok.Setter;
 public class UserBoardListDTO {
     private Long boardId;
     private String title;
+    private String nickname;
     private String content;
     private Integer viewCount;
     private Integer likeCount;
     private Integer commentCount;
+    private String createAt;
 
 }
