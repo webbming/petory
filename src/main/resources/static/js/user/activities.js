@@ -33,19 +33,35 @@ document.addEventListener("DOMContentLoaded" , async (e) =>{
             // 기존 콘텐츠 초기화
             contentContainer.innerHTML = "";
 
-            if (data.length === 0) {
+            if (!data.data.boards || data.data.boards.length === 0 ) {
                 contentContainer.innerHTML = `
                     <div class="myboard_empty">
                         <p>${emptyMessages[type]}</p>
-                        <a class="btn_line" href="/">커뮤니티 둘러보기</a>
+                        <a class="btn_line" href="/board/board">커뮤니티 둘러보기</a>
                     </div>
                 `;
             } else {
-                contentContainer.innerHTML = data.map(item => `
+                contentContainer.innerHTML = data.data.boards.map(item => `
                     <li>
-                        <a href="/post/${item.id}">
-                            <h3>${item.title}</h3>
-                            <p>${item.preview}</p>
+                        <a href="/board/read?boardId=${item.boardId}">
+                            <div class="wrap">
+                                <div class="top">
+                                    <h3 class="tit">${item.title}</h3>
+                                    <p>${item.content}</p>
+                                </div>
+                                <div class="bottom">
+                                        <div class="date">
+                                            <span>진후후</span>
+                                            <span>2일전</span>
+                                            <span>조회수 : 17</span>
+                                        </div>
+                                        <div class="like">
+                                            <span>좋아요 3</span>
+                                            <span>댓글 4</span>
+                                        </div>
+                                </div>
+                            </div>
+                            
                         </a>
                     </li>
                 `).join("");
