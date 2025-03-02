@@ -1,6 +1,8 @@
 package com.shoppingmall.order.repository;
 
 import com.shoppingmall.order.domain.PurchaseDelivery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,23 +17,40 @@ public interface PurchaseDeliveryRepository extends JpaRepository<PurchaseDelive
 
 
   @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
-  List<PurchaseDelivery> findAllOrderByPurchaseIdDesc();
+  Page<PurchaseDelivery> findAllOrderByPurchaseIdDesc(Pageable pageable);
 
   @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.purchaseId = :purchaseId")
   PurchaseDelivery findPurchaseDeliveryByPurchaseId(Long purchaseId);
 
+//  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.userId = :userId ORDER BY d.purchase.purchaseId DESC")
+//  List<PurchaseDelivery> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId);
+//
+//  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.cancelAt IS NOT NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
+//  List<PurchaseDelivery> findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(String userId);
+//
+//  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.cancelAt IS NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
+//  List<PurchaseDelivery> findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(String userId);
+//
+//  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
+//  List<PurchaseDelivery> findByCancelAtIsNotNullOrderByPurchaseIdDesc();
+//
+//  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
+//  List<PurchaseDelivery> findByCancelAtIsNullOrderByPurchaseIdDesc();
+
+
+
   @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.userId = :userId ORDER BY d.purchase.purchaseId DESC")
-  List<PurchaseDelivery> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId);
+  Page<PurchaseDelivery> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId, Pageable pageable);
 
   @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.cancelAt IS NOT NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
-  List<PurchaseDelivery> findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(String userId);
+  Page<PurchaseDelivery> findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(String userId, Pageable pageable);
 
   @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.cancelAt IS NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
-  List<PurchaseDelivery> findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(String userId);
+  Page<PurchaseDelivery> findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(String userId, Pageable pageable);
 
   @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
-  List<PurchaseDelivery> findByCancelAtIsNotNullOrderByPurchaseIdDesc();
+  Page<PurchaseDelivery> findByCancelAtIsNotNullOrderByPurchaseIdDesc(Pageable pageable);
 
   @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
-  List<PurchaseDelivery> findByCancelAtIsNullOrderByPurchaseIdDesc();
+  Page<PurchaseDelivery> findByCancelAtIsNullOrderByPurchaseIdDesc(Pageable pageable);
 }

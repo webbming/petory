@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/css/profile.css">
   <link rel="stylesheet" href="/css/header.css">
   <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/orderAllList.css">
+    <link rel="stylesheet" href="/css/orderOneReseult.css">
     <link rel="stylesheet" href="/css/review.css">
 </head>
 <body>
@@ -89,85 +89,92 @@
 
 
               <div class="right_info" th:fragment="mypage-mainInfo">
-                  <h2>주문 목록</h2>
-                  <table>
-                      <thead>
-                      <tr>
-                          <th>주문번호</th>
-                          <th>주문자 ID</th>
-                          <th>총 가격</th>
-                          <th>결제 시간</th>
-                          <th>결제 상태</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr th:each="purchase : ${purchase}">
-                          <td th:text="${purchase.purchaseId}"></td>
-                          <td th:text="${purchase.userId}"></td>
-                          <td th:text="${purchase.totalPrice}"></td>
-                          <td th:utext="${purchase.cancelAt != null ? '취소 시각: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : '주문 시각: ' + #temporals.format(purchase.createAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></td>
-                          <td>
-                              <span th:text="${purchase.cancelAt != null ? '취소' : '주문'}"></span>
-                          </td>
-                      </tr>
-                      </tbody>
-                  </table>
+                  <div class="container">
+                      <h2>주문 목록</h2>
+                      <table>
+                          <thead>
+                          <tr>
+                              <th>상품 이름</th>
+                              <th>총 가격</th>
+                              <th>배송 상태</th>
+                              <th>상세 정보</th>
+                              <th>리뷰</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr th:each="purchase, iterStat : ${purchase}">
+                              <td th:text="${item[iterStat.index].productName}"></td>
+                              <td th:text="${purchase.totalPrice}"></td>
+                              <td th:text="${delivery[iterStat.index].deliveryStatus}"></td>
+                              <td><a th:href="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" class="button">상세보기</a>
+                              </td>
+                              <td>
+                <span th:if="${delivery[iterStat.index].deliveryStatus == '배송완료' && purchase.cancelAt == null}">
+                    <!-- 리뷰 작성 버튼 -->
+                    <button type="button" class="button" data-bs-toggle="modal"
+                            th:data-bs-target="'#reviewModal' + ${purchase.purchaseId}"
+                            th:data-purchase-id="${purchase.purchaseId}">
+                        리뷰작성
+                    </button>
+                    <!-- 리뷰 작성 모달 -->
+                    <div class="modal fade" th:id="'reviewModal' + ${purchase.purchaseId}" tabindex="-1"
+                         aria-labelledby="reviewModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">리뷰 작성</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form th:action="@{/review/submit}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}">
+                                        <div class="mb-3">
+                                            <label class="form-label">리뷰 내용</label>
+                                            <textarea class="form-control" name="reviewText" rows="3" required></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">별점</label>
+                                            <select class="form-select" name="rating" required>
+                                                <option value="5">★★★★★</option>
+                                                <option value="4">★★★★☆</option>
+                                                <option value="3">★★★☆☆</option>
+                                                <option value="2">★★☆☆☆</option>
+                                                <option value="1">★☆☆☆☆</option>
+                                            </select>
+                                        </div>
 
-                  <!-- 배송 정보 -->
-                  <h2>배송 정보</h2>
-                  <table>
-                      <thead>
-                      <tr>
-                          <th>수령인 이름</th>
-                          <th>수령인 전화번호</th>
-                          <th>배송 상태</th>
-                          <th>배송 주소</th>
-                          <th>배송 요청 사항</th>
-                          <th>배송 정보 수정</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr th:each="delivery : ${delivery}">
-                          <td th:text="${delivery.receiverName}"></td>
-                          <td th:text="${delivery.receiverPhone}"></td>
-                          <td th:text="${delivery.deliveryStatus}"></td>
-                          <td th:text="${delivery.receiverAddr}"></td>
-                          <td th:text="${delivery.deliveryMessage}"></td>
-                          <td>
-                              <form action="/order/admin/deiveryChange" method="POST">
-                                  <input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}"/>
-                                  <select id="deliveryState" name="deliveryState">
-                                      <option value="onDelivery">배송중</option>
-                                      <option value="stopDelivery">배송취소</option>
-                                      <option value="finDelivery">배송완료</option>
-                                  </select>
-                                  <button type="submit">변경</button>
-                              </form>
-                          </td>
-                      </tr>
-                      </tbody>
-                  </table>
+                                        <!-- 사진 업로드 (여러 개) -->
+                                        <div class="mb-3">
+                                            <label class="form-label">사진 업로드</label>
+                                            <input type="file" class="form-control" name="reviewImages" accept="image/*"
+                                                   multiple onchange="previewImages(event)">
+                                        </div>
 
-                  <!-- 구매 상품 -->
-                  <h2>구매 상품</h2>
-                  <table>
-                      <thead>
-                      <tr>
-                          <th>상품명</th>
-                          <th>옵션</th>
-                          <th>수량</th>
-                          <th>가격</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr th:each="item : ${item}">
-                          <td th:text="${item.productName}"></td>
-                          <td th:text="${item.option == null ? '없음': item.option}"></td>
-                          <td th:text="${item.quantity}"></td>
-                          <td th:text="${item.totalPrice}"></td>
-                      </tr>
-                      </tbody>
-                  </table>
+                                        <!-- 미리보기 이미지들 리스트 -->
+                                        <div class="mb-3" id="previewContainer">
+                                            <!-- 여러 개의 이미지 미리보기 여기에 표시 -->
+                                        </div>
+
+                                        <button type="submit" class="button">리뷰 제출</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </span>
+                                  <span th:if="${purchase.cancelAt != null}">주문취소</span>
+                              </td>
+                          </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <div th:replace="headerFragment/mypage-common :: modal"></div>
+                  <script src="/js/profile.js"></script>
+                  <script src="/js/address.js"></script>
+                  <!-- Bootstrap JS 추가 (모달 동작) -->
+                  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </section>
 </div>
             <div id="nicknameModal" class="modal" th:fragment="modal">
               <div class="modal-content">

@@ -6,11 +6,13 @@ import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.dto.DeliveryChangeDto;
 import com.shoppingmall.order.dto.PurchaseDeliveryDto;
 import com.shoppingmall.order.dto.PurchaseDto;
+import com.shoppingmall.order.dto.PurchasePageDto;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseProductRepository;
 import com.shoppingmall.order.repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,28 +48,28 @@ public class PurchaseService {
 	}
 
 	//전체 주문 / 취소 검색
-	public PurchaseDto purchaseList(String purchasestate){
-		List<Purchase> purchases;
-		List<PurchaseDelivery> deliveries;
-		List<PurchaseProduct> products;
+	public PurchasePageDto purchaseList(String purchasestate, Pageable pageable){
+		Page<Purchase> purchases;
+		Page<PurchaseDelivery> deliveries;
+		Page<PurchaseProduct> products;
 
 		if(purchasestate.equals("all")){
-			purchases = purchaseRepo.findAll(Sort.by(Sort.Direction.DESC, "purchaseId"));
-			deliveries = deliveryRepo.findAllOrderByPurchaseIdDesc();
-			products = productRepo.findAllOrderByPurchaseIdDesc();
+			purchases = purchaseRepo.findAllOrderByPurchaseIdDesc(pageable);
+			deliveries = deliveryRepo.findAllOrderByPurchaseIdDesc(pageable);
+			products = productRepo.findAllOrderByPurchaseIdDesc(pageable);
 		}
 		else if(purchasestate.equals("cancel")){
-			purchases = purchaseRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
-			deliveries = deliveryRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
-			products = productRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
+			purchases = purchaseRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc(pageable);
+			deliveries = deliveryRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc(pageable);
+			products = productRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc(pageable);
 		}
 		else{
-			purchases = purchaseRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
-			deliveries = deliveryRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
-			products = productRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
+			purchases = purchaseRepo.findByCancelAtIsNullOrderByPurchaseIdDesc(pageable);
+			deliveries = deliveryRepo.findByCancelAtIsNullOrderByPurchaseIdDesc(pageable);
+			products = productRepo.findByCancelAtIsNullOrderByPurchaseIdDesc(pageable);
 		}
 
-		return PurchaseDto.builder()
+		return PurchasePageDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
 				.purchaseProduct(products)
@@ -90,27 +92,27 @@ public class PurchaseService {
 	}
 
 	//userId별 주문 검색
-	public PurchaseDto orderListByUserId(String userId, String purchaseState){
-		List<Purchase> purchases;
-		List<PurchaseDelivery> deliveries;
-		List<PurchaseProduct> products;
+	public PurchasePageDto orderListByUserId(String userId, String purchaseState, Pageable pageable){
+		Page<Purchase> purchases;
+		Page<PurchaseDelivery> deliveries;
+		Page<PurchaseProduct> products;
 
 		if(purchaseState.equals("all")){
-			purchases =  purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId);
-			deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId);
-			products = productRepo.findByUserIdOrderByPurchaseIdDesc(userId);
+			purchases =  purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
+			deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
+			products = productRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
 		}
 		else if(purchaseState.equals("cancel")){
-			purchases = purchaseRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
-			deliveries = deliveryRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
-			products = productRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
+			purchases = purchaseRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+			deliveries = deliveryRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+			products = productRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 		}
 		else{
-			purchases = purchaseRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
-			deliveries = deliveryRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
-			products = productRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
+			purchases = purchaseRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+			deliveries = deliveryRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+			products = productRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 		}
-		return PurchaseDto.builder()
+		return PurchasePageDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
 				.purchaseProduct(products)
