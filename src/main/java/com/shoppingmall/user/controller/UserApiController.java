@@ -75,7 +75,7 @@ public class UserApiController {
     return ResponseEntity.ok().body(response);
   }
 
-  @GetMapping("/profile")
+  @GetMapping("/profile/update")
   @Operation(summary = "회원 정보 조회", description = "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
   public ResponseEntity<?> profileG(Authentication authentication) {
     Object principal = authentication.getPrincipal();
@@ -97,7 +97,7 @@ public class UserApiController {
     return ResponseEntity.status(HttpStatus.OK).body(user.toDTO());
   }
 
-  @PatchMapping("/profile")
+  @PatchMapping("/profile/update")
   @Operation(summary = "회원 정보 수정(업데이트)", description = "요청시 nickname , email , address 를 정보로 요청")
   public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @RequestBody UserUpdateDTO userDTO,
       Errors errors) {

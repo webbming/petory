@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>회원 정보 수정</title>
+  <link rel="stylesheet" href="/css/profile.css">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/common.css">
+</head>
+<body>
+<div th:replace="headerFragment/header :: headerFragment"></div>
+<div class="container">
+  <div class="nav-bar"></div>
+  <section class="pm-section">
+    <div th:replace="headerFragment/mypage-common :: mypage-top"></div>
+    <div class="mypage-bottom-content">
+      <div th:replace="headerFragment/mypage-common :: mypage-sidebar"></div>
+      <div class="right_info">
+          <div class="sign-wrap">
+              <section class="user_details_section">
+                    <h2 class="border">회원 정보</h2>
+                    <div class="field">
+                      <h5>성명</h5>
+                      <div class="result">김진후</div>
+                    </div>
+                    <div class="field">
+                      <h5>이메일</h5>
+                      <div class="result">wlsgnwkd22@naver.com</div>
+                    </div>
+                    <div class="field">
+                      <h5>가입 날짜</h5>
+                      <div class="result">2025.02.25</div>
+                    </div>
+                    <div class="field">
+                      <h5>회원 분류</h5>
+                      <div class="result">SOCIAL</div>
+                    </div>
+              </section>
+              <section class="user_agreement_section">
+                <div class="user_agreement">
+                  <h2 class="border">마케팅 수신 동의 설정</h2>
+                  <ul class="product_list"></ul>
+                </div>
+              </section>
+          </div>
+      </div>
+    </div>
+  </section>
+</div>
+<<div th:replace="headerFragment/mypage-common :: modal"></div>
+<script src="/js/address.js"></script>
+<script src="/js/profile.js"></script>
+</body>
+</html>
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Title</title>-->
+<!--</head>-->
+<!--<link rel="stylesheet" href="/css/profile.css">-->
+<!--<link rel="stylesheet" href="/css/header.css">-->
+<!--<link rel="stylesheet" href="/css/common.css">-->
+<!--<body>-->
+<!--<div class="section-wrap">-->
+<!--  <div class="content-form">-->
+<!--    <article class="content-wrap">-->
+<!--      <h1>회원 정보 수정</h1>-->
+<!--      <article class="content-details">-->
+<!--        <div class="alert"> 회원 정보 변경을 원할 경우 정보를 수정하고 <br>-->
+<!--          변경완료 버튼을 눌러주세요-->
+<!--        </div>-->
+<!--        <div>-->
+<!--          <div class="profile-img">사진</div>-->
+<!--          <p class="profile-user"></p>-->
+<!--        </div>-->
+<!--        <form id="profileUpdateForm">-->
+<!--          <div class="form-group">-->
+<!--            <label for="nickname">회원 닉네임</label>-->
+<!--            <input type="text" id="nickname" name="nickname" class="profile-input">-->
+<!--            <p class="error-message" id="nickname-error"></p>-->
+<!--          </div>-->
+<!--          <div class="form-group">-->
+<!--            <label for="email">회원 이메일</label>-->
+<!--            <input type="email" id="email" name="email" class="profile-input">-->
+<!--            <p class="error-message" id="email-error"></p>-->
+<!--          </div>-->
+<!--          <div class="form-group">-->
+<!--            <label for="address">회원 주소</label>-->
+<!--            <div class="address">-->
+<!--              <input type="text" id="address" name="address" readonly class="profile-input">-->
+<!--              <button type="button" class="inline-button" onclick="addrFind(event)">주소 찾기</button>-->
+<!--              <p class="error-message" id="address-error"></p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="button-group">-->
+<!--            <button type="submit" class="save-btn" disabled>적용</button>-->
+<!--            <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>-->
+<!--          </div>-->
+<!--          <div class="button-group">-->
+<!--            <button type="button" class="changePassBtn">비밀번호 변경</button>-->
+<!--            <button type="button" class="removeBtn">회원 탈퇴</button>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--      </article>-->
+<!--    </article>-->
+<!--  </div>-->
+<!--</div>-->
+<!--<script src="/js/address.js"></script>-->
+<!--<script type="module" src="/js/profileUpdate.js"></script>-->
+<!--</body>-->
+<!--</html>-->
