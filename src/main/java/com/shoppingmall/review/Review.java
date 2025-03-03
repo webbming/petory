@@ -35,5 +35,12 @@ public class Review {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_at")
 	private Date createdAt = new Date();
-	
+
+	// 리뷰 이미지 URL 추가
+    @Column(name = "image_url")
+    private String imageUrl;
+    
+    // 리뷰 댓글
+    @Column(columnDefinition = "TEXT")
+    private String comments;
 }

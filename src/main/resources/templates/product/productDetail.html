@@ -181,10 +181,12 @@
 <body>
     <div class="container">
 	    <h1>상품 상세</h1>
-	    <div class="product-container">
-	        <div class="product-image">
-	            <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
-	        </div>
+	    <!-- 대표 이미지 -->
+	    <div class="product-image">
+		    <img th:src="@{${product.imageUrl}}" alt="대표 이미지" style="max-width: 100%;">
+		</div>
+		<p><strong>대표 이미지 URL:</strong> <span th:text="${product.imageUrl}"></span></p>
+
 	        <div class="product-info">
 	            <p><strong>상품명:</strong> <span th:text="${product.productName}"></span></p>
 	            <p><strong>가격:</strong> <span id="product-price" class="price" th:text="${product.price} + '원'"></span></p>
@@ -213,35 +215,71 @@
 	        <h3>상품 설명</h3>
 	        <p><span th:text="${product.description}"></span></p>
 	    </div>
+	    
+	    <!-- 상세 이미지 -->
+		<div class="product-detail-images">
+		    <h3>상품 상세 이미지</h3>
+		    <div th:each="img : ${product.imageUrls}">
+		        <img th:src="@{${img}}" alt="상세 이미지" style="width:200px; margin-right:10px;">
+		    </div>
+		</div>
 	
 	    <div class="reviews">
-	        <h3>리뷰</h3>
-	        <p><strong>평균 평점:</strong> <span id="average-rating">0점</span> (<span id="average-stars"></span>)</p>
-	        <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post">
-	            <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required>
-	            <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
-	            <button type="submit">리뷰 등록</button>
-	        </form>
-	        <div th:each="review : ${reviews}" class="review">
-	            <p class="review-rating" th:data-rating="${review.rating}">
-	                <strong>평점:</strong> 
-	                <span>
-	                    <span th:text="${#strings.repeat('⭐', review.rating)}"></span>
-	                    <span th:text="${#strings.repeat('☆', 5 - review.rating)}"></span>
-	                </span>
-	                (<span th:text="${review.rating}"></span>점)
-	            </p>
-	            <p th:text="${review.comment}"></p>
-	            <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
-	        </div>
-	    </div>
-	
+    <h3>리뷰</h3>
+    <p><strong>평균 평점:</strong> <span id="average-rating">0점</span> (<span id="average-stars"></span>)</p>
+
+    <!-- 리뷰 등록 폼 -->
+    <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post" enctype="multipart/form-data">
+        <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required>
+        <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
+        <input type="file" name="imageFile" accept="image/*"> 
+        <button type="submit">리뷰 등록</button>
+    </form>
+    
+    <!-- 리뷰 목록 반복 -->
+    <div th:each="review : ${reviews}" class="review">
+        <!-- 리뷰 이미지 -->
+        <img th:if="${review.imageUrl}"
+             th:src="@{${review.imageUrl}}"
+             alt="Review Image" style="width:100px; height:100px;">
+        
+        <!-- 평점 표시 -->
+        <p class="review-rating" th:data-rating="${review.rating}">
+            <strong>평점:</strong>
+            <span th:text="${#strings.repeat('⭐', review.rating)}"></span>
+            <span th:text="${#strings.repeat('☆', 5 - review.rating)}"></span>
+            (<span th:text="${review.rating}"></span>점)
+        </p>
+
+        <!-- 리뷰 코멘트 / 내용 -->
+        <p th:text="${review.comment}"></p>
+        <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
+
+        <!-- 댓글 표시 섹션 -->
+        <div class="comments" style="margin-top:10px; background:#f9f9f9; padding:8px; border-radius:5px;">
+            <h4>댓글</h4>
+            <!-- reviewComments[리뷰ID]: 각 리뷰별 댓글 리스트 -->
+            <div th:each="comment : ${reviewComments[review.reviewId]}">
+                <p th:text="${comment['userId']} + ' : ' + ${comment['content']}"></p>
+                <p th:text="${#dates.format(comment['createdAt'], 'yyyy-MM-dd HH:mm:ss')}"></p>
+            </div>
+            
+            <!-- 댓글 작성 폼 -->
+            <form th:action="@{'/products/' + ${product.productId} + '/reviews/' + ${review.reviewId} + '/comments'}" 
+                  method="post">
+                <input type="text" name="content" placeholder="댓글 입력" required/>
+                <input type="hidden" name="userId" value="1"/> <!-- 사용자 ID 예시 -->
+                <button type="submit">댓글 추가</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 	    <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
 	    <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
 	        <input type="hidden" name="_method" value="delete">
 	        <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
 	    </form>
 	    <a href="/products">목록으로 돌아가기</a>
-	</div>
 </body>
 </html>

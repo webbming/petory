@@ -2,6 +2,8 @@ package com.shoppingmall.product;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.shoppingmall.category.Category;
@@ -21,6 +23,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBySubcategoryOrderByPriceDesc(Subcategory subcategory);
     List<Product> findBySubcategoryOrderByAverageRatingDesc(Subcategory subcategory);
     List<Product> findBySubcategoryOrderByCreatedAtDesc(Subcategory subcategory);
+    
+    Page<Product> findAll(Pageable pageable);
 }
 
 

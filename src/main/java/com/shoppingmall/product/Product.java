@@ -2,11 +2,15 @@ package com.shoppingmall.product;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.shoppingmall.category.Category;
 import com.shoppingmall.category.Subcategory;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +35,28 @@ public class Product {
     private String option;
     private String content;
     private String description;
+    
+    @Column(name = "reviewCount", nullable = false, columnDefinition = "INT DEFAULT 0")
+    private int reviewCount;  // DB 저장 필드로 변경
+    
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_url")
+    private List<String> imageUrls = new ArrayList<>();
     private String imageUrl;
+    
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_url")
+    private List<String> detailImageUrls = new ArrayList<>();
+    
+    public void setDetailImageUrls(List<String> detailImageUrls) {
+        this.detailImageUrls = detailImageUrls;
+    }
+
+    public List<String> getDetailImageUrls() {
+        return detailImageUrls;
+    }
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;

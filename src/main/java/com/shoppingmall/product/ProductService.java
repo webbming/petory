@@ -27,10 +27,11 @@ public class ProductService {
     }
 
     // 상품 등록 처리
-    public Product saveProduct(Product product, Long categoryId, Long subcategoryId) {
-        product.setCategory(categoryService.findCategoryById(categoryId));  // 카테고리 설정
-        product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));  // 서브카테고리 설정
-        return productRepository.save(product);  // 상품 저장
+    public Product saveProduct(Product product, Long categoryId, Long subcategoryId, List<String> imageUrls) {
+        product.setCategory(categoryService.findCategoryById(categoryId));
+        product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));
+        product.setImageUrls(imageUrls);  // 이미지 URL 리스트 설정
+        return productRepository.save(product);
     }
     
     // 상품 ID로 상품 조회
@@ -40,7 +41,7 @@ public class ProductService {
     }
 
     // 상품 수정 처리
-    public Product updateProduct(Long id, Product newProduct, Long categoryId, Long subcategoryId) {
+    public Product updateProduct(Long id, Product newProduct, Long categoryId, Long subcategoryId, List<String> imageUrls) {
         Product product = getProductById(id);  // 수정할 상품 조회
         // 수정할 필드가 null이 아니면 값을 변경
         Optional.ofNullable(newProduct.getProductName()).ifPresent(product::setProductName);
@@ -49,7 +50,7 @@ public class ProductService {
         Optional.ofNullable(newProduct.getContent()).ifPresent(product::setContent);
         Optional.ofNullable(newProduct.getDescription()).ifPresent(product::setDescription);
         Optional.ofNullable(newProduct.getImageUrl()).ifPresent(product::setImageUrl);
-        
+        product.setImageUrls(imageUrls);  // 이미지 URL 리스트 업데이트
         product.setCategory(categoryService.findCategoryById(categoryId));  // 카테고리 업데이트
         product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));  // 서브카테고리 업데이트
         

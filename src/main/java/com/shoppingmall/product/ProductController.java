@@ -2,7 +2,10 @@ package com.shoppingmall.product;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,10 +18,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingmall.category.Category;
 import com.shoppingmall.category.CategoryService;
 import com.shoppingmall.category.Subcategory;
 import com.shoppingmall.review.Review;
+import com.shoppingmall.review.ReviewRepository;
 import com.shoppingmall.review.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,25 +36,35 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final ReviewService reviewService;
+    private final ReviewRepository reviewRepository;
 
     // 생성자 주입을 통해 service 인스턴스를 초기화
-    public ProductController(ProductService productService, CategoryService categoryService, ReviewService reviewService) {
+    public ProductController(ProductService productService, CategoryService categoryService, ReviewService reviewService, ReviewRepository reviewRepository) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.reviewService = reviewService;
+        this.reviewRepository = reviewRepository;
     }
 
     // 메인 페이지 (전체 상품) - 상품 목록을 조회하고 정렬 옵션을 처리
     @GetMapping({"/products", "/products"})
     @Operation(summary = "상품 목록 조회", description = "모든 상품을 조회합니다.")
     public String listProducts(@RequestParam(defaultValue = "newest") String sort, Model model) {
-        // 상품을 정렬 기준에 따라 리스트업
         List<Product> products = productService.listAllProductsSorted(sort);
-        model.addAttribute("products", products);
-        model.addAttribute("categories", categoryService.findAllCategories());  // 카테고리 목록 추가
-        return "/product/index2";  // 상품 목록 페이지로 이동
-    }
 
+        // 각 상품의 리뷰 개수를 동적으로 계산하여 설정
+        for (Product product : products) {
+            int reviewCount = reviewService.getReviewsByProductId(product.getProductId()).size();
+            product.setReviewCount(reviewCount);
+            
+            // ✅ 디버깅 로그 추가 (서버 콘솔에서 확인)
+            System.out.println("상품 ID: " + product.getProductId() + " / 리뷰 개수: " + reviewCount);
+        }
+
+        model.addAttribute("products", products);
+        model.addAttribute("categories", categoryService.findAllCategories());
+        return "/product/index2";
+    }
     // 상품 등록 폼을 제공하는 페이지
     @GetMapping("/products/add")
     public String addProductForm(Model model) {
@@ -62,44 +79,85 @@ public class ProductController {
     public String addProduct(@ModelAttribute("product") Product product,
                              @RequestParam("categoryId") Long categoryId,
                              @RequestParam("subcategoryId") Long subcategoryId,
-                             @RequestParam("imageFile") MultipartFile file) {
-        System.out.println("요청 도착");
-        // 업로드한 파일을 저장하고 파일 경로를 반환
-        String imageUrl = uploadFile(file);
-        product.setImageUrl(imageUrl);  // 상품 이미지 URL 설정
-        productService.saveProduct(product, categoryId, subcategoryId);  // 상품 저장
-        return "redirect:/products";  // 상품 목록 페이지로 리다이렉트
+                             @RequestParam("imageFile") MultipartFile imageFile,
+                             @RequestParam("detailImageFiles") List<MultipartFile> detailImageFiles) {
+        // 1. 대표 이미지 업로드 후 URL 반환
+        String imageUrl = uploadFile(imageFile);
+        if (imageUrl != null) {
+            product.setImageUrl(imageUrl); // ✅ product에 imageUrl 저장
+        }
+
+        // 2. 상세 이미지 업로드
+        List<String> detailImageUrls = uploadFiles(detailImageFiles);
+
+        // 3. 상품 저장 (이제 대표 이미지가 포함됨)
+        productService.saveProduct(product, categoryId, subcategoryId, detailImageUrls);
+
+        return "redirect:/products";
     }
 
-    // 파일 업로드 처리
+
+    // 단일 파일 업로드 메소드
     private String uploadFile(MultipartFile file) {
         if (!file.isEmpty()) {
-            // 파일을 저장할 기본 경로 설정
             String basePath = new File("src/main/resources/static/images").getAbsolutePath();
             String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
             String filePath = basePath + File.separator + fileName;
             File destinationFile = new File(filePath);
+            
+            // ✅ 저장된 파일 경로 확인 (디버깅)
+            System.out.println("저장된 대표 이미지 경로: " + filePath);
+
             try {
-                file.transferTo(destinationFile);  // 파일을 지정된 경로에 저장
-                return "/images/" + fileName;  // 이미지 URL 반환
+                file.transferTo(destinationFile);
+                return "/images/" + fileName;
             } catch (IOException e) {
-                System.out.println("Error during file upload: " + e.getMessage());  // 파일 업로드 에러 처리
-                return null;  // 업로드 실패 시 null 반환
+                e.printStackTrace();
+                return null;
             }
         }
-        return null;  // 파일이 없으면 null 반환
+        return null;
     }
+
+
+    // 여러 파일 업로드 메소드
+    private List<String> uploadFiles(List<MultipartFile> files) {
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String imageUrl = uploadFile(file);
+            if (imageUrl != null) {
+                imageUrls.add(imageUrl);
+            }
+        }
+        return imageUrls;
+    }
+
 
     // 상품 상세 조회 페이지
     @GetMapping("/products/{id}")
-    @Operation(summary = "상품 상세 조회", description = "상품 ID를 기반으로 상품 상세 정보를 조회합니다.")
     public String viewProduct(@PathVariable("id") Long id, Model model) {
-        Product product = productService.getProductById(id);  // 상품 ID로 상품 정보 조회
-        List<Review> reviews = reviewService.getReviewsByProductId(id);  // 상품 리뷰 조회
-        model.addAttribute("product", product);  // 상품 정보 모델에 추가
-        model.addAttribute("reviews", reviews);  // 상품 리뷰 모델에 추가
-        return "/product/productDetail";  // 상품 상세 페이지로 이동
+        Product product = productService.getProductById(id);
+        List<Review> reviews = reviewService.getReviewsByProductId(id);
+        
+        // ✅ 리뷰별 댓글 저장하는 Map 추가
+        Map<Long, List<Map<String, Object>>> reviewComments = new HashMap<>();
+        
+        for (Review review : reviews) {
+            try {
+                reviewComments.put(review.getReviewId(), reviewService.getComments(review.getReviewId()));
+            } catch (JsonProcessingException e) {
+                System.err.println("JSON 파싱 오류: " + e.getMessage());
+                reviewComments.put(review.getReviewId(), List.of()); // 예외 발생 시 빈 리스트 추가
+            }
+        }
+
+        model.addAttribute("product", product);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewComments", reviewComments); // ✅ 댓글 데이터를 Thymeleaf에 전달
+
+        return "/product/productDetail";
     }
+
 
     // 상품 수정 폼
     @GetMapping("/products/edit/{id}")
@@ -113,17 +171,42 @@ public class ProductController {
 
     // 상품 수정 처리
     @PostMapping("/products/edit/{id}")
-    public String editProduct(@PathVariable(name = "id") Long id,
+    public String editProduct(@PathVariable Long id,
                               @ModelAttribute("product") Product product,
-                              @RequestParam(name = "categoryId") Long categoryId,
-                              @RequestParam(name = "subcategoryId") Long subcategoryId,
-                              @RequestParam(name = "imageFile") MultipartFile file) {
-        // 업로드한 파일을 저장하고 파일 경로를 반환
-        String imageUrl = uploadFile(file);
-        product.setImageUrl(imageUrl);  // 새로운 이미지 URL을 상품 정보에 설정
-        productService.updateProduct(id, product, categoryId, subcategoryId);  // 상품 수정 처리
-        return "redirect:/products";  // 상품 목록 페이지로 리다이렉트
+                              @RequestParam("categoryId") Long categoryId,
+                              @RequestParam("subcategoryId") Long subcategoryId,
+                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                              @RequestParam(value = "detailImageFiles", required = false) List<MultipartFile> detailImageFiles) {
+
+        // 기존 상품 정보 가져오기
+        Product existingProduct = productService.getProductById(id);
+
+        // 기존 데이터 유지
+        product.setProductId(existingProduct.getProductId());
+        product.setCategory(categoryService.findCategoryById(categoryId));
+        product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));
+
+        // 대표 이미지 업데이트 (새로운 이미지가 업로드된 경우에만 변경)
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = uploadFile(imageFile);
+            if (imageUrl != null) {
+                product.setImageUrl(imageUrl);
+            }
+        } else {
+            product.setImageUrl(existingProduct.getImageUrl()); // 기존 이미지 유지
+        }
+
+        // 상세 이미지 업데이트
+        List<String> detailImageUrls = (detailImageFiles != null && !detailImageFiles.isEmpty()) ?
+                uploadFiles(detailImageFiles) : existingProduct.getDetailImageUrls();
+        product.setDetailImageUrls(detailImageUrls);
+
+        productService.updateProduct(id, product, categoryId, subcategoryId, detailImageUrls);
+        
+        return "redirect:/products/" + id;
     }
+
+
 
     // 상품 삭제 처리
     @DeleteMapping("/products/delete/{id}")
@@ -191,13 +274,13 @@ public class ProductController {
 
     // 상품 리뷰 등록
     @PostMapping("/products/{productId}/reviews")
-    public String addReview(@PathVariable Long productId, @ModelAttribute Review review) {
-        review.setProductId(productId);  // 리뷰에 상품 ID 설정
-        // 테스트 목적 고정 userId
-        review.setUserId(1L);  // 고정된 사용자 ID 설정
-        reviewService.saveReview(review);  // 리뷰 저장
-        return "redirect:/products/" + productId;  // 상품 상세 페이지로 리다이렉트
+    public String addReview(@PathVariable Long productId, @ModelAttribute Review review, @RequestParam("imageFile") MultipartFile imageFile) {
+        review.setProductId(productId);
+        review.setUserId(1L); // 고정된 사용자 ID 설정
+        reviewService.saveReview(review, imageFile); // 리뷰와 이미지 파일 저장
+        return "redirect:/products/" + productId;
     }
+
 
     // 상품 리뷰 조회 API
     @GetMapping("/products/{productId}/reviews")
@@ -205,6 +288,28 @@ public class ProductController {
         List<Review> reviews = reviewService.getReviewsByProductId(productId);  // 상품 리뷰 조회
         return ResponseEntity.ok(reviews);  // 리뷰를 JSON 형식으로 반환
     }
+    
+    @PostMapping("/{productId}/reviews/{reviewId}/comments")
+    public ResponseEntity<?> addCommentToReview(@PathVariable Long reviewId,
+                                                @RequestParam("content") String content,
+                                                @RequestParam("userId") Long userId) {
+        try {
+            reviewService.addComment(reviewId, content, userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{productId}/reviews/{reviewId}/comments")
+    public List<Map<String, Object>> getComments(Long reviewId) throws JsonProcessingException {
+        Review review = reviewRepository.findById(reviewId).orElse(null);
+        if (review == null || review.getComments() == null || review.getComments().isEmpty()) {
+            return new ArrayList<>();  // 댓글 데이터가 없을 경우 빈 리스트 반환
+        }
+        return new ObjectMapper().readValue(review.getComments(), new TypeReference<List<Map<String, Object>>>() {});
+    }
+
 
     // 리뷰 로그인 사용자 ID 반환 
     // private Long getUserIdFromPrincipal(Principal principal) {}

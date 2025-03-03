@@ -293,12 +293,15 @@
                 <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
                 <h3 th:text="${product.productName}">상품명</h3>
                 <p class="price" th:text="${#numbers.formatInteger(product.price, 0)} + '원'">가격</p>
-                <p th:text="${product.description}">설명</p>
-                <p th:if="${product.averageRating != null}" th:text="'평점: ' + ${product.averageRating}">평점</p>
+                <p class="rating">
+				    <span class="star">⭐</span>
+				    <span th:text="${product.averageRating != null ? product.averageRating : '0.0'}">0.0</span>
+				    <span th:text="'(' + (${product.reviewCount} != null ? ${product.reviewCount} : 0) + '개 리뷰)'"></span>
+				</p>
                 <p th:text="'(' + ${product.category.categoryName} + ' / ' + ${product.subcategory.subcategoryName} + ')'">
                     (카테고리 / 소분류)
                 </p>
-                <a th:href="@{'/products/' + ${product.productId}}" class="details-link">자세히 보기</a>
+                <a th:href="@{'/products/' + ${product.productId}}" class="details-link" th:if="${product.productId != null}">자세히 보기</a>
             </div>
         </div>
     </div>
