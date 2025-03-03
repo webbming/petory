@@ -19,4 +19,15 @@ public class UserResponseDTO {
   private String accountType;
   private LocalDateTime createdAt;
   private UserRoleType role;
+
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class MypageInfo{
+    private String nickname;
+    private int cartQuantity;
+    private int couponCount;
+  }
+
 }

@@ -1,6 +1,7 @@
 package com.shoppingmall.user.controller;
 
 import com.shoppingmall.user.dto.MypageTopInfoDTO;
+import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
@@ -43,13 +44,7 @@ public class UserController {
 
 	@GetMapping("/me")
 	public String profileG(Authentication authentication, HttpSession session) {
-		if(authentication == null) {
-			return null;
-		}
-		String userId = authentication.getName();
-		System.out.println(userId);
-		MypageTopInfoDTO info =  userService.getMyPageTopInfo(userId);
-		session.setAttribute("user", info);
+
 		return "user/profile/profile";
 	}
 

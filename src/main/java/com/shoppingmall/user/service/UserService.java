@@ -3,11 +3,9 @@ package com.shoppingmall.user.service;
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.repository.BoardRepository;
-import com.shoppingmall.cart.repository.CartRepository;
 import com.shoppingmall.user.dto.MypageTopInfoDTO;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
-import com.shoppingmall.user.dto.UserUpdateDTO;
 import com.shoppingmall.user.exception.DuplicateException;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
@@ -16,7 +14,6 @@ import java.util.*;
 
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,7 +52,7 @@ public class UserService {
   }
 
   // 회원가입 요청시 최종 중복 검사
-  public void checkDuplicate(UserRequestDTO userDTO) {
+  public void checkDuplicate(UserRequestDTO.Create userDTO) {
     // error 를 담을 객체 생성
     Map<String, String> errors = new HashMap<>();
     // 아이디가 이미 있다면 해당 메시지 put
@@ -78,7 +75,7 @@ public class UserService {
 
   // 유저 생성
   @Transactional
-  public void registerUser(UserRequestDTO userDTO) {
+  public void registerUser(UserRequestDTO.Create userDTO) {
     // userDTO 의 유저 정보 userId , email , nickname 중복 검사
     // 해당 메서드는 UserRequestDTO 를 인수로 받는 checkDuplicate 메서드 (위에 명시)
     checkDuplicate(userDTO); // 2. 중복 검사
@@ -104,7 +101,7 @@ public class UserService {
     return user.toDTO();
   }
 
-  public MypageTopInfoDTO getMyPageTopInfo(String userId) {
+  public UserResponseDTO.MypageInfo getMyPageTopInfo(String userId) {
     User user = userRepository.findByUserId(userId);
     if (user == null) {
       throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
@@ -113,16 +110,13 @@ public class UserService {
     int quantity = user.getCart().getTotalQuantity();
     int couponCount = 3;
 
-    return new MypageTopInfoDTO(nickname, quantity, couponCount);
+    return new UserResponseDTO.MypageInfo(nickname, quantity, couponCount);
   }
 
   // 유저 수정
   @Transactional
-  public void updateUser(UserUpdateDTO userDTO) {
+  public void updateUser(UserRequestDTO.Update userDTO , String userId) {
     Map<String, String> errors = new HashMap<>();
-    // 사용자 아이디 불러오기
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String userId = authentication.getName();
     // 해당하는 유저 검색
     User user = userRepository.findByUserId(userId);
 
@@ -165,8 +159,8 @@ public class UserService {
   }
 
   // 질문과 답변에 맞는 유저 찾는 기능
-  public String findUserId(String question, String answer) {
-    User user = userRepository.findByQuestionAndAnswer(question, answer);
+  public String findUserId(UserRequestDTO.FindID dto) {
+    User user = userRepository.findByQuestionAndAnswer(dto.getQuestion(), dto.getAnswer());
     if (user == null) {
       throw new UsernameNotFoundException("질문과 답변에 일치하는 회원이 없습니다.");
     }
@@ -174,8 +168,8 @@ public class UserService {
   }
 
   // 유저의 닉네임을 업데이트 하는 기능
-  public void userNicknameUpdate(String nickname, Authentication authentication) {
-    User user = getCurrentUser(authentication);
+  public void userNicknameUpdate(String nickname, String userId) {
+    User user = userRepository.findByUserId(userId);
     if (userRepository.existsByNickname(nickname) && !nickname.equals(user.getNickname())) {
       throw new DuplicateException();
     }
@@ -194,11 +188,11 @@ public class UserService {
   }
 
   // 작성한 게시물 목록 , 좋아요한 게시물 목록 , 댓글 쓴 게시물 목록을 가져오는 기능
-  public Map<String, Object> getActivities(String type, Authentication authentication) {
+  public Map<String, Object> getActivities(String type, String userId) {
 
     Map<String, Object> response = new HashMap<>();
     List<BoardResponseDTO> boardsDtos = null;
-    User user = getCurrentUser(authentication);
+    User user = userRepository.findByUserId(userId);
     if (type.equals("boards")) {
       boardsDtos = user.getBoards().stream().map(Board::toDTO).toList();
 
@@ -212,7 +206,7 @@ public class UserService {
               .distinct()
               .toList();
 
-      response.put("boards", boardsDtos);
+      response.put("comments", boardsDtos);
 
     } else if (type.equals("likes")) {
 
@@ -226,7 +220,7 @@ public class UserService {
               .map(Board::toDTO)
               .toList();
 
-      response.put("boards", boardsDtos);
+      response.put("likes", boardsDtos);
     }
     return response;
   }

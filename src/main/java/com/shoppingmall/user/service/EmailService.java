@@ -1,6 +1,6 @@
 package com.shoppingmall.user.service;
 
-import com.shoppingmall.user.dto.PasswordGenerator;
+import com.shoppingmall.user.utils.PasswordGenerator;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import jakarta.mail.MessagingException;

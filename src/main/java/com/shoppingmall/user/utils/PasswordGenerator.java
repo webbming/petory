@@ -1,4 +1,4 @@
-package com.shoppingmall.user.dto;
+package com.shoppingmall.user.utils;
 
 import org.springframework.stereotype.Component;
 

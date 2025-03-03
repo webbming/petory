@@ -41,8 +41,11 @@ public class UserApiController {
   private final EmailService emailService;
   private final BoardRepository boardRepository;
 
-  public UserApiController(UserService userService, UserRepository userRepository,
-                           EmailService emailService, BoardRepository boardRepository) {
+  public UserApiController(
+      UserService userService,
+      UserRepository userRepository,
+      EmailService emailService,
+      BoardRepository boardRepository) {
     this.userService = userService;
     this.userRepository = userRepository;
     this.emailService = emailService;
@@ -53,47 +56,45 @@ public class UserApiController {
   @Operation(summary = "중복된 값이 존재하는지 확인하는 컨트롤러", description = "fieldName 과 fieldValue 를 정보로 요청")
   @PostMapping(value = "/check", produces = "application/json")
   public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicate(
-      @RequestBody Map<String, String> request) {
+      @RequestBody UserRequestDTO.Check dto ) {
 
-    String checkField = request.get("fieldName");
-    String checkValue = request.get("fieldValue");
-
-
-    boolean result = userService.checkDuplicate(checkField, checkValue);
-
+    boolean result = userService.checkDuplicate(dto.getFieldName(), dto.getFieldValue());
     Map<String, Boolean> resultMap = Map.of("result", result);
     return ResponseEntity.ok(ApiResponse.success(resultMap));
   }
 
-
   // 회원가입 요청 및 최종 검사
   @PostMapping
-  @Operation(summary = "회원가입 요청을 처리하는 컨트롤러", description = "usrId , password , email , nickname , question , answer , address 정보로 요청")
+  @Operation(
+      summary = "회원가입 요청을 처리하는 컨트롤러",
+      description = "usrId , password , email , nickname , question , answer , address 정보로 요청")
   public ResponseEntity<ApiResponse<?>> registerUser(
-          @Valid @RequestBody UserRequestDTO userDTO, BindingResult bindingResult) {
+      @Valid @RequestBody UserRequestDTO.Create userDTO, BindingResult bindingResult) {
     // response 객체 생성
     Map<String, String> response = new HashMap<>();
-    if(bindingResult.hasErrors()) {
+    if (bindingResult.hasErrors()) {
       filedErrorsHandler(bindingResult);
     }
 
-    userService.registerUser(userDTO );
+    userService.registerUser(userDTO);
     response.put("userId", userDTO.getUserId());
     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
   }
 
-
   @GetMapping("/me/profile/MyPageTopInfo")
   public ResponseEntity<ApiResponse<?>> myPageTopInfo(Authentication authentication) {
     System.out.println("요청옴 탑인포");
-        MypageTopInfoDTO dto = userService.getMyPageTopInfo(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success(dto));
+    UserResponseDTO.MypageInfo dto = userService.getMyPageTopInfo(authentication.getName());
+    return ResponseEntity.ok(ApiResponse.success(dto));
   }
 
   @GetMapping("/me/profile")
-  @Operation(summary = "회원 정보 조회", description = "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
+  @Operation(
+      summary = "회원 정보 조회",
+      description =
+          "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
   public ResponseEntity<?> profileG(Authentication authentication) {
-    if(authentication.isAuthenticated()){
+    if (authentication.isAuthenticated()) {
       User user = userRepository.findByUserId(authentication.getName());
       return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(user.toDTO()));
     }
@@ -101,63 +102,51 @@ public class UserApiController {
   }
 
   @PostMapping("/me/profile/nickname")
-  public ResponseEntity<?> UpdateNickname(@RequestBody Map<String, String> request , Authentication authentication ) {
-
-    String nickname = request.get("nickname");
-    userService.userNicknameUpdate(nickname , authentication);
+  public ResponseEntity<?> UpdateNickname(
+      @RequestBody UserRequestDTO.UpdateNickname dto, Authentication authentication) {
+    String userId = authentication.getName();
+    userService.userNicknameUpdate(dto.getNickname(), userId);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-
   @PatchMapping("/me/profile")
   @Operation(summary = "회원 정보 수정(업데이트)", description = "요청시 nickname , email , address 를 정보로 요청")
-  public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @RequestBody UserUpdateDTO userDTO,
-      BindingResult bindingResult) {
-    Map<String, Object> response = new HashMap<>();
-    if(bindingResult.hasErrors()) {
+  public ResponseEntity<ApiResponse<?>> UpdateUser(
+      @Valid @RequestBody UserRequestDTO.Update dto, BindingResult bindingResult ,Authentication authentication) {
+    if (bindingResult.hasErrors()) {
       filedErrorsHandler(bindingResult);
     }
-
-    userService.updateUser(userDTO);
-    response.put("status", "success");
-    return ResponseEntity.ok().body(response);
+    String userId = authentication.getName();
+    userService.updateUser(dto , userId);
+    return ResponseEntity.ok().body(ApiResponse.success());
   }
-
 
   @PostMapping("/find/id")
   @Operation(summary = "회원 아이디 찾기", description = "요청시 question 과 answer 정보로 요청")
-  public Map<String, String> findId(@RequestBody Map<String, String> request, Model model) {
-    Map<String, String> response = new HashMap<>();
-    String question = request.get("question");
-    String answer = request.get("answer");
-    System.out.println(question);
-    System.out.println(answer);
-    String userId = userService.findUserId(question, answer);
-    response.put("status", "success");
-    response.put("userId", userId);
-    return response;
+  public ResponseEntity<ApiResponse<?>> findId(
+      @RequestBody UserRequestDTO.FindID dto, Model model) {
+    String userId = userService.findUserId(dto);
+    return ResponseEntity.ok(ApiResponse.success(userId));
   }
 
   @PostMapping("/find/pass")
   @ResponseBody
   @Operation(summary = "회원 비밀번호 찾기", description = "요청시 userId 와 email 정보로 요청")
-  public Map<String, String> findPassword(@RequestBody Map<String, String> request)
+  public ResponseEntity<ApiResponse<?>> findPassword(@RequestBody UserRequestDTO.FindPass dto)
       throws MessagingException {
     Map<String, String> response = new HashMap<>();
-    String userId = request.get("userId");
-    String email = request.get("email");
-    emailService.findPassword(userId, email);
-    response.put("status", "success");
+    emailService.findPassword(dto.getUserId(), dto.getEmail());
     response.put("message", "이메일로 임시 비밀번호가 전송 되었습니다.<br> 새로운 비밀번호로 로그인해주세요.");
-    return response;
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   @DeleteMapping
-  public ResponseEntity<?> DeleteUser(@RequestBody Map<String, String> password,
+  public ResponseEntity<?> DeleteUser(
+      @RequestBody UserRequestDTO.Delete dto,
       Authentication authentication,
-      HttpServletRequest request, HttpServletResponse response) {
+      HttpServletRequest request,
+      HttpServletResponse response) {
 
-    String userPass = password.get("password");
     if (authentication.getPrincipal() instanceof CustomOAuth2User) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
@@ -166,7 +155,7 @@ public class UserApiController {
     }
 
     String userId = authentication.getName();
-    userService.deleteUser(userId, userPass);
+    userService.deleteUser(userId, dto.getPassword());
 
     // 회원 탈퇴후 세션 만료 및 쿠키 삭제 명시적 처리
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
@@ -187,23 +176,22 @@ public class UserApiController {
       }
     }
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok().body(ApiResponse.success());
   }
 
   @GetMapping("/me/activities/{type}")
-  public ResponseEntity<ApiResponse<?>> getActivities(@PathVariable String type , Authentication authentication) {
-
-      return ResponseEntity.ok(ApiResponse.success(userService.getActivities(type,authentication)));
+  public ResponseEntity<ApiResponse<?>> getActivities(
+      @PathVariable String type, Authentication authentication) {
+    String userId = authentication.getName();
+    return ResponseEntity.ok(ApiResponse.success(userService.getActivities(type, userId)));
   }
-
 
   // 에러 핸들링 메소드
   public void filedErrorsHandler(BindingResult bindingResult) {
     Map<String, String> errors = new HashMap<>();
-    for(FieldError fieldError : bindingResult.getFieldErrors()) {
+    for (FieldError fieldError : bindingResult.getFieldErrors()) {
       errors.put(fieldError.getField(), fieldError.getDefaultMessage());
     }
     throw new FieldErrorsException(errors);
   }
-
 }
