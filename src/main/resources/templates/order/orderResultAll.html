@@ -3,17 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<title>주문 상세 정보</title>
-	<link rel="stylesheet" href="/css/orderAllList.css">
+	<link rel="stylesheet" href="/css/order/orderAllList.css">
 </head>
 <body>
-
 <h1>주문 상세정보</h1>
-
 <div class="container">
 	<p>
 		<a href="/order" class="button">메인페이지로</a>
 	</p>
-
 	<!-- Purchase 리스트 출력 -->
 	<h2>주문 목록</h2>
 	<h4>주문 번호 클릭시 상세 내용 확인 가능</h4>
@@ -33,7 +30,7 @@
 		</tr>
 		</thead>
 		<tbody>
-		<tr th:each="purchase, iterStat : ${purchase}">
+		<tr th:each="purchase, iterStat : ${purchase.content}">
 			<td>   <a th:href="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId}, admin='admin')}"
 					  th:text="${purchase.purchaseId}">
 			</a></td>
@@ -41,10 +38,10 @@
 			<td><a th:href="@{/order/orders/userId?userId={userId}&admin={admin}(userId=${purchase.userId}, admin='admin')}" th:text="${purchase.userId}"></a></td>
 			<td th:text="${purchase.totalPrice}"></td>
 			<td th:utext="${purchase.cancelAt != null ? '주문: ' + #temporals.format(purchase.createAt, 'yyyy-M-d')  + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') + '<hr>' + '취소: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : #temporals.format(purchase.createAt,'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></td>
-			<td th:text="${delivery[iterStat.index].receiverName}"></td>
-			<td th:text="${delivery[iterStat.index].receiverPhone}"></td>
-			<td th:text="${delivery[iterStat.index].receiverAddr}"></td>
-			<td th:text="${delivery[iterStat.index].deliveryStatus}"></td>
+			<td th:text="${delivery.content[iterStat.index].receiverName}"></td>
+			<td th:text="${delivery.content[iterStat.index].receiverPhone}"></td>
+			<td th:text="${delivery.content[iterStat.index].receiverAddr}"></td>
+			<td th:text="${delivery.content[iterStat.index].deliveryStatus}"></td>
 			<td>
 				<form action="/order/admin/deiveryChange" method="POST">
 					<input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}"/>
@@ -59,7 +56,23 @@
 		</tr>
 		</tbody>
 	</table>
-</div>
 
+	<!-- 페이징 추가 -->
+	<div class="pagination" th:if="${purchase.totalPages > 1}">
+		<span th:if="${currentPage > 0}">
+			<a th:href="@{/order/admin/orderList(page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">이전</a>
+		</span>
+
+		<span th:each="pageNum : ${#numbers.sequence(0, purchase.totalPages - 1)}">
+			<a th:href="@{/order/admin/orderList(page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
+			   th:text="${pageNum + 1}"
+			   th:class="${pageNum == currentPage} ? 'active' : ''"></a>
+		</span>
+
+		<span th:if="${currentPage < purchase.totalPages - 1}">
+			<a th:href="@{/order/admin/orderList(page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">다음</a>
+		</span>
+	</div>
+</div>
 </body>
 </html>

@@ -73,7 +73,7 @@ inputs.forEach(input =>{
 
           const result = await response.json();
           console.log(result)
-          if(result.result){
+          if(result.data.result){
             errorState[fieldName] = fieldRule.validateErrorMessage;
           }else{
             validationState[fieldName] = true;
@@ -123,15 +123,14 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
 
 
     const result = await response.json();
-	console.log(result)
+
 
     if(!response.ok) {
-      console.error("등록 실패:", result);
       alert("회원가입 중 오류가 발생했습니다.");
       return;
     }
 
-    alert(`${result.userId} 님 회원가입을 환영합니다!`);
+    alert(`${result.data.userId} 님 회원가입을 환영합니다!`);
     const redirect = confirm("로그인 페이지로 이동하시겠습니까?");
     if(redirect) {
       window.location.href = "/login";
@@ -144,8 +143,6 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
 })
 
 
-
-/*   */
 
 
 

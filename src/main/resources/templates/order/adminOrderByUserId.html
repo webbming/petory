@@ -16,6 +16,7 @@
 
 <div class="container">
 	<h2>주문 상세정보</h2>
+
 	<table>
 		<thead>
 		<tr>
@@ -81,6 +82,7 @@
 			<!-- 구매 상품 -->
 			<td class="info-cell">
 				<div th:each="currentItem : ${item}" th:if="${currentItem.purchase != null and currentItem.purchase.purchaseId == purchase.purchaseId}" class="product-item">
+					<div><strong>상품id:</strong> <span th:text="${currentItem.productId}"></span></div>
 					<div><strong>상품명:</strong> <span th:text="${currentItem.productName}"></span></div>
 					<div><strong>옵션:</strong> <span th:text="${currentItem.option == null ? '없음': currentItem.option}"></span></div>
 					<div><strong>수량:</strong> <span th:text="${currentItem.quantity}"></span></div>
@@ -90,6 +92,23 @@
 		</tr>
 		</tbody>
 	</table>
+
+	<div class="pagination" th:if="${purchase.totalPages > 1}">
+		<span th:if="${currentPage > 0}">
+			<a th:href="@{/order/orders/userId(admin='admin', userId=${purchase.content[0].userId}, page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">이전</a>
+		</span>
+
+		<span th:each="pageNum : ${#numbers.sequence(0, purchase.totalPages - 1)}">
+			<a th:href="@{/order/orders/userId(admin='admin', userId=${purchase.content[0].userId}, page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
+			   th:text="${pageNum + 1}"
+			   th:class="${pageNum == currentPage} ? 'active' : ''"></a>
+		</span>
+
+		<span th:if="${currentPage < purchase.totalPages - 1}">
+			<a th:href="@{/order/orders/userId(admin='admin', userId=${purchase.content[0].userId}, page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">다음</a>
+		</span>
+	</div>
+</div>
 </div>
 </body>
 </html>

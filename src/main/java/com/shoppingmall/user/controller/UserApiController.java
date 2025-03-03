@@ -1,9 +1,9 @@
 package com.shoppingmall.user.controller;
 
-import com.shoppingmall.config.security.CustomUserDetails;
+import com.shoppingmall.board.model.Board;
 import com.shoppingmall.oauth2.model.CustomOAuth2User;
-import com.shoppingmall.user.dto.UserRequestDTO;
-import com.shoppingmall.user.dto.UserUpdateDTO;
+import com.shoppingmall.user.dto.*;
+import com.shoppingmall.user.exception.FieldErrorsException;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
@@ -20,11 +20,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -45,66 +49,72 @@ public class UserApiController {
   // 회원가입 필드별 유효성 검사
   @Operation(summary = "중복된 값이 존재하는지 확인하는 컨트롤러", description = "fieldName 과 fieldValue 를 정보로 요청")
   @PostMapping(value = "/check", produces = "application/json")
-  public ResponseEntity<Map<String, Boolean>> checkDuplicate(
+  public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicate(
       @RequestBody Map<String, String> request) {
-    Map<String, Boolean> response = new HashMap<>();
+
     String checkField = request.get("fieldName");
     String checkValue = request.get("fieldValue");
-    // userService 에게 해당 필드 중복 검사 요청
+
+
     boolean result = userService.checkDuplicate(checkField, checkValue);
-    // 반환 결과를 response 객체에 넣고 클라이언트에게 반환
-    response.put("result", result);
-    return ResponseEntity.ok().body(response);
+
+    Map<String, Boolean> resultMap = Map.of("result", result);
+    return ResponseEntity.ok(ApiResponse.success(resultMap));
   }
 
 
   // 회원가입 요청 및 최종 검사
   @PostMapping
   @Operation(summary = "회원가입 요청을 처리하는 컨트롤러", description = "usrId , password , email , nickname , question , answer , address 정보로 요청")
-  public ResponseEntity<Map<String, String>> registerUser(
-      @Valid @RequestBody UserRequestDTO userDTO, Errors errors) {
+  public ResponseEntity<ApiResponse<?>> registerUser(
+          @Valid @RequestBody UserRequestDTO userDTO, BindingResult bindingResult) {
     // response 객체 생성
     Map<String, String> response = new HashMap<>();
-    // 에러가 있다면 response 객체에 status 값과 errors 객체를 클라이언트에게 반환
-    userService.filedErrorsHandler(errors);
-    // 에러가 없다면 회원가입 진행
-    userService.registerUser(userDTO);
-    // 회원가입 성공 시 response 객체에 상태 값과 userId 담아 반환
-    response.put("userId", userDTO.getUserId());
-    response.put("status", "success");
-    return ResponseEntity.ok().body(response);
-  }
-
-  @GetMapping("/profile/update")
-  @Operation(summary = "회원 정보 조회", description = "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
-  public ResponseEntity<?> profileG(Authentication authentication) {
-    Object principal = authentication.getPrincipal();
-    String userId;
-    String accountType;
-    // 유저가 일반 회원이라면
-    if (principal instanceof CustomUserDetails userDetails) {
-      userId = userDetails.getUsername();
-      accountType = userDetails.getAccountType();
-      // 유저가 소셜 회원이라면
-    } else {
-      CustomOAuth2User oAuth2User = (CustomOAuth2User) principal;
-      userId = oAuth2User.getName();
-      accountType = oAuth2User.getAccountType();
+    if(bindingResult.hasErrors()) {
+      filedErrorsHandler(bindingResult);
     }
 
-    User user = userRepository.findByUserIdAndAccountType(userId, accountType);
-
-    return ResponseEntity.status(HttpStatus.OK).body(user.toDTO());
+    userService.registerUser(userDTO );
+    response.put("userId", userDTO.getUserId());
+    return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
   }
 
-  @PatchMapping("/profile/update")
+
+  @GetMapping("/me/profile/MyPageTopInfo")
+  public ResponseEntity<ApiResponse<?>> myPageTopInfo(Authentication authentication) {
+    System.out.println("요청옴 탑인포");
+        MypageTopInfoDTO dto = userService.getMyPageTopInfo(authentication.getName());
+        return ResponseEntity.ok(ApiResponse.success(dto));
+  }
+
+  @GetMapping("/me/profile")
+  @Operation(summary = "회원 정보 조회", description = "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
+  public ResponseEntity<?> profileG(Authentication authentication) {
+    if(authentication.isAuthenticated()){
+      User user = userRepository.findByUserId(authentication.getName());
+      return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(user.toDTO()));
+    }
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("인증되지 않은 사용자"));
+  }
+
+  @PostMapping("/me/profile/nickname")
+  public ResponseEntity<?> UpdateNickname(@RequestBody Map<String, String> request , Authentication authentication ) {
+
+    String nickname = request.get("nickname");
+    userService.userNicknameUpdate(nickname , authentication);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+
+  @PatchMapping("/me/profile")
   @Operation(summary = "회원 정보 수정(업데이트)", description = "요청시 nickname , email , address 를 정보로 요청")
   public ResponseEntity<Map<String, Object>> UpdateUser(@Valid @RequestBody UserUpdateDTO userDTO,
-      Errors errors) {
-    System.out.println("요청옴");
-    System.out.println(userDTO.getEmail());
+      BindingResult bindingResult) {
     Map<String, Object> response = new HashMap<>();
-    userService.filedErrorsHandler(errors);
+    if(bindingResult.hasErrors()) {
+      filedErrorsHandler(bindingResult);
+    }
+
     userService.updateUser(userDTO);
     response.put("status", "success");
     return ResponseEntity.ok().body(response);
@@ -176,4 +186,40 @@ public class UserApiController {
 
     return ResponseEntity.ok().build();
   }
+
+  @GetMapping("/me/activities/{type}")
+  public ResponseEntity<ApiResponse<?>> getActivities(@PathVariable String type , Authentication authentication) {
+      Map<String, Object> response = new HashMap<>();
+      User user = userService.getCurrentUser(authentication);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
+      if (type.equals("boards")) {
+          List<UserBoardListDTO> boardsDtos = user.getBoards().stream()
+                          .map(board -> new UserBoardListDTO(board.getBoardId(),
+                                  board.getTitle() ,
+                                  board.getNickname(),
+                                  board.getContent() ,
+                                  board.getViewCount() ,
+                                  board.getCommentCount(),
+                                  board.getLikeCount(),
+                                  board.getCreatedAt().format(formatter))).collect(Collectors.toList());
+
+          response.put("boards" , boardsDtos);
+
+      }else if(type.equals("comments")){
+
+      }else{
+
+      }
+      return ResponseEntity.ok(ApiResponse.success(response));
+  }
+
+
+  public void filedErrorsHandler(BindingResult bindingResult) {
+    Map<String, String> errors = new HashMap<>();
+    for(FieldError fieldError : bindingResult.getFieldErrors()) {
+      errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+    }
+    throw new FieldErrorsException(errors);
+  }
+
 }

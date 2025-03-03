@@ -7,19 +7,13 @@ import com.shoppingmall.order.dto.DeliveryChangeDto;
 import com.shoppingmall.order.dto.PurchaseDto;
 import com.shoppingmall.order.dto.PurchasePageDto;
 import com.shoppingmall.order.service.PurchaseService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequestMapping("/order")
 @Controller
@@ -74,10 +68,16 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 											 @RequestParam(name = "size", defaultValue = "3") int size,
 											 Model model){
 	Pageable pageable = PageRequest.of(page, size);
-		model.addAttribute("purchase", service.purchaseList(purchaseState, pageable).getPurchase());
-		model.addAttribute("delivery", service.purchaseList(purchaseState, pageable).getPurchaseDelivery());
-		model.addAttribute("item", service.purchaseList(purchaseState, pageable).getPurchaseProduct());
-	return "headerFragment/order/mypage-admin-purchaseAndDelivery";
+	PurchasePageDto purchasePageDto = service.purchaseList(purchaseState, pageable);
+	// 페이지 정보를 모델에 추가
+	model.addAttribute("purchase", purchasePageDto.getPurchase());
+	model.addAttribute("delivery", purchasePageDto.getPurchaseDelivery());
+	model.addAttribute("item", purchasePageDto.getPurchaseProduct());
+	model.addAttribute("currentPage", page); // 현재 페이지
+	model.addAttribute("totalPages", purchasePageDto.getPurchase().getTotalPages()); // 전체 페이지 수
+	model.addAttribute("pageSize", size);
+return "order/orderResultAll";
+//	return "headerFragment/order/mypage-admin-purchaseAndDelivery";
 	}
 
 	//배송상태 변경
@@ -99,42 +99,43 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 	//userId 기준 주문 검색
 	@GetMapping("/orders/userId")
 	public String orderListByUserId(
-			Authentication authentication,
-			@RequestParam(name = "page", defaultValue = "0") int page,
-			@RequestParam(name = "size", defaultValue = "3") int size,
-			@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
-			@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
-			Model model) {
-
+																	Authentication authentication,
+																	@RequestParam(name = "page", defaultValue = "0") int page,
+																	@RequestParam(name = "size", defaultValue = "3") int size,
+																	@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
+																	@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
+																	@RequestParam(name = "userId", required = false, defaultValue = "null") String userId,
+																	Model model) {
 		Pageable pageable = PageRequest.of(page, size);
-		String userId = authentication.getName();
-
+//		String
 		// mushroom19 관리자의 경우
-		if (userId.equals("mushroom19")) {
-			PurchasePageDto adminPurchasePageDto = service.purchaseList(purchaseState, pageable);
+		if (admin.equals("admin")) {
+			PurchasePageDto adminPurchasePageDto = service.orderListByUserId(userId, purchaseState, pageable);
 
-			model.addAttribute("purchase", adminPurchasePageDto.getPurchase().getContent());
-			model.addAttribute("delivery", adminPurchasePageDto.getPurchaseDelivery().getContent());
-			model.addAttribute("item", adminPurchasePageDto.getPurchaseProduct().getContent());
+			model.addAttribute("purchase", adminPurchasePageDto.getPurchase());
+			model.addAttribute("delivery", adminPurchasePageDto.getPurchaseDelivery());
+			model.addAttribute("item", adminPurchasePageDto.getPurchaseProduct());
 			model.addAttribute("currentPage", page);
 			model.addAttribute("totalPages", adminPurchasePageDto.getPurchase().getTotalPages());
+			model.addAttribute("pageSize", size);
 
-			return "headerFragment/order/mypage-admin-purchaseAndDelivery";
+
+//			return "headerFragment/order/mypage-admin-purchaseAndDelivery";
+			return "order/adminOrderByUserId";
 		}
 
 		// 일반 유저의 경우
+//		userId = authentication.getName();
 		PurchasePageDto purchasePageDto = service.orderListByUserId(userId, purchaseState, pageable);
 
-		model.addAttribute("purchase", purchasePageDto.getPurchase().getContent());
-		model.addAttribute("delivery", purchasePageDto.getPurchaseDelivery().getContent());
-		model.addAttribute("item", purchasePageDto.getPurchaseProduct().getContent());
+		model.addAttribute("purchase", purchasePageDto.getPurchase());
+		model.addAttribute("delivery", purchasePageDto.getPurchaseDelivery());
+		model.addAttribute("item", purchasePageDto.getPurchaseProduct());
 		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", purchasePageDto.getPurchase().getTotalPages());
-
-		if (admin.equals("admin")) {
-			return "order/adminOrderByUserId";
-		}
-		return "headerFragment/order/mypage-common-purchaseAndDelivery";
+		model.addAttribute("totalPages", purchasePageDto.getPurchase());
+		model.addAttribute("pageSize", size);
+//		return "headerFragment/order/mypage-common-purchaseAndDelivery";
+		return "order/orderListByUserId";
 	}
 
 

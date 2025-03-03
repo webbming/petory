@@ -1,9 +1,12 @@
 package com.shoppingmall.user.model;
 
+import com.shoppingmall.board.model.Board;
 import com.shoppingmall.cart.model.Cart;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,14 +54,23 @@ public class User {
   @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;
 
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Cart cart;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Board> boards;
 
   @PrePersist
   public void prePersist() {
     this.createdAt = LocalDateTime.now();
+
+    if (this.cart == null) {
+      this.cart = new Cart(); // User 생성 시 자동으로 Cart 생성
+      this.cart.setUser(this); // Cart의 user도 설정
+    }
   }
 
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Cart cart;
+
 
 
   public UserResponseDTO toDTO() {
@@ -68,6 +80,7 @@ public class User {
         .nickname(nickname)
         .address(address)
         .accountType(accountType)
+            .createdAt(createdAt)
         .role(role)
         .build();
   }

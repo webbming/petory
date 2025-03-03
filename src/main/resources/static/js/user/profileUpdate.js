@@ -3,7 +3,7 @@
 async function loadUserData() {
 
   try {
-    const response = await fetch("/api/users/profile/update",
+    const response = await fetch("/api/users/me/profile",
         {credentials: "include"})
     if (!response.ok) {
       throw new Error("사용자 정보를 불러오지 못했습니다.")
@@ -49,7 +49,7 @@ profileUpdateForm.addEventListener("submit", async (e) => {
     const formObj = Object.fromEntries(formData);
     console.log(formObj)
 
-    const response = await fetch("/api/users/profile/update", {
+    const response = await fetch("/api/users/me/profile", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"
@@ -82,7 +82,7 @@ profileUpdateForm.addEventListener("submit", async (e) => {
       const result = await response.json();
       console.log(result)
       alert("수정되었습니다");
-      window.location.href = "/users/profile";
+      window.location.href = "/users/me";
 
     }
   }

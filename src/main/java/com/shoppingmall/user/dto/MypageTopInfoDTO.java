@@ -12,9 +12,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfileDTO {
+public class MypageTopInfoDTO {
     private String nickname;
     private int cartQuantity;
-//    private List<Pet> pets;
+    private int couponCount;
 
 }
