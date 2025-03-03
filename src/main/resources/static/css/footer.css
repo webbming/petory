@@ -1,0 +1,88 @@
+footer{
+    background-color: #ececec;
+    padding: 87px 15px 116px 15px;
+    color: #7b7b7b;
+    line-height: 1.5em;
+}
+
+footer .inner{
+    position: relative;
+    width: 100%;
+    max-width: 1170px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+}
+
+footer .terms {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    color: #343434;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+footer .terms li {
+    margin-right: 10px;
+}
+
+footer .cptxt {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+footer .inner > article + article {
+    margin-left: 123px;
+    margin-top: 20px;
+
+}
+
+footer .tel {
+    background-repeat: no-repeat;
+    background-position: left center;
+
+    margin-bottom: 12px;
+    display: inline-block;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 36px;
+    color: #343434;
+}
+
+footer h5.tit {
+    font-size: 18px;
+    font-weight: 600;
+    color:#343434;
+    margin-bottom: 10px;
+}
+
+footer .sns-area{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: absolute;
+    right: 0;
+    top: 35px;
+    z-index: 1;
+}
+
+footer .sns-area li + li {
+    margin-left: 10px;
+}
+footer .sns-area li a{
+    display: block;
+}
+footer .sns-area img{
+    width: 39px;
+    vertical-align: top;
+}
+footer a.logo img {
+    width: 40px;
+    height: 40px;
+}
+a.logo{
+    margin-bottom: 15px;
+}

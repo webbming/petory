@@ -6,6 +6,7 @@ import com.shoppingmall.cart.model.Cart;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -59,6 +60,9 @@ public class User {
   private Cart cart;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Pet> pets;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Board> boards;
 
   @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
@@ -78,13 +82,14 @@ public class User {
 
 
   public UserResponseDTO toDTO() {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
     return UserResponseDTO.builder()
         .userId(userId)
         .email(email)
         .nickname(nickname)
         .address(address)
         .accountType(accountType)
-            .createdAt(createdAt)
+        .createdAt(createdAt.format(formatter))
         .role(role)
         .build();
   }

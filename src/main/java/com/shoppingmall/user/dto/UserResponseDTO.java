@@ -4,6 +4,7 @@ import com.shoppingmall.user.model.UserRoleType;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -11,13 +12,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDTO {
-
+  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd / HH-mm");
   private String userId;
   private String email;
   private String nickname;
   private String address;
   private String accountType;
-  private LocalDateTime createdAt;
+  private String createdAt;
   private UserRoleType role;
 
   @Getter

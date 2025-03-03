@@ -15,7 +15,7 @@
         <div class="mypage-top" th:fragment="mypage-top">
               <div class="user">
                 <div class="img">
-                  <div class="profile-img"></div>
+                      <img src="/images/user_default.png" alt="기본 프로필">
                 </div>
                 <strong class="nickname"></strong>
                 <button type="button" class="profile_btn">설정</button>
@@ -156,10 +156,18 @@
         </div>
   </section>
 </div>
+
+
             <div id="nicknameModal" class="modal" th:fragment="modal">
               <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>닉네임 변경</h2>
+                  <div class="head">
+                      <span class="close">&times;</span>
+                      <h2>프로필 수정</h2>
+                  </div>
+                <div class="profile-default">
+                    <img src="/images/user_default.png" alt="기본 프로필">
+                </div>
+                  <h2>닉네임</h2>
                 <input type="text" id="newNickname" name="nickname" placeholder="새 닉네임 입력">
                 <span class="error">이미 존재하는 닉네임 입니다.</span>
                 <button id="saveNickname" disabled>저장</button>
