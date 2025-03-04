@@ -3,14 +3,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 50px;
+  padding-top: 93px;
   padding-bottom: 50px;
 }
 
-
 .login-container {
-  width: 450px;
-  padding: 20px;
+  width: 400px;
+  margin: 0 auto;
 }
 
 .login-container h1 {

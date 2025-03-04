@@ -3,6 +3,7 @@ footer{
     padding: 87px 15px 116px 15px;
     color: #7b7b7b;
     line-height: 1.5em;
+
 }
 
 footer .inner{
@@ -83,6 +84,6 @@ footer a.logo img {
     width: 40px;
     height: 40px;
 }
-a.logo{
+.inner .logo{
     margin-bottom: 15px;
 }

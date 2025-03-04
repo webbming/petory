@@ -23,6 +23,7 @@ body {
   color: #343434;
   /* 스크롤 바 밀림 현상  항상 스크롤바 표시로 */
   overflow-y: scroll;
+  min-width: 1200px;
 }
 input, select, textarea {
   border: 1px solid #ccc; height: 40px; padding: 5px 15px; /*font-family:"Droid Sans";*/ outline: none; font-size: 1em;
@@ -70,6 +71,10 @@ i { font-style: inherit; }
 
 
 /* 공통적인 css 부분 나중에 다른곳으로*/
+.container{
+  padding-top: 93px;
+  min-height: auto;
+}
 
 .pm-section{
   width: 1200px;

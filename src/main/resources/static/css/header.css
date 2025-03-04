@@ -5,6 +5,11 @@ body{
 .header-border{
   width: 100%;
   border-bottom: 1px solid #D8D8D8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background-color: #fff;
 
 }
 
