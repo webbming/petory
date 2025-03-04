@@ -19,7 +19,7 @@ body {
   background-color: #fff;
   margin: 0; height: 100%;
   font-size: 14px;
-  min-height: auto;
+  min-height: 100vh;
   color: #343434;
   /* 스크롤 바 밀림 현상  항상 스크롤바 표시로 */
   overflow-y: scroll;
@@ -69,11 +69,10 @@ i { font-style: inherit; }
   color: red;
 }
 
-
 /* 공통적인 css 부분 나중에 다른곳으로*/
 .container{
   padding-top: 93px;
-  min-height: auto;
+  min-height: 100vh;
 }
 
 .pm-section{
