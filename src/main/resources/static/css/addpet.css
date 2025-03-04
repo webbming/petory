@@ -1,14 +1,102 @@
+.active{
+  border: 2px solid #4B89DC;
 
+}
 .section-wrap{
   height: 300px;
 }
 
-.section-wrap .select-wrap{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.sec2 , .sec3 {
+  display: none;
 }
 
 .section-wrap div:nth-child(2) {
-  margin-left: 30px;
+
+}
+.section-wrap{
+
+}
+.section-wrap .sec1{
+  min-height: 100vh;
+}
+.section-wrap .animal-wrap{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 116px;
+
+}
+.section-wrap .select-content{
+  width: 450px;
+  margin: 0 auto;
+}
+.section-wrap .select-content .step{
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.section-wrap .select-content .step > h3{
+  margin-bottom: 10px;
+}
+
+.section-wrap .select-content .animal-img{
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  box-sizing: border-box;
+
+}
+.animal-img.active , .animal-img:hover{
+  scale: 1.1;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.section-wrap .select-content .animal-img img{
+  width: 190px;
+  height: 190px;
+
+}
+
+.select-content .button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
+.select-content .button-container Button{
+  font-size: 20px;
+  padding: 20px;
+  border-radius: 20px;
+
+}
+.select-content .button-container .prev-Btn{
+  flex: 1;
+  width: 100%;
+  background-color: #d9d9d9;
+
+}
+.select-content .button-container .next-Btn{
+  flex: 2;
+  width: 100%;
+  margin-left: 20px;
+  background-color: #4e9eff;
+  color: white;
+
+}
+
+.sec2 .select-content label{
+  display: block;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+.sec2 .select-content input{
+  display: block;
+  padding: 20px;
+  height: 50px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.sec3 .select-content > select.species{
+  width: 100%;
 }
