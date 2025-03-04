@@ -16,8 +16,8 @@ public interface PurchaseProductRepository extends JpaRepository<PurchaseProduct
   @Query("SELECT i FROM PurchaseProduct i WHERE i.purchase.purchaseId = :purchaseId")
   List<PurchaseProduct> findByPurchaseId(@Param("purchaseId") Long purchaseId);
 
-  @Query("SELECT d FROM PurchaseProduct d ORDER BY d.purchase.purchaseId DESC, d.productId DESC")
-  Page<PurchaseProduct> findAllOrderByPurchaseIdAndProductIdDesc(Pageable pageable);
+  @Query("SELECT d FROM PurchaseProduct d ORDER BY d.purchase.purchaseId DESC")
+  Page<PurchaseProduct> findAllOrderByPurchaseIdDesc(Pageable pageable);
 
   @Query("SELECT d FROM PurchaseProduct d WHERE d.purchase.userId = :userId ORDER BY d.purchase.purchaseId DESC")
   Page<PurchaseProduct> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId, Pageable pageable);

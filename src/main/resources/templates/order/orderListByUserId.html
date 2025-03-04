@@ -52,11 +52,11 @@
                                             aria-label="Close">닫기</button>
                                 </div>
                                 <div class="modal-body">
-                                    <form th:action="@{/review/submit}" method="post" enctype="multipart/form-data">
-                                        <input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}">
+                                    <form th:action="@{/order/purchase/review}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="productId" th:value="${item.content[iterStat.index].productId}">
                                         <div class="mb-3">
                                             <label class="form-label">리뷰 내용</label>
-                                            <textarea class="form-control" name="reviewText" rows="3" required></textarea>
+                                            <textarea class="form-control" name="comment" rows="3" required></textarea>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">별점</label>

@@ -23,7 +23,6 @@ public class Review {
 	@Column(nullable = false)
 	private Long productId;
 	
-	@Column(nullable = false)
 	private Long userId;
 	
 	@Column(nullable = false)

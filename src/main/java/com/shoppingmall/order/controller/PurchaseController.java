@@ -3,10 +3,14 @@ package com.shoppingmall.order.controller;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseProduct;
 import com.shoppingmall.order.domain.Purchase;
+import com.shoppingmall.order.domain.PurchaseReview;
 import com.shoppingmall.order.dto.DeliveryChangeDto;
 import com.shoppingmall.order.dto.PurchaseDto;
 import com.shoppingmall.order.dto.PurchasePageDto;
+import com.shoppingmall.order.repository.PurchaseReviewRepository;
 import com.shoppingmall.order.service.PurchaseService;
+import com.shoppingmall.review.Review;
+import io.jsonwebtoken.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequestMapping("/order")
 @Controller
@@ -32,6 +40,49 @@ public String review(){return "order/review";}
 
 @Autowired
 PurchaseService service;
+
+@Autowired
+PurchaseReviewRepository purchaseReviewRepository;
+
+@PostMapping("/purchase/review")
+public String reviews(@RequestParam(name = "productId")Long productId,
+											@RequestParam(name = "comment") String comment,
+											@RequestParam(name = "rating") int rating,
+											@RequestParam(name = "reviewImages") List<MultipartFile> reviewImages,
+											Model model){
+	System.out.println(productId);
+	System.out.println(comment);
+	System.out.println(reviewImages);
+	List<String> imagePaths = new ArrayList<>();
+
+	try {
+		for (MultipartFile file : reviewImages) {
+			String fileName = file.getOriginalFilename();
+			String filePath = "/images/" + fileName;  // 이미지 경로
+
+			// 실제 파일 저장은 하지 않지만, 경로는 DB에 저장
+			imagePaths.add(filePath);
+		}
+
+		// Review 객체 생성
+		PurchaseReview review = new PurchaseReview();
+		review.setComment(comment);
+		review.setImagePaths(imagePaths);
+		review.setRating(rating);
+
+		// 리뷰 저장 (DB에 저장)
+		purchaseReviewRepository.save(review);
+
+		// 모델에 경로 넘기기
+		model.addAttribute("imagePaths", imagePaths);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+
+	return "order/review-page";  // 리뷰 페이지로 리턴
+}
+
+
 
 //주문 요청
 @GetMapping("/order")
@@ -107,7 +158,7 @@ return "order/orderResultAll";
 									@RequestParam(name = "userId", required = false, defaultValue = "null") String userId,
 									Model model) {
 		Pageable pageable = PageRequest.of(page, size);
-//		String
+
 		// mushroom19 관리자의 경우
 		if (admin.equals("admin")) {
 			PurchasePageDto adminPurchasePageDto = service.orderListByUserId(userId, purchaseState, pageable);
@@ -125,7 +176,6 @@ return "order/orderResultAll";
 		}
 
 		// 일반 유저의 경우
-//		userId = authentication.getName();
 		PurchasePageDto purchasePageDto = service.orderListByUserId(userId, purchaseState, pageable);
 		model.addAttribute("aa", purchasePageDto);
 		model.addAttribute("purchase", purchasePageDto.getPurchase());

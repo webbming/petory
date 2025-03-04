@@ -13,6 +13,15 @@
 	</p>
 	<!-- Purchase 리스트 출력 -->
 	<h2>주문 목록</h2>
+	<form action="/order/admin/orderList" method="get">
+		<label for="searchAll">관리자용 전체 주문 관리:</label>
+		<select id="searchAll" name="purchaseState">
+			<option value="all">전체</option>
+			<option value="cancel">취소</option>
+			<option value="purchase">주문</option>
+		</select>
+		<button type="submit">조회</button>
+	</form>
 	<h4>주문 번호 클릭시 상세 내용 확인 가능</h4>
 	<table>
 		<thead>

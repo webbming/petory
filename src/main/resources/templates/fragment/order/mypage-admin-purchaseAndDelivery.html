@@ -90,6 +90,15 @@
 
               <div class="right_info" th:fragment="mypage-mainInfo">
                   <h2>주문 목록</h2>
+                  <form action="/order/admin/orderList" method="get">
+                      <label for="searchAll">관리자용 전체 주문 관리:</label>
+                      <select id="searchAll" name="purchaseState">
+                          <option value="all">전체</option>
+                          <option value="cancel">취소</option>
+                          <option value="purchase">주문</option>
+                      </select>
+                      <button type="submit">조회</button>
+                  </form>
                   <table>
                       <thead>
                       <tr>
