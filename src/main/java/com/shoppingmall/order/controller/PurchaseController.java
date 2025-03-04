@@ -99,13 +99,13 @@ return "order/orderResultAll";
 	//userId 기준 주문 검색
 	@GetMapping("/orders/userId")
 	public String orderListByUserId(
-																	Authentication authentication,
-																	@RequestParam(name = "page", defaultValue = "0") int page,
-																	@RequestParam(name = "size", defaultValue = "3") int size,
-																	@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
-																	@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
-																	@RequestParam(name = "userId", required = false, defaultValue = "null") String userId,
-																	Model model) {
+									Authentication authentication,
+									@RequestParam(name = "page", defaultValue = "0") int page,
+									@RequestParam(name = "size", defaultValue = "3") int size,
+									@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
+									@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
+									@RequestParam(name = "userId", required = false, defaultValue = "null") String userId,
+									Model model) {
 		Pageable pageable = PageRequest.of(page, size);
 //		String
 		// mushroom19 관리자의 경우
@@ -127,12 +127,12 @@ return "order/orderResultAll";
 		// 일반 유저의 경우
 //		userId = authentication.getName();
 		PurchasePageDto purchasePageDto = service.orderListByUserId(userId, purchaseState, pageable);
-
+		model.addAttribute("aa", purchasePageDto);
 		model.addAttribute("purchase", purchasePageDto.getPurchase());
 		model.addAttribute("delivery", purchasePageDto.getPurchaseDelivery());
 		model.addAttribute("item", purchasePageDto.getPurchaseProduct());
 		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", purchasePageDto.getPurchase());
+		model.addAttribute("totalPages", purchasePageDto.getPurchase().getTotalPages());
 		model.addAttribute("pageSize", size);
 //		return "headerFragment/order/mypage-common-purchaseAndDelivery";
 		return "order/orderListByUserId";

@@ -18,17 +18,6 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     @Query("SELECT p FROM Purchase p ORDER BY p.purchaseId DESC")
     Page<Purchase> findAllOrderByPurchaseIdDesc(Pageable pageable);
 
-//    List<Purchase> findByUserIdOrderByPurchaseIdDesc(String userId);
-//
-//    List<Purchase> findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(String userId);
-//
-//    List<Purchase> findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(String userId);
-//
-//    List<Purchase> findByCancelAtIsNotNullOrderByPurchaseIdDesc();
-//
-//    List<Purchase> findByCancelAtIsNullOrderByPurchaseIdDesc();
-
-
     // userId로 주문 내역을 내림차순으로 찾기 (페이징)
     Page<Purchase> findByUserIdOrderByPurchaseIdDesc(String userId, Pageable pageable);
 

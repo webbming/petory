@@ -18,8 +18,10 @@ public class PurchaseProduct {
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)
     private Purchase purchase;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_id") // 상품 ID (FK)
+//    @ManyToOne
+//    @JoinColumn(name = "product_id")
+//    private Product product;
+
     private Long productId;
 
     private String userId;

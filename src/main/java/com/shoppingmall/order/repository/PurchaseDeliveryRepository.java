@@ -22,23 +22,6 @@ public interface PurchaseDeliveryRepository extends JpaRepository<PurchaseDelive
   @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.purchaseId = :purchaseId")
   PurchaseDelivery findPurchaseDeliveryByPurchaseId(Long purchaseId);
 
-//  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.userId = :userId ORDER BY d.purchase.purchaseId DESC")
-//  List<PurchaseDelivery> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId);
-//
-//  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.cancelAt IS NOT NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
-//  List<PurchaseDelivery> findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(String userId);
-//
-//  @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.cancelAt IS NULL AND d.userId = :userId ORDER BY d.purchase.purchaseId DESC")
-//  List<PurchaseDelivery> findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(String userId);
-//
-//  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
-//  List<PurchaseDelivery> findByCancelAtIsNotNullOrderByPurchaseIdDesc();
-//
-//  @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
-//  List<PurchaseDelivery> findByCancelAtIsNullOrderByPurchaseIdDesc();
-
-
-
   @Query("SELECT d FROM PurchaseDelivery d WHERE d.purchase.userId = :userId ORDER BY d.purchase.purchaseId DESC")
   Page<PurchaseDelivery> findByUserIdOrderByPurchaseIdDesc(@Param("userId") String userId, Pageable pageable);
 
