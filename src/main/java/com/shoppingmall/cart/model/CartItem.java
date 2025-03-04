@@ -2,7 +2,8 @@ package com.shoppingmall.cart.model;
 
 import java.math.BigDecimal;
 
-import com.shoppingmall.product.Product;
+import com.shoppingmall.product.model.Product;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

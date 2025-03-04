@@ -3,8 +3,6 @@ package com.shoppingmall.cart.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.shoppingmall.product.Product;
-import com.shoppingmall.product.ProductRepository;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +11,8 @@ import com.shoppingmall.cart.model.CartItem;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.cart.repository.CartItemRepository;
 import com.shoppingmall.cart.repository.CartRepository;
-
+import com.shoppingmall.product.model.Product;
+import com.shoppingmall.product.repository.ProductRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -10,7 +10,9 @@
             margin: 0;
             padding: 0;
         }
-        .container {
+        .container, .content-section {
+            display: flex;
+            justify-content: center;
             width: 80%;
             margin: 20px auto;
             background-color: white;
@@ -18,77 +20,100 @@
             padding: 20px;
             border-radius: 8px;
         }
-        h1 {
+        .container {
+            flex-direction: row;
+        }
+        .content-section {
+            flex-direction: column;
+        }
+        .product-image, .product-info, .product-description, .product-detail-images, .reviews {
+            flex: 1;
+        }
+        h1, .reviews, .product-description, .product-detail-images {
             text-align: center;
-            color: #333;
         }
-        .product-container {
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
-        }
-        .product-image {
-            width: 50%;
-            text-align: center;
-        }
-        .product-image img {
+        .product-image img, .product-detail-images img {
             max-width: 100%;
+            height: auto;
             border-radius: 8px;
         }
-        .product-info {
-            width: 50%;
+        h1 {
+            color: #333;
         }
         .price {
-            color: #e91e63;
+            color: #4A90E2; /* Sky blue color */
             font-size: 18px;
             font-weight: bold;
         }
-        .add-to-cart {
+        .add-to-cart, .submit-button {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: #e91e63;
+            background-color: #4A90E2; /* Sky blue color */
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 4px;
             font-size: 16px;
         }
-        .reviews {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 4px;
-        }
-        .review {
-            background: white;
-            padding: 10px;
+        .reviews, .review, .comments {
+            background-color: #fff;
+            padding: 15px;
             margin-top: 10px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            text-align: left; /* 내용을 좌측 정렬 */
         }
-        .star {
-            color: gold;
-        }
-        
-        .option-list {
-            margin-top: 10px;
-        }
-        .option-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f9f9f9;
+        .form-input, .form-textarea {
+            width: 100%;
             padding: 8px;
-            margin-bottom: 5px;
-            border-radius: 5px;
-        }
-        .option-item button {
-            background: #e91e63;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 5px 10px;
+            margin-top: 5px;
             border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .form-label {
+            display: block;
+            margin-top: 20px;
+            color: #666;
+        }
+        /* Enhanced review styles */
+        .review {
+            background: #f9f9f9;
+            padding: 20px;
+            margin-top: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .comments {
+            background: #e8e8e8;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+        }
+        .comment {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .comment:last-child {
+            border-bottom: none;
+        }
+        .review img, .comment img {
+            border-radius: 10px;
+            width: 100px;
+            height: 100px;
+            margin-left: 10px;
+            float: right;
+        }
+        .review-content, .comment-content {
+            margin-right: 120px; 
+        }
+        @media (max-width: 768px) {
+            .container, .content-section {
+                flex-direction: column;
+            }
+            .product-info {
+                width: 100%;
+                padding-left: 0;
+            }
         }
     </style>
     <script>
@@ -180,106 +205,88 @@
 </head>
 <body>
     <div class="container">
-	    <h1>상품 상세</h1>
-	    <!-- 대표 이미지 -->
-	    <div class="product-image">
-		    <img th:src="@{${product.imageUrl}}" alt="대표 이미지" style="max-width: 100%;">
-		</div>
-		<p><strong>대표 이미지 URL:</strong> <span th:text="${product.imageUrl}"></span></p>
-
-	        <div class="product-info">
-	            <p><strong>상품명:</strong> <span th:text="${product.productName}"></span></p>
-	            <p><strong>가격:</strong> <span id="product-price" class="price" th:text="${product.price} + '원'"></span></p>
-				<p><strong>내용:</strong> <span th:text="${product.content}"></span></p> <!-- 내용은 원래 자리 유지 -->
-	            <p><strong>옵션:</strong>
-                    <select id="product-option" onchange="addOption()">
-                        <option value="">옵션을 선택하세요</option>
-                        <option th:each="opt : ${#strings.arraySplit(product.option, ',')}" 
-                                th:text="${opt}" th:value="${opt}" th:data-price="1000"></option>
-                    </select>
-                </p>
-                <div id="selected-options" class="option-list"></div>
-
-                <p><strong>총 가격:</strong> <span id="total-price">0원</span></p>
-					
-	            <form th:action="@{'/cart/add'}" method="post">
-	                <input type="hidden" name="productId" th:value="${product.productId}"/>
-	                <input type="hidden" name="quantity" id="quantity-value" th:value="1"/>
-	                <button type="submit" class="add-to-cart">장바구니 담기</button>
-	            </form>
-	        </div>
-	    </div>
-	
-	    <!-- 설명은 리뷰 위에 남겨둠 -->
-	    <div class="product-description">
-	        <h3>상품 설명</h3>
-	        <p><span th:text="${product.description}"></span></p>
-	    </div>
-	    
-	    <!-- 상세 이미지 -->
-		<div class="product-detail-images">
-		    <h3>상품 상세 이미지</h3>
-		    <div th:each="img : ${product.imageUrls}">
-		        <img th:src="@{${img}}" alt="상세 이미지" style="width:200px; margin-right:10px;">
-		    </div>
-		</div>
-	
-	    <div class="reviews">
-    <h3>리뷰</h3>
-    <p><strong>평균 평점:</strong> <span id="average-rating">0점</span> (<span id="average-stars"></span>)</p>
-
-    <!-- 리뷰 등록 폼 -->
-    <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post" enctype="multipart/form-data">
-        <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required>
-        <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
-        <input type="file" name="imageFile" accept="image/*"> 
-        <button type="submit">리뷰 등록</button>
-    </form>
-    
-    <!-- 리뷰 목록 반복 -->
-    <div th:each="review : ${reviews}" class="review">
-        <!-- 리뷰 이미지 -->
-        <img th:if="${review.imageUrl}"
-             th:src="@{${review.imageUrl}}"
-             alt="Review Image" style="width:100px; height:100px;">
-        
-        <!-- 평점 표시 -->
-        <p class="review-rating" th:data-rating="${review.rating}">
-            <strong>평점:</strong>
-            <span th:text="${#strings.repeat('⭐', review.rating)}"></span>
-            <span th:text="${#strings.repeat('☆', 5 - review.rating)}"></span>
-            (<span th:text="${review.rating}"></span>점)
-        </p>
-
-        <!-- 리뷰 코멘트 / 내용 -->
-        <p th:text="${review.comment}"></p>
-        <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
-
-        <!-- 댓글 표시 섹션 -->
-        <div class="comments" style="margin-top:10px; background:#f9f9f9; padding:8px; border-radius:5px;">
-            <h4>댓글</h4>
-            <!-- reviewComments[리뷰ID]: 각 리뷰별 댓글 리스트 -->
-            <div th:each="comment : ${reviewComments[review.reviewId]}">
-                <p th:text="${comment['userId']} + ' : ' + ${comment['content']}"></p>
-                <p th:text="${#dates.format(comment['createdAt'], 'yyyy-MM-dd HH:mm:ss')}"></p>
-            </div>
-            
-            <!-- 댓글 작성 폼 -->
-            <form th:action="@{'/products/' + ${product.productId} + '/reviews/' + ${review.reviewId} + '/comments'}" 
-                  method="post">
-                <input type="text" name="content" placeholder="댓글 입력" required/>
-                <input type="hidden" name="userId" value="1"/> <!-- 사용자 ID 예시 -->
-                <button type="submit">댓글 추가</button>
+        <div class="product-image">
+            <img th:src="@{${product.imageUrl}}" alt="대표 이미지">
+        </div>
+        <div class="product-info">
+            <p><strong>상품명:</strong> <span th:text="${product.productName}"></span></p>
+            <p><strong>가격:</strong> <span id="product-price" class="price" th:text="${product.price} + '원'"></span></p>
+            <p><strong>내용:</strong> <span th:text="${product.content}"></span></p>
+            <p><strong>옵션:</strong>
+                <select id="product-option" onchange="addOption()">
+                    <option value="">옵션을 선택하세요</option>
+                    <option th:each="opt : ${#strings.arraySplit(product.option, ',')}" 
+                            th:text="${opt}" th:value="${opt}" th:data-price="1000"></option>
+                </select>
+            </p>
+            <div id="selected-options" class="option-list"></div>
+            <p><strong>총 가격:</strong> <span id="total-price">0원</span></p>
+            <form th:action="@{'/cart/add'}" method="post">
+                <input type="hidden" name="productId" th:value="${product.productId}"/>
+                <input type="hidden" name="quantity" id="quantity-value" th:value="1"/>
+                <button type="submit" class="add-to-cart">장바구니 담기</button>
             </form>
         </div>
     </div>
-</div>
 
-	    <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
-	    <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
-	        <input type="hidden" name="_method" value="delete">
-	        <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
-	    </form>
-	    <a href="/products">목록으로 돌아가기</a>
+    <div class="content-section">
+        <div class="product-description">
+            <h3>상품 설명</h3>
+            <p><span th:text="${product.description}"></span></p>
+        </div>
+        
+        <div class="product-detail-images">
+            <div th:each="img : ${product.imageUrls}">
+                <img th:src="@{${img}}" alt="상세 이미지">
+            </div>
+        </div>
+
+        <div class="reviews">
+            <h3>리뷰</h3>
+            <p><strong>평균 평점:</strong> <span id="average-rating">0점</span> (<span id="average-stars"></span>)</p>
+            <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post" enctype="multipart/form-data">
+                <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required>
+                <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
+                <input type="file" name="imageFile" accept="image/*">
+                <button type="submit">리뷰 등록</button>
+            </form>
+            
+            <div th:each="review : ${reviews}" class="review">
+                <img th:if="${review.imageUrl}"
+                     th:src="@{${review.imageUrl}}"
+                     alt="Review Image" style="width:100px; height:100px;">
+                
+                <p class="review-rating" th:data-rating="${review.rating}">
+                    <strong>평점:</strong>
+                    <span th:text="${#strings.repeat('⭐', review.rating)}"></span>
+                    <span th:text="${#strings.repeat('☆', 5 - review.rating)}"></span>
+                    (<span th:text="${review.rating}"></span>점)
+                </p>
+        
+                <p th:text="${review.comment}"></p>
+                <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
+        
+                <div class="comments">
+                    <div th:each="comment : ${reviewComments[review.reviewId]}">
+                        <p th:text="${comment['userId']} + ' : ' + ${comment['content']}"></p>
+                        <p th:text="${#dates.format(comment['createdAt'], 'yyyy-MM-dd HH:mm:ss')}"></p>
+                    </div>
+                    
+                    <form th:action="@{'/products/' + ${product.productId} + '/reviews/' + ${review.reviewId} + '/comments'}" method="post">
+                        <input type="text" name="content" placeholder="댓글 입력" required/>
+                        <input type="hidden" name="userId" value="1"/>
+                        <button type="submit">댓글 추가</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
+    <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
+        <input type="hidden" name="_method" value="delete">
+        <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
+    </form>
+    <a href="/products">목록으로 돌아가기</a>
 </body>
 </html>
