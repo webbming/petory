@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.shoppingmall.user.model.User;
 
 import jakarta.persistence.CascadeType;
@@ -34,15 +35,16 @@ public class Cart {
     @Column(name = "cart_id", nullable = false)
     private Long id; // PK
     
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CartItem> cartItems = new ArrayList<>();
    
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive = true; // 장바구니 활성화 상태
+    @Column(name = "is_active", nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean isActive = true;
+
     
     public Cart(User user) {
     	this.user = user;
@@ -69,5 +71,4 @@ public class Cart {
                 .map(CartItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
 }

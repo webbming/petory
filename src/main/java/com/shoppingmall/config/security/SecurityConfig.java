@@ -72,7 +72,14 @@ public class SecurityConfig {
 
         // CSRF 보호 비활성화
         http.csrf(csrf -> csrf.disable());
-
+        
+        http
+        .rememberMe(remember -> remember
+            .key("uniqueAndSecret") // 보안 키 설정
+            .tokenValiditySeconds(7 * 24 * 60 * 60) // 7일 동안 유지
+            .rememberMeParameter("remember-me") // 체크박스 파라미터 (기본값: remember-me)
+        );
+        
         // URL 기반 접근 권한 설정
         http.authorizeHttpRequests(auth -> auth
                 // 공통 페이지 - 인증 없이 접근 가능
@@ -88,7 +95,7 @@ public class SecurityConfig {
                 // 팀원별 기능 페이지 - 모두 접근 가능 설정
                 // ex) /cart/** -> cart 부터 아래의 하위 경로 허용
                 // ex) /cart    -> cart 경로 허용
-                .requestMatchers("/cart/**", "/cart/cart/**").permitAll()                                           // 수민님
+                .requestMatchers("/cart/**").permitAll()                                           // 수민님
                 .requestMatchers("/product/**" , "/products/**").permitAll() // 진호님
                 .requestMatchers("/board/**").permitAll()                                          // 준서님
                 .requestMatchers("/order/**").permitAll()// 성호님

@@ -1,9 +1,10 @@
 package com.shoppingmall.cart.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.shoppingmall.product.Product;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,24 +48,43 @@ public class CartItem {
     @Column(nullable = false)
     private BigDecimal price;  // 개별 상품 가격
     
+    @Column(nullable = false)
+    private BigDecimal totalPrice;  // 총 가격 필드 추가
+    
     @Version // 버전 관리 필드
     private Long version;
     
-    @Transient
-    public BigDecimal getTotalPrice() {
-        return  BigDecimal.valueOf(this.quantity).multiply(this.price);  // 총 가격 계산
+    public void updateTotalPrice() {
+        this.totalPrice = BigDecimal.valueOf(this.quantity).multiply(this.price);
     }
+    
     
     // 수량과 가격에 대한 유효성 검증 (선택 사항)
     public boolean isValid() {
     	return this.quantity > 0 && this.price.compareTo(BigDecimal.ZERO) > 0;
     }
 
-    public CartItem(Cart cart, Product product, int quantity, BigDecimal price) {
+    public CartItem(Cart cart, Product product, int quantity, BigDecimal price, BigDecimal totalPrice) {
         this.cart = cart;
         this.product = product;
         this.quantity = quantity;
         this.price = price;
+        this.totalPrice = totalPrice;
+        updateTotalPrice();
+    }
+    
+ // equals와 hashCode 메서드 추가
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartItem cartItem = (CartItem) o;
+        return Objects.equals(product.getProductId(), cartItem.product.getProductId());  // productId를 Product에서 가져옴
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(product.getProductId());  // productId를 Product에서 가져옴
     }
     
 }

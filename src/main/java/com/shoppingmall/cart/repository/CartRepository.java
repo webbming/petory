@@ -12,6 +12,7 @@ import com.shoppingmall.user.model.User;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
 	Optional<Cart> findByUserAndIsActiveTrue(User user);
-    Optional<Cart> findByIdAndUser(Long cartId, User user);
-    Optional<Cart> findById(Long Id);
+    Optional<Cart> findByIdAndUser(Long id, User user);
+    Optional<Cart> findById(Long id);
+	Cart findByUser(User user);
 }

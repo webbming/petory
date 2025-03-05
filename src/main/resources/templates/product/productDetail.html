@@ -199,9 +199,12 @@
       <div id="selected-options" class="option-list"></div>
 
       <p><strong>총 가격:</strong> <span id="total-price">0원</span></p>
-
-      <form th:action="@{'/cart/add'}" method="post">
+	
+	<!-- 장바구니 담기(코드 수정 X) -->
+      <form th:action="@{'/cart/' + ${id} + '/items/' + ${product.productId} + '/add'}" method="post">
         <input type="hidden" name="productId" th:value="${product.productId}"/>
+        <label for="quantity">수량:</label>
+    		<input type="number" name="quantity" value="1" min="1" required>
         <input type="hidden" name="quantity" id="quantity-value" th:value="1"/>
         <button type="submit" class="add-to-cart">장바구니 담기</button>
       </form>

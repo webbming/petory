@@ -9,100 +9,274 @@
 <body>
     <h1>장바구니</h1>
 
-    <form th:action="@{'/cart/' + ${id} + '/items/update'}" method="post">
-        <div th:each="item : ${cartItems}">
-  
-            <input type="hidden" name="productId" th:value="${item.product.productId}" data-item-id="${item.id}">
-            <input type="hidden" name="cartId" th:value="${id}">
-    
-            <!-- 상품 이미지, 상품명, 가격, 옵션, 내용, 설명, 수량 -->
-            <img th:src="@{${item.product.imageUrl}}" alt="Product Image"/>
-            <p>상품명: <span th:text="${item.product.productName}"></span></p>
-            <p>가격: <span th:text="${item.product.price}"></span></p>
-            <p>옵션: <span th:text="${item.product.option}"></span></p>
-    		<p>내용: <span th:text="${item.product.content}"></span></p>
-    		<p>설명: <span th:text="${item.product.description}"></span></p>
-    
-            <label for="quantity">수량:</label>
-            <button type="button" class="decrease" data-item-id="${item.id}" >-</button>
-            <input type="number" name="quantity" th:value="${item.quantity}" min="1" data-item-id="${item.id}"> 
-          	<button type="button" class="increase" data-item-id="${item.id}" >+</button>
-            <p>합계: <span th:text="${item.product.price * item.quantity}" data-item-id="${item.id}"></span> 원</p>
-    
-            <button type="submit">수정</button>
-            <button>삭제</button>
-        </div>
-    
-        <button type="submit" formaction="@{'/cart/' + ${id} + '/checkout'}">주문하기</button>
+    <form th:action="@{'/cart/' + ${cartId} +  + '/items/' + ${product.productId} +'/items/update'}" method="post" >
+        <table>
+            <thead>
+                <tr>
+                    <th>선택</th>
+                    <th>상품 이미지</th>
+                    <th>상품명</th>
+                    <th>가격</th>
+                    <th>수량</th>
+                    <th>합계</th>
+                    <th>수정</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <!-- 체크박스 -->
+                    <td><input type="checkbox" name="selectedItems" th:value="${item.id != null ? item.id : ''}"></td>
+
+                    <!-- 상품 이미지 -->
+                    <td><img th:src="@{${item.product.imageUrl}}" alt="Product Image" style="width: 50px; height: 50px;"/></td>
+
+                    <!-- 상품명 -->
+                    <td><span th:text="${item.product.productName}"></span></td>
+
+                    <!-- 가격 -->
+                    <td><span th:text="${item.product.price}"></span> 원</td>
+
+                    <!-- 수량 -->
+                    <td>
+                        <button type="button" class="decrease" data-item-id="${item.id}">-</button>
+                        <input type="number" name="quantity" th:value="${item.quantity}" min="1" data-item-id="${item.id}">
+                        <button type="button" class="increase" data-item-id="${item.id}">+</button>
+                    </td>
+
+                    <!-- 합계 -->
+                    <td><span th:text="${item.product.price * item.quantity}"></span> 원</td>
+
+                    <!-- 수정 버튼 -->
+                    <td>
+                        <input type="hidden" name="productId" th:value="${item.product.productId}">
+                        <input type="hidden" name="cartId" th:value="${cartId}"> <!-- cartId로 변경 -->
+                        <button type="button" class="update-quantity" data-item-id="${item.id}" data-product-id="${item.product.productId}">수정</button>
+                    </td>
+
+                    <!-- 삭제 버튼 -->
+                    <td><button type="button" class="delete-button" th:data-cart-id="${cartId}" th:data-product-id="${item.product.productId}">삭제</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 선택 삭제 버튼 -->
+        <button type="button" id="delete-selected">선택 삭제</button>
+
+        <!-- 주문하기 버튼 -->
+        <button type="submit" formaction="@{'/cart/' + ${cartId} + '/checkout'}">주문하기</button>
+        <p>총 합계: <span id="selected-total-price">0</span> 원</p>
     </form>
 
 </body>
+
 <script>
-    $(".increase").click(function() {
-        var itemId = $(this).data("item-id");
-        var quantityInput = $("input[data-item-id='" + itemId + "']");
-        var currentQuantity = parseInt(quantityInput.val());
-
-        // 수량 증가
-        quantityInput.val(currentQuantity + 1);
-        
-        // 서버로 업데이트 요청
-        updateQuantity(itemId, quantityInput.val());
-
-        // 합계 재계산 (가격 * 수량)
-        updateTotal(itemId);
-    });
-
+$(document).ready(function() {
+    // 수량 감소
     $(".decrease").click(function() {
-        var itemId = $(this).data("item-id");
-        var quantityInput = $("input[data-item-id='" + itemId + "']");
+        var quantityInput = $(this).siblings("input[type='number']"); 
         var currentQuantity = parseInt(quantityInput.val());
 
         if (currentQuantity > 1) {
-            // 수량 감소
             quantityInput.val(currentQuantity - 1);
-            
-            // 서버로 업데이트 요청
-            updateQuantity(itemId, quantityInput.val());
-
-            // 합계 재계산 (가격 * 수량)
-            updateTotal(itemId);
+            updatePriceAndTotal(quantityInput); // 가격 갱신 + 총합 갱신
         }
     });
 
-    function updateQuantity(itemId, quantity) {
-        var cartId = $("input[name='cartId']").val();
-        var productId = $("input[name='productId'][data-item-id='" + itemId + "']").val();  // productId를 올바르게 추출
+    // 수량 증가
+    $(".increase").click(function() {
+        var quantityInput = $(this).siblings("input[type='number']"); 
+        var currentQuantity = parseInt(quantityInput.val());
+        quantityInput.val(currentQuantity + 1);
+        updatePriceAndTotal(quantityInput); // 가격 갱신 + 총합 갱신
+    });
 
-        console.log("cartId:", cartId);  // 디버깅용
-        console.log("productId:", productId);  // 디버깅용
+    // 수량 수정 버튼 클릭 시
+    $(".update-quantity").click(function () {
+        var cartId = $("input[name='cartId']").val();  // 페이지에 hidden input으로 cartId 가져오기
+        var productId = $("input[name='productId']").val();
+        var quantity = $(this).closest("tr").find("input[name='quantity']").val();
 
+        // 수량 유효성 검사
+        if (quantity <= 0) {
+            alert("수량은 1 이상이어야 합니다.");
+            return;
+        }
+
+        // PUT 요청 보내기
         $.ajax({
-            url: '/cart/' + cartId + '/items/' + productId + '/update',
-            method: 'PUT',
-            data: {
-                quantity: quantity
+            url: "/cart/" + cartId + "/items/" + productId + "/update",
+            type: 'PUT',
+            contentType: 'application/json',
+            dataType: 'json',  // 응답을 JSON으로 처리하도록 설정
+            data: JSON.stringify({ quantity: quantity }),
+            success: function (response) {
+                if (response.success) {
+                    alert("수량이 수정되었습니다.");
+                    updatePriceAfterEdit($(this).closest("tr"), response.cart);  // 수정된 수량 반영
+                } else {
+                    alert("수량 업데이트 실패: " + response.error);
+                }
             },
-            success: function(response) {
-                console.log("수량이 업데이트되었습니다.");
-                alert(response);
+            error: function (xhr, status, error) {
+                alert("수량 업데이트에 실패했습니다.");
+            }
+        });
+    });
+
+    // 가격 갱신 함수
+    function updatePrice(quantityInput) {
+        var row = quantityInput.closest("tr"); // 현재 행 찾기
+        var price= row.find("td:nth-child(4) span").text(); // 가격 텍스트 가져오기
+        var quantity = parseInt(quantityInput.val()); // 새로운 수량
+
+        // 새로운 합계 계산
+        var total = price * quantity;
+
+        // 합계 업데이트
+        row.find("td:nth-child(6) span").text(total.toLocaleString() + " 원");
+
+        // 선택된 총합 업데이트
+        updateSelectedTotalPrice();
+    }
+
+    // 가격 갱신 + 전체 총합 갱신 함수
+    function updatePriceAndTotal(quantityInput) {
+        updatePrice(quantityInput); // 가격 갱신
+        updateSelectedTotalPrice();  // 선택된 아이템 합계 갱신
+    }
+
+    // 전체 장바구니 가격 갱신
+    function updateCartTotal(cart) {
+        var totalPrice = 0;
+
+        // 장바구니 아이템들을 순회하면서 총 가격 계산
+        cart.cartItems.forEach(function (item) {
+            totalPrice += item.price * item.quantity;  // 가격 * 수량
+        });
+
+        // 계산된 총 가격을 화면에 반영
+        $("#selected-total-price").text(totalPrice.toLocaleString() + " 원");
+    }
+
+    // 수정된 수량 반영
+    function updatePriceAfterEdit(row, cart) {
+        var price = parseInt(row.find("td:nth-child(4) span").text()); 
+        var quantity = parseInt(row.find("input[name='quantity']").val());
+        var total = price * quantity;
+        
+        row.find("td:nth-child(6) span").text(total.toLocaleString() + " 원");
+        updateSelectedTotalPrice(cart); // 선택된 총합 업데이트
+    }
+
+    // 선택된 아이템의 총 합계 계산 함수
+    function updateSelectedTotalPrice() {
+        var cartId = $("input[name='cartId']").val(); 
+        var selectedItems = [];  // 배열 이름 수정
+
+        $("input[name='selectedItems']:checked").each(function () {
+            var itemId = $(this).val();
+
+            // 중복 체크 후 추가
+            if (!selectedItems.includes(itemId)) {
+                selectedItems.push(itemId);  // 체크된 아이템의 ID 추가
+            }
+        });
+
+        // 선택된 상품이 없으면 총 합계를 0으로 설정
+        if (selectedItems.length === 0) {
+            $("#selected-total-price").text("0 원");
+            return;
+        }
+
+        // Ajax 호출
+        $.ajax({
+            url: "/cart/" + cartId + "/selected-total-price",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ selectedItemIds: selectedItems }), // selectedItems 배열 전송
+            success: function (response) {
+                if (response.totalPrice) {
+                    $("#selected-total-price").text(response.totalPrice.toLocaleString() + " 원");
+                } else {
+                    alert("총 합계가 계산되지 않았습니다.");
+                }
             },
-            error: function(xhr, status, error) {
-                alert("수량 업데이트에 실패했습니다: " + error);
+            error: function () {
+                alert("선택된 상품 총 합계 계산에 실패했습니다.");
             }
         });
     }
 
-    function updateTotal(itemId) {
-        var quantityInput = $("input[data-item-id='" + itemId + "']");
-        var quantity = parseInt(quantityInput.val());
-        var price = parseFloat($("span.product-price[data-item-id='" + itemId + "']").text());  // 가격 값 가져오기
-        
-        var total = quantity * price;
+    // 체크박스 변경 시 선택된 총합 갱신
+    $("input[name='selectedItems']").change(function() {
+        updateSelectedTotalPrice();
+    });
+});
+    
+ 	// 개별 삭제 기능 추가
+    $(document).on("click", ".delete-button", function () {
+        var cartId = $(this).attr("data-cart-id");
+        var productId = $(this).attr("data-product-id");
 
-        // 합계 업데이트
-        $("span[data-item-id='" + itemId + "']").text(total + " 원");
-    }
+        if (!confirm("정말 삭제하시겠습니까?")) {
+            return;
+        }
+
+        $.ajax({
+            url: "/cart/" + cartId + "/items/" + productId + "/delete",
+            type: "DELETE",
+            success: function () {
+                alert("상품이 삭제되었습니다.");
+                /* $(this).closest("tr").remove(); */
+                updateSelectedTotalPrice();  // 선택된 총합 갱신
+            },
+            error: function (xhr) {
+                alert("삭제 실패: " + xhr.responseText);
+            }
+        });
+    });
+
+    
+ 	// 선택 삭제 기능 추가(다중 삭제)
+    $("#delete-selected").click(function () {
+        var cartId = $("input[name='cartId']").val();
+        var selectedItems = [];
+
+        $("input[name='selectedItems']:checked").each(function () {
+            selectedItems.push(parseInt($(this).val(), 10));
+        });
+
+        if (selectedItems.length === 0) {
+            alert("삭제할 상품을 선택해주세요.");
+            return;
+        }
+
+        if (!confirm("선택한 상품을 삭제하시겠습니까?")) {
+            return;
+        }
+
+        $.ajax({
+            url: "/cart/" + cartId + "/items/delete-selected",
+            type: "DELETE",
+            contentType: "application/json",
+            data: JSON.stringify({ selectedItems: selectedItems }),
+            success: function () {
+                alert("선택한 상품이 삭제되었습니다.");
+                $("input[name='selectedItems']:checked").each(function () {
+                    $(this).closest("tr").remove(); 
+                });
+                updateSelectedTotalPrice(); 
+            },
+            error: function (xhr) {
+                alert("삭제 실패: " + xhr.responseText);
+            }
+        });
+    });
+ 	
+ 	
+    
+    
 </script>
 
 </html>
