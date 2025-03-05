@@ -3,6 +3,7 @@ package com.shoppingmall.user.model;
 import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.model.Comment;
 import com.shoppingmall.cart.model.Cart;
+import com.shoppingmall.pet.model.Pet;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

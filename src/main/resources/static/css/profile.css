@@ -182,19 +182,97 @@ a{
   box-shadow: none;
 }
 
-.right_info .animal_list > div:last-child .profile_add{
+.animal_list .layer_open{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  text-indent: -9999px;
+  border: 0;
+  cursor: pointer;
+  background: url(../images/settings.png) no-repeat center center;
+  background-size: 100%;
+}
+
+.animal_list .last-div .profile_add{
   display: inline-block;
   width: 202px;
   height: 248px;
   padding-top: 167px;
-  color: #CECECE;
+  color: #cecece;
   font-weight: 600;
   font-size: 18px;
   text-align: center;
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.08);
-  background-color: #ffffff;
+  box-shadow: 0 0 16px rgba(0,0,0,0.08);
+  background: #fff url("../images/plus.png") no-repeat center;  /* 수정된 부분 */
+  background-size: 70px;  /* 이미지 크기 조절 */
+  background-position-y: 70px;
   border-radius: 15px;
 }
+.animal_list .box{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column-reverse;
+  align-items: center;
+  width: 202px;
+  height: 248px;
+  margin: 0 20px 20px 0;
+  padding: 32px 31px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.08);
+  border-radius: 15px;
+  background-color: #fff;
+}
+.animal_list .box .name{
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.animal_list .box .img{
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+}
+.animal_list .box img{
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.animal_list .box .layer_modify {
+  width: 95px;
+  padding: 5px;
+  right: -55px;
+  top: 44px;
+}
+.animal_list .box .layer_modify li {
+  padding: 5px 5px;
+}
+.animal_list .box .layer_modify li:hover {
+  background-color: #e3e3e3;
+}
+.animal_list .box .layer_modify li a {
+  width: 100%;
+}
+.animal_list .box .layer_modify .deleteBtn{
+  color: red;
+}
+.layer_modify{
+  z-index: 100000;
+  position: absolute;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  background-color: #fff;
+}
+
 
 .mypage-bottom-content .right_info h2.border{
   padding-bottom: 14px;

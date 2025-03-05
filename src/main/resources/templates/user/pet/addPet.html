@@ -65,11 +65,20 @@
                 <input type="text" id="petAge" name="age" placeholder="나이를 입력해주세요">
               </div>
 
-              <div>
-                <label id="gender">성별</label>
-                <input type="text" id="petGender" name="gender"
-                       placeholder="성별을 선택해주세요">
-              </div>
+
+            <div>
+              <label>반려동물 성별</label>
+              <ul class="gender-options">
+                <li class="gender-option">
+                  <input type="radio" id="petGender1" name="gender" value="male">
+                  <label for="petGender1" class="male">남자 아이</label>
+                </li>
+                <li class="gender-option">
+                  <input type="radio" id="petGender2" name="gender" value="female">
+                  <label for="petGender2" class="female">여자 아이</label>
+                </li>
+              </ul>
+            </div>
 
               <div>
                 <label id="birthday">생일</label>
@@ -128,6 +137,56 @@
     const submitBtn = document.querySelector(".sec3 .button-container > .next-Btn");
     const currentPage = document.querySelector(".current-page")
 
+    function validateSection1() {
+      if (!selectedAnimal) {
+        alert('반려동물 종류를 선택해주세요.');
+        return false;
+      }
+      return true;
+    }
+
+    // 섹션 2 유효성 검사
+    function validateSection2() {
+      const petName = document.querySelector("#petName").value.trim();
+      const petAge = document.querySelector("#petAge").value.trim();
+      const petGender = document.querySelector('input[name="gender"]:checked');
+      const petBirth = document.querySelector("#petBirth").value.trim();
+
+      if (!petName) {
+        alert('반려동물 이름을 입력해주세요.');
+        return false;
+      }
+
+      if (!petAge) {
+        alert('반려동물 나이를 입력해주세요.');
+        return false;
+      }
+
+      if (!petGender) {
+        alert('반려동물 성별을 선택해주세요.');
+        return false;
+      }
+
+      if (!petBirth) {
+        alert('반려동물 생일을 입력해주세요.');
+        return false;
+      }
+
+      return true;
+    }
+
+    // 섹션 3 유효성 검사
+    function validateSection3() {
+      const species = document.querySelector("#species").value.trim();
+
+      if (!species) {
+        alert('품종을 선택해주세요.');
+        return false;
+      }
+
+      return true;
+    }
+
     function updatePageIndicator() {
       const pageIndicators = document.querySelectorAll('.page-indicator .current-page');
       pageIndicators.forEach((indicator) => {
@@ -165,7 +224,7 @@
             name: document.querySelector("#petName").value,
             age: document.querySelector("#petAge").value,
             birth: document.querySelector("#petBirth").value,
-            gender: document.querySelector("#petGender").value,
+            gender: document.querySelector('input[name="gender"]:checked').value,
             species: document.querySelector("#species").value
           };
 
@@ -194,7 +253,21 @@
     function setupNavigationListeners() {
       nextButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
-          if (currentIndex < sections.length - 1) {
+          let isValid = true;
+
+          switch (currentIndex){
+            case 0: // 섹션 1
+              isValid = validateSection1();
+              break;
+            case 1: // 섹션 2
+              isValid = validateSection2();
+              break;
+            case 2: // 섹션 3
+              isValid = validateSection3();
+              break;
+          }
+
+          if (isValid && currentIndex < sections.length - 1) {
             currentIndex++;
             currentPage.textContent = currentIndex+1
             showSection(currentIndex);

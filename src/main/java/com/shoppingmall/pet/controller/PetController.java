@@ -1,4 +1,4 @@
-package com.shoppingmall.user.controller;
+package com.shoppingmall.pet.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

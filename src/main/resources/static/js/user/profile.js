@@ -1,6 +1,4 @@
 let mypageTopInfo = null;
-
-
 async function loadTopInfo(){
   console.log("히히")
   try{
@@ -18,17 +16,22 @@ async function loadTopInfo(){
     console.error(e)
   }
 }
-
-
 function updateMyPageTopInfo(data) {
   document.querySelector(".nickname").textContent = data.data.nickname
   document.querySelector(".coupon").textContent = data.data.couponCount + "개"
   document.querySelector(".cartQuantity").textContent = data.data.cartQuantity + "개"
 
 }
-
-
 window.onload = loadTopInfo
+
+
+
+
+
+
+
+
+
 
 
 
@@ -40,6 +43,7 @@ document.addEventListener("DOMContentLoaded", async (e) => {
   const saveBtn = document.getElementById("saveNickname");
   const nicknameField = document.querySelector(".nickname");
   const error = document.querySelector(".error")
+
 
   // 모달 열기
   btn.addEventListener("click", function () {
@@ -92,10 +96,105 @@ document.addEventListener("DOMContentLoaded", async (e) => {
     }
   });
 
+  // 펫 리스트 렌더링 함수 분리
+  async function renderPetList() {
+    try {
+      const response = await fetch("/api/pets/list", {
+        method: "GET",
+        credentials: "include"
+      });
 
+      if (response.ok) {
+        const result = await response.json();
+        const profileAdd = document.querySelector(".profile_add");
 
+        // 기존 펫 목록 초기화
+        const existingPets = document.querySelectorAll(".box");
+        existingPets.forEach(pet => pet.remove());
 
+        if (result.data.length !== 0) {
+          const petElements = result.data.map((pet) => `
+            <div class="box" data-item-id="${pet.id}">
+              <div class="name">${pet.name}</div>
+              <div class="img" style="cursor: pointer">
+                <img src="https://img.lifet.co.kr/profile/default.png?w=420&h=420">
+              </div>
+              <button type="button" class="layer_open"></button>
+              <ul class="layer_modify" style="display: none">
+                <li><a class="trigger updateBtn">수정</a></li>
+                <li><a class="deleteBtn">삭제</a></li>
+              </ul>
+            </div>
+          `).join('');
 
+          // 펫 목록 다시 추가
+          profileAdd.parentElement.insertAdjacentHTML('beforebegin', petElements);
+
+          // 새로 추가된 요소들에 이벤트 리스너 다시 바인딩
+          setupPetListeners();
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // 레이어, 삭제 버튼 등에 대한 이벤트 리스너 설정 함수
+  function setupPetListeners() {
+    const layerBtns = document.querySelectorAll(".layer_open");
+    const deleteBtns = document.querySelectorAll(".deleteBtn");
+
+    // 레이어 버튼 이벤트
+    layerBtns.forEach(btn => {
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const box = this.closest(".box");
+        const layerModify = box.querySelector(".layer_modify");
+
+        document.querySelectorAll(".layer_modify").forEach(layer => {
+          if (layer !== layerModify) {
+            layer.style.display = "none";
+          }
+        });
+
+        layerModify.style.display =
+            layerModify.style.display === "block" ? "none" : "block";
+      });
+    });
+
+    // 삭제 버튼 이벤트
+    deleteBtns.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const con = confirm("정말 삭제하시겠습니까?");
+
+        if (con) {
+          const box = e.currentTarget.closest(".box");
+          const petId = box.dataset.itemId;
+
+          const response = await fetch("/api/pets", {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id: petId })
+          });
+
+          if (response.ok) {
+            // 삭제 성공 시 펫 리스트 다시 불러오기
+            await renderPetList();
+          } else {
+            alert("펫 삭제에 실패했습니다.");
+          }
+        }
+      });
+    });
+  }
+
+  // 초기 렌더링
+  await renderPetList();
 
 
 });
