@@ -70,17 +70,37 @@ button{
   width: 173px;
   border-left: 0;
   text-align: center;
+  position: relative;
 }
 .inner span{
   display: block;
   font-size: 20px;
 }
 
-.inner-img{
-  position: relative;
+.inner .inner-img{
+
+  overflow: hidden;
+  margin: 0 auto;
+  width: 70px;
+  height: 70px;
 }
-.inner-img .cartQuantity{
+.inner .inner-img img{
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+.inner-img .quantity{
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  z-index: 3;
   position: absolute;
+  top: 0; /* 상단에서의 위치 */
+  right:40px;
+  line-height: 35px;
+  background-color: #FF5F5F;
+  color: white;
+  border-radius: 50%;
 }
 
 .mypage_top_content .inner strong{

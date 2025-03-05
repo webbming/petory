@@ -59,6 +59,10 @@ public class BoardController {
                            @RequestParam(name = "orderby", defaultValue="최신순") String orderby,
                            @RequestParam(name = "bydate", defaultValue="전체") String bydate,
                            Model model, HttpSession session) {
+
+
+
+
 		Integer sessionPage = (Integer) session.getAttribute("page");
 	    if (sessionPage == null) {
 	        sessionPage = 0;
