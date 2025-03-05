@@ -23,9 +23,10 @@ public class Category {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "category_id")
 	private Long categoryId;
 	
-	@Column(nullable = false, unique = true)
+	@Column(name = "category_name", nullable = false, unique = true) 
 	private String categoryName;
 	
 	// 서브카테고리 목록 관리용으로 추가

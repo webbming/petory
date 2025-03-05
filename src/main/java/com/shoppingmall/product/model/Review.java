@@ -17,30 +17,29 @@ import lombok.Data;
 @Data
 public class Review {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long reviewId;
-	
-	@Column(nullable = false)
-	private Long productId;
-	
-	@Column(nullable = false)
-	private Long userId;
-	
-	@Column(nullable = false)
-	private int rating;
-	
-	@Column(length = 500)
-	private String comment;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_at")
-	private Date createdAt = new Date();
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id")
+    private Long reviewId;
 
-	// 리뷰 이미지 URL 추가
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
+    private int rating;
+
+    @Column(length = 500)
+    private String comment;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = true) 
+    private Date createdAt = new Date();
+
     @Column(name = "image_url")
     private String imageUrl;
-    
-    // 리뷰 댓글
+
     @Column(columnDefinition = "TEXT")
     private String comments;
 }

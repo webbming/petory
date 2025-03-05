@@ -11,6 +11,6 @@ import com.shoppingmall.product.model.Wishlist;
 @Repository
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     List<Wishlist> findByUserId(Long userId);
-    Optional<Wishlist> findByUserIdAndProductId(Long userId, Long productId);
-    void deleteByUserIdAndProductId(Long userId, Long productId);
+    Optional<Wishlist> findByUserIdAndProductProductId(Long userId, Long productId);
 }
+

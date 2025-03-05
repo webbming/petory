@@ -25,8 +25,10 @@ import lombok.Data;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long productId;
 
+    @Column(name = "product_name")
     private String productName;
     private BigDecimal price;
     private String option;

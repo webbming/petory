@@ -1,9 +1,7 @@
 package com.shoppingmall.product.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shoppingmall.product.model.Product;
@@ -13,40 +11,36 @@ import com.shoppingmall.product.repository.WishlistRepository;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class WishlistService {
-    @Autowired
-    private WishlistRepository wishlistRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ProductRepository productRepository;
+    private final WishlistRepository wishlistRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
-    @Transactional
-    public Wishlist addToWishlist(Long userId, Long productId) {
+    public WishlistService(WishlistRepository wishlistRepository, UserRepository userRepository, ProductRepository productRepository) {
+        this.wishlistRepository = wishlistRepository;
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
+    }
+
+    public Wishlist addProductToWishlist(Long userId, Long productId) throws Exception {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            .orElseThrow(() -> new Exception("User not found"));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+            .orElseThrow(() -> new Exception("Product not found"));
 
-        return wishlistRepository.findByUserIdAndProductId(userId, productId)
-                .orElseGet(() -> wishlistRepository.save(Wishlist.builder()
-                    .user(user)
-                    .product(product)
-                    .createdAt(LocalDateTime.now())
-                    .build()));
+        Wishlist wishlist = new Wishlist();
+        wishlist.setUser(user);
+        wishlist.setProduct(product);
+        return wishlistRepository.save(wishlist);
     }
 
-    @Transactional
-    public void removeFromWishlist(Long userId, Long productId) {
-        Wishlist wishlist = wishlistRepository.findByUserIdAndProductId(userId, productId)
-                .orElseThrow(() -> new IllegalArgumentException("Wishlist not found"));
-        wishlistRepository.delete(wishlist);
+    public void removeProductFromWishlist(Long wishlistId) {
+        wishlistRepository.deleteById(wishlistId);
     }
 
-    public List<Wishlist> getWishlistsByUserId(Long userId) {
+    public List<Wishlist> getWishlistByUserId(Long userId) {
         return wishlistRepository.findByUserId(userId);
     }
 }
+

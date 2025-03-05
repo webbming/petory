@@ -21,13 +21,14 @@ public class Subcategory {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "subcategory_id")
 	private Long subcategoryId;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 	
-	@Column(nullable = false)
+	@Column(name = "subcategory_name", nullable = false)
 	private String subcategoryName;
 	
 	private String description;
