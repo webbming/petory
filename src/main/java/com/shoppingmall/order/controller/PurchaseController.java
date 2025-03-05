@@ -9,7 +9,6 @@ import com.shoppingmall.order.dto.PurchaseDto;
 import com.shoppingmall.order.dto.PurchasePageDto;
 import com.shoppingmall.order.repository.PurchaseReviewRepository;
 import com.shoppingmall.order.service.PurchaseService;
-import com.shoppingmall.review.Review;
 import io.jsonwebtoken.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -81,8 +80,6 @@ public String reviews(@RequestParam(name = "productId")Long productId,
 
 	return "order/review-page";  // 리뷰 페이지로 리턴
 }
-
-
 
 //주문 요청
 @GetMapping("/order")
@@ -185,7 +182,8 @@ return "order/orderResultAll";
 		model.addAttribute("totalPages", purchasePageDto.getPurchase().getTotalPages());
 		model.addAttribute("pageSize", size);
 //		return "headerFragment/order/mypage-common-purchaseAndDelivery";
-		return "order/orderListByUserId";
+//		return "order/orderListByUserId";
+		return "order/orderListByUserIdByProductId";
 	}
 
 
