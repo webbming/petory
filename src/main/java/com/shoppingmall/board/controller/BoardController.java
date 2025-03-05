@@ -7,7 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -32,6 +37,7 @@ import com.shoppingmall.user.repository.UserRepository;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/board")
@@ -46,27 +52,55 @@ public class BoardController {
 	
 	//리스트 조회
 	@GetMapping("/board")
-    public String getBoardByKeyword(@RequestParam(name = "page", defaultValue = "0") int page,
+    public String getBoardByKeyword(@RequestParam(name = "page", required = false) Integer page,
                            @RequestParam(name = "size", defaultValue = "2") int size,
                            @RequestParam(name = "keyword", defaultValue = "") String keyword,
                            @RequestParam(name = "category", defaultValue="") String category,
                            @RequestParam(name = "orderby", defaultValue="최신순") String orderby,
                            @RequestParam(name = "bydate", defaultValue="전체") String bydate,
-                           Model model) {
+                           Model model, HttpSession session) {
+		Integer sessionPage = (Integer) session.getAttribute("page");
+	    if (sessionPage == null) {
+	        sessionPage = 0;
+	    }
+	    
+	    if (category != null && !category.isEmpty() && page == null) {
+	        session.setAttribute("page", page);
+	    } else if (page == null) {
+	        page = sessionPage;
+	    } else {
+	        session.setAttribute("page", page);
+	    }
+		
 		LocalDateTime startDate = boardService.getStartDateForPeriod(bydate);
 		Page<Board> board = boardService.getPostByKeyword(keyword, category, orderby, bydate, startDate, page, size);
 		
 		board.forEach(i -> {
+			Pattern pattern = Pattern.compile("<img[^>]*>");
+			Matcher matcher = pattern.matcher(i.getContent());
+			if(matcher.find()) {
+				i.setImage(matcher.group(0)
+						.replaceAll("\\s+width=\"[^\"]*\"", "")
+                        .replaceAll("\\s+height=\"[^\"]*\"", ""));
+			}
 			Long boardId = i.getBoardId();
 			i.setCommentCount(commentService.countComment(boardId));
+			Document doc = Jsoup.parse(i.getContent());
+	        
+	        Element p = doc.select("p").first();
+	        if(p != null) {
+	        	i.setContent(p.text());
+	        }
 		});
+		
+		
 		
 		model.addAttribute("bydate", bydate);
 		model.addAttribute("orderby", orderby);
 		model.addAttribute("category", category);
         model.addAttribute("board", board);
-        model.addAttribute("currentPage", page);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("currentPage", page);
         return "board/board";
     }
 	
@@ -131,7 +165,7 @@ public class BoardController {
 	
 	//상세페이지 이동
 	@GetMapping("/read")
-	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, @RequestParam("page") int page, Model model) {
+	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
 	    try {
 	        if (auth == null || !auth.isAuthenticated()) {
 	            return "redirect:/login";
@@ -143,7 +177,6 @@ public class BoardController {
 		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
-		        model.addAttribute("page", page);
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -182,18 +215,23 @@ public class BoardController {
 	
 	//게시글 좋아요
 	@GetMapping("/like")
-	public String likePost(Authentication auth, @RequestParam("boardId") Long boardId, @RequestParam("page") int page) {
+	public String likePost(Authentication auth, @RequestParam("boardId") Long boardId) {
 		User user = userRepository.findByUserId(auth.getName());
 		boardService.likePost(boardId, user);
-		return "redirect:/board/read?boardId=" + boardId + "&page=" + page;
+		return "redirect:/board/read?boardId=" + boardId;
 	}
 	
 	//댓글 좋아요
 	@GetMapping("/commentLike")
-	public String likeComment(Authentication auth, @RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId, @RequestParam("page") int page) {
+	public String likeComment(Authentication auth, @RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId) {
 		User user = userRepository.findByUserId(auth.getName());
 		commentService.likeComment(commentId, user);
-		return "redirect:/board/read?boardId=" + boardId + "&page=" + page;
+		return "redirect:/board/read?boardId=" + boardId;
+	}
+	
+	@GetMapping("/hashtag")
+	public String hashtag() {
+		return "redirect:/board/board";
 	}
 	
 	//댓글 등록

@@ -22,6 +22,9 @@ public class Board {
 
     @Column(nullable = false, length = 50)
     private String title;
+    
+    @Column(nullable = true, length = 50)
+    private String image;
 
     @Column(nullable = false)
     private String nickname;
