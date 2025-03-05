@@ -16,6 +16,7 @@ public class Pet {
     private String gender;
     private String birthday;
     private String species;
+    private String type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

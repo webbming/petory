@@ -18,14 +18,20 @@
         <div class="select-wrap">
           <div class="select-content">
             <div class="step">
+              <div class="page-indicator">
+                <span class="current-page">1</span>
+                <span class="total-pages">/ 3</span>
+              </div>
               <h3>동물 선택</h3>
               <span>우리 아이는 강아지인가요? 고양이인가요?</span>
             </div>
             <div class="animal-wrap" >
               <div class="animal-img" data-animal="dog">
+                <div class="check-icon"></div>
                 <img src="/images/dog-img.png" >
               </div>
               <div class="animal-img" data-animal="cat">
+                <div class="check-icon"></div>
                 <img src="/images/cat-img.png">
               </div>
             </div>
@@ -41,31 +47,35 @@
         <div class="select-wrap">
           <div class="select-content">
             <div class="step">
+              <div class="page-indicator">
+                <span class="current-page">1</span>
+                <span class="total-pages">/ 3</span>
+              </div>
               <h3>기본 정보 입력</h3>
               <span>우리 아이의 정보를 입력해주세요</span>
             </div>
 
-            <form id="petForm">
+
               <div>
-                <label id="pet-name">반려동물 이름</label>
-                <input type="text"  name="pet-name" placeholder="반려 동물의 이름을 입력해주세요">
+                <label id="name">반려동물 이름</label>
+                <input type="text" id="petName"  name="name" placeholder="반려 동물의 이름을 입력해주세요">
               </div>
               <div>
                 <label id="age">반려동물 나이</label>
-                <input type="text" name="age" placeholder="나이를 입력해주세요">
+                <input type="text" id="petAge" name="age" placeholder="나이를 입력해주세요">
               </div>
 
               <div>
                 <label id="gender">성별</label>
-                <input type="text" name="gender"
+                <input type="text" id="petGender" name="gender"
                        placeholder="성별을 선택해주세요">
               </div>
 
               <div>
-                <label id="birthday">성별</label>
-                <input type="text"  name="birthday" placeholder="생일을 입력해주세요 (월 까지만)">
+                <label id="birthday">생일</label>
+                <input type="text" id="petBirth" name="birthday" placeholder="생일을 입력해주세요 (월 까지만)">
               </div>
-            </form>
+
             <div class="button-container">
               <button class="prev-Btn">이전</button>
               <button class="next-Btn">다음</button>
@@ -77,21 +87,25 @@
         <div class="select-wrap">
           <div class="select-content">
             <div class="step">
+              <div class="page-indicator">
+                <span class="current-page">1</span>
+                <span class="total-pages">/ 3</span>
+              </div>
               <h3>프로필 등록</h3>
               <span>사진을 업로드하고 품종을 등록해주세요</span>
             </div>
 
               <select id="species" name="species" class="species">
                 <option value="">품종을 선택해주세요</option>
-                <option value="q1">코카스파니엘</option>
-                <option value="q2">슈나우저</option>
-                <option value="q3">푸들</option>
-                <option value="q4">비숑</option>
+                <option value="코카스파니엘">코카스파니엘</option>
+                <option value="슈나우저">슈나우저</option>
+                <option value="푸들">푸들</option>
+                <option value="비숑">비숑</option>
               </select>
 
             <div class="button-container">
               <button class="prev-Btn">이전</button>
-              <button class="next-Btn">등록 완료</button>
+              <button type="submit" class="next-Btn">등록 완료</button>
             </div>
           </div>
         </div>
@@ -101,44 +115,95 @@
 <div th:replace="fragment/footer :: footerFragment"></div>
 
 <script>
-  document.addEventListener("DOMContentLoaded" , function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    // 상태 관리 변수들
     let selectedAnimal = null;
-    const sections = document.querySelectorAll(".section-wrap"); // 모든 섹션 가져오기
-    const nextButtons = document.querySelectorAll(".next-Btn"); // 모든 "다음" 버튼 가져오기
-    const prevButtons = document.querySelectorAll(".prev-Btn"); // (추가) 모든 "이전" 버튼 가져오기
+    let currentIndex = 0;
+
+    // DOM 요소 선택
+    const sections = document.querySelectorAll(".section-wrap");
+    const nextButtons = document.querySelectorAll(".next-Btn");
+    const prevButtons = document.querySelectorAll(".prev-Btn");
     const animalBtns = document.querySelectorAll(".animal-img");
+    const submitBtn = document.querySelector(".sec3 .button-container > .next-Btn");
+    const currentPage = document.querySelector(".current-page")
 
-      let currentIndex = 0; // 현재 섹션 인덱스
+    function updatePageIndicator() {
+      const pageIndicators = document.querySelectorAll('.page-indicator .current-page');
+      pageIndicators.forEach((indicator) => {
+        indicator.textContent = currentIndex + 1;
+      });
+    }
+    // 섹션 표시 함수
+    function showSection(index) {
+      sections.forEach((section, i) => {
+        section.style.display = i === index ? "block" : "none";
+      });
+      updatePageIndicator();
+    }
 
-      function showSection(index) {
-        sections.forEach((section, i) => {
-          section.style.display = i === index ? "block" : "none"; // 선택한 섹션만 보이게
-        });
-      }
-
-      animalBtns.forEach((e) =>{
-        e.addEventListener("click" , function() {
+    // 동물 선택 이벤트 리스너
+    function setupAnimalSelection() {
+      animalBtns.forEach((btn) => {
+        btn.addEventListener("click", function() {
           animalBtns.forEach(item => item.classList.remove("active"));
           selectedAnimal = this.getAttribute("data-animal");
-          console.log("선택된 동물:", selectedAnimal);
-          this.classList.add("active")
-        })
-      })
+          this.classList.add("active");
+        });
+      });
+    }
 
+    // 제출 이벤트 리스너
+    function setupSubmitListener() {
+      submitBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        console.log("보내는중");
 
+        try {
+          const jsonData = {
+            type: selectedAnimal,
+            name: document.querySelector("#petName").value,
+            age: document.querySelector("#petAge").value,
+            birth: document.querySelector("#petBirth").value,
+            gender: document.querySelector("#petGender").value,
+            species: document.querySelector("#species").value
+          };
 
+          const response = await fetch("/api/pets", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(jsonData)
+          });
 
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
 
-      nextButtons.forEach((btn, index) => {
+          const data = await response.json();
+          alert("펫 등록 완료!")
+          window.location.href = "/users/me"
+        } catch (error) {
+          console.error("요청 중 오류 발생:", error);
+        }
+      });
+    }
+
+    // 다음/이전 버튼 이벤트 리스너
+    function setupNavigationListeners() {
+      nextButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
           if (currentIndex < sections.length - 1) {
             currentIndex++;
+            currentPage.textContent = currentIndex+1
             showSection(currentIndex);
+
           }
         });
       });
 
-      prevButtons.forEach((btn, index) => {
+      prevButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
           if (currentIndex > 0) {
             currentIndex--;
@@ -146,12 +211,20 @@
           }
         });
       });
+    }
 
+    // 초기화 함수
+    function init() {
+      setupAnimalSelection();
+      setupSubmitListener();
+      setupNavigationListeners();
       showSection(currentIndex);
+    }
 
-  })
-
-
+    // 초기화 실행
+    updatePageIndicator();
+    init();
+  });
 </script>
 </body>
 </html>
