@@ -36,7 +36,7 @@ window.onclick = function(event) {
     }
 }
 
-<script>
+
     // 이미지 미리보기 및 삭제
     function previewImages(event) {
         const input = event.target;
