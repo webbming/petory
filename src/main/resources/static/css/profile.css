@@ -75,6 +75,14 @@ button{
   display: block;
   font-size: 20px;
 }
+
+.inner-img{
+  position: relative;
+}
+.inner-img .cartQuantity{
+  position: absolute;
+}
+
 .mypage_top_content .inner strong{
   margin-top: 10px;
   font-size: 28px;

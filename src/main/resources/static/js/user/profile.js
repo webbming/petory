@@ -18,8 +18,8 @@ async function loadTopInfo(){
 }
 function updateMyPageTopInfo(data) {
   document.querySelector(".nickname").textContent = data.data.nickname
-  document.querySelector(".coupon").textContent = data.data.couponCount + "개"
-  document.querySelector(".cartQuantity").textContent = data.data.cartQuantity + "개"
+  document.querySelector(".coupon").textContent = data.data.couponCount
+  document.querySelector(".cartQuantity").textContent = data.data.cartQuantity
 
 }
 window.onload = loadTopInfo
