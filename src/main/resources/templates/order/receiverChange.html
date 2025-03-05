@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>수령인 관련 정보 수정</title>
+</head>
+<body>
+<h1>수령인 관련 정보 수정</h1>
+<form action="/order/orders/receiver" method="get">
+	<div>
+		수령인 이름<input type="text" name="receiverName" placeholder="수령인 이름" th:value="${delivery.receiverName}" required>
+	</div>
+	<div>
+		전화번호<input type="tel" name="receiverPhone" placeholder="수령인 전화번호" th:value="${delivery.receiverPhone}" required>
+	</div>
+	<div>
+		주소<input type="text" name="receiverAddr" id="receiverAddr" th:value="${delivery.receiverAddr}" autocomplete="street-address" readonly>
+	</div>
+	<button type="button" onclick="execDaumPostcode()">주소 검색 및 수정</button>
+	<div id="detailAddr" style="display:none;">
+		상세 주소<input type="text" name="detailAddr">
+	</div>
+	<div>
+		배송 메시지<input type="text" name="deliveryMessage" th:value="${delivery.deliveryMessage}" required>
+	</div>
+	<input type="hidden" name="state" value="change">
+	<input type="hidden" name="purchaseId" th:value="${purchaseId}">
+	<button type="submit">수정하기</button>
+</form>
+
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+	function execDaumPostcode() {
+        event.preventDefault();
+        new daum.Postcode({
+            oncomplete: function(data) {
+                document.getElementById("receiverAddr").value = data.address;
+                // 주소 검색 후 상세 주소 입력창 보이기
+                document.getElementById("detailAddr").style.display = "block";
+            }
+        }).open();
+    }
+</script>
+</body>
+</html>
