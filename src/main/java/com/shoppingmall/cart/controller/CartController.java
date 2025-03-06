@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.shoppingmall.cart.model.Cart;
 import com.shoppingmall.cart.service.CartService;
-import com.shoppingmall.product.Product;
-import com.shoppingmall.product.ProductService;
+import com.shoppingmall.product.model.Product;
+import com.shoppingmall.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 

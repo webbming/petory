@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+
+
 import org.springframework.stereotype.Service;
 
 import com.shoppingmall.cart.controller.CartController;
@@ -11,10 +13,12 @@ import com.shoppingmall.cart.model.Cart;
 import com.shoppingmall.cart.model.CartItem;
 import com.shoppingmall.cart.repository.CartItemRepository;
 import com.shoppingmall.cart.repository.CartRepository;
-import com.shoppingmall.product.Product;
-import com.shoppingmall.product.ProductService;
+
+import com.shoppingmall.product.model.Product;
+import com.shoppingmall.product.service.ProductService;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
+
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

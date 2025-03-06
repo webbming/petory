@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.shoppingmall.cart.model.Cart;
 import com.shoppingmall.cart.model.CartItem;
-import com.shoppingmall.product.Product;
+import com.shoppingmall.product.model.Product;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
