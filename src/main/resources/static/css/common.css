@@ -71,7 +71,7 @@ i { font-style: inherit; }
 
 /* 공통적인 css 부분 나중에 다른곳으로*/
 .container{
-  padding-top: 93px;
+  padding-top: 90px;
   min-height: 100vh;
 }
 
@@ -79,6 +79,47 @@ i { font-style: inherit; }
   width: 1200px;
   margin: 0 auto;
   padding: 60px 0 80px;
+}
+
+#scrolling-tab{
+  padding-top: 90px;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  z-index: 8100;
+  transition: .5s all;
+}
+
+#scrolling-tab .page-tab-area{
+
+}
+
+.page-tab-area {
+  position: relative;
+  background-color: #fff;
+  min-width: 750px;
+  border-bottom: 1px solid #d8d8d8;
+}
+.page-tab-area ul {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-flow: nowrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-tab-area ul li.active a{
+  font-weight: 700;
+  color: #68a5fe;
+}
+.page-tab-area ul li a{
+  position: relative;
+  display: block;
+  padding: 0 20px;
+  font-size: 16px;
+  line-height: 50px;
 }
 
 

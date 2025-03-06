@@ -1,0 +1,16 @@
+.write_btn{
+  position: absolute;
+  right: 50%;
+  top: 7px;
+  height: 37px;
+  margin-right: -600px;
+  padding: 8px 12px 8px 32px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 130%;
+  border-radius: 50px;
+  background-color: #68a5fe;
+  background-size: 20px;
+
+}
