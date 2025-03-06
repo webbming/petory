@@ -107,6 +107,7 @@ i { font-style: inherit; }
   text-align: center;
   flex-flow: nowrap;
   max-width: 1200px;
+  height: 60px;
   margin: 0 auto;
 }
 

@@ -305,21 +305,6 @@
         </div>
     </div>
 
-  <!-- 상품 리스트 -->
-  <div class="product-list">
-    <div class="product-card" th:each="product : ${products}">
-      <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
-      <h3 th:text="${product.productName}">상품명</h3>
-      <p class="price" th:text="${#numbers.formatInteger(product.price, 0)} + '원'">가격</p>
-      <p th:text="${product.description}">설명</p>
-      <p th:if="${product.averageRating != null}" th:text="'평점: ' + ${product.averageRating}">평점</p>
-      <p th:text="'(' + ${product.category.categoryName} + ' / ' + ${product.subcategory.subcategoryName} + ')'">
-        (카테고리 / 소분류)
-      </p>
-      <a th:href="@{'/products/' + ${product.productId}}" class="details-link">자세히 보기</a>
-    </div>
-  </div>
-
 <script>
   // 정렬 기능
   function changeSort() {

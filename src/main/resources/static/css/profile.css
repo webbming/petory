@@ -478,7 +478,7 @@ a{
   right: 16px;
   text-indent: -9999px;
   cursor: pointer;
-  /*background: url;  빈하트 채울것 */
+  background: url("../images/heart-blank.png")
 
 }
 

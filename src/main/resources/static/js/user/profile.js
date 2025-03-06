@@ -199,6 +199,7 @@ document.addEventListener("DOMContentLoaded", async (e) => {
 
 });
 
+// 좋아요 한 상품 관련
 document.addEventListener("DOMContentLoaded", async function(e){
 
 
@@ -237,4 +238,5 @@ document.addEventListener("DOMContentLoaded", async function(e){
 
         productList.innerHTML = productElement
       }
+
 })

@@ -1,0 +1,33 @@
+
+
+.inner-120{
+}
+
+.pm-section section{
+  position: relative;
+}
+
+.pm-section .inner-120{
+  position: relative;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.slide-container {
+
+  margin: 40px 0  30px;
+}
+
+
+.post-slider .post-wrapper{
+  width:84%;
+  height:140px;
+  margin:0 auto;
+  border:1px dashed red;
+}
+.post-slider .post-wrapper .post{
+  width:300px;
+  height:350px;
+  display:inline-block;
+  background:gray;
+}
