@@ -34,5 +34,3 @@ public class Wishlist {
     @Column(name = "added_on")
     private LocalDateTime addedOn = LocalDateTime.now();
 }
-
-

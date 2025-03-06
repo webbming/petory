@@ -235,11 +235,11 @@
 	        updateOptionList();
 	    }
 	
-	    document.addEventListener("DOMContentLoaded", function () {
+	    document.addEventListener("DOMContentLoaded",  function () {
 	        var wishlistButton = document.getElementById('wishlistButton');
 
 	        if (wishlistButton) {
-	            wishlistButton.addEventListener('click', function () {
+	            wishlistButton.addEventListener('click', async function () {
 	                var userId = document.getElementById('userId').value;  // 유저 ID 가져오기
 	                var productId = document.getElementById('productId').value;  // 상품 ID 가져오기
 
@@ -248,19 +248,21 @@
 	                    return;
 	                }
 
-	                fetch(`/wishlist/add?userId=${userId}&productId=${productId}`, {
+	               const response = await fetch(`/wishlist/add?userId=${userId}&productId=${productId}`, {
 	                    method: 'POST'
 	                })
-	                .then(response => response.json())
-	                .then(data => {
-	                    console.log('찜 목록 추가 성공:', data);
-	                    alert('찜 목록에 추가되었습니다.');
-	                    wishlistButton.classList.toggle('active');
-	                })
-	                .catch(error => {
-	                    console.error('찜 추가 중 오류 발생:', error);
-	                    alert('찜 목록 추가에 실패했습니다.');
-	                });
+
+                 const data = await response.json()
+
+                  if(response.status === 400) {
+                      console.log("찜 목록 추가에 실패 하였습니다.")
+                      console.log(data)
+                  }
+
+                  if(response.status === 200){
+                      console.log("찜 하기 성공!")
+                      console.log(data)
+                  }
 	            });
 	        }
 	    });

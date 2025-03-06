@@ -1,8 +1,12 @@
 package com.shoppingmall.product.service;
 
+import com.shoppingmall.product.dto.ProductResponseDTO;
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.stream.Collectors;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.shoppingmall.product.model.Product;
@@ -33,6 +37,7 @@ public class WishlistService {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new Exception("Product not found"));
 
+
         // ✅ 같은 유저가 같은 상품을 중복 추가하지 않도록 체크
         Optional<Wishlist> existingWishlist = wishlistRepository.findByUserIdAndProductProductId(userId, productId);
         if (existingWishlist.isPresent()) {
@@ -58,10 +63,14 @@ public class WishlistService {
     }
 
     // 로그인 없이도 찜 목록 전체 조회 가능하도록 수정
-    public List<Wishlist> getAllWishlists() {
-        return wishlistRepository.findAll();
-    }
-    
-    
-}
+    public List<ProductResponseDTO> getUserWishlists(String userId ) {
+        User user = userRepository.findByUserId(userId);
+        List<Wishlist> wishes = wishlistRepository.findByUserId(user.getId() , PageRequest.of(0,5));
+        return wishes.stream().map(Wishlist::getProduct).map(ProductResponseDTO :: toDTO).toList();
 
+    }
+
+
+
+
+}

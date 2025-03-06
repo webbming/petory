@@ -198,3 +198,21 @@ document.addEventListener("DOMContentLoaded", async (e) => {
 
 
 });
+
+document.addEventListener("DOMContentLoaded", async function(e){
+
+
+      const response = await fetch("/wishlist" , {
+        method : "GET",
+        credentials : "include"
+      })
+
+
+      if(!response.ok){
+        console.log("좋아요 목록을 받아올수 없어요 ")
+      }
+
+      const data = await response.json();
+
+      console.log(data)
+})

@@ -1,128 +1,128 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>찜한 상품 관리</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
+  <meta charset="UTF-8">
+  <title>찜한 상품 관리</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
     body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f7fc;
-        margin: 0;
-        padding: 20px;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 20px;
     }
-    
+
     .wishlist-container {
-        width: 80%;
-        margin: auto;
+      width: 80%;
+      margin: auto;
     }
-    
+
     .wishlist h1 {
-        color: #333;
+      color: #333;
     }
-    
+
     .wishlist {
-        list-style: none;
-        padding: 0;
+      list-style: none;
+      padding: 0;
     }
-    
+
     .wishlist li {
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
     }
-    
+
     .product-image {
-        width: 100px;
-        height: 100px;
-        margin-right: 20px;
-        border-radius: 5px;
+      width: 100px;
+      height: 100px;
+      margin-right: 20px;
+      border-radius: 5px;
     }
-    
+
     .item-info {
-        flex-grow: 1;
+      flex-grow: 1;
     }
-    
+
     .item-info h2 {
-        margin: 0 0 10px 0;
-        color: #2196F3;
+      margin: 0 0 10px 0;
+      color: #2196F3;
     }
-    
+
     .item-info p {
-        margin: 0;
-        font-size: 16px;
+      margin: 0;
+      font-size: 16px;
     }
-    
+
     button {
-        padding: 10px 20px;
-        background-color: #E91E63;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+      padding: 10px 20px;
+      background-color: #E91E63;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
     }
-    
+
     button:hover {
-        background-color: #C2185B;
+      background-color: #C2185B;
     }
-    </style>
-    <script>
-	    function removeFromWishlist(userId, productId) {
-	        if (!confirm('이 상품을 찜 목록에서 삭제하시겠습니까?')) {
-	            return;
-	        }
-	
-	        if (!userId || !productId) {
-	            alert('유저 ID 또는 상품 ID가 올바르지 않습니다.');
-	            console.error(`유효하지 않은 ID: userId=${userId}, productId=${productId}`);
-	            return;
-	        }
-	
-	        console.log(`DELETE 요청: /wishlist/remove?userId=${userId}&productId=${productId}`);
-	
-	        fetch(`/wishlist/remove?userId=${userId}&productId=${productId}`, {  
-	            method: 'DELETE'
-	        })
-	        .then(response => {
-	            if (!response.ok) {
-	                return response.text().then(text => { throw new Error(text || '삭제 실패'); });
-	            }
-	            return response.text();
-	        })
-	        .then(message => {
-	            console.log('삭제 성공:', message);
-	            const itemElement = document.getElementById(`item-${productId}`);
-	            if (itemElement) {
-	                itemElement.remove();
-	            }
-	            alert(message);
-	        })
-	        .catch(error => {
-	            console.error('Error removing product from wishlist:', error);
-	            alert('상품 삭제 중 오류가 발생했습니다: ' + error.message);
-	        });
-	    }
-    </script>
+  </style>
+  <script>
+    function removeFromWishlist(userId, productId) {
+      if (!confirm('이 상품을 찜 목록에서 삭제하시겠습니까?')) {
+        return;
+      }
+
+      if (!userId || !productId) {
+        alert('유저 ID 또는 상품 ID가 올바르지 않습니다.');
+        console.error(`유효하지 않은 ID: userId=${userId}, productId=${productId}`);
+        return;
+      }
+
+      console.log(`DELETE 요청: /wishlist/remove?userId=${userId}&productId=${productId}`);
+
+      fetch(`/wishlist/remove?userId=${userId}&productId=${productId}`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.text().then(text => { throw new Error(text || '삭제 실패'); });
+        }
+        return response.text();
+      })
+      .then(message => {
+        console.log('삭제 성공:', message);
+        const itemElement = document.getElementById(`item-${productId}`);
+        if (itemElement) {
+          itemElement.remove();
+        }
+        alert(message);
+      })
+      .catch(error => {
+        console.error('Error removing product from wishlist:', error);
+        alert('상품 삭제 중 오류가 발생했습니다: ' + error.message);
+      });
+    }
+  </script>
 </head>
 <body>
-    <div class="wishlist-container">
-        <h1>찜한 상품</h1>
-        <ul class="wishlist" th:each="item : ${wishlistItems}">
-		    <li th:id="'item-' + ${item.product.productId}">
-		        <div class="item">
-		            <img th:src="@{${item.product.imageUrl}}" alt="Product Image" class="product-image">
-		            <div class="item-info">
-		                <h2 th:text="${item.product.productName}">상품명</h2>
-		                <p th:text="${item.product.price} + '원'">가격</p>
-		                <button th:attr="onclick='removeFromWishlist(' + ${item.user.id} + ', ' + ${item.product.productId} + ');'">삭제</button>
-		            </div>
-		        </div>
-		    </li>
-		</ul>
-    </div>
-    <a href="/products">목록으로 돌아가기</a>
+<div class="wishlist-container">
+  <h1>찜한 상품</h1>
+  <ul class="wishlist" th:each="item : ${wishlistItems}">
+    <li th:id="'item-' + ${item.product.productId}">
+      <div class="item">
+        <img th:src="@{${item.product.imageUrl}}" alt="Product Image" class="product-image">
+        <div class="item-info">
+          <h2 th:text="${item.product.productName}">상품명</h2>
+          <p th:text="${item.product.price} + '원'">가격</p>
+          <button th:attr="onclick='removeFromWishlist(' + ${item.user.id} + ', ' + ${item.product.productId} + ');'">삭제</button>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+<a href="/products">목록으로 돌아가기</a>
 </body>
 </html>

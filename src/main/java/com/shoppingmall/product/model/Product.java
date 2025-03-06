@@ -17,11 +17,20 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 @Entity
 @Table(name = "products")
-@Data
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,20 +53,14 @@ public class Product {
     private List<String> imageUrls = new ArrayList<>();
     private String imageUrl;
     
+    @Setter
+    @Getter
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     private List<String> detailImageUrls = new ArrayList<>();
-    
-    public void setDetailImageUrls(List<String> detailImageUrls) {
-        this.detailImageUrls = detailImageUrls;
-    }
 
-    public List<String> getDetailImageUrls() {
-        return detailImageUrls;
-    }
-
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     // **평균 평점 추가**

@@ -18,4 +18,5 @@ public class BoardResponseDTO {
     private Integer commentCount;
     private String createAt;
 
+
 }

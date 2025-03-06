@@ -37,6 +37,7 @@ public class CartController {
         }
 
         String userId = authentication.getName();
+        System.out.println(userId);
         Cart cart = cartService.getActiveCart(userId)
                 .orElseGet(() -> cartService.createCart(userId));
         
