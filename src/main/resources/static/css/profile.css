@@ -76,7 +76,9 @@ button{
   display: block;
   font-size: 20px;
 }
-
+.inner h3{
+  margin-top: 8px;
+}
 .inner .inner-img{
 
   overflow: hidden;
