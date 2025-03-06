@@ -1,6 +1,7 @@
 package com.shoppingmall.product.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -11,23 +12,32 @@ import com.shoppingmall.product.repository.WishlistRepository;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class WishlistService {
     private final WishlistRepository wishlistRepository;
-    private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public WishlistService(WishlistRepository wishlistRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository, UserRepository userRepository) {
         this.wishlistRepository = wishlistRepository;
-        this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     public Wishlist addProductToWishlist(Long userId, Long productId) throws Exception {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new Exception("User not found"));
+
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new Exception("Product not found"));
+
+        // ✅ 같은 유저가 같은 상품을 중복 추가하지 않도록 체크
+        Optional<Wishlist> existingWishlist = wishlistRepository.findByUserIdAndProductProductId(userId, productId);
+        if (existingWishlist.isPresent()) {
+            throw new Exception("이미 찜한 상품입니다.");
+        }
 
         Wishlist wishlist = new Wishlist();
         wishlist.setUser(user);
@@ -35,12 +45,23 @@ public class WishlistService {
         return wishlistRepository.save(wishlist);
     }
 
-    public void removeProductFromWishlist(Long wishlistId) {
-        wishlistRepository.deleteById(wishlistId);
+
+    @Transactional  // ✅ 트랜잭션 적용
+    public void removeProductFromWishlist(Long userId, Long productId) {
+        Optional<Wishlist> wishlist = wishlistRepository.findByUserIdAndProductProductId(userId, productId);
+
+        if (wishlist.isPresent()) {
+            wishlistRepository.deleteByUserIdAndProductProductId(userId, productId);
+        } else {
+            throw new RuntimeException("찜한 상품을 찾을 수 없습니다.");
+        }
     }
 
-    public List<Wishlist> getWishlistByUserId(Long userId) {
-        return wishlistRepository.findByUserId(userId);
+    // 로그인 없이도 찜 목록 전체 조회 가능하도록 수정
+    public List<Wishlist> getAllWishlists() {
+        return wishlistRepository.findAll();
     }
+    
+    
 }
 

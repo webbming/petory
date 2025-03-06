@@ -70,25 +70,39 @@
     }
     </style>
     <script>
-	    function removeFromWishlist(productId) {
+	    function removeFromWishlist(userId, productId) {
 	        if (!confirm('이 상품을 찜 목록에서 삭제하시겠습니까?')) {
-	            return;  // 사용자가 취소 선택 시 작업 중단
+	            return;
 	        }
 	
-	        fetch(`/api/wishlist/remove/${productId}`, {
+	        if (!userId || !productId) {
+	            alert('유저 ID 또는 상품 ID가 올바르지 않습니다.');
+	            console.error(`유효하지 않은 ID: userId=${userId}, productId=${productId}`);
+	            return;
+	        }
+	
+	        console.log(`DELETE 요청: /wishlist/remove?userId=${userId}&productId=${productId}`);
+	
+	        fetch(`/wishlist/remove?userId=${userId}&productId=${productId}`, {  
 	            method: 'DELETE'
 	        })
 	        .then(response => {
-	            if (response.ok) {
-	                document.getElementById(`item-${productId}`).remove();  // DOM에서 해당 아이템 삭제
-	                alert('상품이 찜 목록에서 삭제되었습니다.');
-	            } else {
-	                throw new Error('Failed to remove from wishlist');
+	            if (!response.ok) {
+	                return response.text().then(text => { throw new Error(text || '삭제 실패'); });
 	            }
+	            return response.text();
+	        })
+	        .then(message => {
+	            console.log('삭제 성공:', message);
+	            const itemElement = document.getElementById(`item-${productId}`);
+	            if (itemElement) {
+	                itemElement.remove();
+	            }
+	            alert(message);
 	        })
 	        .catch(error => {
 	            console.error('Error removing product from wishlist:', error);
-	            alert('상품 삭제 중 오류가 발생했습니다.');
+	            alert('상품 삭제 중 오류가 발생했습니다: ' + error.message);
 	        });
 	    }
     </script>
@@ -97,17 +111,18 @@
     <div class="wishlist-container">
         <h1>찜한 상품</h1>
         <ul class="wishlist" th:each="item : ${wishlistItems}">
-            <li th:id="'item-' + ${item.product.productId}">
-                <div class="item">
-                    <img th:src="@{${item.product.imageUrl}}" alt="Product Image" class="product-image">
-                    <div class="item-info">
-                        <h2 th:text="${item.product.productName}">상품명</h2>
-                        <p th:text="${item.product.price} + '원'">가격</p>
-                        <button th:attr="onclick='removeFromWishlist(' + ${item.id} + ');'">삭제</button>
-                    </div>
-                </div>
-            </li>
-        </ul>
+		    <li th:id="'item-' + ${item.product.productId}">
+		        <div class="item">
+		            <img th:src="@{${item.product.imageUrl}}" alt="Product Image" class="product-image">
+		            <div class="item-info">
+		                <h2 th:text="${item.product.productName}">상품명</h2>
+		                <p th:text="${item.product.price} + '원'">가격</p>
+		                <button th:attr="onclick='removeFromWishlist(' + ${item.user.id} + ', ' + ${item.product.productId} + ');'">삭제</button>
+		            </div>
+		        </div>
+		    </li>
+		</ul>
     </div>
+    <a href="/products">목록으로 돌아가기</a>
 </body>
 </html>

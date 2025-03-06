@@ -23,15 +23,16 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true) // ✅ 로그인 없이 사용 가능하도록 허용
+    @JoinColumn(name = "user_id", nullable = true) // ✅ null 가능
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(name = "added_on")
     private LocalDateTime addedOn = LocalDateTime.now();
 }
+
 

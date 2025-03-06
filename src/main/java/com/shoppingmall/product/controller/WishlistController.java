@@ -3,20 +3,19 @@ package com.shoppingmall.product.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingmall.product.model.Wishlist;
 import com.shoppingmall.product.service.WishlistService;
 
-@RestController
-@RequestMapping("/api/wishlist")
+@Controller
+@RequestMapping("/wishlist")
 public class WishlistController {
     private final WishlistService wishlistService;
 
@@ -35,24 +34,27 @@ public class WishlistController {
     }
 
 
-    @DeleteMapping("/remove/{id}")
-    public ResponseEntity<?> removeProductFromWishlist(@PathVariable Long id) {
-        wishlistService.removeProductFromWishlist(id);
-        return ResponseEntity.ok().build();
-    }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Wishlist>> getUserWishlist(@PathVariable Long userId) {
-        List<Wishlist> wishlists = wishlistService.getWishlistByUserId(userId);
-        return ResponseEntity.ok(wishlists);
+    @DeleteMapping("/remove")
+    public ResponseEntity<?> removeProductFromWishlist(
+            @RequestParam Long userId, 
+            @RequestParam Long productId) {
+
+        if (userId == null || productId == null) {
+            return ResponseEntity.badRequest().body("유효하지 않은 요청입니다.");
+        }
+
+        wishlistService.removeProductFromWishlist(userId, productId);
+        return ResponseEntity.ok("찜 목록에서 상품이 삭제되었습니다.");
     }
     
-    @GetMapping("/wishlist")
-    public String showWishlist(Model model, @RequestParam Long userId) {
-        List<Wishlist> wishlists = wishlistService.getWishlistByUserId(userId);
+ // ✅ 로그인 없이 모든 찜 목록 조회 가능하도록 변경
+    @GetMapping
+    public String showWishlist(Model model) {
+        List<Wishlist> wishlists = wishlistService.getAllWishlists();
         model.addAttribute("wishlistItems", wishlists);
-        return "wishlist"; // Thymeleaf 템플릿 이름을 반환
-    }
+        return "wishlist/wishlist";
+    }    
 
 
 }

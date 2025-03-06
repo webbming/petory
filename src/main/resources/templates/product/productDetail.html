@@ -237,31 +237,34 @@
 	
 	    document.addEventListener("DOMContentLoaded", function () {
 	        var wishlistButton = document.getElementById('wishlistButton');
+
 	        if (wishlistButton) {
 	            wishlistButton.addEventListener('click', function () {
-	                var userId = document.getElementById('userId').value; // 사용자 ID
-	                var productId = document.getElementById('productId').value; // 상품 ID
-	
-	                fetch(`/api/wishlist/add?userId=${userId}&productId=${productId}`, {
+	                var userId = document.getElementById('userId').value;  // 유저 ID 가져오기
+	                var productId = document.getElementById('productId').value;  // 상품 ID 가져오기
+
+	                if (!userId || !productId) {
+	                    alert('유저 정보 또는 상품 정보를 찾을 수 없습니다.');
+	                    return;
+	                }
+
+	                fetch(`/wishlist/add?userId=${userId}&productId=${productId}`, {
 	                    method: 'POST'
 	                })
 	                .then(response => response.json())
 	                .then(data => {
-	                    console.log('Product added to wishlist:', data);
+	                    console.log('찜 목록 추가 성공:', data);
 	                    alert('찜 목록에 추가되었습니다.');
-	                    this.classList.toggle('active'); // 버튼 스타일 변경
+	                    wishlistButton.classList.toggle('active');
 	                })
 	                .catch(error => {
-	                    console.error('Error adding product to wishlist:', error);
+	                    console.error('찜 추가 중 오류 발생:', error);
 	                    alert('찜 목록 추가에 실패했습니다.');
 	                });
 	            });
 	        }
 	    });
-	
 	</script>
-
-
 </head>
 <body>
     <div class="container">
@@ -282,11 +285,12 @@
             <div id="selected-options" class="option-list"></div>
             <p><strong>총 가격:</strong> <span id="total-price">0원</span></p>
             <form th:action="@{'/cart/add'}" method="post" class="form-buttons">
-			    <input type="hidden" name="productId" th:value="${product.productId}"/>
+            	<input type="hidden" id="userId" value="1">
+			    <input type="hidden" id="productId" th:value="${product.productId}" />
 			    <input type="hidden" name="quantity" id="quantity-value" th:value="1"/>
 			    <button id="wishlistButton" type="button" class="wishlist-btn">
-				    <i class="fa fa-heart"></i>찜하기
-				</button>
+			        <i class="fa fa-heart"></i>찜하기
+			    </button>
 			    <button type="submit" class="add-to-cart">장바구니 담기</button>
 			</form>
         </div>
