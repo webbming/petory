@@ -5,11 +5,10 @@ import com.shoppingmall.order.domain.PurchaseProduct;
 import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.domain.PurchaseReview;
 import com.shoppingmall.order.dto.DeliveryChangeDto;
-import com.shoppingmall.order.dto.PurchaseDto;
+import com.shoppingmall.order.dto.PurchaseAllDto;
 import com.shoppingmall.order.dto.PurchasePageDto;
 import com.shoppingmall.order.repository.PurchaseReviewRepository;
 import com.shoppingmall.order.service.PurchaseService;
-import com.shoppingmall.review.Review;
 import io.jsonwebtoken.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +31,11 @@ public String index() {
 	return "order/index";
 }
 
+@GetMapping("/index2")
+public String index2() {
+	return "order/index2";
+}
+
 @GetMapping("/purchase")
 public String purchase(){ return "order/purchaseReady";}
 
@@ -45,7 +49,7 @@ PurchaseService service;
 PurchaseReviewRepository purchaseReviewRepository;
 
 @PostMapping("/purchase/review")
-public String reviews(@RequestParam(name = "productId")Long productId,
+public void reviews(@RequestParam(name = "productId")Long productId,
 											@RequestParam(name = "comment") String comment,
 											@RequestParam(name = "rating") int rating,
 											@RequestParam(name = "reviewImages") List<MultipartFile> reviewImages,
@@ -79,10 +83,7 @@ public String reviews(@RequestParam(name = "productId")Long productId,
 		e.printStackTrace();
 	}
 
-	return "order/review-page";  // 리뷰 페이지로 리턴
 }
-
-
 
 //주문 요청
 @GetMapping("/order")
@@ -91,10 +92,10 @@ public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseD
 										@RequestParam(name = "receiver_addr_detail") String receiveDetailAddr,
 										Model model){
 	model.addAttribute("message", service.order(purchase, delivery, item, receiveDetailAddr));
-	PurchaseDto purchaseDto = service.getOrderDetails(purchase.getPurchaseId());
-	model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
-	model.addAttribute("purchase", purchaseDto.getPurchase());
-	model.addAttribute("item", purchaseDto.getPurchaseProduct());
+	PurchaseAllDto purchaseAllDto = service.getOrderDetails(purchase.getPurchaseId());
+	model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
+	model.addAttribute("purchase", purchaseAllDto.getPurchase());
+	model.addAttribute("item", purchaseAllDto.getPurchaseProduct());
 	return "order/orderResult";
 }
 
@@ -102,10 +103,10 @@ public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseD
 @GetMapping("/orders/{purchaseId}")
 public String orderByPurchaseId(@PathVariable Long purchaseId,
 																@RequestParam(name="admin", required = false, defaultValue = "user") String admin, Model model){
-	PurchaseDto purchaseDto = service.getOrderDetails(purchaseId);
-	model.addAttribute("delivery", purchaseDto.getPurchaseDelivery());
-	model.addAttribute("purchase", purchaseDto.getPurchase());
-	model.addAttribute("item", purchaseDto.getPurchaseProduct());
+	PurchaseAllDto purchaseAllDto = service.getOrderDetails(purchaseId);
+	model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
+	model.addAttribute("purchase", purchaseAllDto.getPurchase());
+	model.addAttribute("item", purchaseAllDto.getPurchaseProduct());
 	if(admin.equals("admin")){
 		return "order/adminOrderResult";
 	}
@@ -185,7 +186,8 @@ return "order/orderResultAll";
 		model.addAttribute("totalPages", purchasePageDto.getPurchase().getTotalPages());
 		model.addAttribute("pageSize", size);
 //		return "headerFragment/order/mypage-common-purchaseAndDelivery";
-		return "order/orderListByUserId";
+//		return "order/orderListByUserId";
+		return "order/orderListByUserIdByProductId";
 	}
 
 

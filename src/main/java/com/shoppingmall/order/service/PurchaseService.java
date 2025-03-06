@@ -5,7 +5,7 @@ import com.shoppingmall.order.domain.PurchaseProduct;
 import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.dto.DeliveryChangeDto;
 import com.shoppingmall.order.dto.PurchaseDeliveryDto;
-import com.shoppingmall.order.dto.PurchaseDto;
+import com.shoppingmall.order.dto.PurchaseAllDto;
 import com.shoppingmall.order.dto.PurchasePageDto;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseProductRepository;
@@ -78,13 +78,13 @@ public class PurchaseService {
 	}
 
 	//주문번호로 상세 주문 검색
-	public PurchaseDto getOrderDetails(Long purchaseId) {
+	public PurchaseAllDto getOrderDetails(Long purchaseId) {
 
 		List<Purchase> purchases = purchaseRepo.findByPurchaseId(purchaseId);
 		List<PurchaseDelivery> deliveries  = deliveryRepo.findByPurchaseId(purchaseId);
 		List<PurchaseProduct> products = productRepo.findByPurchaseId(purchaseId);
 
-		return PurchaseDto.builder()
+		return PurchaseAllDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
 				.purchaseProduct(products)

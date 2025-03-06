@@ -1,26 +1,26 @@
 package com.shoppingmall.order.dto;
 
 import com.shoppingmall.order.domain.PurchaseProduct;
-import com.shoppingmall.order.domain.Purchase;
-import com.shoppingmall.order.domain.PurchaseDelivery;
-import lombok.Builder;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PurchaseDto {
 
-  private List<Purchase> purchase; // PurchaseList 리스트
-  private List<PurchaseDelivery> purchaseDelivery; // PurchaseDelivery 리스트
-  private List<PurchaseProduct> purchaseProduct; // PurchaseItem 리스트
+    private List<Long> purchaseId;
 
-  @Builder
-  public PurchaseDto(List<Purchase> purchase, List<PurchaseDelivery> purchaseDelivery, List<PurchaseProduct> purchaseProduct) {
-    this.purchase = purchase;
-    this.purchaseDelivery = purchaseDelivery;
-    this.purchaseProduct = purchaseProduct;
-  }
+    private String userId;
+
+    private LocalDateTime createAt; // 주문 생성 시간
+
+
 }

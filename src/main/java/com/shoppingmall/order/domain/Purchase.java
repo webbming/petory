@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -13,6 +14,9 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "purchase_id")
     private Long purchaseId; // 주문 ID (PK)
+
+    @OneToMany(mappedBy = "purchase")
+    private List<PurchaseProduct> purchaseProduct;
 
     private Long cartId; // 장바구니 ID (FK), 단순한 Long 타입 필드
 

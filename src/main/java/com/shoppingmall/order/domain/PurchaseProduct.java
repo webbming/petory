@@ -40,4 +40,6 @@ public class PurchaseProduct {
     private LocalDateTime cancelAt; // 주문 취소 시간
 
     private int totalPrice; // 해당 상품 총 가격
+
+//    private LocalDateTime review;
 }
