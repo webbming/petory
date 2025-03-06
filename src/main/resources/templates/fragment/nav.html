@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
-  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/layout/common.css">
   <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
 <div th:fragment="navFragment">
-  <div id="scrolling-tab">
+  <div class="scrolling-tab">
     <section class="page-tab-area">
       <ul>
         <li><a>홈</a></li>
@@ -25,6 +25,19 @@
       <div>
         <button class="write_btn" id="newPostBtn">글쓰기</button>
       </div>
+    </section>
+  </div>
+</div>
+<div th:fragment="navFragment2">
+  <div class="scrolling-tab">
+    <section class="page-tab-area">
+      <ul>
+        <li><a>스토어 홈</a></li>
+        <li><a>전체 제품</a></li>
+        <li><a>베스트</a></li>
+        <li><a>NEW</a></li>
+        <li><a>리뷰 후기</a></li>
+      </ul>
     </section>
   </div>
 </div>
