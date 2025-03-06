@@ -4,148 +4,275 @@
     <meta charset="UTF-8">
     <title>상품 상세</title>
     <style>
-	body {
-	    font-family: Arial, sans-serif;
-	    background-color: #f4f7fc;
-	    margin: 0;
-	    padding: 0;
-	}
-	.container, .content-section {
-	    display: flex;
-	    justify-content: center;
-	    width: 80%;
-	    margin: 20px auto;
-	    background-color: white;
-	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	    padding: 20px;
-	    border-radius: 8px;
-	}
-	.container {
-	    flex-direction: row;
-	    align-items: flex-start;
-	}
-	.content-section {
-	    flex-direction: column;
-	}
-	.product-image {
-	    flex: 1;
-	    margin-right: 20px;
-	}
-	.product-info {
-	    flex: 2;
-	    padding-left: 20px;
-	}
-	.product-description, .product-detail-images, .reviews {
-	    text-align: center;
-	}
-	.product-image img, .product-detail-images img {
-	    max-width: 100%;
-	    height: auto;
-	    border-radius: 8px;
-	}
-	.product-image img {
-	    width: 500px;
-	    height: auto;
-	    max-height: 500px;
-	    object-fit: contain;
-	}
-	.price {
-	    color: #4A90E2;
-	    font-size: 18px;
-	    font-weight: bold;
-	}
-	.reviews, .review, .comments {
-	    background-color: #fff;
-	    padding: 15px;
-	    margin-top: 10px;
-	    border-radius: 5px;
-	    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-	    margin-bottom: 10px; /* 리뷰 간 구분 */
-	}
-	.form-input, .form-textarea {
-	    width: 100%;
-	    padding: 8px;
-	    margin-top: 5px;
-	    border-radius: 4px;
-	    border: 1px solid #ddd;
-	}
-	.form-label {
-	    display: block;
-	    margin-top: 20px;
-	    color: #666;
-	}
-	.review {
-	    display: flex;
-	    align-items: center;
-	    justify-content: space-between;
-	    background: #f9f9f9;
-	    padding: 20px;
-	    margin-top: 10px;
-	    border-radius: 10px;
-	    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-	}
-	.review img {
-	    width: 100px;
-	    height: 100px;
-	    border-radius: 10px;
-	    margin-left: 20px;
-	}
-	.review-content {
-	    flex: 1;
-	}
-	.comments {
-	    background: #e8e8e8;
-	    padding: 10px;
-	    margin-top: 5px;
-	    border-radius: 8px;
-	}
-	.comment {
-	    padding: 5px;
-	    border-bottom: 1px solid #ddd;
-	}
-	.comment:last-child {
-	    border-bottom: none;
-	}
-	@media (max-width: 768px) {
-	    .container, .content-section {
-	        flex-direction: column;
+		body {
+		    font-family: Arial, sans-serif;
+		    background-color: #f4f7fc;
+		    margin: 0;
+		    padding: 0;
+		}
+		.container, .content-section {
+		    display: flex;
+		    justify-content: center;
+		    width: 80%;
+		    max-width: 1200px; /* 최대 너비 제한 */
+		    margin: 20px auto;
+		    background-color: white;
+		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		    padding: 20px;
+		    border-radius: 8px;
+		}
+		.container {
+		    flex-direction: row;
+		    align-items: flex-start;
+		}
+		.content-section {
+		    flex-direction: column;
+		}
+		.product-image {
+		    flex: 1;
+		    margin-right: 20px;
+		}
+		.product-info {
+		    flex: 2;
+		    padding-left: 20px;
+		}
+		.product-description, .product-detail-images, .reviews {
+		    text-align: center;
+		    margin-top: 20px;
+		}
+		.product-image img, .product-detail-images img {
+		    max-width: 100%;
+		    max-width: 900px;
+		    height: auto;
+		    border-radius: 8px;
+		    display: block;
+	        margin: 0 auto 10px;
+	        object-fit: contain;
+		}
+		.product-image img {
+		    width: 500px;
+		    height: auto;
+		    max-height: 500px;
+		    object-fit: contain;
+		}
+		.price {
+		    color: #4A90E2;
+		    font-size: 18px;
+		    font-weight: bold;
+		}
+		.reviews, .review, .comments {
+		    background-color: #fff;
+		    padding: 15px;
+		    margin-top: 10px;
+		    border-radius: 5px;
+		    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+		    margin-bottom: 10px; /* 리뷰 간 구분 */
+		}
+		.reviews {
+		    max-width: 800px;
+		    width: 85%;
+		    margin: 20px auto;
+		    padding: 20px;
+		    background: white;
+		    border-radius: 10px;
+		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+		.form-input, .form-textarea {
+		    width: 100%;
+		    padding: 8px;
+		    margin-top: 5px;
+		    border-radius: 4px;
+		    border: 1px solid #ddd;
+		}
+		.form-label {
+		    display: block;
+		    margin-top: 20px;
+		    color: #666;
+		}
+		.review {
+		    display: flex;
+		    flex-wrap: wrap;  /* 💡 내부 요소가 너무 길어지면 다음 줄로 자동 배치 */
+		    align-items: flex-start;
+		    gap: 15px;
+		    background: #f9f9f9;
+		    padding: 15px;
+		    margin-top: 10px;
+		    border-radius: 10px;
+		    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+		    min-height: 120px;  /* 최소 높이 설정 */
+		    overflow: hidden;
+		    position: relative;
+		}
+		.review img {
+		    width: 80px;
+		    height: 80px;
+		    border-radius: 10px;
+		    flex-shrink: 0;
+		}
+		.review-content {
+		    flex-grow: 1;
+		    min-width: 60%;
+		    max-width: 65%;
+		    word-wrap: break-word;
+		    white-space: normal;  /* 💡 긴 글도 자동 줄바꿈 */
+		    overflow: hidden;
+		}
+		.comments {
+		    width: 100%;
+		    background: #e8e8e8;
+		    padding: 10px;
+		    margin-top: 15px;
+		    border-radius: 10px;
+		    overflow: visible;  /* 💡 내부 요소가 가려지지 않도록 설정 */
+		    word-wrap: break-word;
+		}
+		.comment-section {
+		    flex-grow: 1;
+		    min-width: 30%;
+		    max-width: 35%;
+		    text-align: right;
+		    display: flex;
+		    flex-direction: column;
+		    align-items: flex-end;
+		}
+		.comment-section form {
+		    width: 100%;
+		}
+		
+		.comment-section input {
+		    width: 100%;
+		    max-width: 250px;
+		    padding: 5px;
+		    margin-bottom: 5px;
+		    border-radius: 5px;
+		    border: 1px solid #ddd;
+		}
+		
+		.comment-section button {
+		    padding: 5px 10px;
+		    font-size: 14px;
+		    cursor: pointer;
+		}
+		.comment {
+		    padding: 5px;
+		    border-bottom: 1px solid #ddd;
+		}
+		.comment:last-child {
+		    border-bottom: none;
+		}
+		@media (max-width: 768px) {
+		    .container, .content-section {
+		        flex-direction: column;
+		        width: 95%;
+		    }
+		    .product-info {
+		        width: 100%;
+		        padding-left: 0;
+		    }
+		}
+		@media (max-width: 1200px) {
+		    .product-detail-images img {
+		        max-width: 90%;  /* 화면이 작아지면 유동적으로 줄어듦 */
+		    }
+		}
+	
+		@media (max-width: 1200px) {
+		    .container, .content-section {
+		        width: 90%; /* 화면이 작아지면 유동적으로 줄어듦 */
+		    }
+		}
+		@media (max-width: 768px) {
+		    .product-detail-images img {
+		        max-width: 100%;  /* 모바일에서는 화면에 맞춤 */
+		    }
+		}
+		.wishlist-btn:hover {
+		    color: red;
+		}
+		.add-to-cart, .wishlist-btn {
+		    margin-top: 20px;
+		    padding: 10px 20px;
+		    color: white;
+		    border: none;
+		    cursor: pointer;
+		    font-size: 16px;
+		    border-radius: 20px;
+		    width: 100%;
+		    flex: 1;
+		}
+		.add-to-cart {
+		    background-color: #4A90E2;
+		    color: white;
+		}
+		.wishlist-btn {
+		    background-color: white;
+		    color: #4A90E2;
+		    border: 1px solid #4A90E2;
+		}
+		.form-buttons {
+		    display: flex;
+		    justify-content: space-between;
+		    width: 100%; /* 전체 너비 사용 */
+		    margin-top: 10px; /* 버튼과 가격 사이 간격 조정 */
+		}
+		.hidden {
+		    display: none; /* 기본적으로 숨김 */
+		}
+		.visible {
+		    display: block; /* 첫 번째 이미지만 표시 */
+		}
+		.description-img {
+		    width: 100%;
+		    margin-bottom: 10px;
+		}
+		#toggle-button {
+		    width: 100%;
+		    padding: 10px;
+		    background-color: #f5f5f5;
+		    border: none;
+		    cursor: pointer;
+		    font-size: 16px;
+		}
+		#hidden-description {
+	        display: none;
+	        opacity: 0;
+	        transition: opacity 0.3s ease-in-out;
 	    }
-	    .product-info {
+	
+	    #hidden-description.show {
+	        display: block;
+	        opacity: 1;
+	    }
+	
+	    #toggle-button {
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
 	        width: 100%;
-	        padding-left: 0;
+	        padding: 12px;
+	        background-color: #ffffff;
+	        border: 1px solid #ddd;
+	        border-radius: 8px;
+	        cursor: pointer;
+	        font-size: 16px;
+	        font-weight: bold;
+	        color: #333;
+	        margin-top: 10px;
+	        transition: background-color 0.3s ease-in-out;
 	    }
-	}
-	.wishlist-btn:hover {
-	    color: red;
-	}
-	.add-to-cart, .wishlist-btn {
-	    margin-top: 20px;
-	    padding: 10px 20px;
-	    color: white;
-	    border: none;
-	    cursor: pointer;
-	    font-size: 16px;
-	    border-radius: 20px;
-	    width: 100%;
-	    flex: 1;
-	}
-	.add-to-cart {
-	    background-color: #4A90E2;
-	    color: white;
-	}
-	.wishlist-btn {
-	    background-color: white;
-	    color: #4A90E2;
-	    border: 1px solid #4A90E2;
-	}
-	.form-buttons {
-	    display: flex;
-	    justify-content: space-between;
-	    width: 100%; /* 전체 너비 사용 */
-	    margin-top: 10px; /* 버튼과 가격 사이 간격 조정 */
-	}
-
-
+	
+	    #toggle-button:hover {
+	        background-color: #f5f5f5;
+	    }
+	
+	    #toggle-button i {
+	        margin-left: 5px;
+	        transition: transform 0.3s ease-in-out;
+	    }
+	
+	    #toggle-button.active i {
+	        transform: rotate(180deg);
+	    }	
     </style>
 	    <script>
 	    document.addEventListener("DOMContentLoaded", function () {
@@ -259,11 +386,26 @@
 	                })
 	                .catch(error => {
 	                    console.error('찜 추가 중 오류 발생:', error);
-	                    alert('찜 목록 추가에 실패했습니다.');
+	                    alert('이미 추가 한 상품입니다.');
 	                });
 	            });
 	        }
 	    });
+	    function toggleDescription() {
+	        let hiddenSection = document.getElementById("hidden-description");
+	        let button = document.getElementById("toggle-button");
+	        let icon = button.querySelector("i");
+
+	        if (hiddenSection.classList.contains("show")) {
+	            hiddenSection.classList.remove("show");
+	            setTimeout(() => hiddenSection.style.display = "none", 300);
+	            button.innerHTML = '상세정보 펼쳐보기 <i>▼</i>';
+	        } else {
+	            hiddenSection.style.display = "block";
+	            setTimeout(() => hiddenSection.classList.add("show"), 10);
+	            button.innerHTML = '상세정보 접기 <i>▲</i>';
+	        }
+	    }
 	</script>
 </head>
 <body>
@@ -303,11 +445,22 @@
         </div>
         
         <div class="product-detail-images">
-            <div th:each="img : ${product.imageUrls}">
-                <img th:src="@{${img}}" alt="상세 이미지">
-            </div>
-        </div>
-
+		    <!-- 첫 번째 이미지는 기본적으로 표시 -->
+		    <img th:src="@{${product.imageUrls[0]}}" alt="상세 이미지" class="description-img">
+		
+		    <!-- 나머지 이미지는 기본적으로 숨김 -->
+		    <div id="hidden-description">
+		        <div th:each="img, iterStat : ${product.imageUrls}" th:if="${iterStat.index > 0}">
+		            <img th:src="@{${img}}" alt="상세 이미지" class="description-img">
+		        </div>
+		    </div>
+		
+		    <!-- 펼쳐보기/접기 버튼 -->
+		    <button id="toggle-button" onclick="toggleDescription()">
+		        상세정보 펼쳐보기 <i>▼</i>
+		    </button>
+		</div>
+		
         <div class="reviews">
             <h3>리뷰</h3>
             <p><strong>평균 평점:</strong> <span id="average-rating">0점</span> (<span id="average-stars"></span>)</p>

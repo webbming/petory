@@ -23,6 +23,7 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
+    // 찜한 상품 저장
     @PostMapping("/add")
     public ResponseEntity<?> addProductToWishlist(@RequestParam Long userId, @RequestParam Long productId) {
         try {
