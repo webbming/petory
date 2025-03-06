@@ -211,8 +211,30 @@ document.addEventListener("DOMContentLoaded", async function(e){
       if(!response.ok){
         console.log("좋아요 목록을 받아올수 없어요 ")
       }
+      const result = await response.json();
+      console.log(result)
+      const productList = document.querySelector(".product_list")
 
-      const data = await response.json();
+      if(result.data.length !== 0){
+        const productElement = result.data.map((product) =>
+        `<li>
+            <a href="/products/${product.productId}" data-productId="${product.productId}">
+              <div class="img">
+                <img src="${product.imageUrl}">
+              </div>
+              <div class="pro_name">
+                <span></span>
+                <p>${product.productName}</p>
+                <span class="rate">${product.averageRating}</span> 
+                <span class="review_count">리뷰 ${product.reviewCount}</span>
+                <div class="discount">
+                  <strong>${product.price}원</strong>
+                </div> 
+              </div>
+            </a>
+            <button class="heart active"></button>
+        </li>`).join('');
 
-      console.log(data)
+        productList.innerHTML = productElement
+      }
 })

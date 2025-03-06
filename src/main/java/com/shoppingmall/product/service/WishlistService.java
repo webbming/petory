@@ -65,8 +65,10 @@ public class WishlistService {
     // 로그인 없이도 찜 목록 전체 조회 가능하도록 수정
     public List<ProductResponseDTO> getUserWishlists(String userId ) {
         User user = userRepository.findByUserId(userId);
-        List<Wishlist> wishes = wishlistRepository.findByUserId(user.getId() , PageRequest.of(0,5));
-        return wishes.stream().map(Wishlist::getProduct).map(ProductResponseDTO :: toDTO).toList();
+        List<Wishlist> wishes = wishlistRepository.findTop5ByUserId(user.getId() , PageRequest.of(0,5));
+        return wishes.stream()
+            .map(Wishlist::getProduct)
+            .map(ProductResponseDTO :: toDTO).toList();
 
     }
 

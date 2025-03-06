@@ -406,6 +406,92 @@ a{
   object-position: center;
 }
 
+/* 찜한제품 css */
+
+
+.product_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.product_list li {
+  position: relative;
+  margin-bottom: 50px;
+  margin-right: 17px;
+}
+
+.like_area .product_list li{
+  width: 226px;
+}
+
+.like_area .product_list li .img{
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 226px;
+  height: 226px;
+  margin-bottom: 10px;
+  border-radius: 7px;
+}
+.like_area .product_list li .img img{
+  width: 226px;
+  height: 226px;
+}
+.pro_name > span:first-child{
+  margin-top: 10px;
+  color: #808080;
+  font-size: 12px;
+  line-height: 130%;
+}
+.pro_name p {
+  margin: 2px 0 4px;
+  color: #343434;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 130%;
+}
+.pro_name .rate {
+  margin-right: 10px;
+  padding-left: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 130%;
+  background: url("../images/star.png") no-repeat left center;
+  background-size: 15px;
+}
+
+.product_list li .heart.active {
+  background-image: url(../images/heart.png);
+}
+
+.like_area .product_list li .heart {
+  width: 28px;
+  height: 28px;
+  background-size: 28px;
+}
+
+.product_list li .heart {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  text-indent: -9999px;
+  cursor: pointer;
+  /*background: url;  빈하트 채울것 */
+
+}
+
+.pro_name .review_count{
+margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 130%;
+}
+.review_count{
+  margin-top: 30px;
+}
+
 
 
 

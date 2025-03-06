@@ -1,5 +1,7 @@
 package com.shoppingmall.product.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -74,6 +76,9 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subcategory_id", nullable = false)
     private Subcategory subcategory;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Wishlist> wishlists;
 
     @PrePersist
     public void prePersist() {

@@ -21,6 +21,7 @@ public class ProductResponseDTO {
   private String option;
   private String content;
   private String description;
+  private String imageUrl;
   private int reviewCount;
   private BigDecimal averageRating;
 
@@ -33,6 +34,7 @@ public class ProductResponseDTO {
         .content(product.getContent())
         .description(product.getDescription())
         .reviewCount(product.getReviewCount())
+        .imageUrl(product.getImageUrl())
         .averageRating(product.getAverageRating())
         .build();
   }

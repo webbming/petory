@@ -213,6 +213,7 @@ public class ProductController {
     // 상품 삭제 처리
     @DeleteMapping("/products/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id) {
+        System.out.println(id);
         productService.deleteProduct(id);  // 상품 삭제 처리
         return "redirect:/products";  // 상품 목록 페이지로 리다이렉트
     }
