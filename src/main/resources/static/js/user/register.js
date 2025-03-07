@@ -1,3 +1,4 @@
+/* register.js 회원가입 기능 */
 import { validationRules } from './validationRules.js';
 
 const validationState = {

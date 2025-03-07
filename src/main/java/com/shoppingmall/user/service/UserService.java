@@ -162,7 +162,7 @@ public class UserService {
   public String findUserId(UserRequestDTO.FindID dto) {
     User user = userRepository.findByQuestionAndAnswer(dto.getQuestion(), dto.getAnswer());
     if (user == null) {
-      throw new UsernameNotFoundException("질문과 답변에 일치하는 회원이 없습니다.");
+      throw new UsernameNotFoundException("입력한 정보로 조회된 아이디가 없습니다.");
     }
     return user.getUserId();
   }

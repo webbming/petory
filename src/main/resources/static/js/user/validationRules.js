@@ -1,3 +1,4 @@
+/* 회원가입시 정규식 패턴 정의 validationRules.js */
 export const validationRules = {
     userId: {
         regex: /^[a-zA-Z][a-zA-Z0-9]{3,20}$/, // 아이디: 영문, 숫자 4~12자

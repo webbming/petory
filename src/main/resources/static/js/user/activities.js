@@ -1,3 +1,7 @@
+
+/* activities.js 유저의 활동 기록을 불러오는 js */
+
+
 document.addEventListener("DOMContentLoaded", async () => {
     let cacheData = {}; // 캐싱할 데이터 저장
     const tabs = document.querySelectorAll(".consult__tab .tab li > a");
