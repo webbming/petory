@@ -41,5 +41,7 @@ public class PurchaseProduct {
 
     private int totalPrice; // 해당 상품 총 가격
 
+    private String deliveryStatus;
+
 //    private LocalDateTime review;
 }

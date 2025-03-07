@@ -120,8 +120,7 @@ public class PurchaseService {
 	}
 
 	//배송 상태 변경
-	public String deliveryChange(String deliveryState, Long purchaseId){
-		 PurchaseDelivery changeState = deliveryRepo.findPurchaseDeliveryByPurchaseId(purchaseId);
+	public String deliveryChange(String deliveryState, Long purchaseProductId){
 		if(deliveryState.equals("onDelivery")){
 			deliveryState = "배송중";
 		}
@@ -131,9 +130,8 @@ public class PurchaseService {
 		else{
 			deliveryState = "배송취소";
 		}
-			changeState.setDeliveryStatus(deliveryState);
-			deliveryRepo.save(changeState);
-		return "주문상태 변경: " + deliveryState;
+		productRepo.updateDeliveryStatus(purchaseProductId, deliveryState);
+		return deliveryState;
 	}
 	
 //주문 취소

@@ -102,7 +102,7 @@ public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseD
 	//주문번호 기준 주문검색
 @GetMapping("/orders/{purchaseId}")
 public String orderByPurchaseId(@PathVariable Long purchaseId,
-																@RequestParam(name="admin", required = false, defaultValue = "user") String admin, Model model){
+								@RequestParam(name="admin", required = false, defaultValue = "user") String admin, Model model){
 	PurchaseAllDto purchaseAllDto = service.getOrderDetails(purchaseId);
 	model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
 	model.addAttribute("purchase", purchaseAllDto.getPurchase());
@@ -116,9 +116,9 @@ public String orderByPurchaseId(@PathVariable Long purchaseId,
 //전체 회원 리스트 주문 검색(전체별, 취소별, 주문요청별)
 @GetMapping("/admin/orderList")
 public String orderAll(@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
-											 @RequestParam(name = "page", defaultValue = "0") int page,
-											 @RequestParam(name = "size", defaultValue = "3") int size,
-											 Model model){
+						 @RequestParam(name = "page", defaultValue = "0") int page,
+						 @RequestParam(name = "size", defaultValue = "3") int size,
+						 Model model){
 	Pageable pageable = PageRequest.of(page, size);
 	PurchasePageDto purchasePageDto = service.purchaseList(purchaseState, pageable);
 	// 페이지 정보를 모델에 추가
@@ -135,9 +135,9 @@ return "order/orderResultAll";
 	//배송상태 변경
 	@PostMapping("/admin/deiveryChange")
 	public String deliveryChange(@RequestParam("deliveryState")String deliveryState,
-								 @RequestParam("purchaseId")Long purchaseId,
+								 @RequestParam("purchaseProductId")Long purchaseProductId,
 										 Model model){
-	model.addAttribute("message",service.deliveryChange(deliveryState, purchaseId));
+	model.addAttribute("message",service.deliveryChange(deliveryState, purchaseProductId));
 	return "redirect:/order";
 	}
 

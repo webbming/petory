@@ -44,36 +44,22 @@
 	<tr>
 		<th>수령인 이름</th>
 		<th>수령인 전화번호</th>
-		<th>배송 상태</th>
 		<th>배송 주소</th>
 		<th>배송 요청 사항</th>
-		<th>배송 정보 수정</th>
 	</tr>
 	</thead>
 	<tbody>
 	<tr th:each="delivery : ${delivery}">
 		<td th:text="${delivery.receiverName}"></td>
 		<td th:text="${delivery.receiverPhone}"></td>
-		<td th:text="${delivery.deliveryStatus}"></td>
 		<td th:text="${delivery.receiverAddr}"></td>
 		<td th:text="${delivery.deliveryMessage}"></td>
-		<td>
-			<form action="/order/admin/deiveryChange" method="POST">
-				<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}"/>
-				<select id="deliveryState" name="deliveryState">
-					<option value="onDelivery">배송중</option>
-					<option value="stopDelivery">배송취소</option>
-					<option value="finDelivery">배송완료</option>
-				</select>
-				<button type="submit">변경</button>
-			</form>
-		</td>
 	</tr>
 	</tbody>
 </table>
 
 <!-- 구매 상품 -->
-<h2>구매 상품</h2>
+<h2>구매 상품 및 발송</h2>
 <table>
 	<thead>
 	<tr>
@@ -81,6 +67,8 @@
 		<th>옵션</th>
 		<th>수량</th>
 		<th>가격</th>
+		<th>배송 현황</th>
+		<th>배송정보 변경</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -89,8 +77,53 @@
 		<td th:text="${item.option == null ? '없음': item.option}"></td>
 		<td th:text="${item.quantity}"></td>
 		<td th:text="${item.totalPrice}"></td>
+		<td id="deliveryStatus_${item.purchaseProductId}" th:text="${item.deliveryStatus}"></td>
+		<td>
+		<form action="/order/admin/deiveryChange" method="POST">
+			<input type="hidden" name="purchaseProductId" id="purchaseProductId" th:value="${item.purchaseProductId}"/>
+			<select id="deliveryState" name="deliveryState">
+				<option value="onDelivery">배송중</option>
+				<option value="stopDelivery">배송취소</option>
+				<option value="finDelivery">배송완료</option>
+			</select>
+			<button type="submit" onclick="delivery_status()">변경</button>
+		</form>
+		</td>
 	</tr>
 	</tbody>
 </table>
+<script>
+	function delivery_status() {
+        const deliveryState = document.getElementById("deliveryState").value;
+        const purchaseProductId = document.getElementById("purchaseProductId").value;  // 예시로 주문 상품 ID
+
+        // JSON.stringify로 객체 형태로 전달
+        fetch('/order/rest/deliveryState', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                deliveryState: deliveryState,  // 배송 상태
+                purchaseProductId: purchaseProductId  // 주문 상품 ID
+            }) // 객체로 전달
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Order Success:', data);
+
+            // 서버에서 반환된 메시지를 화면에 즉시 업데이트
+            const statusMessage = document.getElementById("statusMessage");
+            statusMessage.innerText = data.message;  // 서버 응답 메시지 반영
+
+            // 상태 변경이 반영된 상태를 페이지에 표시
+            const deliveryStatusElement = document.getElementById("deliveryStatusDisplay");
+            deliveryStatusElement.innerText = "현재 배송 상태: " + deliveryState; // 상태 갱신
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
 </body>
 </html>

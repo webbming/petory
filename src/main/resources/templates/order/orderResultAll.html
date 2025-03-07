@@ -48,14 +48,13 @@
 			<th>수령인 전화번호</th>
 			<th>수령 주소</th>
 			<th>배송 상태</th>
-			<th>배송 상태 변경</th>
+			<th>상세보기</th>
 		</tr>
 		</thead>
 		<tbody>
 		<tr th:each="purchase, iterStat : ${purchase.content}">
-			<td>   <a th:href="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId}, admin='admin')}"
-					  th:text="${purchase.purchaseId}">
-			</a></td>
+			<td th:text="${purchase.purchaseId}">
+			</td>
 			<td th:text="${purchase.cancelAt != null ? '취소' : '주문'}"></td>
 			<td><a th:href="@{/order/orders/userId?userId={userId}&admin={admin}(userId=${purchase.userId}, admin='admin')}" th:text="${purchase.userId}"></a></td>
 			<td th:text="${purchase.totalPrice}"></td>
@@ -65,14 +64,10 @@
 			<td th:text="${delivery.content[iterStat.index].receiverAddr}"></td>
 			<td th:text="${delivery.content[iterStat.index].deliveryStatus}"></td>
 			<td>
-				<form action="/order/admin/deiveryChange" method="POST">
-					<input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}"/>
-					<select id="deliveryState" name="deliveryState">
-						<option value="onDelivery">배송중</option>
-						<option value="stopDelivery">배송취소</option>
-						<option value="finDelivery">배송완료</option>
-					</select>
-					<button type="submit">배송상태 변경</button>
+				<form th:action="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" method="get">
+				<input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}"/>
+					<input type="hidden" name="admin" value="admin">
+					<button type="submit">상세보기</button>
 				</form>
 			</td>
 		</tr>
