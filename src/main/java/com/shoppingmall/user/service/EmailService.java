@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-  private JavaMailSender mailSender;
-  private UserRepository userRepository;
-  private PasswordGenerator passwordGenerator;
-  private BCryptPasswordEncoder passwordEncoder;
+  private final JavaMailSender mailSender;
+  private final UserRepository userRepository;
+  private final PasswordGenerator passwordGenerator;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   public EmailService(
       JavaMailSender mailSender,

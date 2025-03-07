@@ -53,5 +53,11 @@
   font-size: 10px !important;
 }
 
+/* 인기 급상승 */
+
+.popular{
+  position: relative;
+}
+
 
 

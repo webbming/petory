@@ -1,8 +1,5 @@
 package com.shoppingmall.user.controller;
 
-import com.shoppingmall.user.dto.MypageTopInfoDTO;
-import com.shoppingmall.user.dto.UserResponseDTO;
-import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;

@@ -1,7 +1,6 @@
 package com.shoppingmall.user.controller;
 
-import com.shoppingmall.board.dto.BoardResponseDTO;
-import com.shoppingmall.board.model.Board;
+
 import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import com.shoppingmall.user.dto.*;
@@ -25,12 +24,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 
 @RestController
 @RequestMapping("/api/users")
