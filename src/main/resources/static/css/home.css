@@ -7,6 +7,9 @@
   position: relative;
 }
 
+.pm-section section h2{
+  margin: 70px 0 26px;
+}
 .pm-section .inner-120{
   position: relative;
   margin: 0 auto;
@@ -15,19 +18,40 @@
 
 .slide-container {
 
+
+}
+.post-slider{
   margin: 40px 0  30px;
 }
 
-
 .post-slider .post-wrapper{
-  width:84%;
-  height:140px;
+  width:100%;
   margin:0 auto;
-  border:1px dashed red;
 }
 .post-slider .post-wrapper .post{
   width:300px;
-  height:350px;
+  height:130px;
   display:inline-block;
-  background:gray;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #ffffff, #f1f1f1);
+
 }
+
+.post-slider .post-wrapper .post img{
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.post-wrapper .slick-dots{
+  position: absolute !important;
+  bottom: 0;
+}
+.post-wrapper .slick-dots li button:before{
+  font-size: 10px !important;
+}
+
+
+

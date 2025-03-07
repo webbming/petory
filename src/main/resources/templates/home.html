@@ -21,26 +21,37 @@
       <article class="inner-120">
         <div class="post-slider">
           <div class="post-wrapper">
-            <div class="post">1</div>
-            <div class="post">2</div>
-            <div class="post">3</div>
-            <div class="post">4</div>
-            <div class="post">5</div>
+            <div class="post">
+              <img src="/images/banner2.png">
+            </div>
+            <div class="post">
+              <img src="/images/banner3.png">
+            </div>
+            <div class="post">
+              <img src="/images/banner4.png">
+            </div>
           </div>
         </div>
       </article>
     </section>
     <section>
-      <article class="inner-120">2</article>
+      <article class="inner-120">
+        <h2>인기 급상승</h2>
+        <div></div>
+      </article>
     </section>
     <section>
-      <article class="inner-120">3</article>
+      <article class="inner-120">
+        <h2>반려견 상식</h2>
+      </article>
     </section>
     <section>
-      <article class="inner-120">4</article>
+      <article class="inner-120">
+        <h2>베스트 상품</h2>
+      </article>
     </section>
     <section>
-      <article class="inner-120">5</article>
+      <article class="inner-120"></article>
     </section>
   </div>
 </div>
@@ -49,10 +60,31 @@
 <script>
 
   $('.post-wrapper').slick({
-    slidesToShow: 3,
+    slidesToShow: 1,
     slidesToScroll: 1,
+    dots: true,
     autoplay: true,
+    arrows: false,
     autoplaySpeed: 2000,
+    fade: true
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const menuItems = document.querySelectorAll(".page-tab-area ul li a");
+
+    menuItems.forEach(item => {
+      item.addEventListener("click", function (event) {
+
+
+        // 기존 활성화된 요소의 .active 제거
+        document.querySelectorAll(".page-tab-area ul li").forEach(li => {
+          li.classList.remove("active");
+        });
+
+        // 클릭한 요소의 부모인 li에 .active 추가
+        this.parentElement.classList.add("active");
+      });
+    });
   });
 
 </script>
