@@ -151,7 +151,10 @@ function updateMyPageTopInfo(data) {
 }
 
 export async function loadTopInfo(){
-  console.log("히히")
+  if(mypageTopInfo){
+    updateMyPageTopInfo(mypageTopInfo)
+    return;
+  }
   try{
     const response = await fetch("/api/users/me/profile/MyPageTopInfo" ,{
       method : "GET",
@@ -162,7 +165,6 @@ export async function loadTopInfo(){
       mypageTopInfo = await response.json()
       updateMyPageTopInfo(mypageTopInfo)
     }
-
   }catch (e){
     console.error(e)
   }

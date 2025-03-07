@@ -4,6 +4,8 @@ import com.shoppingmall.product.dto.ProductResponseDTO;
 import com.shoppingmall.product.dto.WishlistDTO;
 import com.shoppingmall.product.model.Product;
 import com.shoppingmall.user.dto.ApiResponse;
+import com.shoppingmall.user.model.User;
+import com.shoppingmall.user.repository.UserRepository;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,19 +28,23 @@ import com.shoppingmall.product.service.WishlistService;
 @RequestMapping("/wishlist")
 public class WishlistController {
     private final WishlistService wishlistService;
+    private final UserRepository userRepository;
 
-    public WishlistController(WishlistService wishlistService) {
+    public WishlistController(WishlistService wishlistService, UserRepository userRepository) {
         this.wishlistService = wishlistService;
+        this.userRepository = userRepository;
     }
 
     // 찜한 상품 저장
     @PostMapping("/add")
-    public ResponseEntity<?> addProductToWishlist(@RequestParam Long userId, @RequestParam Long productId) {
+    public ResponseEntity<?> addProductToWishlist( @RequestParam Long productId  ,Authentication authentication ) {
         Map<String , Object> data = new HashMap<>();
+        String userId = authentication.getName();
+        User user =  userRepository.findByUserId(userId);
         try {
             System.out.println("🛒 찜 추가 요청 - userId: " + userId + ", productId: " + productId);
 
-            Wishlist added = wishlistService.addProductToWishlist(userId, productId);
+            Wishlist added = wishlistService.addProductToWishlist(user.getId(), productId);
             WishlistDTO wishlistDTO = new WishlistDTO();
             wishlistDTO.setId(added.getId());
             wishlistDTO.setUserId(added.getUser().getId());
