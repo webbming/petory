@@ -63,20 +63,6 @@
 				<div class="info-section">
 					<strong>요청사항:</strong> <span th:text="${delivery.deliveryMessage}"></span>
 				</div>
-				<div class="info-section">
-					<strong>배송상태:</strong> <span th:text="${delivery.deliveryStatus}"></span>
-				</div>
-				<div class="info-section">
-					<form action="/order/admin/deiveryChange" method="POST" class="status-form">
-						<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}"/>
-						<select id="deliveryState" name="deliveryState">
-							<option value="onDelivery">배송중</option>
-							<option value="stopDelivery">배송취소</option>
-							<option value="finDelivery">배송완료</option>
-						</select>
-						<button type="submit">변경</button>
-					</form>
-				</div>
 			</td>
 
 			<!-- 구매 상품 -->
@@ -87,6 +73,7 @@
 					<div><strong>옵션:</strong> <span th:text="${currentItem.option == null ? '없음': currentItem.option}"></span></div>
 					<div><strong>수량:</strong> <span th:text="${currentItem.quantity}"></span></div>
 					<div><strong>가격:</strong> <span th:text="${currentItem.totalPrice}"></span></div>
+					<div><strong>배송상태:</strong> <span th:text="${currentItem.deliveryStatus}"></span></div>
 				</div>
 			</td>
 		</tr>
