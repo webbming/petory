@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,10 +80,13 @@ public class PurchaseRestController {
       });
     }
 
-    public ResponseEntity<?> deliveryState(@RequestBody Map<String, Object> request){
+    @GetMapping("/deliveryChange")
+    public ResponseEntity<Map<String, String>>  deliveryState(@RequestBody Map<String, Object> request){
       String deliveryState = (String) request.get("deliveryState");
       Long purchaseProductId = (Long) request.get("purchaseProductId");
       String state = service.deliveryChange(deliveryState, purchaseProductId);
-      return ResponseEntity.ok(state);
+      Map<String, String> response = new HashMap<>();
+      response.put("updateState", state);
+      return ResponseEntity.ok(response);
     }
     }

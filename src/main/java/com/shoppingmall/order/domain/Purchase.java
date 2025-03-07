@@ -1,5 +1,6 @@
 package com.shoppingmall.order.domain;
 
+import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,9 @@ public class Purchase {
 
     @OneToMany(mappedBy = "purchase")
     private List<PurchaseProduct> purchaseProduct;
+
+    @OneToOne(mappedBy = "purchase")
+    private PurchaseDelivery purchaseDelivery;
 
     private Long cartId; // 장바구니 ID (FK), 단순한 Long 타입 필드
 

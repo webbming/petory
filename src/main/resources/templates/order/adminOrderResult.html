@@ -29,7 +29,7 @@
 		<td th:text="${purchase.purchaseId}"></td>
 		<td th:text="${purchase.userId}"></td>
 		<td th:text="${purchase.totalPrice}"></td>
-		<td th:utext="${purchase.cancelAt != null ? '취소 시각: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : '주문 시각: ' + #temporals.format(purchase.createAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></td>
+		<td th:utext="${purchase.cancelAt != null ? '주문: ' + #temporals.format(purchase.createAt, 'yyyy-M-d')  + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') + '<hr>' + '취소: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : #temporals.format(purchase.createAt,'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></td>
 		<td>
 			<span th:text="${purchase.cancelAt != null ? '취소' : '주문'}"></span>
 		</td>
@@ -79,7 +79,7 @@
 		<td th:text="${item.totalPrice}"></td>
 		<td id="deliveryStatus_${item.purchaseProductId}" th:text="${item.deliveryStatus}"></td>
 		<td>
-		<form action="/order/admin/deiveryChange" method="POST">
+		<form action="/order/rest/deliveryChange" method="GET">
 			<input type="hidden" name="purchaseProductId" id="purchaseProductId" th:value="${item.purchaseProductId}"/>
 			<select id="deliveryState" name="deliveryState">
 				<option value="onDelivery">배송중</option>
@@ -113,12 +113,10 @@
             console.log('Order Success:', data);
 
             // 서버에서 반환된 메시지를 화면에 즉시 업데이트
-            const statusMessage = document.getElementById("statusMessage");
-            statusMessage.innerText = data.message;  // 서버 응답 메시지 반영
 
             // 상태 변경이 반영된 상태를 페이지에 표시
-            const deliveryStatusElement = document.getElementById("deliveryStatusDisplay");
-            deliveryStatusElement.innerText = "현재 배송 상태: " + deliveryState; // 상태 갱신
+            const deliveryStatusElement = document.getElementById("deliveryStatus_" + purchaseProductId);
+            deliveryStatusElement.innerText = updateState; // 상태 갱신
         })
         .catch(error => {
             console.error('Error:', error);

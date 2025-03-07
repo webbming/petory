@@ -53,8 +53,6 @@
         리뷰작성
     </button>
 
-
-
                 <!-- 리뷰 작성 모달 -->
                     <div class="modal fade" th:id="'reviewModal' + ${item.productId}" tabindex="-1"
                          aria-labelledby="reviewModalLabel" aria-hidden="true">
@@ -101,7 +99,6 @@
                             </div>
                         </div>
                     </div>
-                </td>
             <span th:if="${item.purchase.cancelAt != null}">주문취소</span>
             </td>
 <!--                    </span>-->

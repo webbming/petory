@@ -159,7 +159,8 @@ return "order/orderResultAll";
 									@RequestParam(name = "userId", required = false, defaultValue = "null") String userId,
 									Model model) {
 		Pageable pageable = PageRequest.of(page, size);
-
+		System.out.println(purchaseState);
+		System.out.println(admin);
 		// mushroom19 관리자의 경우
 		if (admin.equals("admin")) {
 			PurchasePageDto adminPurchasePageDto = service.orderListByUserId(userId, purchaseState, pageable);

@@ -13,7 +13,7 @@ public class PurchaseDelivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long deliveryId; // 배송 ID (PK)
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)
     private Purchase purchase;
 
