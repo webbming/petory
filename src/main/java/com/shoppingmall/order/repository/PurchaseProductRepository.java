@@ -36,7 +36,7 @@ public interface PurchaseProductRepository extends JpaRepository<PurchaseProduct
   Page<PurchaseProduct> findByCancelAtIsNullOrderByPurchaseIdDesc(Pageable pageable);
 
   @Modifying
-  @Query("UPDATE PurchaseProduct d SET d.deliveryStatus = :deliveryStatus WHERE d.id= :id")
-  void updateDeliveryStatus(@Param("id") Long purchaseProductId, @Param("deliveryStatus") String deliverStatus);
+  @Query("UPDATE PurchaseProduct d SET d.deliveryStatus = :deliveryStatus WHERE d.purchaseProductId= :purchaseProductId")
+  void updateDeliveryStatus(@Param("purchaseProductId") Long purchaseProductId, @Param("deliveryStatus") String deliverStatus);
 }
 

@@ -80,11 +80,15 @@ public class PurchaseRestController {
       });
     }
 
-    @GetMapping("/deliveryChange")
-    public ResponseEntity<Map<String, String>>  deliveryState(@RequestBody Map<String, Object> request){
-      String deliveryState = (String) request.get("deliveryState");
-      Long purchaseProductId = (Long) request.get("purchaseProductId");
+    @PostMapping("/deliveryChange")
+    public ResponseEntity<Map<String, String>>  deliveryState(@RequestBody Map<String, String> request){
+      String deliveryState = request.get("deliveryState");
+      Long purchaseProductId = Long.parseLong(request.get("purchaseProductId"));
+      System.out.println(deliveryState);
+      System.out.println(purchaseProductId);
       String state = service.deliveryChange(deliveryState, purchaseProductId);
+      System.out.println(state);
+
       Map<String, String> response = new HashMap<>();
       response.put("updateState", state);
       return ResponseEntity.ok(response);

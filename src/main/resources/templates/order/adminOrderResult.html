@@ -79,40 +79,50 @@
 		<td th:text="${item.totalPrice}"></td>
 		<td id="deliveryStatus_${item.purchaseProductId}" th:text="${item.deliveryStatus}"></td>
 		<td>
-		<form action="/order/rest/deliveryChange" method="GET">
+		<form>
 			<input type="hidden" name="purchaseProductId" id="purchaseProductId" th:value="${item.purchaseProductId}"/>
 			<select id="deliveryState" name="deliveryState">
 				<option value="onDelivery">배송중</option>
 				<option value="stopDelivery">배송취소</option>
 				<option value="finDelivery">배송완료</option>
 			</select>
-			<button type="submit" onclick="delivery_status()">변경</button>
+			<button type="button" onclick="delivery_status(e)" class="purchaseBtn">변경</button>
 		</form>
+
 		</td>
 	</tr>
 	</tbody>
 </table>
-<script>
-	function delivery_status() {
+<form>
+<button>버튼!!</button>
+</form>
+	<script>
+		const purchaseBtn = document.querySelector(".purchaseBtn");
+		console.log(purchaseBtn);
+
+		purchaseBtn.addEventListener("click", (e) =>{
+
+		e.preventDefault();
         const deliveryState = document.getElementById("deliveryState").value;
         const purchaseProductId = document.getElementById("purchaseProductId").value;  // 예시로 주문 상품 ID
 
+		const data = {
+			deliveryState: deliveryState,
+            purchaseProductId: purchaseProductId
+		}
+
+		console.log(deliveryState)
         // JSON.stringify로 객체 형태로 전달
-        fetch('/order/rest/deliveryState', {
+        fetch('/order/rest/deliveryChange', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                deliveryState: deliveryState,  // 배송 상태
-                purchaseProductId: purchaseProductId  // 주문 상품 ID
-            }) // 객체로 전달
+            body: JSON.stringify(data) // 객체로 전달
         })
         .then(response => response.json())
         .then(data => {
             console.log('Order Success:', data);
-
-            // 서버에서 반환된 메시지를 화면에 즉시 업데이트
 
             // 상태 변경이 반영된 상태를 페이지에 표시
             const deliveryStatusElement = document.getElementById("deliveryStatus_" + purchaseProductId);
@@ -121,7 +131,7 @@
         .catch(error => {
             console.error('Error:', error);
         });
-    }
+    });
 </script>
 </body>
 </html>

@@ -130,6 +130,7 @@ public class PurchaseService {
 		else{
 			deliveryState = "배송취소";
 		}
+		System.out.println("SER" + deliveryState);
 		productRepo.updateDeliveryStatus(purchaseProductId, deliveryState);
 		return deliveryState;
 	}
