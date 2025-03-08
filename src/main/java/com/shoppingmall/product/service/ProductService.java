@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.shoppingmall.product.model.Category;
+import com.shoppingmall.product.model.PetType;
 import com.shoppingmall.product.model.Product;
 import com.shoppingmall.product.model.Subcategory;
 import com.shoppingmall.product.repository.ProductRepository;
@@ -114,5 +115,20 @@ public class ProductService {
             default:  // 기본 정렬: 신제품순
                 return productRepository.findBySubcategoryOrderByCreatedAtDesc(subcategory);
         }
+    }
+    
+    // 펫타입(고양이, 강아지)로 상품 필터링
+    public List<Product> getProductsByPetType(PetType petType) {
+    	return productRepository.findByPetType(petType);
+    }
+    // 펫타입(고양이, 강아지)로 카테고리별 필터링
+    public List<Product> getProductsByCategoryAndPetType(Long categoryId, PetType petType) {
+    	Category category = categoryService.findCategoryById(categoryId);
+    	return productRepository.findByCategoryAndPetType(category, petType);
+    }
+    // 펫타입(고양이, 강아지)로 서브카테고리별 필터링
+    public List<Product> getProductsBySubcategoryAndPetType(Long subcategoryId, PetType petType) {
+    	Subcategory subcategory = categoryService.findSubcategoryById(subcategoryId);
+    	return productRepository.findBySubcategoryAndPetType(subcategory, petType);
     }
 }

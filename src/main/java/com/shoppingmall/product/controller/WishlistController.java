@@ -1,6 +1,8 @@
 package com.shoppingmall.product.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,8 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.shoppingmall.common.ApiResponse;
+import com.shoppingmall.product.dto.WishlistDTO;
 import com.shoppingmall.product.model.Wishlist;
 import com.shoppingmall.product.service.WishlistService;
+
+
 
 @Controller
 @RequestMapping("/wishlist")
@@ -23,14 +29,25 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    // 찜한 상품 저장
+ // 찜한 상품 저장
     @PostMapping("/add")
     public ResponseEntity<?> addProductToWishlist(@RequestParam Long userId, @RequestParam Long productId) {
+        Map<String , Object> data = new HashMap<>();
         try {
+            System.out.println("🛒 찜 추가 요청 - userId: " + userId + ", productId: " + productId);
+
             Wishlist added = wishlistService.addProductToWishlist(userId, productId);
-            return ResponseEntity.ok(added);
+            WishlistDTO wishlistDTO = new WishlistDTO();
+            wishlistDTO.setId(added.getId());
+            wishlistDTO.setUserId(added.getUser().getId());
+            wishlistDTO.setProductId(added.getProduct().getProductId());
+            wishlistDTO.setAddedOn(added.getAddedOn());
+            data.put("wishlist", wishlistDTO);
+            return ResponseEntity.ok(ApiResponse.success(data));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error adding product to wishlist: " + e.getMessage());
+            System.out.println("❌ 오류 발생: " + e.getMessage());
+            data.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(ApiResponse.error(data));
         }
     }
 

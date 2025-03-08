@@ -74,37 +74,35 @@
             font-weight: bold;
         }
         /* 카테고리 리스트 항목 */
-		.category-list li {
-		    margin: 12px 0;
-		    padding: 15px 20px;
-		    background-color: #e3f2fd;
-		    border-radius: 8px;
-		    cursor: pointer;
-		    display: flex;
-		    align-items: center;
-		    transition: background-color 0.3s, box-shadow 0.3s;
-		    width: 100%; /* 항목을 꽉 차게 설정 */
-		    font-size: 1.1rem; /* 글씨 크기 키우기 */
-		}
+        .category-list li {
+            margin: 12px 0;
+            padding: 15px 20px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            width: 100%;
+            font-size: 1.1rem;
+        }
         .category-list li:hover {
-		    background-color: #2196f3;
-		    color: white;
-		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		}
-		
-		.category-list li a {
-		    color: inherit;
-		    text-decoration: none;
-		    font-weight: bold;
-		    display: flex;
-		    align-items: center;
-		    width: 100%;
-		}
-		
-		.category-list li .category-icon {
-		    margin-right: 15px; /* 아이콘 간격 넓히기 */
-		    font-size: 1.5rem; /* 아이콘 크기 키우기 */
-		}
+            background-color: #2196f3;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .category-list li a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .category-list li .category-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
         /* 필터 정렬 */
         .filter-container {
             display: flex;
@@ -193,40 +191,72 @@
         .button-container a:hover {
             background-color: #1565c0;
         }
-        	/* 소분류 카테고리 */
-		.subcategory-list li {
-		    margin: 12px 0;
-		    padding: 15px 20px;
-		    background-color: #e3f2fd;
-		    border-radius: 8px;
-		    cursor: pointer;
-		    display: flex;
-		    align-items: center;
-		    transition: background-color 0.3s, box-shadow 0.3s;
-		    width: 100%; /* 항목을 꽉 차게 설정 */
-		    font-size: 1.1rem; /* 글씨 크기 키우기 */
-		}
-		
-		.subcategory-list li:hover {
-		    background-color: #2196f3;
-		    color: white;
-		    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-		}
-		
-		.subcategory-list li a {
-		    color: inherit;
-		    text-decoration: none;
-		    font-weight: bold;
-		    display: flex;
-		    align-items: center;
-		    width: 100%;
-		}
-		
-		.subcategory-list li .subcategory-icon {
-		    margin-right: 15px; /* 아이콘 간격 넓히기 */
-		    font-size: 1.5rem; /* 아이콘 크기 키우기 */
-		} 	
+        /* 소분류 카테고리 */
+        .subcategory-list li {
+            margin: 12px 0;
+            padding: 15px 20px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            width: 100%;
+            font-size: 1.1rem;
+        }
+        .subcategory-list li:hover {
+            background-color: #2196f3;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .subcategory-list li a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .subcategory-list li .subcategory-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+        .pet-filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .pet-filter-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: 2px solid #2196f3;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .pet-filter-button:hover {
+            background-color: #2196f3;
+            color: white;
+        }
+        .pet-filter-button.active {
+            background-color: #2196f3;
+            color: white;
+        }
     </style>
+    <script>
+        // 정렬 기능 (URL 파라미터를 이용하여 서버 요청)
+        function changeSort() {
+            let selectedSort = document.getElementById("sortFilter").value;
+            let url = new URL(window.location.href);
+            url.searchParams.set("sort", selectedSort);
+            window.location.href = url.toString();
+        }
+    </script>
 </head>
 <body>
     <!-- 헤더 -->
@@ -241,34 +271,37 @@
     </div>
 
     <div class="container">
-    	
-        <!-- 사이드바: 카테고리, 소분류, 정렬 -->
+        <!-- 사이드바: 카테고리, 서브카테고리, 정렬 -->
         <div class="sidebar">
             <h2>카테고리</h2>
+            <!-- 카테고리 목록 (서버에서 petType에 따라 필터링된 데이터가 내려옴) -->
             <ul class="category-list">
-                <li th:each="cat : ${categories}">
-                    <a th:href="@{'/products/category/' + ${cat.categoryId}}">
+                <li th:each="cat : ${categories}"
+                    th:if="${selectedPetType == null or cat.petType == selectedPetType}">
+                    <a th:href="@{'/products/category/' + ${cat.categoryId} (petType=${selectedPetType})}">
                         <span class="category-icon">🛒</span>
                         <span th:text="${cat.categoryName}"></span>
                     </a>
                 </li>
             </ul>
 
-            <!-- 소분류 -->
-			<div class="top-subcategories" th:if="${currentCategory != null}">
-			    <h3 th:text="${currentCategory.categoryName}">대분류명</h3>
-			    <ul class="subcategory-list">
-			        <li>
-			            <a th:href="@{'/products/category/' + ${currentCategory.categoryId}}">🐶전체</a>
-			        </li>
-			        <li th:each="sub : ${subcategories}">
-			            <a th:href="@{'/products/subcategory/' + ${sub.subcategoryId}}">
-			                <span class="subcategory-icon">🐶</span> 
-			                <span th:text="${sub.subcategoryName}"></span>
-			            </a>
-			        </li>
-			    </ul>
-			</div>
+            <!-- 서브카테고리 목록 (현재 선택된 카테고리가 있을 경우) -->
+            <div class="top-subcategories" th:if="${currentCategory != null}">
+                <h3 th:text="${currentCategory.categoryName}">대분류명</h3>
+                <ul class="subcategory-list">
+                    <li>
+                        <a th:href="@{'/products/category/' + ${currentCategory.categoryId} (petType=${selectedPetType})}">🐾 전체</a>
+                    </li>
+                    <li th:each="sub : ${subcategories}">
+                        <a th:href="@{'/products/subcategory/' + ${sub.subcategoryId} (petType=${selectedPetType})}">
+                            <span class="subcategory-icon"
+                                  th:text="${sub.category.petType == T(com.shoppingmall.product.model.PetType).DOG ? '🐶' : '🐱'}">🐶</span>
+                            <span th:text="${sub.subcategoryName}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
             <!-- 필터 정렬 -->
             <div class="filter-container">
                 <label for="sortFilter">정렬:</label>
@@ -280,24 +313,29 @@
                 </select>
             </div>
 
-            <!-- 버튼들 -->
+            <!-- 버튼들: 상품 추가, 카테고리 관리 및 펫 타입 필터 -->
             <div class="button-container">
                 <a href="/products/add">상품 추가하기</a>
                 <a href="/categories">카테고리 관리</a>
+                <div class="pet-filter-container">
+                    <a class="pet-filter-button" th:classappend="${selectedPetType == 'CAT'} ? ' active'" th:href="@{/products(petType='CAT')}">🐱 냥</a>
+                    <a class="pet-filter-button" th:classappend="${selectedPetType == 'DOG'} ? ' active'" th:href="@{/products(petType='DOG')}">🐶 댕</a>
+                    <a class="pet-filter-button" th:href="@{/products}">ALL</a>
+                </div>
             </div>
         </div>
 
-        <!-- 상품 리스트 -->
+        <!-- 상품 목록 (서버에서 필터링된 상품 리스트를 렌더링) -->
         <div class="product-list">
             <div class="product-card" th:each="product : ${products}">
                 <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
                 <h3 th:text="${product.productName}">상품명</h3>
                 <p class="price" th:text="${#numbers.formatInteger(product.price, 0)} + '원'">가격</p>
                 <p class="rating">
-				    <span class="star">⭐</span>
-				    <span th:text="${product.averageRating != null ? product.averageRating : '0.0'}">0.0</span>
-				    <span th:text="'(' + (${product.reviewCount} != null ? ${product.reviewCount} : 0) + '개 리뷰)'"></span>
-				</p>
+                    <span class="star">⭐</span>
+                    <span th:text="${product.averageRating != null ? product.averageRating : '0.0'}">0.0</span>
+                    <span th:text="'(' + (${product.reviewCount} != null ? ${product.reviewCount} : 0) + '개 리뷰)'"></span>
+                </p>
                 <p th:text="'(' + ${product.category.categoryName} + ' / ' + ${product.subcategory.subcategoryName} + ')'">
                     (카테고리 / 소분류)
                 </p>
@@ -305,26 +343,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // 정렬 기능
-        function changeSort() {
-            let selectedSort = document.getElementById("sortFilter").value;
-            let currentUrl = window.location.pathname;
-
-            let categoryId = null;
-            let subcategoryId = null;
-
-            if (currentUrl.includes("/category/")) {
-                categoryId = currentUrl.split("/").pop();
-                window.location.href = '/products/category/' + categoryId + '?sort=' + selectedSort;
-            } else if (currentUrl.includes("/subcategory/")) {
-                subcategoryId = currentUrl.split("/").pop();
-                window.location.href = '/products/subcategory/' + subcategoryId + '?sort=' + selectedSort;
-            } else {
-                window.location.href = '/products?sort=' + selectedSort;
-            }
-        }
-    </script>
 </body>
 </html>

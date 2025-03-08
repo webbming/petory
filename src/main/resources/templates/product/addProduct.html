@@ -1,123 +1,136 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>새 상품 추가</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7fc;
-            margin: 0;
-            padding: 0;
-        }
-        h1 {
-            text-align: center;
-            padding: 20px 0;
-            color: #333;
-        }
-        .form-container {
-            width: 500px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        label {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 5px;
-        }
-        input[type="text"], input[type="number"], select, input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0 20px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-        a {
-            text-decoration: none;
-            color: #2196f3;
-            font-size: 14px;
-            display: block;
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
-    <script>
-	document.addEventListener("DOMContentLoaded", function () {
-	    // 대표 이미지 미리보기 기능
-	    document.getElementById("imageFile").addEventListener("change", function (event) {
-	        let reader = new FileReader();
-	        reader.onload = function () {
-	            let imgPreview = document.getElementById("imagePreview");
-	            imgPreview.src = reader.result;
-	            imgPreview.style.display = "block";
-	        };
-	        reader.readAsDataURL(event.target.files[0]);
-	    });
-	
-	    // 상세 이미지 미리보기 기능
-	    document.getElementById("detailImageFiles").addEventListener("change", function (event) {
-	        let container = document.getElementById("detailImagePreviewContainer");
-	        container.innerHTML = ""; // 기존 미리보기 초기화
-	
-	        Array.from(event.target.files).forEach(file => {
-	            let reader = new FileReader();
-	            reader.onload = function () {
-	                let img = document.createElement("img");
-	                img.src = reader.result;
-	                img.style.width = "100px";
-	                img.style.marginRight = "10px";
-	                img.style.marginTop = "10px";
-	                container.appendChild(img);
-	            };
-	            reader.readAsDataURL(file);
-	        });
-	    });
-	});
-	</script>
+  <meta charset="UTF-8">
+  <title>새 상품 추가</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* 기존 CSS 유지 */
+    body { font-family: Arial, sans-serif; background-color: #f4f7fc; margin: 0; padding: 0; }
+    h1 { text-align: center; padding: 20px 0; color: #333; }
+    .form-container { width: 500px; margin: 20px auto; padding: 20px; background-color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; }
+    label { font-size: 16px; color: #555; margin-bottom: 5px; }
+    input[type="text"], input[type="number"], select, input[type="file"] {
+      width: 100%; padding: 10px; margin: 8px 0 20px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;
+    }
+    input[type="submit"] { background-color: #4CAF50; color: white; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 4px; }
+    input[type="submit"]:hover { background-color: #45a049; }
+    a { text-decoration: none; color: #2196f3; font-size: 14px; display: block; text-align: center; margin-top: 10px; }
+  </style>
+  <script>
+    // 이미지 미리보기 기능 (기존 코드 유지)
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("imageFile").addEventListener("change", function (event) {
+        let reader = new FileReader();
+        reader.onload = function () {
+          let imgPreview = document.getElementById("imagePreview");
+          imgPreview.src = reader.result;
+          imgPreview.style.display = "block";
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      });
+      document.getElementById("detailImageFiles").addEventListener("change", function (event) {
+        let container = document.getElementById("detailImagePreviewContainer");
+        container.innerHTML = "";
+        Array.from(event.target.files).forEach(file => {
+          let reader = new FileReader();
+          reader.onload = function () {
+            let img = document.createElement("img");
+            img.src = reader.result;
+            img.style.width = "100px";
+            img.style.marginRight = "10px";
+            img.style.marginTop = "10px";
+            container.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    });
+
+    // 클라이언트 측 2단계 필터링 (펫 타입 + 카테고리)
+    $(document).ready(function(){
+      var $petTypeSelect = $('#petTypeSelect');
+      var $categorySelect = $('#categorySelect');
+      var $subcategorySelect = $('#subcategorySelect');
+      
+      // 전체 옵션 HTML 저장 (원본 옵션)
+      var originalCatOptions = $categorySelect.html();
+      var originalSubcatOptions = $subcategorySelect.html();
+      
+      // 1. 펫 타입 변경 시: petType에 따른 필터링
+      $petTypeSelect.on('change', function(){
+        var selectedPetType = $(this).val();
+        var filteredCats = $(originalCatOptions).filter(function(){
+          return $(this).data('pettype') === selectedPetType;
+        });
+        $categorySelect.html(filteredCats);
+        
+        // 펫 타입에 따른 1차 서브카테고리 필터링
+        var filteredSubs = $(originalSubcatOptions).filter(function(){
+          return $(this).data('pettype') === selectedPetType;
+        });
+        $subcategorySelect.html(filteredSubs);
+      });
+      
+      // 2. 카테고리 변경 시: 해당 카테고리에 속한 서브카테고리만 표시
+      $categorySelect.on('change', function(){
+        var selectedCatId = $(this).val();
+        var selectedPetType = $petTypeSelect.val();
+        var finalSubs = $(originalSubcatOptions).filter(function(){
+          return $(this).data('pettype') === selectedPetType && $(this).data('catid') == selectedCatId;
+        });
+        $subcategorySelect.html(finalSubs);
+      });
+    });
+  </script>
 </head>
 <body>
-    <h1>새 상품 추가</h1>
-    <div class="form-container">
-        <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
-	    <label>상품명: <input type="text" name="productName" required /></label>
-	    <label>가격: <input type="number" name="price" required /></label>
-	    <label>옵션: <input type="text" name="option" placeholder="예: S,M,L,XL"/></label> 
-	    <label>내용: <input type="text" name="content" /></label>
-	    <label>설명: <input type="text" name="description" /></label>
-	    <label>대표 이미지 선택: <input type="file" name="imageFile" id="imageFile" required /></label>
-		<img id="imagePreview" src="#" alt="대표 이미지 미리보기" style="display:none; width:100px; height:auto; margin-top:10px;">
-	    <label>상세 이미지 선택: <input type="file" name="detailImageFiles" id="detailImageFiles" multiple required /></label>
-		<div id="detailImagePreviewContainer"></div>
-	    <label>카테고리:
-	        <select name="categoryId">
-	            <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.categoryName}"></option>
-	        </select>
-	    </label>
-	    <label>서브카테고리:
-	        <select name="subcategoryId">
-	            <option th:each="sub : ${subcategories}" th:value="${sub.subcategoryId}" th:text="${sub.subcategoryName}"></option>
-	        </select>
-	    </label>
-	    <input type="submit" value="등록" />
-	</form>
-        <a href="/products">목록으로 돌아가기</a>
-    </div>
+  <h1>새 상품 추가</h1>
+  <div class="form-container">
+    <!-- 컨트롤러에서는 전체 카테고리와 서브카테고리를 내려줍니다. -->
+    <form th:action="@{/products/add}" method="post" enctype="multipart/form-data">
+      <label>상품명: <input type="text" name="productName" required /></label>
+      <label>가격: <input type="number" name="price" required /></label>
+      <label>옵션: <input type="text" name="option" placeholder="예: S,M,L,XL"/></label>
+      <label>내용: <input type="text" name="content" /></label>
+      <label>설명: <input type="text" name="description" /></label>
+      <label>대표 이미지 선택: <input type="file" name="imageFile" id="imageFile" required /></label>
+      <img id="imagePreview" src="#" alt="대표 이미지 미리보기" style="display:none; width:100px; height:auto; margin-top:10px;">
+      <label>상세 이미지 선택: <input type="file" name="detailImageFiles" id="detailImageFiles" multiple required /></label>
+      <div id="detailImagePreviewContainer"></div>
+      
+      <!-- 펫 타입 선택 -->
+      <label>반려동물 타입:
+          <select name="petType" id="petTypeSelect" required>
+              <option value="CAT" th:selected="${petType == T(com.shoppingmall.product.model.PetType).CAT}">고양이</option>
+              <option value="DOG" th:selected="${petType == T(com.shoppingmall.product.model.PetType).DOG}">강아지</option>
+          </select>
+      </label>
+      
+      <!-- 카테고리 선택: 전체 목록, 각 옵션에 data-pettype 속성 추가 -->
+      <label>카테고리:
+          <select name="categoryId" id="categorySelect">
+              <option th:each="cat : ${categories}"
+                      th:value="${cat.categoryId}"
+                      th:text="${cat.categoryName}"
+                      th:attr="data-pettype=${cat.petType.name()}">
+              </option>
+          </select>
+      </label>
+      
+      <!-- 서브카테고리 선택: 전체 목록, 각 옵션에 data-pettype와 data-catid 속성 추가 -->
+      <label>서브카테고리:
+          <select name="subcategoryId" id="subcategorySelect">
+              <option th:each="sub : ${subcategories}"
+                      th:value="${sub.subcategoryId}"
+                      th:text="${sub.subcategoryName}"
+                      th:attr="data-pettype=${sub.category.petType.name()}, data-catid=${sub.category.categoryId}">
+              </option>
+          </select>
+      </label>
+      <input type="submit" value="등록" />
+    </form>
+    <a href="/products">목록으로 돌아가기</a>
+  </div>
 </body>
 </html>

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingmall.product.model.Category;
+import com.shoppingmall.product.model.PetType;
 import com.shoppingmall.product.model.Product;
 import com.shoppingmall.product.model.Review;
 import com.shoppingmall.product.model.Subcategory;
@@ -49,24 +50,30 @@ public class ProductController {
     }
 
     // 메인 페이지 (전체 상품) - 상품 목록을 조회하고 정렬 옵션을 처리
-    @GetMapping({"/products", "/products"})
-    @Operation(summary = "상품 목록 조회", description = "모든 상품을 조회합니다.")
-    public String listProducts(@RequestParam(defaultValue = "newest") String sort, Model model) {
-        List<Product> products = productService.listAllProductsSorted(sort);
+    @GetMapping("/products")
+    @Operation(summary = "상품 목록 조회", description = "모든 상품을 조회하거나 petType으로 필터링합니다.")
+    public String listProducts(@RequestParam(defaultValue = "newest") String sort,
+                               @RequestParam(required = false) PetType petType, Model model) {
+        List<Product> products;
 
-        // 각 상품의 리뷰 개수를 동적으로 계산하여 설정
+        if (petType != null) {
+            products = productService.getProductsByPetType(petType); // 🐱🐶 petType 필터링 적용
+        } else {
+            products = productService.listAllProductsSorted(sort);
+        }
+
+        // 각 상품의 리뷰 개수를 동적으로 계산
         for (Product product : products) {
             int reviewCount = reviewService.getReviewsByProductId(product.getProductId()).size();
             product.setReviewCount(reviewCount);
-            
-            // ✅ 디버깅 로그 추가 (서버 콘솔에서 확인)
-            System.out.println("상품 ID: " + product.getProductId() + " / 리뷰 개수: " + reviewCount);
         }
 
         model.addAttribute("products", products);
         model.addAttribute("categories", categoryService.findAllCategories());
+        model.addAttribute("selectedPetType", petType); // 선택된 petType 유지
         return "/product/index2";
     }
+
     // 상품 등록 폼을 제공하는 페이지
     @GetMapping("/products/add")
     public String addProductForm(Model model) {
@@ -81,16 +88,20 @@ public class ProductController {
     public String addProduct(@ModelAttribute("product") Product product,
                              @RequestParam("categoryId") Long categoryId,
                              @RequestParam("subcategoryId") Long subcategoryId,
+                             @RequestParam("petType") PetType petType,
                              @RequestParam("imageFile") MultipartFile imageFile,
                              @RequestParam("detailImageFiles") List<MultipartFile> detailImageFiles) {
         // 1. 대표 이미지 업로드 후 URL 반환
         String imageUrl = uploadFile(imageFile);
         if (imageUrl != null) {
-            product.setImageUrl(imageUrl); // ✅ product에 imageUrl 저장
+            product.setImageUrl(imageUrl); // product에 imageUrl 저장
         }
 
         // 2. 상세 이미지 업로드
         List<String> detailImageUrls = uploadFiles(detailImageFiles);
+        
+     //  petType 설정
+        product.setPetType(petType);
 
         // 3. 상품 저장 (이제 대표 이미지가 포함됨)
         productService.saveProduct(product, categoryId, subcategoryId, detailImageUrls);
@@ -220,20 +231,28 @@ public class ProductController {
     // 카테고리별 상품 조회
     @GetMapping("/products/category/{categoryId}")
     public String getProductsByCategory(@PathVariable("categoryId") Long categoryId,
+                                        @RequestParam(required = false) PetType petType,
                                         @RequestParam(required = false, defaultValue = "newest") String sort,
                                         Model model) {
-        Category category = categoryService.findCategoryById(categoryId);  // 카테고리 정보 조회
-        List<Product> products = productService.findProductsByCategory(category, sort);  // 카테고리에 해당하는 상품 조회
-        List<Subcategory> subcategories = categoryService.findSubcategoriesByCategory(category);  // 해당 카테고리의 서브카테고리 조회
+        Category category = categoryService.findCategoryById(categoryId);
+        List<Product> products;
 
-        model.addAttribute("currentCategory", category);  // 현재 카테고리 모델에 추가
-        model.addAttribute("products", products);  // 조회된 상품 리스트 모델에 추가
-        model.addAttribute("subcategories", subcategories);  // 서브카테고리 리스트 모델에 추가
-        model.addAttribute("categories", categoryService.findAllCategories());  // 전체 카테고리 리스트 추가
-        model.addAttribute("sort", sort);  // 정렬 기준 유지
-        System.out.println("Sort parameter received: " + sort);  // 정렬 기준 확인 로그 출력
-        return "/product/index2";  // 상품 목록 페이지로 이동
+        if (petType != null) {
+            products = productService.getProductsByCategoryAndPetType(categoryId, petType);
+        } else {
+            products = productService.findProductsByCategory(category, sort);
+        }
+
+        List<Subcategory> subcategories = categoryService.findSubcategoriesByCategory(category);
+
+        model.addAttribute("currentCategory", category);
+        model.addAttribute("products", products);
+        model.addAttribute("subcategories", subcategories);
+        model.addAttribute("categories", categoryService.findAllCategories());
+        model.addAttribute("selectedPetType", petType); // 선택된 petType 유지
+        return "/product/index2";
     }
+
 
     // 카테고리별 상품 조회 JSON
     @GetMapping("/products/category/{categoryId}/json")
@@ -247,24 +266,30 @@ public class ProductController {
 
     // 서브카테고리별 상품 조회
     @GetMapping("/products/subcategory/{subId}")
-    public String getProductsBySubcategory(
-            @PathVariable("subId") Long subId,
-            @RequestParam(required = false, defaultValue = "newest") String sort,
-            Model model) {
+    public String getProductsBySubcategory(@PathVariable("subId") Long subId,
+                                           @RequestParam(required = false) PetType petType,
+                                           @RequestParam(required = false, defaultValue = "newest") String sort,
+                                           Model model) {
+        Subcategory subcategory = categoryService.findSubcategoryById(subId);
+        List<Product> products;
 
-        Subcategory subcategory = categoryService.findSubcategoryById(subId);  // 서브카테고리 정보 조회
-        List<Product> products = productService.findProductsBySubcategory(subcategory, sort);  // 서브카테고리별 상품 조회
-        Category parentCategory = subcategory.getCategory();  // 해당 서브카테고리의 부모 카테고리 조회
-        List<Subcategory> subcategories = categoryService.findSubcategoriesByCategory(parentCategory);  // 부모 카테고리의 서브카테고리 조회
+        if (petType != null) {
+            products = productService.getProductsBySubcategoryAndPetType(subId, petType);
+        } else {
+            products = productService.findProductsBySubcategory(subcategory, sort);
+        }
 
-        model.addAttribute("currentCategory", parentCategory);  // 부모 카테고리 모델에 추가
-        model.addAttribute("products", products);  // 조회된 상품 리스트 모델에 추가
-        model.addAttribute("subcategories", subcategories);  // 서브카테고리 리스트 모델에 추가
-        model.addAttribute("categories", categoryService.findAllCategories());  // 전체 카테고리 리스트 추가
-        model.addAttribute("sort", sort);  // 정렬 기준 유지
+        Category parentCategory = subcategory.getCategory();
+        List<Subcategory> subcategories = categoryService.findSubcategoriesByCategory(parentCategory);
 
-        return "/product/index2";  // 상품 목록 페이지로 이동
+        model.addAttribute("currentCategory", parentCategory);
+        model.addAttribute("products", products);
+        model.addAttribute("subcategories", subcategories);
+        model.addAttribute("categories", categoryService.findAllCategories());
+        model.addAttribute("selectedPetType", petType); // 선택된 petType 유지
+        return "/product/index2";
     }
+
 
     // 상품 검색 (상품 이름으로)
     @GetMapping("/products/search")
