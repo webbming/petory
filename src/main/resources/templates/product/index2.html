@@ -9,14 +9,14 @@
             font-family: 'Roboto', sans-serif;
             background-color: #f4f7fc;
         }
+
+        /* 전체를 세로로 배치하기 위해 flex 컨테이너 사용 */
         .container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            grid-template-rows: auto 1fr;
-            height: 100vh;
-            gap: 1rem;
-            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
+
         /* 헤더 */
         .header {
             display: flex;
@@ -25,18 +25,16 @@
             background-color: #2196f3;
             color: white;
             padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
         }
         .header .logo {
             font-size: 1.5rem;
             font-weight: bold;
         }
+
         /* 검색창 */
         .search-container {
             display: flex;
             justify-content: center;
-            padding: 1rem;
         }
         .search-container input {
             padding: 0.7rem;
@@ -61,30 +59,36 @@
         .search-container button:hover {
             background-color: #1565c0;
         }
-        /* 사이드바 */
-        .sidebar {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem;
-        }
-        .sidebar h2 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        /* 카테고리 리스트 항목 */
-        .category-list li {
-            margin: 12px 0;
-            padding: 15px 20px;
-            background-color: #e3f2fd;
-            border-radius: 8px;
-            cursor: pointer;
+
+        /* 상단 바: 카테고리 목록, 정렬, 버튼(상품추가/카테고리관리), 펫 필터 등 */
+        .top-bar {
             display: flex;
             align-items: center;
+            background-color: white;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            gap: 1rem;
+            flex-wrap: wrap; /* 화면이 좁아지면 줄바꿈 */
+            justify-content: center; /* 중앙 정렬 */
+        }
+
+        /* 카테고리 목록을 가로로 배치 */
+        .category-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 1rem;
+        }
+        .category-list li {
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            cursor: pointer;
             transition: background-color 0.3s, box-shadow 0.3s;
-            width: 100%;
-            font-size: 1.1rem;
+            font-weight: bold;
         }
         .category-list li:hover {
             background-color: #2196f3;
@@ -94,28 +98,15 @@
         .category-list li a {
             color: inherit;
             text-decoration: none;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            width: 100%;
         }
-        .category-list li .category-icon {
-            margin-right: 15px;
-            font-size: 1.5rem;
-        }
-        /* 필터 정렬 */
+
+        /* 정렬 셀렉트 박스 */
         .filter-container {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background-color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-top: 1rem;
+            gap: 0.5rem;
         }
         .filter-container label {
-            margin-right: 10px;
             font-weight: bold;
         }
         .filter-container select {
@@ -123,12 +114,96 @@
             border-radius: 4px;
             border: 1px solid #ccc;
         }
-        /* 상품 카드 */
+
+        /* 버튼 컨테이너: 상품 추가, 카테고리 관리 */
+        .button-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .button-container a {
+            padding: 0.6rem 1rem;
+            background-color: #1976d2;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .button-container a:hover {
+            background-color: #1565c0;
+        }
+
+        /* 펫 필터 */
+        .pet-filter-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .pet-filter-button {
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #2196f3;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .pet-filter-button:hover {
+            background-color: #2196f3;
+            color: white;
+        }
+        .pet-filter-button.active {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        /* 서브카테고리 컨테이너 */
+        .subcategory-container {
+            background-color: white;
+            margin: 0 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .subcategory-container h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .subcategory-list {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex-wrap: wrap;
+        }
+        .subcategory-list li {
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            font-weight: bold;
+        }
+        .subcategory-list li:hover {
+            background-color: #2196f3;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .subcategory-list li a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* 상품 목록 */
         .product-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 1rem;
             padding: 1rem;
+            margin: 0 1rem 1rem; /* 좌우여백, 아래여백 */
         }
         .product-card {
             background-color: white;
@@ -171,82 +246,6 @@
         .product-card a.details-link:hover {
             background-color: #1976d2;
         }
-        /* 버튼 스타일 */
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-top: 1rem;
-        }
-        .button-container a {
-            padding: 0.8rem 1.2rem;
-            background-color: #1976d2;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            text-align: center;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        .button-container a:hover {
-            background-color: #1565c0;
-        }
-        /* 소분류 카테고리 */
-        .subcategory-list li {
-            margin: 12px 0;
-            padding: 15px 20px;
-            background-color: #e3f2fd;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            width: 100%;
-            font-size: 1.1rem;
-        }
-        .subcategory-list li:hover {
-            background-color: #2196f3;
-            color: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .subcategory-list li a {
-            color: inherit;
-            text-decoration: none;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-        .subcategory-list li .subcategory-icon {
-            margin-right: 15px;
-            font-size: 1.5rem;
-        }
-        .pet-filter-container {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        .pet-filter-button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            border: 2px solid #2196f3;
-            background-color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 5px;
-            border-radius: 5px;
-            text-decoration: none;
-            color: inherit;
-        }
-        .pet-filter-button:hover {
-            background-color: #2196f3;
-            color: white;
-        }
-        .pet-filter-button.active {
-            background-color: #2196f3;
-            color: white;
-        }
     </style>
     <script>
         // 정렬 기능 (URL 파라미터를 이용하여 서버 요청)
@@ -270,39 +269,21 @@
         </div>
     </div>
 
+    <!-- 전체 컨테이너 -->
     <div class="container">
-        <!-- 사이드바: 카테고리, 서브카테고리, 정렬 -->
-        <div class="sidebar">
-            <h2>카테고리</h2>
-            <!-- 카테고리 목록 (서버에서 petType에 따라 필터링된 데이터가 내려옴) -->
+
+        <!-- 상단 바: 카테고리 목록, 정렬, 버튼(상품추가, 카테고리관리), 펫 필터 등 -->
+        <div class="top-bar">
+            <!-- 카테고리 목록 -->
             <ul class="category-list">
                 <li th:each="cat : ${categories}"
                     th:if="${selectedPetType == null or cat.petType == selectedPetType}">
-                    <a th:href="@{'/products/category/' + ${cat.categoryId} (petType=${selectedPetType})}">
-                        <span class="category-icon">🛒</span>
-                        <span th:text="${cat.categoryName}"></span>
-                    </a>
+                    <a th:href="@{'/products/category/' + ${cat.categoryId} (petType=${selectedPetType})}"
+                       th:text="${cat.categoryName}">카테고리명</a>
                 </li>
             </ul>
 
-            <!-- 서브카테고리 목록 (현재 선택된 카테고리가 있을 경우) -->
-            <div class="top-subcategories" th:if="${currentCategory != null}">
-                <h3 th:text="${currentCategory.categoryName}">대분류명</h3>
-                <ul class="subcategory-list">
-                    <li>
-                        <a th:href="@{'/products/category/' + ${currentCategory.categoryId} (petType=${selectedPetType})}">🐾 전체</a>
-                    </li>
-                    <li th:each="sub : ${subcategories}">
-                        <a th:href="@{'/products/subcategory/' + ${sub.subcategoryId} (petType=${selectedPetType})}">
-                            <span class="subcategory-icon"
-                                  th:text="${sub.category.petType == T(com.shoppingmall.product.model.PetType).DOG ? '🐶' : '🐱'}">🐶</span>
-                            <span th:text="${sub.subcategoryName}"></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- 필터 정렬 -->
+            <!-- 정렬 -->
             <div class="filter-container">
                 <label for="sortFilter">정렬:</label>
                 <select id="sortFilter" onchange="changeSort()">
@@ -313,19 +294,41 @@
                 </select>
             </div>
 
-            <!-- 버튼들: 상품 추가, 카테고리 관리 및 펫 타입 필터 -->
+            <!-- 버튼들 -->
             <div class="button-container">
                 <a href="/products/add">상품 추가하기</a>
                 <a href="/categories">카테고리 관리</a>
-                <div class="pet-filter-container">
-                    <a class="pet-filter-button" th:classappend="${selectedPetType == 'CAT'} ? ' active'" th:href="@{/products(petType='CAT')}">🐱 냥</a>
-                    <a class="pet-filter-button" th:classappend="${selectedPetType == 'DOG'} ? ' active'" th:href="@{/products(petType='DOG')}">🐶 댕</a>
-                    <a class="pet-filter-button" th:href="@{/products}">ALL</a>
-                </div>
+            </div>
+
+            <!-- 펫 필터 -->
+            <div class="pet-filter-container">
+                <a class="pet-filter-button"
+                   th:classappend="${selectedPetType == 'CAT'} ? ' active'"
+                   th:href="@{/products(petType='CAT')}">🐱 냥</a>
+                <a class="pet-filter-button"
+                   th:classappend="${selectedPetType == 'DOG'} ? ' active'"
+                   th:href="@{/products(petType='DOG')}">🐶 댕</a>
+                <a class="pet-filter-button" th:href="@{/products}">ALL</a>
             </div>
         </div>
 
-        <!-- 상품 목록 (서버에서 필터링된 상품 리스트를 렌더링) -->
+        <!-- 서브카테고리 -->
+        <div class="subcategory-container" th:if="${currentCategory != null}">
+            <h3 th:text="${currentCategory.categoryName}">대분류명</h3>
+            <ul class="subcategory-list">
+                <li>
+                    <a th:href="@{'/products/category/' + ${currentCategory.categoryId} (petType=${selectedPetType})}">🐾 전체</a>
+                </li>
+                <li th:each="sub : ${subcategories}">
+                    <a th:href="@{'/products/subcategory/' + ${sub.subcategoryId} (petType=${selectedPetType})}">
+                        <span th:text="${sub.category.petType == T(com.shoppingmall.product.model.PetType).DOG ? '🐶' : '🐱'}">🐶</span>
+                        <span th:text="${sub.subcategoryName}">소분류명</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 상품 목록 -->
         <div class="product-list">
             <div class="product-card" th:each="product : ${products}">
                 <img th:src="@{${product.imageUrl}}" alt="Product Image"/>
@@ -339,9 +342,11 @@
                 <p th:text="'(' + ${product.category.categoryName} + ' / ' + ${product.subcategory.subcategoryName} + ')'">
                     (카테고리 / 소분류)
                 </p>
-                <a th:href="@{'/products/' + ${product.productId}}" class="details-link" th:if="${product.productId != null}">자세히 보기</a>
+                <a th:href="@{'/products/' + ${product.productId}}" class="details-link"
+                   th:if="${product.productId != null}">자세히 보기</a>
             </div>
         </div>
-    </div>
+
+    </div> <!-- .container 끝 -->
 </body>
 </html>
