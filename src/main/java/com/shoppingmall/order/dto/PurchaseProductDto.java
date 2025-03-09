@@ -18,5 +18,6 @@ public class PurchaseProductDto {
   private int quantity; // 수량
   private int price; // 가격
   private String userId;
+  private  String deliveryStatus;
 
 }

@@ -87,7 +87,7 @@ public class PurchaseRestController {
       System.out.println(deliveryState);
       System.out.println(purchaseProductId);
       String state = service.deliveryChange(deliveryState, purchaseProductId);
-      System.out.println(state);
+      System.out.println("sss" + state);
 
       Map<String, String> response = new HashMap<>();
       response.put("updateState", state);

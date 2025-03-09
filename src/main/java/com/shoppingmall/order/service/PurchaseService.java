@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -130,9 +131,9 @@ public class PurchaseService {
 		else{
 			deliveryState = "배송취소";
 		}
-		System.out.println("SER" + deliveryState);
-		productRepo.updateDeliveryStatus(purchaseProductId, deliveryState);
-		return deliveryState;
+		System.out.println("SER" + "안녕" + deliveryState);
+//		productRepo.updateDeliveryStatus(purchaseProductId, deliveryState);
+		return "ㅎㅎ";
 	}
 	
 //주문 취소
@@ -176,5 +177,9 @@ public class PurchaseService {
 				.receiverPhone(receiverChanse.getReceiverPhone())
 				.deliveryMessage(receiverChanse.getDeliveryMessage())
 				.build();
+	}
+
+	public void purchaseNumber(String userId, Long purchaseProductId) {
+		productRepo.findById(purchaseProductId);
 	}
 }

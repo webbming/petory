@@ -207,4 +207,13 @@ return "order/orderResultAll";
 	return "redirect:/order";
 	}
 
+	@GetMapping("/one")
+	public String purchaseNumber(@RequestParam(name = "userId") String userId,
+														@RequestParam(name = "purchaseProductId") Long purchaseProductId,
+														Model model){
+	 service.purchaseNumber(userId, purchaseProductId);
+
+	return "";
+	};
+
 }

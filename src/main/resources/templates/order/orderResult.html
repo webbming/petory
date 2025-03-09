@@ -2,102 +2,183 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>주문 상세 정보</title>
-	<link rel="stylesheet" href="/css/order/orderOneReseult.css">
+	<style>
+		body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .main-link {
+            display: block;
+            text-align: right;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .main-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center; /* 수평 가운데 정렬 */
+            vertical-align: middle; /* 수직 가운데 정렬 */
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+            color: #333;
+        }
+        td {
+            color: #666;
+        }
+        .button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .cancel-text {
+            color: #999;
+            font-style: italic;
+        }
+        .status-preparing {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .status-other {
+            color: #666;
+        }
+	</style>
 </head>
 <body>
-<h1>주문 상세정보</h1>
+<div class="container">
+	<!-- 메인 페이지 링크 -->
+	<a href="/order" class="main-link">메인페이지로</a>
 
-<p>
-	<a href="/order">메인페이지로</a>
-</p>
+	<!-- 주문 목록 -->
+	<div class="section">
+		<div class="title">주문 목록</div>
+		<table>
+			<thead>
+			<tr>
+				<th>주문번호</th>
+				<th>주문자 ID</th>
+				<th>총 가격</th>
+				<th>결제 시간</th>
+				<th>결제 상태</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="purchase : ${purchase}">
+				<td th:text="${purchase.purchaseId}"></td>
+				<td th:text="${purchase.userId}"></td>
+				<td th:text="${purchase.totalPrice + '원'}"></td>
+				<td th:utext="${purchase.cancelAt != null ? '취소 시각: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : '주문 시각: ' + #temporals.format(purchase.createAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></td>
+				<td>
+                    <span th:if="${purchase.cancelAt == null}">
+                        <form th:action="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" method="post">
+                            <button type="submit" class="button">주문 취소</button>
+                        </form>
+                    </span>
+					<span th:unless="${purchase.cancelAt == null}" class="cancel-text">취소 완료</span>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
 
-<!-- Purchase 리스트 출력 -->
-<h2>주문 목록</h2>
-<table>
-	<thead>
-	<tr>
-		<th>주문번호</th>
-		<th>주문자 ID</th>
-		<th>총 가격</th>
-		<th>결제 시간</th>
-		<th>결제 상태</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr th:each="purchase : ${purchase}">
-		<td th:text="${purchase.purchaseId}"></td>
-		<td th:text="${purchase.userId}"></td>
-		<td th:text="${purchase.totalPrice}"></td>
-		<td th:utext="${purchase.cancelAt != null ? '취소 시각: ' + #temporals.format(purchase.cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.cancelAt, 'a h시 mm분') : '주문 시각: ' + #temporals.format(purchase.createAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.createAt, 'a h시 mm분')}"></td>
-		<td>
-				<span th:if="${purchase.cancelAt == null}">
-					<form th:action="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" method="post">
-						<button type="submit" class="button">주문 취소</button>
+	<!-- 배송 정보 -->
+	<div class="section">
+		<div class="title">배송 정보</div>
+		<table>
+			<thead>
+			<tr>
+				<th>수령인 이름</th>
+				<th>수령인 전화번호</th>
+				<th>배송 상태</th>
+				<th>배송 주소</th>
+				<th>배송 요청 사항</th>
+				<th>배송 정보 수정</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="delivery : ${delivery}">
+				<td th:text="${delivery.receiverName}"></td>
+				<td th:text="${delivery.receiverPhone}"></td>
+				<td>
+					<span th:class="${delivery.deliveryStatus == '배송준비중'} ? 'status-preparing' : 'status-other'" th:text="${delivery.deliveryStatus}"></span>
+				</td>
+				<td th:text="${delivery.receiverAddr}"></td>
+				<td th:text="${delivery.deliveryMessage}"></td>
+				<td>
+					<form th:action="@{/order/orders/receiver}" method="get">
+						<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}">
+						<span th:if="${delivery.deliveryStatus == '배송준비중'}">
+                            <input type="submit" class="button" value="정보수정">
+                        </span>
+						<span th:if="${delivery.deliveryStatus != '배송준비중'}" th:text="${delivery.deliveryStatus}" class="status-other"></span>
 					</form>
-				</span>
-			<span th:unless="${purchase.cancelAt == null}">
-					취소 완료
-				</span>
-		</td>
-	</tr>
-	</tbody>
-</table>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
 
-<!-- 배송 정보 -->
-<h2>배송 정보</h2>
-<table>
-	<thead>
-	<tr>
-		<th>수령인 이름</th>
-		<th>수령인 전화번호</th>
-		<th>배송 상태</th>
-		<th>배송 주소</th>
-		<th>배송 요청 사항</th>
-		<th>배송 정보 수정</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr th:each="delivery : ${delivery}">
-		<td th:text="${delivery.receiverName}"></td>
-		<td th:text="${delivery.receiverPhone}"></td>
-		<td th:text="${delivery.deliveryStatus}"></td>
-		<td th:text="${delivery.receiverAddr}"></td>
-		<td th:text="${delivery.deliveryMessage}"></td>
-		<td>
-			<form th:action="@{/order/orders/receiver}" method="get">
-				<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}">
-				<span th:if="${delivery.deliveryStatus == '배송준비중'}">
-					<input type="submit" class="button" th:value="정보수정">
-				</span>
-				<span th:if="${delivery.deliveryStatus != '배송준비중'}">
-					<span th:text="${delivery.deliveryStatus}"></span>
-				</span>
-			</form>
-		</td>
-	</tr>
-	</tbody>
-</table>
-
-<!-- 구매 상품 -->
-<h2>구매 상품</h2>
-<table>
-	<thead>
-	<tr>
-		<th>상품명</th>
-		<th>옵션</th>
-		<th>수량</th>
-		<th>가격</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr th:each="item : ${item}">
-		<td th:text="${item.productName}"></td>
-		<td th:text="${item.option == null ? '없음': item.option}"></td>
-		<td th:text="${item.quantity}"></td>
-		<td th:text="${item.totalPrice}"></td>
-	</tr>
-	</tbody>
-</table>
+	<!-- 구매 상품 -->
+	<div class="section">
+		<div class="title">구매 상품</div>
+		<table>
+			<thead>
+			<tr>
+				<th>상품명</th>
+				<th>옵션</th>
+				<th>수량</th>
+				<th>가격</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="item : ${item}">
+				<td th:text="${item.productName}"></td>
+				<td th:text="${item.option == null ? '없음' : item.option}"></td>
+				<td th:text="${item.quantity}"></td>
+				<td th:text="${item.totalPrice + '원'}"></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
 </body>
 </html>
