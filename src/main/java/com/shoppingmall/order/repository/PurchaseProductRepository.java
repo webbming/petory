@@ -38,5 +38,7 @@ public interface PurchaseProductRepository extends JpaRepository<PurchaseProduct
   @Modifying
   @Query("UPDATE PurchaseProduct d SET d.deliveryStatus = :deliveryStatus WHERE d.purchaseProductId= :purchaseProductId")
   void updateDeliveryStatus(@Param("purchaseProductId") Long purchaseProductId, @Param("deliveryStatus") String deliverStatus);
+
+    List<PurchaseProduct> findByPurchaseProductId(Long purchaseProductId);
 }
 

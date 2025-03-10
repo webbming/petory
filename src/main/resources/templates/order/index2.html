@@ -2,343 +2,107 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>주문/결제</title>
-	<style>
-		body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f5f5f5;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px; /* container와 right-section 사이 간격 */
-        }
-        .container {
-            flex: 2; /* 왼쪽 섹션만 감싸도록 */
-            max-width: 700px; /* 왼쪽 섹션 크기 조정 */
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .left-section {
-            padding: 20px;
-        }
-        .right-section {
-            width: 250px; /* 결제 금액 박스 고정 너비 */
-            max-height: 40vh; /* 결제 금액 박스 최대 높이 */
-            padding: 20px;
-            position: sticky;
-            top: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-        }
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: inline-block;
-            width: 80px;
-            font-weight: bold;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-        .form-group .input-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        .form-group input[type="text"] {
-            width: 450px;
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .form-group select {
-            width: 100%; /* 왼쪽 섹션에 맞게 조정 */
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .form-group .delivery-request-custom {
-            display: none;
-            margin-top: 5px;
-        }
-        .form-group button {
-            width: 80px;
-            padding: 8px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-        .form-group button:hover {
-            background-color: #0056b3;
-        }
-        .section-divider {
-            border: 0;
-            height: 1px;
-            background: #ccc;
-            margin: 10px 15px 20px 10px;
-        }
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .total {
-            font-weight: bold;
-            border-top: 1px solid #e0e0e0;
-            padding-top: 10px;
-        }
-        .purchase-btn {
-            width: 100%;
-            padding: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .purchase-btn:hover {
-            background-color: #0056b3;
-        }
-        .note {
-            font-size: 12px;
-            color: #666;
-            margin-top: 10px;
-        }
-        .product-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            border: 1px solid #e0e0e0;
-            padding: 10px;
-        }
-        .product-item img {
-            width: 80px;
-            height: auto;
-            margin-right: 20px;
-            border-right: 1px solid #e0e0e0;
-        }
-        .product-info {
-            flex: 1;
-            border-right: 1px solid #e0e0e0;
-        }
-        .payment-methods {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .payment-methods button {
-            padding: 10px 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f8f8f8;
-            cursor: pointer;
-        }
-        .payment-methods button.active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        .card-select {
-            display: none;
-            margin-top: 10px;
-        }
-        .card-select.active {
-            display: block;
-        }
-	</style>
+	<title>주문 작성</title>
 </head>
 <body>
-<div class="container">
-	<div class="left-section">
-		<!-- 주문제품 -->
-		<div class="title">주문제품 1건</div>
-		<div class="product-item">
-			<img src="https://via.placeholder.com/80x80" alt="Product Image">
-			<div class="product-info">
-				<p>상품명<span>ㅎㄹㄹㄹ</span></p>
-				<p>옵션<span>ㅎ</span></p>
-				<p>수량<span>ㅎ</span></p>
-			</div>
-			<p><span></span>원</p>
-		</div>
+<h1>주문</h1>
 
-		<!-- 주문자 정보 -->
-		<div class="title">주문자 정보</div>
-		<div class="form-group">
-			<div class="input-row">
-				<label for="userName">배송지명:</label>
-				<input type="text" id="userName" placeholder="수령인">
-			</div>
-			<div class="input-row">
-				<label for="phone">전화번호:</label>
-				<input type="text" id="phone" placeholder="010-2671-2562">
-			</div>
-		</div>
 
-		<!-- 배송지 정보 -->
-		<div class="title">배송지</div>
-		<hr class="section-divider">
-		<div class="form-group">
-			<div class="input-row">
-				<label for="receiverName">수령인:</label>
-				<input type="text" id="receiverName" placeholder="받는 사람">
-			</div>
-			<div class="input-row">
-				<label for="receiverPhone">전화번호:</label>
-				<input type="text" id="receiverPhone" placeholder="휴대번호 입력 (-제외)" value="gg">
-			</div>
-			<div class="input-row">
-				<label for="receiver_addr">주소:</label>
-				<input type="text" name="receiverAddr" id="receiver_addr" placeholder="주소를 입력하세요" autocomplete="street-address" readonly>
-				<button onclick="execDaumPostcode()">주소 검색</button>
-			</div>
-			<div class="input-row">
-				<label for="receiver_addr_detail">상세 주소:</label>
-				<input type="text" name="receiver_addr_detail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요">
-			</div>
-			<div class="input-row">
-				<label for="deliveryRequest">배송 요청:</label>
-				<select id="deliveryRequest" onchange="toggleCustomRequest()">
-					<option value="">선택하세요</option>
-					<option value="door">문 앞에 놓아주세요</option>
-					<option value="guard">경비실에 맡겨주세요</option>
-					<option value="contact">수령 전 연락 바랍니다</option>
-					<option value="custom">직접 입력</option>
-				</select>
-			</div>
-			<div class="form-group delivery-request-custom">
-				<input type="text" id="customDeliveryRequest" placeholder="요청 사항을 입력하세요">
-			</div>
-		</div>
+<!-- 주문 항목 입력 폼 -->
+<form id="orderForm">
+	<table>
+		<thead>
+		<tr>
+			<th></th>
+		</tr>
+		</thead>
+	</table>
 
-		<!-- 쿠폰 -->
-		<div class="title">쿠폰</div>
-		<hr class="section-divider">
-		<div class="form-group">
-			<select>
-				<option>쿠폰을 선택해주세요.</option>
-				<option>가입 감사 쿠폰 5천원</option>
-			</select>
-		</div>
 
-		<!-- 결제 수단 -->
-		<div class="title">결제 수단</div>
-		<hr class="section-divider">
-		<div class="payment-methods">
-			<button data-card="true">신한-체크카드</button>
-			<button>toss pay</button>
-			<button>PAYCO</button>
-			<button data-card="true">국제카드체크</button>
-			<button>SSGPAY</button>
-			<button>LPAY</button>
-			<button>카카오페이</button>
-			<button>네이버페이</button>
-		</div>
-		<div class="form-group card-select" id="cardSelect">
-			<select id="cardCompany">
-				<option>카드사 선택</option>
-				<option>신한카드</option>
-				<option>삼성카드</option>
-				<option>현대카드</option>
-				<option>롯데카드</option>
-				<option>비씨카드</option>
-				<option>하나카드</option>
-				<option>NH농협카드</option>
-			</select>
-		</div>
-		<hr class="section-divider">
-	</div>
-</div>
+	<table id="orderTable">
+		<thead>
+		<tr>
+			<th>상품ID</th>
+			<th>상품명</th>
+			<th>수량</th>
+			<th>옵션</th>
+			<th>가격</th>
+			<th>아이디</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td><input type="text" name="productId" placeholder="상품id"></td>
+			<td><input type="text" name="productName" placeholder="상품명"></td>
+			<td><input type="number" name="quantity" placeholder="수량"></td>
+			<td><input type="text" name="option" placeholder="옵션"></td>
+			<td><input type="number" name="price" placeholder="가격"></td>
+			<td><input type="text" name="userId" placeholder="아이디"></td>
+			<td><button type="button" onclick="addRow()">추가</button></td>
+		</tr>
+		</tbody>
+	</table>
 
-<!-- 결제 금액 -->
-<div class="right-section">
-	<div class="title">결제 금액</div>
-	<div class="summary-item">
-		<span>총 제품 금액</span>
-		<span>30,000원</span>
-	</div>
-	<div class="summary-item">
-		<span>쿠폰 할인</span>
-		<span>-0원</span>
-	</div>
-	<div class="summary-item">
-		<span>적립금사용</span>
-		<span>-0원</span>
-	</div>
-	<div class="summary-item">
-		<span>배송비</span>
-		<span>0원</span>
-	</div>
-	<div class="summary-item total">
-		<span>총 결제 금액</span>
-		<span>30,000원</span>
-	</div>
-	<div class="note">
-		위 제품의 구매 조건을 확인하였으며, 결제 및 개인 정보 제3자 제공에 모두 동의합니다.
-		<input type="checkbox">
-	</div>
-	<button class="purchase-btn">30,000원 결제하기</button>
-</div>
+	<button type="button" id="orderButton">주문하기</button>
+</form>
 
 <script>
-	// 결제 수단 버튼 클릭 이벤트
-    const paymentButtons = document.querySelectorAll('.payment-methods button');
-    const cardSelect = document.getElementById('cardSelect');
+	// 새 주문 항목 행 추가
+    function addRow() {
+        const table = document.getElementById("orderTable").getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow(table.rows.length);  // 새 행 추가
 
-    paymentButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            paymentButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
+        // 각 셀에 새로운 입력 필드 추가
+        newRow.innerHTML = `
+            <td><input type="text" name="productId" placeholder="상품id"></td>
+            <td><input type="text" name="productName" placeholder="상품명"></td>
+            <td><input type="number" name="quantity" placeholder="수량"></td>
+            <td><input type="text" name="option" placeholder="옵션"></td>
+            <td><input type="number" name="price" placeholder="가격"></td>
+            <td><input type="text" name="userId" placeholder="아이디"></td>
+            <td><button type="button" onclick="removeRow(this)">삭제</button></td>
+        `;
+    }
 
-            if (this.getAttribute('data-card') === 'true') {
-                cardSelect.classList.add('active');
-            } else {
-                cardSelect.classList.remove('active');
-            }
+    // 주문 항목 삭제
+    function removeRow(button) {
+        const row = button.closest("tr");
+        row.remove();
+    }
+
+    // 주문 처리 함수
+    function order() {
+        const rows = document.querySelectorAll("#orderTable tbody tr");
+        const orderData = [];
+
+        rows.forEach(row => {
+            const productId = row.querySelector('input[name="productId"]').value;
+            const productName = row.querySelector('input[name="productName"]').value;
+            const quantity = row.querySelector('input[name="quantity"]').value;
+            const option = row.querySelector('input[name="option"]').value;
+            const price = row.querySelector('input[name="price"]').value;
+            const userId = row.querySelector('input[name="userId"]').value;
+
+            orderData.push({ productId, productName, quantity, option, price, userId });
         });
+
+        // 주문 API 호출
+        fetch('/order/rest/order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
+        })
+        .then(response => response.json())
+        .then(data => console.log('Order Success:', data))
+        .catch(error => console.error('Error:', error));
+    }
+
+    // 버튼 클릭 시 주문 처리 함수 호출
+    document.getElementById("orderButton").addEventListener("click", function(){
+        order();  // 주문 처리 함수 호출
     });
-
-    // Daum Postcode API (예시용)
-    function execDaumPostcode() {
-        new daum.Postcode({
-            oncomplete: function(data) {
-                var addr = data.address;
-                document.getElementById('receiver_addr').value = addr;
-            }
-        }).open();
-    }
-
-    // 배송 요청 사항 커스텀 입력 토글
-    function toggleCustomRequest() {
-        const deliveryRequest = document.getElementById('deliveryRequest');
-        const customInput = document.querySelector('.delivery-request-custom');
-        if (deliveryRequest.value === 'custom') {
-            customInput.style.display = 'block';
-        } else {
-            customInput.style.display = 'none';
-        }
-    }
 </script>
-<!-- Daum Postcode API 스크립트 추가 (실제 사용 시 API 키 필요) -->
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </body>
 </html>

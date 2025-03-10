@@ -3,6 +3,7 @@ package com.shoppingmall.order.dto;
 import com.shoppingmall.order.domain.PurchaseProduct;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -18,6 +19,8 @@ public class PurchaseProductDto {
   private int quantity; // 수량
   private int price; // 가격
   private String userId;
-  private  String deliveryStatus;
+  private String deliveryStatus;
+  private LocalDateTime createAt;
+  private LocalDateTime cancelAt;
 
 }

@@ -5,6 +5,7 @@ import com.shoppingmall.order.domain.PurchaseProduct;
 import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.domain.PurchaseReview;
 import com.shoppingmall.order.dto.DeliveryChangeDto;
+import com.shoppingmall.order.dto.ProductAndDeliveryDto;
 import com.shoppingmall.order.dto.PurchaseAllDto;
 import com.shoppingmall.order.dto.PurchasePageDto;
 import com.shoppingmall.order.repository.PurchaseReviewRepository;
@@ -35,6 +36,12 @@ public String index() {
 public String index2() {
 	System.out.println("응애");
 	return "order/index2";
+}
+
+@GetMapping("/index4")
+public String index4() {
+	System.out.println("응애");
+return "order/index4";
 }
 
 @GetMapping("/purchase")
@@ -120,6 +127,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 						 @RequestParam(name = "page", defaultValue = "0") int page,
 						 @RequestParam(name = "size", defaultValue = "3") int size,
 						 Model model){
+
 	Pageable pageable = PageRequest.of(page, size);
 	PurchasePageDto purchasePageDto = service.purchaseList(purchaseState, pageable);
 	// 페이지 정보를 모델에 추가
@@ -195,14 +203,14 @@ return "order/orderResultAll";
 
 
 
-	//수령인 정보 변경
+	//수령인 정보 변경 / state가 false일 경우 경로이동
 	@GetMapping("/orders/receiver")
 	public String receiverChange(@ModelAttribute DeliveryChangeDto deliveryChangeDto,
 								 @RequestParam(name="state", required = false, defaultValue = "show") String state,
 								 Model model){
 	model.addAttribute("delivery", service.receiverChange(deliveryChangeDto, state));
 		if(state.equals("show")){
-			model.addAttribute("purchaseId", deliveryChangeDto.getPurchaseId());
+			model.addAttribute("purchaseProductId", deliveryChangeDto.getPurchaseProductId());
 			return "order/receiverChange";
 			}
 	return "redirect:/order";
@@ -212,9 +220,14 @@ return "order/orderResultAll";
 	public String purchaseNumber(@RequestParam(name = "userId") String userId,
 														@RequestParam(name = "purchaseProductId") Long purchaseProductId,
 														Model model){
-	 service.purchaseNumber(userId, purchaseProductId);
-
-	return "";
+	System.out.println(userId + purchaseProductId);
+	 ProductAndDeliveryDto productAndDeliveryDto = service.purchaseNumber(userId, purchaseProductId);
+	 if(productAndDeliveryDto.equals("false")){
+		 model.addAttribute("message", "오류가 발생하여 다시 실행 바랍니다.");
+		 return "redirect:order";
+	 }
+	 model.addAttribute("result", productAndDeliveryDto);
+	return "order/orderResultOne";
 	};
 
 }
