@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+
 @RestController
 @RequestMapping("/api/users")
 public class UserApiController {
@@ -47,6 +48,20 @@ public class UserApiController {
     this.emailService = emailService;
     this.boardRepository = boardRepository;
   }
+
+  @GetMapping
+  public ResponseEntity<ApiResponse<?>> getUserInfo(Authentication authentication) {
+    if(authentication == null || authentication.getPrincipal() == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    String userId = authentication.getName();
+    UserResponseDTO userResponseDTO = userService.getUser(userId);
+
+    return ResponseEntity.ok(ApiResponse.success(userResponseDTO));
+  }
+
+
 
   // 회원가입 필드별 유효성 검사
   @Operation(summary = "중복된 값이 존재하는지 확인하는 컨트롤러", description = "fieldName 과 fieldValue 를 정보로 요청")

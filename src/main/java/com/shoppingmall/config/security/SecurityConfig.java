@@ -16,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.multipart.support.MultipartFilter;
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,7 +74,9 @@ public class SecurityConfig {
 
         // CSRF 보호 비활성화
         http.csrf(csrf -> csrf.disable());
-        
+
+
+
         http
         	.rememberMe(remember -> remember
             .key("uniqueAndSecret") // 보안 키 설정
@@ -88,7 +92,8 @@ public class SecurityConfig {
           );
 
         // URL 기반 접근 권한 설정
-        http.authorizeHttpRequests(auth -> auth
+        http
+                .authorizeHttpRequests(auth -> auth
                 // 공통 페이지 - 인증 없이 접근 가능
                 .requestMatchers("/", "/home", "/index.html").permitAll()
 
@@ -148,30 +153,24 @@ public class SecurityConfig {
         );
 
         // CORS 설정 (프론트엔드 개발용)
-        http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
-            CorsConfiguration configuration = new CorsConfiguration();
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-            // 허용할 오리진(출처) 설정
-            configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://mydomain.com"));
 
-            // 허용할 HTTP 메서드 설정
-            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-            // 자격 증명 허용 (쿠키 포함 요청 허용)
-            configuration.setAllowCredentials(true);
-
-            // 모든 헤더 허용
-            configuration.setAllowedHeaders(Collections.singletonList("*"));
-
-            // pre-flight 요청 캐시 시간 (초)
-            configuration.setMaxAge(3600L);
-
-            // 노출할 응답 헤더
-            configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
-
-            return configuration;
-        }));
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:5173");  // React 앱의 URL
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.addAllowedHeader("*");  // 모든 헤더 허용
+        configuration.setAllowCredentials(true);  // 자격 증명 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);  // 모든 경로에 CORS 설정 적용
+
+        return source;
     }
 }

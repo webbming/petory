@@ -12,7 +12,8 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDTO {
-  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd / HH-mm");
+
+
   private String userId;
   private String email;
   private String nickname;
