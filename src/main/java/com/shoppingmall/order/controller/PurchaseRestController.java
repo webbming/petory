@@ -3,6 +3,8 @@ package com.shoppingmall.order.controller;
 import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseProduct;
+import com.shoppingmall.order.dto.DeliveryUpdateRequestDto;
+import com.shoppingmall.order.dto.PurchaseDeliveryDto;
 import com.shoppingmall.order.dto.PurchaseProductDto;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseProductRepository;
@@ -92,5 +94,10 @@ public class PurchaseRestController {
       Map<String, String> response = new HashMap<>();
       response.put("updateState", state);
       return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/receiverChange")
+    public ResponseEntity<String> receiverChange(@ModelAttribute DeliveryUpdateRequestDto dto){
+      return ResponseEntity.ok(service.change(dto));
     }
     }

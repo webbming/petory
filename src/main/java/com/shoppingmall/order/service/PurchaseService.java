@@ -10,6 +10,7 @@ import com.shoppingmall.order.repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -124,8 +125,10 @@ public class PurchaseService {
 			deliveryState = "배송취소";
 		}
 		System.out.println("SER" + "안녕" + deliveryState);
-//		productRepo.updateDeliveryStatus(purchaseProductId, deliveryState);
-		return "ㅎㅎ";
+		PurchaseProduct product = productRepo.findByPurchaseId(purchaseProductId).get(0);
+		product.setDeliveryStatus(deliveryState);
+		productRepo.save(product);
+		return deliveryState;
 	}
 
 	//주문 취소
@@ -185,5 +188,20 @@ public class PurchaseService {
 					.message("false")
 					.build();
 
+	}
+
+	public String change(DeliveryUpdateRequestDto dto) {
+		List<PurchaseDelivery> receiver = deliveryRepo.findByPurchaseId(dto.getPurchaseId());
+		PurchaseDelivery receiverChanse = receiver.get(0);
+		receiverChanse.setReceiverName(dto.getReceiverName());
+		receiverChanse.setReceiverPhone(dto.getReceiverPhone());
+		if (dto.getReceiverAddrDetail() == null) {
+			dto.setReceiverAddrDetail("");
+		}
+		receiverChanse.setReceiverAddr(dto.getReceiverAddr() + " " + dto.getReceiverAddrDetail());
+		receiverChanse.setDeliveryMessage(dto.getDeliveryMessage());
+		deliveryRepo.save(receiverChanse);
+		String message = "수정 되었습니다.";
+		return message;
 	}
 }
