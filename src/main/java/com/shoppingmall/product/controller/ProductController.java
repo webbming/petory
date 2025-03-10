@@ -1,5 +1,7 @@
 package com.shoppingmall.product.controller;
 
+import com.shoppingmall.product.dto.ProductResponseDTO;
+import com.shoppingmall.user.dto.ApiResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -318,4 +320,11 @@ public class ProductController {
 
     // 리뷰 로그인 사용자 ID 반환 
     // private Long getUserIdFromPrincipal(Principal principal) {}
+
+
+    @GetMapping("/api/products")
+    public ResponseEntity<ApiResponse<?>> getProduct() {
+       List<ProductResponseDTO> list =  productService.bestLikeProducts();
+       return ResponseEntity.ok(ApiResponse.success(list));
+    }
 }

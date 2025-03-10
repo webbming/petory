@@ -1,5 +1,7 @@
 package com.shoppingmall.board.controller;
 
+import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.user.dto.ApiResponse;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,16 +12,19 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.coyote.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -260,5 +265,13 @@ public class BoardController {
 	public String commentDelete(@RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId) {
 		commentService.deleteComment(commentId);
 		return "redirect:/board/read?boardId=" + boardId;
+	}
+
+
+	@GetMapping("/board/list/{type}")
+	public ResponseEntity<ApiResponse<?>> boardList(@PathVariable("type") String type) {
+		System.out.println("하하 왓당게 ");
+		 List<BoardResponseDTO> boardResponseDTO = boardService.getBoardContent(type);
+		 return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}
 }

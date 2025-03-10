@@ -1,6 +1,9 @@
 package com.shoppingmall.board.service;
 
+import com.shoppingmall.board.dto.BoardResponseDTO;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,9 @@ public class BoardService {
 	@Autowired
 	private BoardRepository repository;
 	private UserRepository userRepository;
-	
+  @Autowired
+  private BoardRepository boardRepository;
+
 	//저장
 	public void savePost(Board board){
 		repository.save(board);
@@ -119,4 +124,21 @@ public class BoardService {
 	public void deletePost(Long board_id) {
 		repository.deleteById(board_id);
 	}
+
+  public List<BoardResponseDTO> getBoardContent(String type) {
+		if(type.equals("best")){
+				return boardRepository.findTop9ByOrderByLikeCountDesc()
+				.stream()
+				.map(Board :: toDTO)
+				.toList();
+
+
+		}else {
+		 	return boardRepository.findTop9ByOrderByCreatedAtDesc()
+					.stream()
+					.map(Board :: toDTO)
+					.toList();
+		}
+
+  }
 }

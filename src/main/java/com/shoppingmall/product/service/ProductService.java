@@ -1,8 +1,10 @@
 package com.shoppingmall.product.service;
 
+import com.shoppingmall.product.dto.ProductResponseDTO;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -114,5 +116,12 @@ public class ProductService {
             default:  // 기본 정렬: 신제품순
                 return productRepository.findBySubcategoryOrderByCreatedAtDesc(subcategory);
         }
+    }
+
+    public List<ProductResponseDTO> bestLikeProducts() {
+
+       return productRepository.findTop4ByOrderByAverageRating()
+           .stream().map(ProductResponseDTO :: toDTO).toList();
+
     }
 }

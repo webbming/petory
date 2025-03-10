@@ -27,6 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBySubcategoryOrderByCreatedAtDesc(Subcategory subcategory);
     Page<Product> findAll(Pageable pageable);
 
+    List<Product> findTop4ByOrderByAverageRating();
 }
 
 

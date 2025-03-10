@@ -77,7 +77,6 @@ public class Board {
     }
 
     public BoardResponseDTO toDTO(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd / HH-mm");
         return BoardResponseDTO.builder()
                 .boardId(boardId)
                 .title(title)

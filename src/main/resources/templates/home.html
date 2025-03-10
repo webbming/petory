@@ -38,8 +38,8 @@
       <article class="inner-120">
         <h2>인기 급상승🔥</h2>
         <div class="filter">
-          <button>인기글</button>
-          <button>최신글</button>
+          <button class="active" data-type="best">인기글</button>
+          <button data-type="trend">최신글</button>
         </div>
         <div class="popular_slick false">
           <div>
@@ -153,7 +153,7 @@
     </section>
     <section>
       <article class="inner-120">
-        <h2>베스트 상품</h2>
+        <h2>베스트 상품 👍</h2>
         <div class="scroll">
           <ul class="product_list">
 
@@ -177,8 +177,8 @@
 </div>
 
 <div th:replace="fragment/footer :: footerFragment"></div>
+<script type="module" src="/js/home.js"></script>
 <script>
-
   $('.post-wrapper').slick({
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -188,26 +188,6 @@
     autoplaySpeed: 2000,
     fade: true
   });
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const menuItems = document.querySelectorAll(".page-tab-area ul li a");
-
-    menuItems.forEach(item => {
-      item.addEventListener("click", function (event) {
-
-
-        // 기존 활성화된 요소의 .active 제거
-        document.querySelectorAll(".page-tab-area ul li").forEach(li => {
-          li.classList.remove("active");
-        });
-
-        // 클릭한 요소의 부모인 li에 .active 추가
-        this.parentElement.classList.add("active");
-      });
-    });
-  });
-
 </script>
-
 </body>
 </html>
