@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +60,7 @@ public class ProductController {
         List<Product> products;
 
         if (petType != null) {
-            products = productService.getProductsByPetType(petType); // 🐱🐶 petType 필터링 적용
+            products = productService.getProductsByPetTypeSorted(petType, sort); // 🐱🐶 petType 필터링 적용
         } else {
             products = productService.listAllProductsSorted(sort);
         }
@@ -71,6 +74,7 @@ public class ProductController {
         model.addAttribute("products", products);
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("selectedPetType", petType); // 선택된 petType 유지
+        model.addAttribute("sort", sort);
         return "/product/index2";
     }
 
@@ -89,25 +93,21 @@ public class ProductController {
                              @RequestParam("categoryId") Long categoryId,
                              @RequestParam("subcategoryId") Long subcategoryId,
                              @RequestParam("petType") PetType petType,
-                             @RequestParam("imageFile") MultipartFile imageFile,
+                             @RequestParam("mainImageFiles") List<MultipartFile> mainImageFiles, // 변경된 부분
                              @RequestParam("detailImageFiles") List<MultipartFile> detailImageFiles) {
-        // 1. 대표 이미지 업로드 후 URL 반환
-        String imageUrl = uploadFile(imageFile);
-        if (imageUrl != null) {
-            product.setImageUrl(imageUrl); // product에 imageUrl 저장
-        }
-
-        // 2. 상세 이미지 업로드
+        // 대표 이미지 여러 장 업로드
+        List<String> mainImageUrls = uploadFiles(mainImageFiles);
+        // 상세 이미지 업로드
         List<String> detailImageUrls = uploadFiles(detailImageFiles);
         
-     //  petType 설정
         product.setPetType(petType);
+        product.setImageUrls(mainImageUrls); // 대표 이미지 목록에 저장
+        product.setDetailImageUrls(detailImageUrls);
 
-        // 3. 상품 저장 (이제 대표 이미지가 포함됨)
         productService.saveProduct(product, categoryId, subcategoryId, detailImageUrls);
-
         return "redirect:/products";
     }
+
 
 
     // 단일 파일 업로드 메소드
@@ -148,28 +148,34 @@ public class ProductController {
 
     // 상품 상세 조회 페이지
     @GetMapping("/products/{id}")
-    public String viewProduct(@PathVariable("id") Long id, Model model) {
-        Product product = productService.getProductById(id);
-        List<Review> reviews = reviewService.getReviewsByProductId(id);
+    public String viewProduct(@PathVariable("id") Long productId,
+                              @RequestParam(defaultValue = "0") int page, // 페이지 파라미터 (기본 0)
+                              Model model) {
+        int pageSize = 5; // 리뷰 5개씩 보여줄 때
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
         
-        // ✅ 리뷰별 댓글 저장하는 Map 추가
+        // 페이징된 리뷰 목록
+        Page<Review> reviewsPage = reviewService.getPagedReviewsByProductId(productId, pageRequest);
+
+        Product product = productService.getProductById(productId);
+        
+        // 리뷰별 댓글 저장 Map
         Map<Long, List<Map<String, Object>>> reviewComments = new HashMap<>();
-        
-        for (Review review : reviews) {
+        for (Review r : reviewsPage.getContent()) {
             try {
-                reviewComments.put(review.getReviewId(), reviewService.getComments(review.getReviewId()));
+                reviewComments.put(r.getReviewId(), reviewService.getComments(r.getReviewId()));
             } catch (JsonProcessingException e) {
-                System.err.println("JSON 파싱 오류: " + e.getMessage());
-                reviewComments.put(review.getReviewId(), List.of()); // 예외 발생 시 빈 리스트 추가
+                reviewComments.put(r.getReviewId(), List.of());
             }
         }
 
         model.addAttribute("product", product);
-        model.addAttribute("reviews", reviews);
-        model.addAttribute("reviewComments", reviewComments); // ✅ 댓글 데이터를 Thymeleaf에 전달
+        model.addAttribute("reviewsPage", reviewsPage); // 페이징된 리뷰
+        model.addAttribute("reviewComments", reviewComments);
 
         return "/product/productDetail";
     }
+
 
 
     // 상품 수정 폼
@@ -188,25 +194,21 @@ public class ProductController {
                               @ModelAttribute("product") Product product,
                               @RequestParam("categoryId") Long categoryId,
                               @RequestParam("subcategoryId") Long subcategoryId,
-                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                              @RequestParam(value = "mainImageFiles", required = false) List<MultipartFile> mainImageFiles, // 변경
                               @RequestParam(value = "detailImageFiles", required = false) List<MultipartFile> detailImageFiles) {
 
-        // 기존 상품 정보 가져오기
         Product existingProduct = productService.getProductById(id);
 
-        // 기존 데이터 유지
         product.setProductId(existingProduct.getProductId());
         product.setCategory(categoryService.findCategoryById(categoryId));
         product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));
 
-        // 대표 이미지 업데이트 (새로운 이미지가 업로드된 경우에만 변경)
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String imageUrl = uploadFile(imageFile);
-            if (imageUrl != null) {
-                product.setImageUrl(imageUrl);
-            }
+        // 대표 이미지 업데이트: 새 대표 이미지가 업로드되면 업데이트, 없으면 기존 유지
+        if (mainImageFiles != null && !mainImageFiles.isEmpty()) {
+            List<String> mainImageUrls = uploadFiles(mainImageFiles);
+            product.setImageUrls(mainImageUrls);
         } else {
-            product.setImageUrl(existingProduct.getImageUrl()); // 기존 이미지 유지
+            product.setImageUrls(existingProduct.getImageUrls());
         }
 
         // 상세 이미지 업데이트
@@ -218,8 +220,6 @@ public class ProductController {
         
         return "redirect:/products/" + id;
     }
-
-
 
     // 상품 삭제 처리
     @DeleteMapping("/products/delete/{id}")
@@ -238,7 +238,8 @@ public class ProductController {
         List<Product> products;
 
         if (petType != null) {
-            products = productService.getProductsByCategoryAndPetType(categoryId, petType);
+            // 정렬 옵션까지 적용한 메서드를 사용하도록 수정하는 것이 좋습니다.
+            products = productService.getProductsByCategoryAndPetTypeSorted(categoryId, petType, sort);
         } else {
             products = productService.findProductsByCategory(category, sort);
         }
@@ -250,8 +251,12 @@ public class ProductController {
         model.addAttribute("subcategories", subcategories);
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("selectedPetType", petType); // 선택된 petType 유지
-        return "/product/index2";
+        // 현재 정렬 기준을 모델에 추가
+        model.addAttribute("sort", sort);
+
+        return "product/index2";
     }
+
 
 
     // 카테고리별 상품 조회 JSON
@@ -274,7 +279,7 @@ public class ProductController {
         List<Product> products;
 
         if (petType != null) {
-            products = productService.getProductsBySubcategoryAndPetType(subId, petType);
+            products = productService.getProductsBySubcategoryAndPetTypeSorted(subId, petType, sort);
         } else {
             products = productService.findProductsBySubcategory(subcategory, sort);
         }
@@ -287,8 +292,10 @@ public class ProductController {
         model.addAttribute("subcategories", subcategories);
         model.addAttribute("categories", categoryService.findAllCategories());
         model.addAttribute("selectedPetType", petType); // 선택된 petType 유지
-        return "/product/index2";
+        model.addAttribute("sort", sort);
+        return "product/index2";
     }
+
 
 
     // 상품 검색 (상품 이름으로)

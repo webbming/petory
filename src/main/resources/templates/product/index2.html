@@ -278,8 +278,9 @@
             <ul class="category-list">
                 <li th:each="cat : ${categories}"
                     th:if="${selectedPetType == null or cat.petType == selectedPetType}">
-                    <a th:href="@{'/products/category/' + ${cat.categoryId} (petType=${selectedPetType})}"
-                       th:text="${cat.categoryName}">카테고리명</a>
+                    <a th:href="@{'/products/category/' + ${cat.categoryId} (petType=${selectedPetType}, sort=${sort})}"
+   th:text="${cat.categoryName}">카테고리명</a>
+
                 </li>
             </ul>
 
@@ -303,12 +304,12 @@
             <!-- 펫 필터 -->
             <div class="pet-filter-container">
                 <a class="pet-filter-button"
-                   th:classappend="${selectedPetType == 'CAT'} ? ' active'"
-                   th:href="@{/products(petType='CAT')}">🐱 냥</a>
-                <a class="pet-filter-button"
-                   th:classappend="${selectedPetType == 'DOG'} ? ' active'"
-                   th:href="@{/products(petType='DOG')}">🐶 댕</a>
-                <a class="pet-filter-button" th:href="@{/products}">ALL</a>
+				   th:classappend="${selectedPetType == 'CAT'} ? ' active'"
+				   th:href="@{/products(petType='CAT', sort=${sort})}">🐱 냥</a>
+				<a class="pet-filter-button"
+				   th:classappend="${selectedPetType == 'DOG'} ? ' active'"
+				   th:href="@{/products(petType='DOG', sort=${sort})}">🐶 댕</a>
+				<a class="pet-filter-button" th:href="@{/products(sort=${sort})}">ALL</a>
             </div>
         </div>
 
@@ -320,10 +321,11 @@
                     <a th:href="@{'/products/category/' + ${currentCategory.categoryId} (petType=${selectedPetType})}">🐾 전체</a>
                 </li>
                 <li th:each="sub : ${subcategories}">
-                    <a th:href="@{'/products/subcategory/' + ${sub.subcategoryId} (petType=${selectedPetType})}">
-                        <span th:text="${sub.category.petType == T(com.shoppingmall.product.model.PetType).DOG ? '🐶' : '🐱'}">🐶</span>
-                        <span th:text="${sub.subcategoryName}">소분류명</span>
-                    </a>
+                    <a th:href="@{'/products/subcategory/' + ${sub.subcategoryId} (petType=${selectedPetType}, sort=${sort})}">
+    <span th:text="${(sub.category.petType != null and sub.category.petType == T(com.shoppingmall.product.model.PetType).DOG) ? '🐶' : '🐱'}"></span>
+    <span th:text="${sub.subcategoryName}">소분류명</span>
+</a>
+
                 </li>
             </ul>
         </div>

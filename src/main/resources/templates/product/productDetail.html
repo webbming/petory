@@ -1,516 +1,208 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>상품 상세</title>
-    <style>
-		body {
-		    font-family: Arial, sans-serif;
-		    background-color: #f4f7fc;
-		    margin: 0;
-		    padding: 0;
-		}
-		.container, .content-section {
-		    display: flex;
-		    justify-content: center;
-		    width: 80%;
-		    max-width: 1200px; /* 최대 너비 제한 */
-		    margin: 20px auto;
-		    background-color: white;
-		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		    padding: 20px;
-		    border-radius: 8px;
-		}
-		.container {
-		    flex-direction: row;
-		    align-items: flex-start;
-		}
-		.content-section {
-		    flex-direction: column;
-		}
-		.product-image {
-		    flex: 1;
-		    margin-right: 20px;
-		}
-		.product-info {
-		    flex: 2;
-		    padding-left: 20px;
-		}
-		.product-description, .product-detail-images, .reviews {
-		    text-align: center;
-		    margin-top: 20px;
-		}
-		.product-image img, .product-detail-images img {
-		    max-width: 100%;
-		    max-width: 900px;
-		    height: auto;
-		    border-radius: 8px;
-		    display: block;
-	        margin: 0 auto 10px;
-	        object-fit: contain;
-		}
-		.product-image img {
-		    width: 500px;
-		    height: auto;
-		    max-height: 500px;
-		    object-fit: contain;
-		}
-		.price {
-		    color: #4A90E2;
-		    font-size: 18px;
-		    font-weight: bold;
-		}
-		.reviews, .review, .comments {
-		    background-color: #fff;
-		    padding: 15px;
-		    margin-top: 10px;
-		    border-radius: 5px;
-		    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-		    margin-bottom: 10px; /* 리뷰 간 구분 */
-		}
-		.reviews {
-		    max-width: 800px;
-		    width: 85%;
-		    margin: 20px auto;
-		    padding: 20px;
-		    background: white;
-		    border-radius: 10px;
-		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		}
-		.form-input, .form-textarea {
-		    width: 100%;
-		    padding: 8px;
-		    margin-top: 5px;
-		    border-radius: 4px;
-		    border: 1px solid #ddd;
-		}
-		.form-label {
-		    display: block;
-		    margin-top: 20px;
-		    color: #666;
-		}
-		.review {
-		    display: flex;
-		    flex-wrap: wrap;  /* 💡 내부 요소가 너무 길어지면 다음 줄로 자동 배치 */
-		    align-items: flex-start;
-		    gap: 15px;
-		    background: #f9f9f9;
-		    padding: 15px;
-		    margin-top: 10px;
-		    border-radius: 10px;
-		    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-		    min-height: 120px;  /* 최소 높이 설정 */
-		    overflow: hidden;
-		    position: relative;
-		}
-		.review img {
-		    width: 80px;
-		    height: 80px;
-		    border-radius: 10px;
-		    flex-shrink: 0;
-		}
-		.review-content {
-		    flex-grow: 1;
-		    min-width: 60%;
-		    max-width: 65%;
-		    word-wrap: break-word;
-		    white-space: normal;  /* 💡 긴 글도 자동 줄바꿈 */
-		    overflow: hidden;
-		}
-		.comments {
-		    width: 100%;
-		    background: #e8e8e8;
-		    padding: 10px;
-		    margin-top: 15px;
-		    border-radius: 10px;
-		    overflow: visible;  /* 💡 내부 요소가 가려지지 않도록 설정 */
-		    word-wrap: break-word;
-		}
-		.comment-section {
-		    flex-grow: 1;
-		    min-width: 30%;
-		    max-width: 35%;
-		    text-align: right;
-		    display: flex;
-		    flex-direction: column;
-		    align-items: flex-end;
-		}
-		.comment-section form {
-		    width: 100%;
-		}
-		
-		.comment-section input {
-		    width: 100%;
-		    max-width: 250px;
-		    padding: 5px;
-		    margin-bottom: 5px;
-		    border-radius: 5px;
-		    border: 1px solid #ddd;
-		}
-		
-		.comment-section button {
-		    padding: 5px 10px;
-		    font-size: 14px;
-		    cursor: pointer;
-		}
-		.comment {
-		    padding: 5px;
-		    border-bottom: 1px solid #ddd;
-		}
-		.comment:last-child {
-		    border-bottom: none;
-		}
-		@media (max-width: 768px) {
-		    .container, .content-section {
-		        flex-direction: column;
-		        width: 95%;
-		    }
-		    .product-info {
-		        width: 100%;
-		        padding-left: 0;
-		    }
-		}
-		@media (max-width: 1200px) {
-		    .product-detail-images img {
-		        max-width: 90%;  /* 화면이 작아지면 유동적으로 줄어듦 */
-		    }
-		}
-	
-		@media (max-width: 1200px) {
-		    .container, .content-section {
-		        width: 90%; /* 화면이 작아지면 유동적으로 줄어듦 */
-		    }
-		}
-		@media (max-width: 768px) {
-		    .product-detail-images img {
-		        max-width: 100%;  /* 모바일에서는 화면에 맞춤 */
-		    }
-		}
-		.wishlist-btn:hover {
-		    color: red;
-		}
-		.add-to-cart, .wishlist-btn {
-		    margin-top: 20px;
-		    padding: 10px 20px;
-		    color: white;
-		    border: none;
-		    cursor: pointer;
-		    font-size: 16px;
-		    border-radius: 20px;
-		    width: 100%;
-		    flex: 1;
-		}
-		.add-to-cart {
-		    background-color: #4A90E2;
-		    color: white;
-		}
-		.wishlist-btn {
-		    background-color: white;
-		    color: #4A90E2;
-		    border: 1px solid #4A90E2;
-		}
-		.form-buttons {
-		    display: flex;
-		    justify-content: space-between;
-		    width: 100%; /* 전체 너비 사용 */
-		    margin-top: 10px; /* 버튼과 가격 사이 간격 조정 */
-		}
-		.hidden {
-		    display: none; /* 기본적으로 숨김 */
-		}
-		.visible {
-		    display: block; /* 첫 번째 이미지만 표시 */
-		}
-		.description-img {
-		    width: 100%;
-		    margin-bottom: 10px;
-		}
-		#toggle-button {
-		    width: 100%;
-		    padding: 10px;
-		    background-color: #f5f5f5;
-		    border: none;
-		    cursor: pointer;
-		    font-size: 16px;
-		}
-		#hidden-description {
-	        display: none;
-	        opacity: 0;
-	        transition: opacity 0.3s ease-in-out;
-	    }
-	
-	    #hidden-description.show {
-	        display: block;
-	        opacity: 1;
-	    }
-	
-	    #toggle-button {
-	        display: flex;
-	        align-items: center;
-	        justify-content: center;
-	        width: 100%;
-	        padding: 12px;
-	        background-color: #ffffff;
-	        border: 1px solid #ddd;
-	        border-radius: 8px;
-	        cursor: pointer;
-	        font-size: 16px;
-	        font-weight: bold;
-	        color: #333;
-	        margin-top: 10px;
-	        transition: background-color 0.3s ease-in-out;
-	    }
-	
-	    #toggle-button:hover {
-	        background-color: #f5f5f5;
-	    }
-	
-	    #toggle-button i {
-	        margin-left: 5px;
-	        transition: transform 0.3s ease-in-out;
-	    }
-	
-	    #toggle-button.active i {
-	        transform: rotate(180deg);
-	    }	
-    </style>
-	    <script>
-	    document.addEventListener("DOMContentLoaded", function () {
-	        calculateAverageRating();
-	        updateTotalPrice();
-	    });
-	
-	    function updateTotalPrice() {
-	        let basePrice = parseInt(document.getElementById('product-price').innerText.replace('원', ''));
-	        let totalPrice = 0;
-	
-	        selectedOptions.forEach(option => {
-	            totalPrice += basePrice * option.quantity;
-	        });
-	
-	        document.getElementById('total-price').innerText = totalPrice + '원';
-	    }
-	
-	    function calculateAverageRating() {
-	        let ratings = document.querySelectorAll('.review-rating');
-	        let total = 0;
-	        let count = ratings.length;
-	
-	        ratings.forEach(rating => {
-	            total += parseInt(rating.dataset.rating);
-	        });
-	
-	        let avg = count > 0 ? (total / count).toFixed(1) : 0;
-	        document.getElementById('average-rating').innerText = avg + "점";
-	
-	        let stars = '⭐'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
-	        document.getElementById('average-stars').innerText = stars;
-	    }
-	
-	    let selectedOptions = [];
-	
-	    function addOption() {
-	        const selectBox = document.getElementById("product-option");
-	        const selectedText = selectBox.options[selectBox.selectedIndex].text;
-	        const selectedValue = selectBox.value;
-	
-	        if (!selectedValue) return;
-	        if (selectedOptions.some(opt => opt.value === selectedValue)) {
-	            alert("이미 선택한 옵션입니다.");
-	            return;
-	        }
-	
-	        selectedOptions.push({
-	            value: selectedValue,
-	            text: selectedText,
-	            quantity: 1
-	        });
-	
-	        updateOptionList();
-	    }
-	
-	    function updateOptionList() {
-	        const container = document.getElementById("selected-options");
-	        container.innerHTML = "";
-	
-	        selectedOptions.forEach((opt, index) => {
-	            const optionRow = document.createElement("div");
-	            optionRow.classList.add("option-item");
-	            optionRow.innerHTML = `
-	                <span><strong>${opt.text}</strong></span>
-	                <button onclick="changeQuantity(${index}, -1)">-</button>
-	                <span>${opt.quantity}</span>
-	                <button onclick="changeQuantity(${index}, 1)">+</button>
-	                <button onclick="removeOption(${index})">X</button>
-	            `;
-	            container.appendChild(optionRow);
-	        });
-	
-	        updateTotalPrice(); // ✅ 옵션 변경 시 총 가격 업데이트
-	    }
-	
-	    function changeQuantity(index, change) {
-	        selectedOptions[index].quantity += change;
-	        if (selectedOptions[index].quantity < 1) {
-	            selectedOptions[index].quantity = 1;
-	        }
-	        updateOptionList();
-	    }
-	
-	    function removeOption(index) {
-	        selectedOptions.splice(index, 1);
-	        updateOptionList();
-	    }
-	
-	    document.addEventListener("DOMContentLoaded",  function () {
-            var wishlistButton = document.getElementById('wishlistButton');
-
-            if (wishlistButton) {
-                wishlistButton.addEventListener('click', async function () {
-                    var userId = document.getElementById('userId').value;  // 유저 ID 가져오기
-                    var productId = document.getElementById('productId').value;  // 상품 ID 가져오기
-
-                    if (!userId || !productId) {
-                        alert('유저 정보 또는 상품 정보를 찾을 수 없습니다.');
-                        return;
-                    }
-
-                    const response = await fetch(`/wishlist/add?userId=${userId}&productId=${productId}`, {
-                        method: 'POST'
-                    });
-
-                 const data = await response.json()
-
-                  if(response.status === 400) {
-                      console.log("찜 목록 추가에 실패 하였습니다.")
-                      console.log(data)
-                  }
-
-                  if(response.status === 200){
-                      console.log("찜 하기 성공!")
-                      console.log(data)
-                  }
-                });
-            }
-        });
-	    function toggleDescription() {
-	        let hiddenSection = document.getElementById("hidden-description");
-	        let button = document.getElementById("toggle-button");
-	        let icon = button.querySelector("i");
-
-	        if (hiddenSection.classList.contains("show")) {
-	            hiddenSection.classList.remove("show");
-	            setTimeout(() => hiddenSection.style.display = "none", 300);
-	            button.innerHTML = '상세정보 펼쳐보기 <i>▼</i>';
-	        } else {
-	            hiddenSection.style.display = "block";
-	            setTimeout(() => hiddenSection.classList.add("show"), 10);
-	            button.innerHTML = '상세정보 접기 <i>▲</i>';
-	        }
-	    }
-	</script>
+  <meta charset="UTF-8">
+  <title>상품 상세</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <style>
+    body {font-family: Arial, sans-serif; background-color: #f4f7fc; margin: 0; padding: 0;}
+    .container {display: flex; justify-content: center; width: 80%; max-width: 1200px; margin: 20px auto; background-color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 20px; border-radius: 8px;}
+    .gallery-container {width: 500px; margin-right: 20px;}
+    .swiper-container.gallery-top {width: 100%; height: 500px; border-radius: 8px; overflow: hidden; margin-bottom: 10px;}
+    .swiper-container.gallery-thumbs {width: 100%; height: 100px;}
+    .swiper-slide img {width: 100%; height: 100%; object-fit: contain;}
+    .product-info {flex: 1; padding-left: 20px;}
+    .price {color: #4A90E2; font-size: 18px; font-weight: bold;}
+    .option-list {margin-top: 10px;}
+    .option-item {display: flex; align-items: center; gap: 5px; margin-bottom: 5px;}
+    .content-section {display: flex; flex-direction: column; width: 80%; max-width: 1200px; margin: 20px auto; background-color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 20px; border-radius: 8px;}
+    .product-detail-images img {width: 100%; max-width: 900px; margin: 0 auto 10px; display: block; object-fit: contain; border-radius: 8px;}
+    #hidden-description {display: none; opacity: 0; transition: opacity 0.3s ease-in-out;}
+    #hidden-description.show {display: block; opacity: 1;}
+    #toggle-button {width: 100%; padding: 10px; background-color: #f5f5f5; border: none; cursor: pointer; font-size: 16px; margin-top: 10px; border-radius: 8px;}
+    .reviews, .review, .comments {background-color: #fff; padding: 15px; margin-top: 10px; border-radius: 5px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 10px;}
+    .reviews {max-width: 800px; width: 85%; margin: 20px auto;}
+    .review {display: flex; flex-wrap: wrap; align-items: flex-start; gap: 15px; background: #f9f9f9; padding: 15px; margin-top: 10px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); min-height: 120px; overflow: hidden; position: relative;}
+    .review img {width: 80px; height: 80px; border-radius: 10px; flex-shrink: 0;}
+    .wishlist-btn:hover {color: red;}
+    .add-to-cart, .wishlist-btn {margin-top: 20px; padding: 10px 20px; color: white; border: none; cursor: pointer; font-size: 16px; border-radius: 20px; width: 100%; flex: 1;}
+    .add-to-cart {background-color: #4A90E2; color: white;}
+    .wishlist-btn {background-color: white; color: #4A90E2; border: 1px solid #4A90E2;}
+    .form-buttons {display: flex; justify-content: space-between; width: 100%; margin-top: 10px;}
+    .pagination a {display: inline-block; padding: 8px 16px; margin-right: 4px; border-radius: 5px; border: 1px solid #ddd; background-color: #f8f8f8; color: black; text-align: center; text-decoration: none;}
+    .pagination a.active {background-color: #4CAF50; color: white; border: 1px solid #4CAF50;}
+    .pagination a:hover:not(.active) {background-color: #ddd;}
+    .pagination {display: flex; justify-content: center; list-style-type: none; padding: 0;}
+    .pagination li {margin: 0 5px;}
+    .review-summary {display: flex; margin-bottom: 20px; gap: 20px;}
+    .average-rating-container {width: 50%; text-align: center;}
+    .average-rating-display {font-size: 32px; font-weight: bold; margin-bottom: 10px;}
+    .average-rating-stars {display: inline-block; vertical-align: middle; font-size: 22px; margin-top: 5px;}
+    .rating-bars {width: 50%;}
+    .rating-row {display: flex; align-items: center; margin-bottom: 8px;}
+    .rating-text {width: 40px; text-align: right; margin-right: 8px; font-weight: bold;}
+    .rating-bar {flex: 1; background-color: #f0f0f0; border-radius: 5px; overflow: hidden; position: relative; height: 20px; margin-right: 8px;}
+    .rating-fill {background-color: #4A90E2; height: 100%; transition: width 0.5s ease-in-out;}
+    .rating-count {width: 30px; text-align: left;}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="product-image">
-            <img th:src="@{${product.imageUrl}}" alt="대표 이미지">
-        </div>
-        <div class="product-info">
-            <p><strong>상품명:</strong> <span th:text="${product.productName}"></span></p>
-            <p><strong>가격:</strong> <span id="product-price" class="price" th:text="${#numbers.formatInteger(product.price, 0)} + '원'"></span></p>
-            <p><strong>내용:</strong> <span th:text="${product.content}"></span></p>
-            <p><strong>옵션:</strong>
-                <select id="product-option" onchange="addOption()">
-                    <option value="">옵션을 선택하세요</option>
-                    <option th:each="opt : ${#strings.arraySplit(product.option, ',')}" 
-                            th:text="${opt}" th:value="${opt}" th:data-price="1000"></option>
-                </select>
-            </p>
-            <div id="selected-options" class="option-list"></div>
-            <p><strong>총 가격:</strong> <span id="total-price">0원</span></p>
-            <form th:action="@{'/cart/add'}" method="post" class="form-buttons">
-            	<input type="hidden" id="userId" value="1">
-			    <input type="hidden" id="productId" th:value="${product.productId}" />
-			    <input type="hidden" name="quantity" id="quantity-value" th:value="1"/>
-			    <button id="wishlistButton" type="button" class="wishlist-btn">
-			        <i class="fa fa-heart"></i>찜하기
-			    </button>
-			    <button type="submit" class="add-to-cart">장바구니 담기</button>
-			</form>
-        </div>
-    </div>
 
-    <div class="content-section">
-        <div class="product-description">
-            <h3>상품 설명</h3>
-            <p><span th:text="${product.description}"></span></p>
+<div class="container">
+  <div class="gallery-container">
+    <div class="swiper-container gallery-top">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each="imgUrl : ${product.imageUrls}">
+          <img th:src="@{${imgUrl}}" alt="대표 이미지" />
         </div>
-        
-        <div class="product-detail-images">
-		    <!-- 첫 번째 이미지는 기본적으로 표시 -->
-		    <img th:src="@{${product.imageUrls[0]}}" alt="상세 이미지" class="description-img">
-		
-		    <!-- 나머지 이미지는 기본적으로 숨김 -->
-		    <div id="hidden-description">
-		        <div th:each="img, iterStat : ${product.imageUrls}" th:if="${iterStat.index > 0}">
-		            <img th:src="@{${img}}" alt="상세 이미지" class="description-img">
-		        </div>
-		    </div>
-		
-		    <!-- 펼쳐보기/접기 버튼 -->
-		    <button id="toggle-button" onclick="toggleDescription()">
-		        상세정보 펼쳐보기 <i>▼</i>
-		    </button>
-		</div>
-		
-        <div class="reviews">
-            <h3>리뷰</h3>
-            <p><strong>평균 평점:</strong> <span id="average-rating">0점</span> (<span id="average-stars"></span>)</p>
-            <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post" enctype="multipart/form-data">
-                <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required>
-                <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
-                <input type="file" name="imageFile" accept="image/*">
-                <button type="submit">리뷰 등록</button>
-            </form>
-            
-            <div th:each="review : ${reviews}" class="review">
-                <img th:if="${review.imageUrl}"
-                     th:src="@{${review.imageUrl}}"
-                     alt="Review Image" style="width:100px; height:100px;">
-                
-                <p class="review-rating" th:data-rating="${review.rating}">
-                    <strong>평점:</strong>
-                    <span th:text="${#strings.repeat('⭐', review.rating)}"></span>
-                    <span th:text="${#strings.repeat('☆', 5 - review.rating)}"></span>
-                    (<span th:text="${review.rating}"></span>점)
-                </p>
-        
-                <p th:text="${review.comment}"></p>
-                <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
-        
-                <div class="comments">
-                    <div th:each="comment : ${reviewComments[review.reviewId]}">
-                        <p th:text="${comment['userId']} + ' : ' + ${comment['content']}"></p>
-                        <p th:text="${#dates.format(comment['createdAt'], 'yyyy-MM-dd HH:mm:ss')}"></p>
-                    </div>
-                    
-                    <form th:action="@{'/products/' + ${product.productId} + '/reviews/' + ${review.reviewId} + '/comments'}" method="post">
-                        <input type="text" name="content" placeholder="댓글 입력" required/>
-                        <input type="hidden" name="userId" value="1"/>
-                        <button type="submit">댓글 추가</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+      </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
     </div>
+    <div class="swiper-container gallery-thumbs">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each="imgUrl : ${product.imageUrls}">
+          <img th:src="@{${imgUrl}}" alt="대표이미지 썸네일" />
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
-    <form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
-        <input type="hidden" name="_method" value="delete">
-        <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
+  <div class="product-info">
+    <p><strong>상품명:</strong> <span th:text="${product.productName}"></span></p>
+    <p><strong>가격:</strong> <span id="product-price" class="price" th:text="${#numbers.formatInteger(product.price, 0)} + '원'"></span></p>
+    <p><strong>내용:</strong> <span th:text="${product.content}"></span></p>
+    <p><strong>옵션:</strong>
+      <select id="product-option" onchange="addOption()">
+        <option value="">옵션을 선택하세요</option>
+        <option th:each="opt : ${#strings.arraySplit(product.option, ',')}" th:text="${opt}" th:value="${opt}"></option>
+      </select>
+    </p>
+    <div id="selected-options" class="option-list"></div>
+    <p><strong>총 가격:</strong> <span id="total-price">0원</span></p>
+    <form th:action="@{/cart/add}" method="post" class="form-buttons">
+      <input type="hidden" id="userId" value="1" />
+      <input type="hidden" id="productId" th:value="${product.productId}" />
+      <input type="hidden" name="quantity" id="quantity-value" th:value="1" />
+      <button id="wishlistButton" type="button" class="wishlist-btn">♥ 찜하기</button>
+      <button type="submit" class="add-to-cart">장바구니 담기</button>
     </form>
-    <a href="/products">목록으로 돌아가기</a>
-	<a th:href="@{/wishlist(userId=${userId})}">위시리스트 보기</a>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="product-description">
+    <h3>상품 설명</h3>
+    <p><span th:text="${product.description}"></span></p>
+  </div>
+  <div class="product-detail-images">
+    <div th:if="${product.detailImageUrls != null and product.detailImageUrls.size() > 0}">
+      <img th:src="@{${product.detailImageUrls[0]}}" alt="상세 이미지" />
+    </div>
+    <div id="hidden-description">
+      <div th:each="img, iterStat : ${product.detailImageUrls}" th:if="${iterStat.index > 0}">
+        <img th:src="@{${img}}" alt="상세 이미지" />
+      </div>
+    </div>
+    <button id="toggle-button" onclick="toggleDescription()">상세정보 펼쳐보기 <i>▼</i></button>
+  </div>
+
+  <div class="reviews">
+    <h3>리뷰</h3>
+    <div class="review-summary">
+      <!-- 왼쪽: 평균 평점 -->
+      <div class="average-rating-container">
+        <div class="average-rating-display"><span class="average-rating-value" id="average-rating">0점</span></div>
+        <div class="average-rating-stars" id="average-stars"></div>
+      </div>
+      <!-- 오른쪽: 평점별 게이지 바 (가로 배치: [5점][게이지][명수]) -->
+      <div class="rating-bars">
+        <div class="rating-row">
+          <span class="rating-text">5점</span>
+          <div class="rating-bar"><div class="rating-fill" id="rating-fill-5"></div></div>
+          <span class="rating-count" id="count-5">0</span>
+        </div>
+        <div class="rating-row">
+          <span class="rating-text">4점</span>
+          <div class="rating-bar"><div class="rating-fill" id="rating-fill-4"></div></div>
+          <span class="rating-count" id="count-4">0</span>
+        </div>
+        <div class="rating-row">
+          <span class="rating-text">3점</span>
+          <div class="rating-bar"><div class="rating-fill" id="rating-fill-3"></div></div>
+          <span class="rating-count" id="count-3">0</span>
+        </div>
+        <div class="rating-row">
+          <span class="rating-text">2점</span>
+          <div class="rating-bar"><div class="rating-fill" id="rating-fill-2"></div></div>
+          <span class="rating-count" id="count-2">0</span>
+        </div>
+        <div class="rating-row">
+          <span class="rating-text">1점</span>
+          <div class="rating-bar"><div class="rating-fill" id="rating-fill-1"></div></div>
+          <span class="rating-count" id="count-1">0</span>
+        </div>
+      </div>
+    </div>
+    <form th:action="@{'/products/' + ${product.productId} + '/reviews'}" method="post" enctype="multipart/form-data">
+      <input type="number" name="rating" min="1" max="5" placeholder="평점 (1-5)" required />
+      <textarea name="comment" placeholder="리뷰를 남겨주세요" required></textarea>
+      <input type="file" name="imageFile" accept="image/*" />
+      <button type="submit">리뷰 등록</button>
+    </form>
+    <div th:each="review : ${reviewsPage.content}" class="review">
+      <img th:if="${review.imageUrl}" th:src="@{${review.imageUrl}}" alt="Review Image" style="width:100px; height:100px;" />
+      <p class="review-rating" th:data-rating="${review.rating}"><strong>평점:</strong> <span th:text="${#strings.repeat('⭐', review.rating)}"></span><span th:text="${#strings.repeat('☆', 5 - review.rating)}"></span>(<span th:text="${review.rating}"></span>점)</p>
+      <p th:text="${review.comment}"></p>
+      <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
+      <div class="comments">
+        <div th:each="comment : ${reviewComments[review.reviewId]}">
+          <p th:text="${comment['userId']} + ' : ' + ${comment['content']}"></p>
+          <p th:text="${#dates.format(comment['createdAt'], 'yyyy-MM-dd HH:mm:ss')}"></p>
+        </div>
+        <form th:action="@{'/products/' + ${product.productId} + '/reviews/' + ${review.reviewId} + '/comments'}" method="post">
+          <input type="text" name="content" placeholder="댓글 입력" required />
+          <input type="hidden" name="userId" value="1" />
+          <button type="submit">댓글 추가</button>
+        </form>
+      </div>
+    </div>
+    <div>
+      <ul class="pagination">
+        <li th:each="i : ${#numbers.sequence(0, reviewsPage.totalPages - 1)}">
+          <a th:href="@{/products/{id}(id=${product.productId}, page=${i})}" th:text="${i + 1}">Page number</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
+<form th:action="@{'/products/delete/' + ${product.productId}}" method="post">
+  <input type="hidden" name="_method" value="delete">
+  <button type="submit" onclick="return confirm('상품을 삭제하시겠습니까?');">삭제하기</button>
+</form>
+<a href="/products">목록으로 돌아가기</a>
+<a th:href="@{/wishlist(userId=${userId})}">위시리스트 보기</a>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var galleryThumbs = new Swiper('.gallery-thumbs',{spaceBetween:10,slidesPerView:4,freeMode:true,watchSlidesProgress:true});
+    var galleryTop = new Swiper('.gallery-top',{spaceBetween:10,navigation:{nextEl:'.swiper-button-next',prevEl:'.swiper-button-prev',},thumbs:{swiper:galleryThumbs},autoplay:{delay:2000,disableOnInteraction:false}});
+  });
+  function toggleDescription(){let hiddenSection=document.getElementById("hidden-description");let button=document.getElementById("toggle-button");if(hiddenSection.classList.contains("show")){hiddenSection.classList.remove("show");setTimeout(()=>hiddenSection.style.display="none",300);button.innerHTML='상세정보 펼쳐보기 <i>▼</i>';}else{hiddenSection.style.display="block";setTimeout(()=>hiddenSection.classList.add("show"),10);button.innerHTML='상세정보 접기 <i>▲</i>';}}
+  function calculateAverageRating(){let ratings=document.querySelectorAll('.review-rating[data-rating]');let total=0;let count=ratings.length;ratings.forEach(rating=>{total+=parseInt(rating.dataset.rating);});let avg=count>0?(total/count).toFixed(1):0;document.getElementById('average-rating').innerText=avg+"점";let stars='⭐'.repeat(Math.round(avg))+'☆'.repeat(5-Math.round(avg));document.getElementById('average-stars').innerText=stars;}
+  function calculateReviewCounts(){let reviewCounts=[0,0,0,0,0];document.querySelectorAll('.review-rating[data-rating]').forEach(rating=>{let r=parseInt(rating.dataset.rating);reviewCounts[5-r]++;});let totalReviews=reviewCounts.reduce((a,b)=>a+b,0);for(let i=0;i<5;i++){let rating=5-i;let count=reviewCounts[i];document.getElementById(`count-${rating}`).innerText=count;let fillPercentage=totalReviews>0?(count/totalReviews*100):0;document.getElementById(`rating-fill-${rating}`).style.width=`${fillPercentage}%`;}}
+  document.addEventListener("DOMContentLoaded",function(){calculateAverageRating();calculateReviewCounts();});
+  let selectedOptions=[];
+  function addOption(){const selectBox=document.getElementById("product-option");const selectedText=selectBox.options[selectBox.selectedIndex].text;const selectedValue=selectBox.value;if(!selectedValue)return;if(selectedOptions.some(opt=>opt.value===selectedValue)){alert("이미 선택한 옵션입니다.");return;}selectedOptions.push({value:selectedValue,text:selectedText,quantity:1});updateOptionList();}
+  function updateOptionList(){const container=document.getElementById("selected-options");container.innerHTML="";selectedOptions.forEach((opt,index)=>{const optionRow=document.createElement("div");optionRow.classList.add("option-item");optionRow.innerHTML=`<span><strong>${opt.text}</strong></span><button type="button" onclick="changeQuantity(${index}, -1)">-</button><span>${opt.quantity}</span><button type="button" onclick="changeQuantity(${index}, 1)">+</button><button type="button" onclick="removeOption(${index})">X</button>`;container.appendChild(optionRow);});updateTotalPrice();}
+  function changeQuantity(index,diff){selectedOptions[index].quantity+=diff;if(selectedOptions[index].quantity<1){selectedOptions[index].quantity=1;}updateOptionList();}
+  function removeOption(index){selectedOptions.splice(index,1);updateOptionList();}
+  function updateTotalPrice(){let basePriceText=document.getElementById('product-price').innerText.replace('원','');let basePrice=parseInt(basePriceText||'0');let totalPrice=0;selectedOptions.forEach(option=>{totalPrice+=basePrice*option.quantity;});document.getElementById('total-price').innerText=totalPrice+'원';}
+  document.addEventListener("DOMContentLoaded",function(){let wishlistButton=document.getElementById('wishlistButton');if(wishlistButton){wishlistButton.addEventListener('click',async function(){let userId=document.getElementById('userId').value;let productId=document.getElementById('productId').value;if(!userId||!productId){alert('유저 정보 또는 상품 정보를 찾을 수 없습니다.');return;}const response=await fetch(`/wishlist/add?userId=${userId}&productId=${productId}`,{method:'POST'});const data=await response.json();if(response.status===400){console.log("찜 목록 추가 실패",data);}else if(response.status===200){console.log("찜 하기 성공!",data);}});}});
+</script>
 
 </body>
 </html>

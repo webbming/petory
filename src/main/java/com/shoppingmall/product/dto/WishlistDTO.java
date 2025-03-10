@@ -1,9 +1,7 @@
 package com.shoppingmall.product.dto;
 
-import com.shoppingmall.product.model.Product;
-import com.shoppingmall.product.model.Wishlist;
-import com.shoppingmall.user.model.User;
 import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -117,18 +117,51 @@ public class ProductService {
         }
     }
     
-    // 펫타입(고양이, 강아지)로 상품 필터링
-    public List<Product> getProductsByPetType(PetType petType) {
-    	return productRepository.findByPetType(petType);
+
+
+    
+ // 카테고리 + petType + 정렬
+    public List<Product> getProductsByCategoryAndPetTypeSorted(Long categoryId, PetType petType, String sort) {
+        Category category = categoryService.findCategoryById(categoryId);
+        switch (sort) {
+            case "priceLowHigh":
+                return productRepository.findByCategoryAndPetType(category, petType, Sort.by(Sort.Direction.ASC, "price"));
+            case "priceHighLow":
+                return productRepository.findByCategoryAndPetType(category, petType, Sort.by(Sort.Direction.DESC, "price"));
+            case "rating":
+                return productRepository.findByCategoryAndPetType(category, petType, Sort.by(Sort.Direction.DESC, "averageRating"));
+            default: // newest
+                return productRepository.findByCategoryAndPetType(category, petType, Sort.by(Sort.Direction.DESC, "createdAt"));
+        }
     }
-    // 펫타입(고양이, 강아지)로 카테고리별 필터링
-    public List<Product> getProductsByCategoryAndPetType(Long categoryId, PetType petType) {
-    	Category category = categoryService.findCategoryById(categoryId);
-    	return productRepository.findByCategoryAndPetType(category, petType);
+
+    // 서브카테고리 + petType + 정렬
+    public List<Product> getProductsBySubcategoryAndPetTypeSorted(Long subcategoryId, PetType petType, String sort) {
+        Subcategory subcategory = categoryService.findSubcategoryById(subcategoryId);
+        switch (sort) {
+            case "priceLowHigh":
+                return productRepository.findBySubcategoryAndPetType(subcategory, petType, Sort.by(Sort.Direction.ASC, "price"));
+            case "priceHighLow":
+                return productRepository.findBySubcategoryAndPetType(subcategory, petType, Sort.by(Sort.Direction.DESC, "price"));
+            case "rating":
+                return productRepository.findBySubcategoryAndPetType(subcategory, petType, Sort.by(Sort.Direction.DESC, "averageRating"));
+            default: // newest
+                return productRepository.findBySubcategoryAndPetType(subcategory, petType, Sort.by(Sort.Direction.DESC, "createdAt"));
+        }
     }
-    // 펫타입(고양이, 강아지)로 서브카테고리별 필터링
-    public List<Product> getProductsBySubcategoryAndPetType(Long subcategoryId, PetType petType) {
-    	Subcategory subcategory = categoryService.findSubcategoryById(subcategoryId);
-    	return productRepository.findBySubcategoryAndPetType(subcategory, petType);
+
+    
+    public List<Product> getProductsByPetTypeSorted(PetType petType, String sort) {
+        switch (sort) {
+            case "priceLowHigh":
+                return productRepository.findByPetType(petType, Sort.by(Sort.Direction.ASC, "price"));
+            case "priceHighLow":
+                return productRepository.findByPetType(petType, Sort.by(Sort.Direction.DESC, "price"));
+            case "rating":
+                return productRepository.findByPetType(petType, Sort.by(Sort.Direction.DESC, "averageRating"));
+            default: // 기본 정렬: 신제품순
+                return productRepository.findByPetType(petType, Sort.by(Sort.Direction.DESC, "createdAt"));
+        }
     }
+
 }

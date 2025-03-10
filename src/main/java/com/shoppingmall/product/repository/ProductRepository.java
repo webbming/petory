@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.shoppingmall.product.model.Category;
@@ -16,9 +17,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBySubcategory(Subcategory subcategory);
     List<Product> findByProductNameContaining(String productName);
 
-    List<Product> findByPetType(PetType petType);
-    List<Product> findByCategoryAndPetType(Category category, PetType petType);
-    List<Product> findBySubcategoryAndPetType(Subcategory subcategory, PetType petType);
+    List<Product> findByPetType(PetType petType, Sort sort);
+    List<Product> findByCategoryAndPetType(Category category, PetType petType, Sort sort);
+    List<Product> findBySubcategoryAndPetType(Subcategory subcategory, PetType petType, Sort sort);
     
     // 카테고리 필터 정렬별 메서드 추가
     List<Product> findByCategoryOrderByCreatedAtDesc(Category category);	// 카테고리 최신순 (신제품순)
