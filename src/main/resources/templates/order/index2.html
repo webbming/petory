@@ -10,33 +10,29 @@
             margin: 0;
             background-color: #f5f5f5;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* container와 right-section 사이 간격 */
         }
         .container {
-            display: flex;
-            max-width: 1000px;
-            margin: 0 auto;
+            flex: 2; /* 왼쪽 섹션만 감싸도록 */
+            max-width: 700px; /* 왼쪽 섹션 크기 조정 */
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .left-section {
-            flex: 2;
             padding: 20px;
-            border-right: 1px solid #e0e0e0;
-            right: 80vh;
         }
         .right-section {
-            flex: 1;
+            width: 250px; /* 결제 금액 박스 고정 너비 */
+            max-height: 40vh; /* 결제 금액 박스 최대 높이 */
             padding: 20px;
-            position: fixed;
-            right: 20vh;
+            position: sticky;
             top: 20px;
-            width: 300px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            height: auto;
-            max-height: 100vh;
             overflow-y: auto;
         }
         .title {
@@ -68,7 +64,7 @@
             box-sizing: border-box;
         }
         .form-group select {
-            width: 600px;
+            width: 100%; /* 왼쪽 섹션에 맞게 조정 */
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -95,7 +91,7 @@
             border: 0;
             height: 1px;
             background: #ccc;
-            margin: 10px 20px; /* 양쪽 여백 추가 */
+            margin: 10px 15px 20px 10px;
         }
         .summary-item {
             display: flex;
@@ -130,14 +126,18 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
         }
         .product-item img {
             width: 80px;
             height: auto;
             margin-right: 20px;
+            border-right: 1px solid #e0e0e0;
         }
         .product-info {
             flex: 1;
+            border-right: 1px solid #e0e0e0;
         }
         .payment-methods {
             display: flex;
@@ -174,10 +174,11 @@
 		<div class="product-item">
 			<img src="https://via.placeholder.com/80x80" alt="Product Image">
 			<div class="product-info">
-				<p>바이미 더티채널 RTG 오메가3</p>
-				<p>수량 1개</p>
+				<p>상품명<span>ㅎㄹㄹㄹ</span></p>
+				<p>옵션<span>ㅎ</span></p>
+				<p>수량<span>ㅎ</span></p>
 			</div>
-			<p>29,900원</p>
+			<p><span></span>원</p>
 		</div>
 
 		<!-- 주문자 정보 -->
@@ -191,11 +192,11 @@
 				<label for="phone">전화번호:</label>
 				<input type="text" id="phone" placeholder="010-2671-2562">
 			</div>
-			<hr class="section-divider">
 		</div>
 
 		<!-- 배송지 정보 -->
 		<div class="title">배송지</div>
+		<hr class="section-divider">
 		<div class="form-group">
 			<div class="input-row">
 				<label for="receiverName">수령인:</label>
@@ -212,7 +213,7 @@
 			</div>
 			<div class="input-row">
 				<label for="receiver_addr_detail">상세 주소:</label>
-				<input type="text" name="receiver_addr_detail" placeholder="상세 주소를 입력하세요">
+				<input type="text" name="receiver_addr_detail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요">
 			</div>
 			<div class="input-row">
 				<label for="deliveryRequest">배송 요청:</label>
@@ -227,21 +228,21 @@
 			<div class="form-group delivery-request-custom">
 				<input type="text" id="customDeliveryRequest" placeholder="요청 사항을 입력하세요">
 			</div>
-			<hr class="section-divider">
 		</div>
 
 		<!-- 쿠폰 -->
 		<div class="title">쿠폰</div>
+		<hr class="section-divider">
 		<div class="form-group">
 			<select>
 				<option>쿠폰을 선택해주세요.</option>
 				<option>가입 감사 쿠폰 5천원</option>
 			</select>
-			<hr class="section-divider">
 		</div>
 
 		<!-- 결제 수단 -->
 		<div class="title">결제 수단</div>
+		<hr class="section-divider">
 		<div class="payment-methods">
 			<button data-card="true">신한-체크카드</button>
 			<button>toss pay</button>
@@ -266,36 +267,36 @@
 		</div>
 		<hr class="section-divider">
 	</div>
+</div>
 
-	<!-- 결제 금액 -->
-	<div class="right-section">
-		<div class="title">결제 금액</div>
-		<div class="summary-item">
-			<span>총 제품 금액</span>
-			<span>30,000원</span>
-		</div>
-		<div class="summary-item">
-			<span>쿠폰 할인</span>
-			<span>-0원</span>
-		</div>
-		<div class="summary-item">
-			<span>적립금사용</span>
-			<span>-0원</span>
-		</div>
-		<div class="summary-item">
-			<span>배송비</span>
-			<span>0원</span>
-		</div>
-		<div class="summary-item total">
-			<span>총 결제 금액</span>
-			<span>30,000원</span>
-		</div>
-		<div class="note">
-			위 제품의 구매 조건을 확인하였으며, 결제 및 개인 정보 제3자 제공에 모두 동의합니다.
-			<input type="checkbox">
-		</div>
-		<button class="purchase-btn">30,000원 결제하기</button>
+<!-- 결제 금액 -->
+<div class="right-section">
+	<div class="title">결제 금액</div>
+	<div class="summary-item">
+		<span>총 제품 금액</span>
+		<span>30,000원</span>
 	</div>
+	<div class="summary-item">
+		<span>쿠폰 할인</span>
+		<span>-0원</span>
+	</div>
+	<div class="summary-item">
+		<span>적립금사용</span>
+		<span>-0원</span>
+	</div>
+	<div class="summary-item">
+		<span>배송비</span>
+		<span>0원</span>
+	</div>
+	<div class="summary-item total">
+		<span>총 결제 금액</span>
+		<span>30,000원</span>
+	</div>
+	<div class="note">
+		위 제품의 구매 조건을 확인하였으며, 결제 및 개인 정보 제3자 제공에 모두 동의합니다.
+		<input type="checkbox">
+	</div>
+	<button class="purchase-btn">30,000원 결제하기</button>
 </div>
 
 <script>

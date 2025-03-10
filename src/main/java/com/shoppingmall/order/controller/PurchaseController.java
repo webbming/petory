@@ -33,6 +33,7 @@ public String index() {
 
 @GetMapping("/index2")
 public String index2() {
+	System.out.println("응애");
 	return "order/index2";
 }
 
