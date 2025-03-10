@@ -93,7 +93,7 @@ public class ProductController {
                              @RequestParam("categoryId") Long categoryId,
                              @RequestParam("subcategoryId") Long subcategoryId,
                              @RequestParam("petType") PetType petType,
-                             @RequestParam("mainImageFiles") List<MultipartFile> mainImageFiles, // 변경된 부분
+                             @RequestParam("mainImageFiles") List<MultipartFile> mainImageFiles,
                              @RequestParam("detailImageFiles") List<MultipartFile> detailImageFiles) {
         // 대표 이미지 여러 장 업로드
         List<String> mainImageUrls = uploadFiles(mainImageFiles);
@@ -101,12 +101,15 @@ public class ProductController {
         List<String> detailImageUrls = uploadFiles(detailImageFiles);
         
         product.setPetType(petType);
-        product.setImageUrls(mainImageUrls); // 대표 이미지 목록에 저장
+        // 미리 product 객체에 이미지 리스트 세팅 (선택 사항)
+        product.setImageUrls(mainImageUrls);
         product.setDetailImageUrls(detailImageUrls);
 
-        productService.saveProduct(product, categoryId, subcategoryId, detailImageUrls);
+        // 대표 이미지와 상세 이미지를 따로 service 메서드에 전달
+        productService.saveProduct(product, categoryId, subcategoryId, mainImageUrls, detailImageUrls);
         return "redirect:/products";
     }
+
 
 
 
@@ -194,7 +197,7 @@ public class ProductController {
                               @ModelAttribute("product") Product product,
                               @RequestParam("categoryId") Long categoryId,
                               @RequestParam("subcategoryId") Long subcategoryId,
-                              @RequestParam(value = "mainImageFiles", required = false) List<MultipartFile> mainImageFiles, // 변경
+                              @RequestParam(value = "mainImageFiles", required = false) List<MultipartFile> mainImageFiles,
                               @RequestParam(value = "detailImageFiles", required = false) List<MultipartFile> detailImageFiles) {
 
         Product existingProduct = productService.getProductById(id);
@@ -204,22 +207,25 @@ public class ProductController {
         product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));
 
         // 대표 이미지 업데이트: 새 대표 이미지가 업로드되면 업데이트, 없으면 기존 유지
+        List<String> mainImageUrls;
         if (mainImageFiles != null && !mainImageFiles.isEmpty()) {
-            List<String> mainImageUrls = uploadFiles(mainImageFiles);
-            product.setImageUrls(mainImageUrls);
+            mainImageUrls = uploadFiles(mainImageFiles);
         } else {
-            product.setImageUrls(existingProduct.getImageUrls());
+            mainImageUrls = existingProduct.getImageUrls();
         }
+        product.setImageUrls(mainImageUrls);
 
         // 상세 이미지 업데이트
         List<String> detailImageUrls = (detailImageFiles != null && !detailImageFiles.isEmpty()) ?
                 uploadFiles(detailImageFiles) : existingProduct.getDetailImageUrls();
         product.setDetailImageUrls(detailImageUrls);
 
-        productService.updateProduct(id, product, categoryId, subcategoryId, detailImageUrls);
+        // service 메서드도 수정된 파라미터로 호출
+        productService.updateProduct(id, product, categoryId, subcategoryId, mainImageUrls, detailImageUrls);
         
         return "redirect:/products/" + id;
     }
+
 
     // 상품 삭제 처리
     @DeleteMapping("/products/delete/{id}")

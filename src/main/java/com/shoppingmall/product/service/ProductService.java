@@ -29,12 +29,15 @@ public class ProductService {
     }
 
     // 상품 등록 처리
-    public Product saveProduct(Product product, Long categoryId, Long subcategoryId, List<String> imageUrls) {
+    public Product saveProduct(Product product, Long categoryId, Long subcategoryId, 
+                                 List<String> mainImageUrls, List<String> detailImageUrls) {
         product.setCategory(categoryService.findCategoryById(categoryId));
         product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));
-        product.setImageUrls(imageUrls);  // 이미지 URL 리스트 설정
+        product.setImageUrls(mainImageUrls);         // 대표 이미지 리스트 설정
+        product.setDetailImageUrls(detailImageUrls);   // 상세 이미지 리스트 설정
         return productRepository.save(product);
     }
+
     
     // 상품 ID로 상품 조회
     public Product getProductById(Long id) {
@@ -43,21 +46,23 @@ public class ProductService {
     }
 
     // 상품 수정 처리
-    public Product updateProduct(Long id, Product newProduct, Long categoryId, Long subcategoryId, List<String> imageUrls) {
-        Product product = getProductById(id);  // 수정할 상품 조회
-        // 수정할 필드가 null이 아니면 값을 변경
-        Optional.ofNullable(newProduct.getProductName()).ifPresent(product::setProductName);
-        Optional.ofNullable(newProduct.getPrice()).ifPresent(product::setPrice);
-        Optional.ofNullable(newProduct.getOption()).ifPresent(product::setOption);
-        Optional.ofNullable(newProduct.getContent()).ifPresent(product::setContent);
-        Optional.ofNullable(newProduct.getDescription()).ifPresent(product::setDescription);
-        Optional.ofNullable(newProduct.getImageUrl()).ifPresent(product::setImageUrl);
-        product.setImageUrls(imageUrls);  // 이미지 URL 리스트 업데이트
-        product.setCategory(categoryService.findCategoryById(categoryId));  // 카테고리 업데이트
-        product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));  // 서브카테고리 업데이트
-        
-        return productRepository.save(product);  // 수정된 상품 저장
-    }
+    public Product updateProduct(Long id, Product newProduct, Long categoryId, Long subcategoryId,
+    							 List<String> mainImageUrls, List<String> detailImageUrls) {
+	Product product = getProductById(id);
+	Optional.ofNullable(newProduct.getProductName()).ifPresent(product::setProductName);
+	Optional.ofNullable(newProduct.getPrice()).ifPresent(product::setPrice);
+	Optional.ofNullable(newProduct.getOption()).ifPresent(product::setOption);
+	Optional.ofNullable(newProduct.getContent()).ifPresent(product::setContent);
+	Optional.ofNullable(newProduct.getDescription()).ifPresent(product::setDescription);
+	// 단일 imageUrl는 사용하지 않거나 삭제하는 것을 고려
+	product.setImageUrls(mainImageUrls);
+	product.setDetailImageUrls(detailImageUrls);
+	product.setCategory(categoryService.findCategoryById(categoryId));
+	product.setSubcategory(categoryService.findSubcategoryById(subcategoryId));
+	
+	return productRepository.save(product);
+	}
+
     
     // 상품 삭제 처리
     public void deleteProduct(Long id) {

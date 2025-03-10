@@ -34,7 +34,7 @@ public class Product {
 
     @Column(name = "product_name")
     private String productName;
-    private BigDecimal price;
+    private int price;
     private String option;
     private String content;
     private String description;
@@ -46,11 +46,11 @@ public class Product {
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     private List<String> imageUrls = new ArrayList<>();
-    private String imageUrl;
+
     
     @ElementCollection
-    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_url")
+    @CollectionTable(name = "product_detail_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "detail_image_url")
     private List<String> detailImageUrls = new ArrayList<>();
     
     public void setDetailImageUrls(List<String> detailImageUrls) {
