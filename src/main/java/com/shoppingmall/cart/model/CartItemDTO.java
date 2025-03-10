@@ -3,22 +3,31 @@ package com.shoppingmall.cart.model;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class CartItemDTO {
-	 private Long id;
-	    private Long productId;
-	    private String productName;  // 추가된 부분
-	    private String productImageUrl;  // 추가된 부분
-	    private int quantity;
-	    private BigDecimal price;
+    private Long id;
+    private Long productId;
+    private String productName;   
+    private String imageUrl;      
+    private BigDecimal price;     
+    private int quantity;
+    private BigDecimal totalPrice;
 
-	    public CartItemDTO(CartItem cartItem) {
-	        this.id = cartItem.getId();
-	        this.productId = cartItem.getProduct().getProductId();
-	        this.productName = cartItem.getProduct().getProductName();  // 상품명 추가
-	        this.productImageUrl = cartItem.getProduct().getImageUrl();  // 상품 이미지 URL 추가
-	        this.quantity = cartItem.getQuantity();
-	        this.price = cartItem.getPrice();
-	    }
+
+    public CartItemDTO(CartItem cartItem) {
+        this.id = cartItem.getId();
+        this.productId = cartItem.getProduct().getProductId();
+        this.productName = cartItem.getProduct().getProductName();
+        this.imageUrl = cartItem.getProduct().getImageUrl();
+        this.price = cartItem.getPrice();
+        this.quantity = cartItem.getQuantity();
+        this.totalPrice = this.price.multiply(BigDecimal.valueOf(this.quantity));       
+    }
+    
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
 }

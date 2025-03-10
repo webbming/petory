@@ -55,6 +55,10 @@ public class User {
   @PrePersist
   public void prePersist() {
     this.createdAt = LocalDateTime.now();
+    if (this.cart == null) {
+        this.cart = new Cart(); // User 생성 시 자동으로 Cart 생성
+        this.cart.setUser(this); // Cart의 user도 설정
+      }
   }
 
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

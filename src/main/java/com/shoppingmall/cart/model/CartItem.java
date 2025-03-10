@@ -3,6 +3,7 @@ package com.shoppingmall.cart.model;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.shoppingmall.product.Product;
 
 import jakarta.persistence.Column;
@@ -14,7 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -79,12 +79,12 @@ public class CartItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartItem cartItem = (CartItem) o;
-        return Objects.equals(product.getProductId(), cartItem.product.getProductId());  // productId를 Product에서 가져옴
+        return Objects.equals(this.product.getProductId(),cartItem.product.getProductId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(product.getProductId());  // productId를 Product에서 가져옴
+        return Objects.hash(this.product.getProductId());  // productId를 Product에서 가져옴
     }
     
 }
