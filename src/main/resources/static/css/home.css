@@ -55,8 +55,105 @@
 
 /* 인기 급상승 */
 
+.container .more{
+  position: absolute;
+  right: 0;
+  top: 6px;
+  height: auto;
+  margin: 0;
+  padding-right: 28px;
+  color: #343434;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: transparent;
+  background-size: 26px;
+  background-repeat: no-repeat;
+  background-position: right center;
+
+}
+.filter{
+  display: flex;
+  margin-top: -6px;
+  margin-bottom: 16px;
+}
+
+.filter button.active{
+  color: #68a5fe;
+  border-color: currentColor;
+  background-color: #f0f5fd;
+}
+.filter button {
+  height: 40px;
+  margin-right: 9px;
+  padding : 8px 12px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 130%;
+  border-radius: 40px;
+  border: 1px solid #ccc;
+}
+
 .popular{
   position: relative;
+}
+
+.popular_slick {
+   display: flex;
+
+}
+.popular_slick a + a{
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e9e9e9;
+}
+.popular_slick a{
+  position: relative;
+  display: flex;
+  width: 335px;
+}
+
+.popular_slick a .num{
+  width: 24px;
+  color: #68a5fe;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 130%;
+}
+
+.popular_slick a .inner{
+
+}
+
+.ellipsis{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popular_slick a strong{
+  display: block;
+  margin-bottom: 11px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 140%;
+}
+
+.popular_slick .like {
+  color: #6c6c6c;
+  font-size: 13px;
+}
+.like{
+  display: flex;
+}
+.like span {
+  display: flex;
+  align-items: center;
+  margin-right: 4px;
+}
+
+.popular_slick > div + div{
+  margin-left: 83px;
 }
 
 
