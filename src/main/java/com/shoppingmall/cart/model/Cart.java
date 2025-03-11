@@ -60,6 +60,9 @@ public class Cart {
     					.mapToInt(CartItem::getQuantity)
     					.sum();
     }
+    public int getUniqueItemCount() {
+      return (int) cartItems.stream().map(CartItem::getProduct).distinct().count();
+    }
     
     public BigDecimal getTotalPrice() {
         return cartItems.stream()

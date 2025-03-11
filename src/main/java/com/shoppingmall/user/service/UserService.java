@@ -107,7 +107,7 @@ public class UserService {
       throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
     }
     String nickname = user.getNickname();
-    int quantity = user.getCart().getTotalQuantity();
+    int quantity = user.getCart().getUniqueItemCount();
     int couponCount = 3;
 
     return new UserResponseDTO.MypageInfo(nickname, quantity, couponCount);

@@ -94,7 +94,6 @@ public class UserApiController {
 
   @GetMapping("/me/profile/MyPageTopInfo")
   public ResponseEntity<ApiResponse<?>> myPageTopInfo(Authentication authentication) {
-    System.out.println("요청옴 탑인포");
     UserResponseDTO.MypageInfo dto = userService.getMyPageTopInfo(authentication.getName());
     return ResponseEntity.ok(ApiResponse.success(dto));
   }

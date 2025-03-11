@@ -1,5 +1,7 @@
 package com.shoppingmall.cart.controller;
 
+import com.shoppingmall.cart.model.CartItem;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -40,18 +42,17 @@ public class CartController {
     }
 
     @GetMapping
-    public String getCart(Authentication authentication, Model model) {
+    public String getCart(Authentication authentication, Model model , HttpSession session) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return "redirect:/login"; 
+            return "redirect:/login";
         }
-
         String userId = authentication.getName();
         User user = userRepository.findByUserId(userId);
         CartDTO cartDTO = cartService.getCartByUser(user);
 
         // 총 금액 계산
         BigDecimal totalPrice = cartDTO.getTotalPrice();
-
+        updateCartSession(user , session);
         model.addAttribute("cartItems", cartDTO.getCartItems());
         model.addAttribute("totalPrice", totalPrice);
 
@@ -60,7 +61,7 @@ public class CartController {
 
     // 상품 장바구니에 추가
     @PostMapping("/items/{productId}/add")
-    public String addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity, Model model) {
+    public String addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity, Model model , HttpSession session) {
         String userId = getUserId(authentication);
         User user = userRepository.findByUserId(userId);
 
@@ -69,6 +70,7 @@ public class CartController {
 
         // 장바구니 정보 가져오기
         CartDTO cartDTO = cartService.getCartByUser(user);
+        updateCartSession(user , session);
 
         // 모델에 장바구니 항목 추가
         model.addAttribute("cartItems", cartDTO.getCartItems());
@@ -79,10 +81,11 @@ public class CartController {
 
     // 상품 삭제
     @DeleteMapping("/items/{cartItemId}/remove")
-    public  ResponseEntity<CartDTO> removeFormCart(Authentication authentication, @PathVariable Long cartItemId) {
+    public  ResponseEntity<CartDTO> removeFormCart(Authentication authentication, @PathVariable Long cartItemId , HttpSession session) {
         String userId = getUserId(authentication);
         User user = userRepository.findByUserId(userId);
 
+        updateCartSession(user , session);
         // 장바구니에서 상품 삭제
         CartDTO updatedCart = cartService.removeProductFromCart(user, cartItemId);
 
@@ -114,6 +117,11 @@ public class CartController {
         CartDTO updatedCartDTO = cartService.updateProductQuantity(user, cartItemId, quantity); // 수정된 장바구니 데이터
         
         return ResponseEntity.ok(updatedCartDTO);
+    }
+
+    private void updateCartSession(User user, HttpSession session) {
+        CartDTO cartDTO = cartService.getCartByUser(user);
+        session.setAttribute("cartCount", cartDTO.getCartItems().size());
     }
 }
 

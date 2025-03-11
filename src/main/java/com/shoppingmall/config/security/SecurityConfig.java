@@ -2,8 +2,10 @@ package com.shoppingmall.config.security;
 
 
 import com.shoppingmall.oauth2.CustomSuccessHandler;
+import com.shoppingmall.oauth2.CustomSuccessHandler2;
 import com.shoppingmall.oauth2.service.CustomOAuth2UserService;
 import com.shoppingmall.user.jwt.JWTUtil;
+import com.shoppingmall.user.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,13 +34,13 @@ public class SecurityConfig {
   private CustomUserDetailsService userDetailsService;
   private CustomAuthenticationFailureHandler failureHandler;
   private CustomOAuth2UserService customOAuth2UserService;
-  private final CustomSuccessHandler successHandler;
+  private final CustomSuccessHandler2 successHandler;
   private final JWTUtil jwtUtil;
 
   public SecurityConfig(CustomUserDetailsService userDetailsService,
                         CustomAuthenticationFailureHandler failureHandler,
                         CustomOAuth2UserService customOAuth2UserService,
-                        CustomSuccessHandler successHandler,
+                        CustomSuccessHandler2 successHandler,
                         JWTUtil jwtUtil) {
       this.userDetailsService = userDetailsService;
       this.failureHandler = failureHandler;
@@ -46,6 +48,8 @@ public class SecurityConfig {
       this.successHandler = successHandler;
       this.jwtUtil = jwtUtil;
   }
+
+
 
     @Bean
     public MultipartFilter multipartFilter() {
@@ -68,7 +72,7 @@ public class SecurityConfig {
   }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, UserRepository userRepository) throws Exception {
         // 기본 HTTP 인증 비활성화
         http.httpBasic(auth -> auth.disable());
 
@@ -121,14 +125,14 @@ public class SecurityConfig {
         http.formLogin(form -> form
                 .loginPage("/login")                  // 로그인 페이지 경로
                 .loginProcessingUrl("/login/process") // 로그인 처리 경로
-                .defaultSuccessUrl("/home")           // 로그인 성공 시 리다이렉트 경로
+                .successHandler(successHandler)
                 .failureHandler(failureHandler)       // 로그인 실패 시 핸들러
         );
 
         // OAuth2 소셜 로그인 설정
         http.oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")                  // 소셜 로그인 페이지 경로
-                .defaultSuccessUrl("/home")           // 소셜 로그인 성공 시 리다이렉트 경로
+                .successHandler(successHandler)      // 소셜 로그인 성공 시 리다이렉트 경로
                 .userInfoEndpoint(userInfoEndpointConfig ->
                         userInfoEndpointConfig.userService(customOAuth2UserService))
         );
