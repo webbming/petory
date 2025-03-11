@@ -153,60 +153,60 @@
 	        calculateAverageRating();
 	        updateTotalPrice();
 	    });
-	
+
 	    function updateTotalPrice() {
 	        let basePrice = parseInt(document.getElementById('product-price').innerText.replace('원', ''));
 	        let totalPrice = 0;
-	
+
 	        selectedOptions.forEach(option => {
 	            totalPrice += basePrice * option.quantity;
 	        });
-	
+
 	        document.getElementById('total-price').innerText = totalPrice + '원';
 	    }
-	
+
 	    function calculateAverageRating() {
 	        let ratings = document.querySelectorAll('.review-rating');
 	        let total = 0;
 	        let count = ratings.length;
-	
+
 	        ratings.forEach(rating => {
 	            total += parseInt(rating.dataset.rating);
 	        });
-	
+
 	        let avg = count > 0 ? (total / count).toFixed(1) : 0;
 	        document.getElementById('average-rating').innerText = avg + "점";
-	
+
 	        let stars = '⭐'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
 	        document.getElementById('average-stars').innerText = stars;
 	    }
-	
+
 	    let selectedOptions = [];
-	
+
 	    function addOption() {
 	        const selectBox = document.getElementById("product-option");
 	        const selectedText = selectBox.options[selectBox.selectedIndex].text;
 	        const selectedValue = selectBox.value;
-	
+
 	        if (!selectedValue) return;
 	        if (selectedOptions.some(opt => opt.value === selectedValue)) {
 	            alert("이미 선택한 옵션입니다.");
 	            return;
 	        }
-	
+
 	        selectedOptions.push({
 	            value: selectedValue,
 	            text: selectedText,
 	            quantity: 1
 	        });
-	
+
 	        updateOptionList();
 	    }
-	
+
 	    function updateOptionList() {
 	        const container = document.getElementById("selected-options");
 	        container.innerHTML = "";
-	
+
 	        selectedOptions.forEach((opt, index) => {
 	            const optionRow = document.createElement("div");
 	            optionRow.classList.add("option-item");
@@ -219,10 +219,10 @@
 	            `;
 	            container.appendChild(optionRow);
 	        });
-	
+
 	        updateTotalPrice(); // ✅ 옵션 변경 시 총 가격 업데이트
 	    }
-	
+
 	    function changeQuantity(index, change) {
 	        selectedOptions[index].quantity += change;
 	        if (selectedOptions[index].quantity < 1) {
@@ -230,12 +230,12 @@
 	        }
 	        updateOptionList();
 	    }
-	
+
 	    function removeOption(index) {
 	        selectedOptions.splice(index, 1);
 	        updateOptionList();
 	    }
-	
+
 	    document.addEventListener("DOMContentLoaded",  function () {
 	        var wishlistButton = document.getElementById('wishlistButton');
 
@@ -280,14 +280,14 @@
             <p><strong>옵션:</strong>
                 <select id="product-option" onchange="addOption()">
                     <option value="">옵션을 선택하세요</option>
-                    <option th:each="opt : ${#strings.arraySplit(product.option, ',')}" 
+                    <option th:each="opt : ${#strings.arraySplit(product.option, ',')}"
                             th:text="${opt}" th:value="${opt}" th:data-price="1000"></option>
                 </select>
             </p>
             <div id="selected-options" class="option-list"></div>
             <p><strong>총 가격:</strong> <span id="total-price">0원</span></p>
-            <form th:action="@{'/cart/add'}" method="post" class="form-buttons">
 
+        <form th:action="@{'/cart/add'}" method="post" class="form-buttons">
 			    <input type="hidden" id="productId" th:value="${product.productId}" />
 			    <input type="hidden" name="quantity" id="quantity-value" th:value="1"/>
 			    <button id="wishlistButton" type="button" class="wishlist-btn">
@@ -303,7 +303,7 @@
             <h3>상품 설명</h3>
             <p><span th:text="${product.description}"></span></p>
         </div>
-        
+
         <div class="product-detail-images">
             <div th:each="img : ${product.imageUrls}">
                 <img th:src="@{${img}}" alt="상세 이미지">
@@ -319,28 +319,28 @@
                 <input type="file" name="imageFile" accept="image/*">
                 <button type="submit">리뷰 등록</button>
             </form>
-            
+
             <div th:each="review : ${reviews}" class="review">
                 <img th:if="${review.imageUrl}"
                      th:src="@{${review.imageUrl}}"
                      alt="Review Image" style="width:100px; height:100px;">
-                
+
                 <p class="review-rating" th:data-rating="${review.rating}">
                     <strong>평점:</strong>
                     <span th:text="${#strings.repeat('⭐', review.rating)}"></span>
                     <span th:text="${#strings.repeat('☆', 5 - review.rating)}"></span>
                     (<span th:text="${review.rating}"></span>점)
                 </p>
-        
+
                 <p th:text="${review.comment}"></p>
                 <p th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
-        
+
                 <div class="comments">
                     <div th:each="comment : ${reviewComments[review.reviewId]}">
                         <p th:text="${comment['userId']} + ' : ' + ${comment['content']}"></p>
                         <p th:text="${#dates.format(comment['createdAt'], 'yyyy-MM-dd HH:mm:ss')}"></p>
                     </div>
-                    
+
                     <form th:action="@{'/products/' + ${product.productId} + '/reviews/' + ${review.reviewId} + '/comments'}" method="post">
                         <input type="text" name="content" placeholder="댓글 입력" required/>
                         <input type="hidden" name="userId" value="1"/>

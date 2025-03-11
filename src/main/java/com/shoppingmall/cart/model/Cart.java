@@ -34,15 +34,12 @@ public class Cart {
     @Column(name = "cart_id", nullable = false)
     private Long id; // PK
     
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CartItem> cartItems = new ArrayList<>();
    
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive = true; // 장바구니 활성화 상태
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
     
     public Cart(User user) {
     	this.user = user;
@@ -69,5 +66,4 @@ public class Cart {
                 .map(CartItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
 }
