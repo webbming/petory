@@ -206,5 +206,18 @@
   font-weight: 600;
 }
 
+.pro_name {
+  display: flex;
+  justify-content: space-between;
+}
+.pro_name .rate {
+  margin-right: 10px;
+  padding-left: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 35px;
+  background: url("../images/star.png") no-repeat left center;
+  background-size: 15px;
+}
 
 

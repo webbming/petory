@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         for(let j = i ; j< i + 3 && j <data.length; j++){
           html += `
-            <a>
+            <a href="/board/read?boardId=${data[j].boardId}">
               <span class="num">${j + 1}</span>
               <div class="inner ellipsis">
                   <strong class="ellipsis">${data[j].title}</strong>
@@ -113,13 +113,14 @@ document.addEventListener("DOMContentLoaded", async function () {
       product_list.innerHTML = data.map((product) =>
         `
           <li>
-            <a>
+            <a href="/products/${product.productId}">
               <div class="img">
                   <img src=${product.imageUrl}>
                   <span>스토어 리뷰</span>
               </div>
               <div class="pro_name">
                   <p>${product.productName}</p>
+                  <span class="rate">${product.averageRating}</span>
               </div>
             </a>
           </li>
