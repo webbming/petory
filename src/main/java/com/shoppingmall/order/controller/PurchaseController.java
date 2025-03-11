@@ -208,6 +208,7 @@ return "order/orderResultAll";
 //		return "order/orderListByUserId";
 		return "order/orderListByUserIdByProductId";
 	}
+
 	//수령인 정보 변경 / state가 false일 경우 경로이동
 	@GetMapping("/orders/receiver")
 	public String receiverChange(@ModelAttribute DeliveryChangeDto deliveryChangeDto,
@@ -234,5 +235,4 @@ return "order/orderResultAll";
 	 model.addAttribute("result", productAndDeliveryDto);
 	return "order/orderResultOne";
 	};
-
 }

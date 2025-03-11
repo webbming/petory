@@ -180,12 +180,12 @@
 				<p>옵션: <span name="option" th:text="${product.option != null ? product.option : '없음'}"></span>g</p>
 				<p>수량: <span name="quantity" th:text="${product.quantity}"></span>g</p>
 				<!-- 각 상품 데이터를 배열 형태로 전송하기 위해 name에 인덱스 추가 -->
-				<input type="hidden" th:name="'products[' + ${iterStat.index} + '].productName'" th:value="${product.productName}">
-				<input type="hidden" th:name="'products[' + ${iterStat.index} + '].option'" th:value="${product.option}">
-				<input type="hidden" th:name="'products[' + ${iterStat.index} + '].quantity'" th:value="${product.quantity}">
+				<input type="hidden" th:name="'product[' + ${iterStat.index} + '].productName'" th:value="${product.productName}">
+				<input type="hidden" th:name="'product[' + ${iterStat.index} + '].option'" th:value="${product.option}">
+				<input type="hidden" th:name="'product[' + ${iterStat.index} + '].quantity'" th:value="${product.quantity}">
 			</div>
 			<p><span th:text="${product.price}"></span>원</p>
-			<input type="hidden" th:name="'products[' + ${iterStat.index} + '].price'" th:value="${product.price}">
+			<input type="hidden" th:name="'product[' + ${iterStat.index} + '].price'" th:value="${product.price}">
 		</div>
 
 		<!-- 주문자 정보 -->
@@ -307,7 +307,6 @@
 	</div>
 	<button type="submit" form="orderForm" class="purchase-btn" th:text="${totalPayment} + '원 결제하기'">0원 결제하기</button>
 </div>
-
 <script>
 	// 결제 수단 버튼 클릭 이벤트
     const paymentButtons = document.querySelectorAll('.payment-methods button');
@@ -362,6 +361,10 @@
         const form = document.getElementById('orderForm');
         const formData = new FormData(form);
 
+		formData.forEach((value, key) => {
+        console.log(key, value);  // 각 key와 value를 출력해서 확인
+   		 });
+
         // 오른쪽 섹션의 결제 금액 데이터 추가
         const paymentData = {
             totalProductPrice: document.getElementById('totalProductPrice').textContent.replace('원', '').replace(/,/g, ''),
@@ -374,7 +377,6 @@
         for (const [key, value] of Object.entries(paymentData)) {
             formData.append(key, value);
         }
-
         // 백엔드로 전송
         fetch('/order/rest/process', {
             method: 'POST',
@@ -384,7 +386,7 @@
         .then(data => {
             if (data.success) {
                 alert('주문이 완료되었습니다!');
-                window.location.href = '/order/complete';
+                window.location.href = '/order';
             } else {
                 alert('주문 처리 중 오류가 발생했습니다: ' + data.message);
             }

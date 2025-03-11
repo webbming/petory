@@ -3,14 +3,12 @@ package com.shoppingmall.order.controller;
 import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseProduct;
-import com.shoppingmall.order.dto.DeliveryUpdateRequestDto;
-import com.shoppingmall.order.dto.ProductAndDeliveryDto;
-import com.shoppingmall.order.dto.PurchaseDeliveryDto;
-import com.shoppingmall.order.dto.PurchaseProductDto;
+import com.shoppingmall.order.dto.*;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseProductRepository;
 import com.shoppingmall.order.repository.PurchaseRepository;
 import com.shoppingmall.order.service.PurchaseService;
+import com.shoppingmall.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -79,7 +77,6 @@ public class PurchaseRestController {
         product.setUserId(dto.getUserId());
         product.setDeliveryStatus("배송준비중");
         product.setPurchase(purchase);
-
         productRepo.save(product);
       });
     }
@@ -103,16 +100,13 @@ public class PurchaseRestController {
 
   //물품 구입
   @PostMapping("/process")
-  public ResponseEntity<String> process(@ModelAttribute List<PurchaseProductDto> productDtos,
-                                        @RequestParam(name="userId") String userId,
-                                        @RequestParam(name="productName") String name,
-
-                                      Model model){
-System.out.println("ddd " + productDtos.get(0).getUserId());
-System.out.println(userId);
-System.out.println(name);
-//    service.process(dto);
-
-    return ResponseEntity.ok("nice");
-  }
+  public ResponseEntity<?> processOrder(@ModelAttribute CartToPuchaseDto cartToPuchaseDto) {
+    try {
+      // 서비스 레이어로 주문 데이터 전달
+      service.processOrder(cartToPuchaseDto);
+      return ResponseEntity.ok().body("{\"success\":true}");
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body("{\"success\":false, \"message\":\"" + e.getMessage() + "\"}");
     }
+  }
+}

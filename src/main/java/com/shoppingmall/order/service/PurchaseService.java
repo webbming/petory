@@ -229,4 +229,34 @@ public class PurchaseService {
 			product.setCreateAt(LocalDateTime.now());
 		});
 	}
+
+	public void processOrder(CartToPuchaseDto cartDto) {
+		// 주문 데이터 처리 로직 예제
+		Purchase purchase = new Purchase();
+		PurchaseProduct products = new PurchaseProduct();
+		PurchaseDelivery delivery = new PurchaseDelivery();
+
+		purchase.setUserId(cartDto.getUserId());
+		delivery.setReceiverAddr(cartDto.getReceiverAddr());
+		delivery.setReceiverName(cartDto.getReceiverName());
+		delivery.setReceiverPhone(cartDto.getReceiverPhone());
+		delivery.setPurchase(purchase);
+		purchaseRepo.save(purchase);
+		deliveryRepo.save(delivery);
+		// 주문상품 목록 처리
+		List<PurchaseProductDto> productList = cartDto.getPurchaseProductDtos();
+		if (productList != null) {
+			for (PurchaseProductDto product : productList) {
+				products.setOption(product.getOption());
+				products.setUserId(cartDto.getUserId());
+				products.setPurchase(purchase);
+				products.setProductName(product.getProductName());
+				products.setDeliveryStatus("배송준비중");
+				products.setCreateAt(LocalDateTime.now());
+				products.setQuantity(product.getQuantity());
+				productRepo.save(products);
+			}
+		}
+		System.out.println("주문이 처리되었습니다. 사용자 ID: " + cartDto.getUserId());
+	}
 }
