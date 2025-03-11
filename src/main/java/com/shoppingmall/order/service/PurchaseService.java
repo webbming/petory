@@ -125,7 +125,7 @@ public class PurchaseService {
 			deliveryState = "배송취소";
 		}
 		System.out.println("SER" + "안녕" + deliveryState);
-		PurchaseProduct product = productRepo.findByPurchaseId(purchaseProductId).get(0);
+		PurchaseProduct product = productRepo.findByPurchaseProductId(purchaseProductId).get(0);
 		product.setDeliveryStatus(deliveryState);
 		productRepo.save(product);
 		return deliveryState;

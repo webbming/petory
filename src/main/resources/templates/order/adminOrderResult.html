@@ -77,78 +77,44 @@
 		<td th:text="${item.option == null ? '없음': item.option}"></td>
 		<td th:text="${item.quantity}"></td>
 		<td th:text="${item.totalPrice}"></td>
-		<td id="deliveryStatus_${item.purchaseProductId}" th:text="${item.deliveryStatus}"></td>
+		<td th:text="${item.deliveryStatus}"></td>
 		<td>
-		<form>
-			<input type="hidden" name="purchaseProductId" id="purchaseProductId" th:value="${item.purchaseProductId}"/>
-			<select id="deliveryState" name="deliveryState">
-				<option value="onDelivery">배송중</option>
-				<option value="stopDelivery">배송취소</option>
-				<option value="finDelivery">배송완료</option>
-			</select>
-			<button type="button" onclick="delivery_status(e)" class="purchaseBtn">변경</button>
-		</form>
-
+			<form>
+				<input type="hidden" name="purchaseProductId" th:id="'purchaseProductId_' + ${item.purchaseProductId}" th:value="${item.purchaseProductId}"/>
+				<select th:id="'deliveryState_' + ${item.purchaseProductId}" name="deliveryState">
+					<option value="onDelivery">배송중</option>
+					<option value="stopDelivery">배송취소</option>
+					<option value="finDelivery">배송완료</option>
+				</select>
+				<button type="button" th:onclick="'delivery_status(\'' + ${item.purchaseProductId} + '\')'" class="purchaseBtn">변경</button>
+			</form>
 		</td>
 	</tr>
 	</tbody>
 </table>
-<form>
-<div id="gg"></div>
-</form>
-	<script>
-		const purchaseBtn = document.querySelector(".purchaseBtn");
-		console.log(purchaseBtn);
-
-		purchaseBtn.addEventListener("click", (e) =>{
-
-		e.preventDefault();
-        const deliveryState = document.getElementById("deliveryState").value;
-        const purchaseProductId = document.getElementById("purchaseProductId").value;  // 예시로 주문 상품 ID
-
-		const data = {
-			deliveryState: deliveryState,
+</body>
+<script>
+	function delivery_status(purchaseProductId) {
+        const deliveryState = document.getElementById(`deliveryState_${purchaseProductId}`).value;
+        const data = {
+            deliveryState: deliveryState,
             purchaseProductId: purchaseProductId
-		}
+        };
 
-		console.log(deliveryState)
-        // JSON.stringify로 객체 형태로 전달
         fetch('/order/rest/deliveryChange', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data) // 객체로 전달
+            body: JSON.stringify(data)
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Order Success:', data.updateState);
-
-
-
-
-    const resul = "deliveryStatus_5";  // 예시로 설정한 id 값
-    const deliveryStatusElemen = document.getElementById(resul);
-
-    if (deliveryStatusElemen) {
-        console.log("요소를 찾았습니다:", deliveryStatusElemen.textContent);
-    } else {
-        console.log("해당 id의 요소를 찾을 수 없습니다.");
-    }
-
-
-            // 상태 변경이 반영된 상태를 페이지에 표시
-            const result = "deliveryStatus_" + purchaseProductId;
-            console.log("result " + result)
-            const deliveryStatusElement = document.getElementById(result);
-            console.log("bb" +  deliveryStatusElement.textContent)
-            const aa = document.getElementById(deliveryStatusElement.textContent)
-            aa.innerText = "gg"; // 상태 갱신
+            location.reload();
         })
         .catch(error => {
-            console.error('Error:', error);
+            location.reload();
         });
-    });
+    }
 </script>
-</body>
 </html>

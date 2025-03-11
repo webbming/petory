@@ -83,7 +83,7 @@ public class PurchaseRestController {
     }
 
     @PostMapping("/deliveryChange")
-    public ResponseEntity<Map<String, String>>  deliveryState(@RequestBody Map<String, String> request){
+    public ResponseEntity<String> deliveryState(@RequestBody Map<String, String> request){
       String deliveryState = request.get("deliveryState");
       Long purchaseProductId = Long.parseLong(request.get("purchaseProductId"));
       System.out.println(deliveryState);
@@ -91,9 +91,7 @@ public class PurchaseRestController {
       String state = service.deliveryChange(deliveryState, purchaseProductId);
       System.out.println("sss" + state);
 
-      Map<String, String> response = new HashMap<>();
-      response.put("updateState", state);
-      return ResponseEntity.ok(response);
+      return ResponseEntity.ok(state);
     }
 
     @PostMapping("/receiverChange")
