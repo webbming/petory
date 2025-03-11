@@ -148,6 +148,9 @@ function updateMyPageTopInfo(data) {
   document.querySelector(".nickname").textContent = data.data.nickname
   document.querySelector(".coupon").textContent = data.data.couponCount
   document.querySelector(".cartQuantity").textContent = data.data.cartQuantity
+  document.querySelector(".mypage-top .img img").src = data.data.url;
+  document.querySelector(".profile-default .default-img img").src = data.data.url;
+
 }
 
 export async function loadTopInfo(){
@@ -163,6 +166,7 @@ export async function loadTopInfo(){
 
     if(response.status === 200){
       mypageTopInfo = await response.json()
+      console.log(mypageTopInfo)
       updateMyPageTopInfo(mypageTopInfo)
     }
   }catch (e){

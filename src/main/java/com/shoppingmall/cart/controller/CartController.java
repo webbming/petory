@@ -70,12 +70,12 @@ public class CartController {
 
         // 장바구니 정보 가져오기
         CartDTO cartDTO = cartService.getCartByUser(user);
-        updateCartSession(user , session);
+
 
         // 모델에 장바구니 항목 추가
         model.addAttribute("cartItems", cartDTO.getCartItems());
         model.addAttribute("totalPrice", cartDTO.getTotalPrice());
-        
+        updateCartSession(user , session);
         return "redirect:/cart"; 
     }
 
@@ -85,23 +85,23 @@ public class CartController {
         String userId = getUserId(authentication);
         User user = userRepository.findByUserId(userId);
 
-        updateCartSession(user , session);
+
         // 장바구니에서 상품 삭제
         CartDTO updatedCart = cartService.removeProductFromCart(user, cartItemId);
-
+        updateCartSession(user , session);
         // 삭제 후 리다이렉트 
         return ResponseEntity.ok(updatedCart);
     }
     
     // 다중 삭제
     @DeleteMapping("/items/remove")
-    public ResponseEntity<CartDTO> removeItemsFromCart(Authentication authentication, @RequestBody List<Long> cartItemIds) {
+    public ResponseEntity<CartDTO> removeItemsFromCart(Authentication authentication, @RequestBody List<Long> cartItemIds , HttpSession session) {
         String userId = getUserId(authentication);
         User user = userRepository.findByUserId(userId);
 
         // 다중 삭제 처리
         CartDTO updatedCart = cartService.removeProductsFromCart(user, cartItemIds);
-
+        updateCartSession(user , session);
         // 삭제 후 리다이렉트
         return ResponseEntity.ok(updatedCart);
     }

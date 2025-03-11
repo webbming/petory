@@ -8,8 +8,13 @@ import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import com.shoppingmall.user.exception.DuplicateException;
 import com.shoppingmall.user.model.User;
+import com.shoppingmall.user.model.UserImg;
+import com.shoppingmall.user.repository.UserImgRepository;
 import com.shoppingmall.user.repository.UserRepository;
 
+import jakarta.mail.Multipart;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import jakarta.transaction.Transactional;
@@ -17,10 +22,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserService {
 
+  private final UserImgRepository userImgRepository;
   private UserRepository userRepository;
   private BoardRepository boardRepository;
   private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -28,10 +35,11 @@ public class UserService {
   public UserService(
       UserRepository userRepository,
       BoardRepository boardRepository,
-      BCryptPasswordEncoder bCryptPasswordEncoder) {
+      BCryptPasswordEncoder bCryptPasswordEncoder, UserImgRepository userImgRepository) {
     this.userRepository = userRepository;
     this.boardRepository = boardRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    this.userImgRepository = userImgRepository;
   }
 
   // 개별 필드 검사
@@ -106,11 +114,13 @@ public class UserService {
     if (user == null) {
       throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
     }
+    System.out.println("가져오는중");
     String nickname = user.getNickname();
     int quantity = user.getCart().getUniqueItemCount();
+    String imgUrl = user.getUserImg().getUrl();
     int couponCount = 3;
 
-    return new UserResponseDTO.MypageInfo(nickname, quantity, couponCount);
+    return new UserResponseDTO.MypageInfo(nickname, quantity, couponCount , imgUrl);
   }
 
   // 유저 수정
@@ -167,15 +177,58 @@ public class UserService {
     return user.getUserId();
   }
 
-  // 유저의 닉네임을 업데이트 하는 기능
-  public void userNicknameUpdate(String nickname, String userId) {
+  // 유저의 닉네임과 프로필사진 을 업데이트 하는 기능
+  public void userProfileUpdate(String userId, String nickname , MultipartFile file) {
     User user = userRepository.findByUserId(userId);
+
     if (userRepository.existsByNickname(nickname) && !nickname.equals(user.getNickname())) {
       throw new DuplicateException();
     }
 
+    if(file != null && !file.isEmpty()) {
+      String imageUrl = saveProfileImage(file);
+      System.out.println(imageUrl);
+
+      UserImg existingUserImg = userImgRepository.findByUser(user);
+
+      if (existingUserImg != null) {
+        // 기존 이미지가 있을 경우 업데이트
+        existingUserImg.setUrl(imageUrl);
+        userImgRepository.save(existingUserImg); // 기존 UserImg 업데이트
+      } else {
+        // 기존 이미지가 없을 경우 새 UserImg 저장
+        UserImg userImg = new UserImg();
+        userImg.setUrl(imageUrl);
+        userImg.setUser(user);
+        userImgRepository.save(userImg); // 새 UserImg 저장
+        user.setUserImg(userImg); // 유저에 UserImg 설정
+      }
+    }
+
     user.setNickname(nickname);
     userRepository.save(user);
+  }
+
+  private String saveProfileImage(MultipartFile file) {
+
+
+    if (!file.isEmpty()) {
+      String basePath = new File("src/main/resources/static/images").getAbsolutePath();
+      String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
+      String filePath = basePath + File.separator + fileName;
+      File destinationFile = new File(filePath);
+      System.out.println(destinationFile.getAbsolutePath());
+      System.out.println("저장된 대표 이미지 경로: " + filePath);
+
+      try {
+        file.transferTo(destinationFile); // 파일을 지정한 경로에 저장
+        return "/images/" + fileName;
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new RuntimeException("파일 저장에 실패했습니다.");
+      }
+    }
+    return null;
   }
 
   // 현재 사용자의 회원 정보를 가져오는 기능

@@ -26,7 +26,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
-
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -37,6 +37,7 @@ public class UserApiController {
   private final UserService userService;
   private final EmailService emailService;
   private final BoardRepository boardRepository;
+
 
   public UserApiController(
       UserService userService,
@@ -111,11 +112,15 @@ public class UserApiController {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("인증되지 않은 사용자"));
   }
 
-  @PostMapping("/me/profile/nickname")
-  public ResponseEntity<?> UpdateNickname(
-      @RequestBody UserRequestDTO.UpdateNickname dto, Authentication authentication) {
+  @PostMapping("/me/profile")
+  public ResponseEntity<?> UpdateProfile(
+      @RequestParam("nickname") String nickname ,
+      @RequestParam(value = "profilePhotoFile", required = false) MultipartFile profilePhotoFile , Authentication authentication) {
+
     String userId = authentication.getName();
-    userService.userNicknameUpdate(dto.getNickname(), userId);
+    System.out.println("여긴 컨트롤러 " + userId);
+
+    userService.userProfileUpdate(userId , nickname , profilePhotoFile);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

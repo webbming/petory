@@ -1,23 +1,29 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
+.agree-content {
+    width: 700px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center; /* 수정: justify-items -> justify-content */
+    align-items: center;
+    flex-direction: column;
+
 }
 
-.container {
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 600px;
-    margin: auto;
-}
-
-h1 {
+.agree-content .description h1 {
     color: #333;
     text-align: center;
+    margin-bottom: 40px;
 }
+
+.agree-content .description p {
+    font-size: 18px;
+    text-align: center;
+}
+
+.agree-content section {
+    width: 100%;
+}
+
+
 
 h2 {
     color: #555;
@@ -30,6 +36,8 @@ h2 {
     margin-top: 10px;
     padding-left: 20px;
     border-left: 2px solid #28a745;
+    width: 100%; /* 추가: content의 너비를 100%로 설정 */
+    box-sizing: border-box
 }
 
 .content.show {
@@ -52,23 +60,3 @@ ul {
     padding-top: 10px;
 }
 
-label {
-    display: block;
-    margin: 10px 0;
-    font-size: 16px;
-}
-
-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 20px;
-    width: 100%;
-}
-
-button:hover {
-    background-color: #218838;
-}

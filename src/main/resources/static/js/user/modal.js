@@ -22,18 +22,42 @@ export function modalUtil(){
     saveBtn.disabled = false;
   })
 
+
+  document.getElementById('profilePhotoFile').addEventListener('change', function(event) {
+    const file = event.target.files[0]; // 선택한 파일
+    const imgElement = document.getElementById('profilePhotoImg'); // 미리보기 이미지 요소
+    const defaultImgElement = document.getElementById('profileOriginImg');
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imgElement.src = e.target.result; // 미리보기 이미지로 설정
+        defaultImgElement.style.display = 'none';
+        imgElement.style.display='block';
+      }
+      reader.readAsDataURL(file); // 파일을 데이터 URL로 읽어옴
+    }
+  });
+
 // 저장 버튼 클릭 시 닉네임 변경
   saveBtn.addEventListener("click", async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    const fileInput = document.getElementById('profilePhotoFile')
     const newNickname = document.getElementById("newNickname").value.trim();
-    if (newNickname) {
 
-      const response = await fetch("/api/users/me/profile/nickname" , {
+    if(fileInput.files.length > 0){
+      formData.append('profilePhotoFile',fileInput.files[0])
+    }
+    formData.append('nickname' , newNickname);
+
+    if(!newNickname) {
+      alert("닉네임을 입력하세요.")
+      return;
+    }
+    try{
+      const response = await fetch("/api/users/me/profile" , {
         method:"POST",
-        headers:{
-          "Content-Type" : "application/json"
-        },
-        body : JSON.stringify({nickname : newNickname})
+        body : formData
 
       })
 
@@ -45,10 +69,10 @@ export function modalUtil(){
       nicknameField.textContent = newNickname;
       modal.style.display = "none"; // 모달 닫기
 
-
-    } else {
-      alert("닉네임을 입력하세요!");
+    }catch(e){
+      console.error("Error" , error)
     }
+
   });
 
 // 모달 바깥 클릭 시 닫기

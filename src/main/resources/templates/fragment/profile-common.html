@@ -176,8 +176,16 @@
                       <h2>프로필 수정</h2>
                   </div>
                 <div class="profile-default">
-                    <img src="/images/user_default.png" alt="기본 프로필">
+                  <div class="default-img">
+                    <img src="/images/user_default.png" alt="기본 프로필" id="profileOriginImg">
+                    <div class="upload_pic">
+                      <img id="profilePhotoImg" src>
+                    </div>
+                  </div>
+                  <label for="profilePhotoFile"></label>
+                  <input type="file" name="profilePhotoFile" id="profilePhotoFile" accept=".jpg , .jpeg, .png" class="hidden">
                 </div>
+                <a>기본 이미지</a>
                   <h2>닉네임</h2>
                 <input type="text" id="newNickname" name="nickname" placeholder="새 닉네임 입력">
                 <span class="error">이미 존재하는 닉네임 입니다.</span>

@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 public class UserRequestDTO {
 
@@ -85,9 +86,10 @@ public class UserRequestDTO {
   @Setter
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class UpdateNickname {
+  public static class UpdatProfile {
 
     private String nickname;
+    private MultipartFile userImg;
   }
 
   @Getter

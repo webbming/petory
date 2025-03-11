@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>장바구니</title>
+    <link rel="stylesheet" href="/css/layout/common.css">
      <link rel="stylesheet" type="text/css" th:href="@{/css/cart.css}">
 </head>
 <body>
+<div th:replace="fragment/header :: headerFragment"></div>
     <div class="cart_area">
     <div class="round_box">
         <h1>장바구니</h1>
@@ -54,7 +56,7 @@
         <button type="button">주문하기</button>
     </div>
 </div>
-
+<div th:replace="fragment/footer :: footerFragment"></div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	
     <script>
@@ -117,6 +119,7 @@
                 	console.log('AJAX 요청 성공');
                     updateCartUI(response);
                     updateSelectedTotal();
+                    updateCartCount(response.cartItems.length);
                     alert('수량이 변경되었습니다!');
                 },
                 error: function() {
@@ -152,10 +155,12 @@
                 method: 'DELETE',
                 success: function(response) {
                     console.log(response);
+                    updateCartCount(response.cartItems.length);
                     alert('상품이 삭제되었습니다!');
                     removeItemFromUI(itemId); // UI에서 상품 삭제
                     updateCartUI(response); // 장바구니 UI 업데이트
                     updateSelectedTotal(); // 총합 업데이트
+
                 },
                 error: function() {
                     alert('삭제 실패');
@@ -173,15 +178,20 @@
                 success: function(response) {
                     console.log(response);
                     alert('선택한 상품들이 삭제되었습니다!');
+                    updateCartCount(response.cartItems.length);
                     removeItemsFromUI(selectedItems); // 선택된 상품 UI에서 삭제
                     updateCartUI(response); // 장바구니 UI 업데이트
                     updateSelectedTotal(); // 총합 업데이트
+
                 },
                 error: function() {
                     alert('삭제 실패');
                 }
             });
         }
+          function updateCartCount(count) {
+              $('.cart-badge').text(count);
+          }
 
         // UI에서 단일 아이템 삭제 함수
         function removeItemFromUI(itemId) {
