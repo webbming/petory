@@ -22,8 +22,6 @@ public class Purchase {
     @OneToOne(mappedBy = "purchase")
     private PurchaseDelivery purchaseDelivery;
 
-    private Long cartId; // 장바구니 ID (FK), 단순한 Long 타입 필드
-
     private String userId; // 사용자 ID (단순한 String)
 
     private String totalPrice; // 총 가격

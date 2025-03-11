@@ -4,10 +4,8 @@ import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseProduct;
 import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.domain.PurchaseReview;
-import com.shoppingmall.order.dto.DeliveryChangeDto;
-import com.shoppingmall.order.dto.ProductAndDeliveryDto;
-import com.shoppingmall.order.dto.PurchaseAllDto;
-import com.shoppingmall.order.dto.PurchasePageDto;
+import com.shoppingmall.order.dto.*;
+import com.shoppingmall.order.repository.PurchaseProductRepository;
 import com.shoppingmall.order.repository.PurchaseReviewRepository;
 import com.shoppingmall.order.service.PurchaseService;
 import io.jsonwebtoken.io.IOException;
@@ -27,6 +25,13 @@ import java.util.List;
 @Controller
 public class PurchaseController {
 
+@GetMapping("/cart")
+public String cartToPurchase(@ModelAttribute PurchaseProductDto dto,
+							 Model model){
+model.addAttribute("item", dto);
+return "order/cartToPurchase";
+}
+
 @GetMapping
 public String index() {
 	return "order/index";
@@ -38,11 +43,14 @@ public String index2() {
 	return "order/index2";
 }
 
+@Autowired
+	PurchaseProductRepository prodrepo;
 @GetMapping("/index4")
-public String index4() {
-	System.out.println("응애");
-return "order/index4";
+public String index4(Model model) {
+model.addAttribute("product", prodrepo.findAll());
+	return "order/index4";
 }
+
 
 @GetMapping("/purchase")
 public String purchase(){ return "order/purchaseReady";}
@@ -104,6 +112,7 @@ public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseD
 	model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
 	model.addAttribute("purchase", purchaseAllDto.getPurchase());
 	model.addAttribute("item", purchaseAllDto.getPurchaseProduct());
+	model.addAttribute("dto", purchaseAllDto);
 	return "order/orderResult";
 }
 
@@ -199,10 +208,6 @@ return "order/orderResultAll";
 //		return "order/orderListByUserId";
 		return "order/orderListByUserIdByProductId";
 	}
-
-
-
-
 	//수령인 정보 변경 / state가 false일 경우 경로이동
 	@GetMapping("/orders/receiver")
 	public String receiverChange(@ModelAttribute DeliveryChangeDto deliveryChangeDto,

@@ -1,6 +1,7 @@
 package com.shoppingmall.order.dto;
 
 import com.shoppingmall.order.domain.PurchaseProduct;
+import com.shoppingmall.product.Product;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 @Builder
 public class PurchaseProductDto {
 
+  private String imageUrl;
   private Long productId; // 상품 ID
   private String productName; // 상품명
   private String option; // 상품 옵션

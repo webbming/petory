@@ -4,6 +4,7 @@ import com.shoppingmall.order.domain.Purchase;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseProduct;
 import com.shoppingmall.order.dto.DeliveryUpdateRequestDto;
+import com.shoppingmall.order.dto.ProductAndDeliveryDto;
 import com.shoppingmall.order.dto.PurchaseDeliveryDto;
 import com.shoppingmall.order.dto.PurchaseProductDto;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
@@ -12,6 +13,7 @@ import com.shoppingmall.order.repository.PurchaseRepository;
 import com.shoppingmall.order.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -98,4 +100,19 @@ public class PurchaseRestController {
     public ResponseEntity<String> receiverChange(@ModelAttribute DeliveryUpdateRequestDto dto){
       return ResponseEntity.ok(service.change(dto));
     }
+
+  //물품 구입
+  @PostMapping("/process")
+  public ResponseEntity<String> process(@ModelAttribute List<PurchaseProductDto> productDtos,
+                                        @RequestParam(name="userId") String userId,
+                                        @RequestParam(name="productName") String name,
+
+                                      Model model){
+System.out.println("ddd " + productDtos.get(0).getUserId());
+System.out.println(userId);
+System.out.println(name);
+//    service.process(dto);
+
+    return ResponseEntity.ok("nice");
+  }
     }

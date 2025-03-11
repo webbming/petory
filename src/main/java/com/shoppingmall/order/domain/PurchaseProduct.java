@@ -1,6 +1,7 @@
 package com.shoppingmall.order.domain;
 
 
+import com.shoppingmall.product.Product;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,9 +19,7 @@ public class PurchaseProduct {
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)
     private Purchase purchase;
 
-//    @ManyToOne
-//    @JoinColumn(name = "product_id")
-//    private Product product;
+    private String imageUrl;
 
     private Long productId;
 

@@ -18,8 +18,7 @@
     <table>
         <thead>
         <tr>
-            <th>주문 번호</th>
-            <th>상품 번호</th>
+            <th>상품 사진</th>
             <th>상품 이름</th>
             <th>상세 정보</th>
             <th>배송 상태</th>
@@ -32,7 +31,7 @@
         <tbody>
 
         <tr th:each="item : ${item}">
-            <td th:text="${item.purchase.purchaseId}">
+            <td><img th:src="@{${item.imageUrl}}" alt="이미지"/>
             </td>
                     <td th:text="${item.productId}">
                     </td>

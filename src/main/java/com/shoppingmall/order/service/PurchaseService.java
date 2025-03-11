@@ -7,6 +7,7 @@ import com.shoppingmall.order.dto.*;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseProductRepository;
 import com.shoppingmall.order.repository.PurchaseRepository;
+import com.shoppingmall.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -175,7 +176,6 @@ public class PurchaseService {
 
 	public ProductAndDeliveryDto purchaseNumber(String userId, Long purchaseProductId) {
 		List<PurchaseProduct> products = productRepo.findByPurchaseProductId(purchaseProductId);
-
 			if(products.get(0).getUserId().equals(userId)){
 				List<PurchaseDelivery> deliveries = deliveryRepo.findByPurchaseId(products.get(0).getPurchase().getPurchaseId());
 
@@ -203,5 +203,30 @@ public class PurchaseService {
 		deliveryRepo.save(receiverChanse);
 		String message = "수정 되었습니다.";
 		return message;
+	}
+	
+//	주문 등록
+	public void process(ProductAndDeliveryDto dtos) {
+		Purchase purchase = new Purchase();
+		System.out.println("dtos" + dtos);
+		PurchaseDelivery delivery = dtos.getPurchaseDelivery().get(0);
+		System.out.println("de" + delivery);
+		System.out.println(dtos.getPurchaseDelivery().get(0).getDeliveryMessage());
+		delivery.setPurchase(purchase);
+		deliveryRepo.save(delivery);
+		dtos.getPurchaseProduct().forEach(dto ->{
+			PurchaseProduct product = new PurchaseProduct();
+			product.setPurchase(purchase);
+			product.setOption(dto.getOption());
+			System.out.println(dto.getOption());
+			product.setProductName(dto.getProductName());
+			product.setProductId(dto.getProductId());
+			product.setQuantity(dto.getQuantity());
+			product.setPrice(dto.getPrice());
+			product.setUserId(dto.getUserId());
+			product.setProductName(dto.getProductName());
+			product.setDeliveryStatus("배송준비중");
+			product.setCreateAt(LocalDateTime.now());
+		});
 	}
 }

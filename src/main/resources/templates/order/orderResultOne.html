@@ -367,6 +367,7 @@
 		<table>
 			<thead>
 			<tr>
+				<th>상품사진</th>
 				<th>상품명</th>
 				<th>옵션</th>
 				<th>수량</th>
@@ -375,6 +376,7 @@
 			</thead>
 			<tbody>
 			<tr>
+				<td><img th:src="@{${result.purchaseProduct[0].imageUrl}}" alt="이미지" /></td>
 				<td th:text="${result.purchaseProduct[0].productName}"></td>
 				<td th:text="${result.purchaseProduct[0].option == null ? '없음' : result.purchaseProduct[0].option}"></td>
 				<td th:text="${result.purchaseProduct[0].quantity}"></td>

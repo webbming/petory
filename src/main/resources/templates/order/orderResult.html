@@ -128,28 +128,29 @@
 			<tr>
 				<th>수령인 이름</th>
 				<th>수령인 전화번호</th>
-				<th>배송 상태</th>
 				<th>배송 주소</th>
 				<th>배송 요청 사항</th>
 				<th>배송 정보 수정</th>
+				<th>배송 상태</th>
 			</tr>
 			</thead>
+
 			<tbody>
 			<tr th:each="delivery : ${delivery}">
 				<td th:text="${delivery.receiverName}"></td>
 				<td th:text="${delivery.receiverPhone}"></td>
-				<td>
-					<span th:class="${delivery.deliveryStatus == '배송준비중'} ? 'status-preparing' : 'status-other'" th:text="${delivery.deliveryStatus}"></span>
-				</td>
 				<td th:text="${delivery.receiverAddr}"></td>
 				<td th:text="${delivery.deliveryMessage}"></td>
 				<td>
+				<span th:class="${dto.purchaseProduct[0].deliveryStatus == '배송준비중'} ? 'status-preparing' : 'status-other'" th:text="${dto.purchaseProduct[0].deliveryStatus}"></span>
+				</td>
+				<td>
 					<form th:action="@{/order/orders/receiver}" method="get">
 						<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}">
-						<span th:if="${delivery.deliveryStatus == '배송준비중'}">
+						<span th:if="${dto.purchaseProduct[0].deliveryStatus == '배송준비중'}">
                             <input type="submit" class="button" value="정보수정">
                         </span>
-						<span th:if="${delivery.deliveryStatus != '배송준비중'}" th:text="${delivery.deliveryStatus}" class="status-other"></span>
+						<span th:if="${dto.purchaseProduct[0].deliveryStatus != '배송준비중'}" th:text="${dto.purchaseProduct[0].deliveryStatus}" class="status-other"></span>
 					</form>
 				</td>
 			</tr>

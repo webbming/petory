@@ -5,18 +5,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>주문/결제</title>
 	<style>
-		body {
+		/* 기존 스타일 유지 */
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #f5f5f5;
             padding: 20px;
             display: flex;
             justify-content: center;
-            gap: 20px; /* container와 right-section 사이 간격 */
+            gap: 20px;
         }
         .container {
-            flex: 2; /* 왼쪽 섹션만 감싸도록 */
-            max-width: 700px; /* 왼쪽 섹션 크기 조정 */
+            flex: 2;
+            max-width: 700px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -25,8 +26,8 @@
             padding: 20px;
         }
         .right-section {
-            width: 250px; /* 결제 금액 박스 고정 너비 */
-            max-height: 40vh; /* 결제 금액 박스 최대 높이 */
+            width: 250px;
+            height: 350px;
             padding: 20px;
             position: sticky;
             top: 20px;
@@ -41,7 +42,7 @@
             margin-bottom: 20px;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 30px;
         }
         .form-group label {
             display: inline-block;
@@ -64,7 +65,7 @@
             box-sizing: border-box;
         }
         .form-group select {
-            width: 100%; /* 왼쪽 섹션에 맞게 조정 */
+            width: 100%;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -168,29 +169,36 @@
 </head>
 <body>
 <div class="container">
-	<div class="left-section">
+	<form id="orderForm" class="left-section" onsubmit="submitOrder(event)">
 		<!-- 주문제품 -->
-		<div class="title">주문제품 1건</div>
-		<div class="product-item">
-			<img src="https://via.placeholder.com/80x80" alt="Product Image">
+		<div class="title">주문제품</div>
+		<hr class="section-divider">
+		<div th:each="product, iterStat : ${product}" class="product-item">
+			<img th:src="${product.imageUrl}" alt="Product Image" th:unless="${product.imageUrl}" src="https://via.placeholder.com/80x80">
 			<div class="product-info">
-				<p>상품명<span>ㅎㄹㄹㄹ</span></p>
-				<p>옵션<span>ㅎ</span></p>
-				<p>수량<span>ㅎ</span></p>
+				<p>상품명: <span name="productName" th:text="${product.productName}"></span>g</p>
+				<p>옵션: <span name="option" th:text="${product.option != null ? product.option : '없음'}"></span>g</p>
+				<p>수량: <span name="quantity" th:text="${product.quantity}"></span>g</p>
+				<!-- 각 상품 데이터를 배열 형태로 전송하기 위해 name에 인덱스 추가 -->
+				<input type="hidden" th:name="'products[' + ${iterStat.index} + '].productName'" th:value="${product.productName}">
+				<input type="hidden" th:name="'products[' + ${iterStat.index} + '].option'" th:value="${product.option}">
+				<input type="hidden" th:name="'products[' + ${iterStat.index} + '].quantity'" th:value="${product.quantity}">
 			</div>
-			<p><span></span>원</p>
+			<p><span th:text="${product.price}"></span>원</p>
+			<input type="hidden" th:name="'products[' + ${iterStat.index} + '].price'" th:value="${product.price}">
 		</div>
 
 		<!-- 주문자 정보 -->
 		<div class="title">주문자 정보</div>
+		<hr class="section-divider">
 		<div class="form-group">
 			<div class="input-row">
-				<label for="userName">배송지명:</label>
-				<input type="text" id="userName" placeholder="수령인">
+				<label for="userId">주문자 ID</label>
+				<input type="text" id="userId" name="userId" th:value="${userId}">
 			</div>
 			<div class="input-row">
 				<label for="phone">전화번호:</label>
-				<input type="text" id="phone" placeholder="010-2671-2562">
+				<input type="text" id="phone" name="userPhone" th:value="${userPhone}">
 			</div>
 		</div>
 
@@ -200,24 +208,24 @@
 		<div class="form-group">
 			<div class="input-row">
 				<label for="receiverName">수령인:</label>
-				<input type="text" id="receiverName" placeholder="받는 사람">
+				<input type="text" name="receiverName" id="receiverName" th:text="${nickname}" placeholder="받는 사람">
 			</div>
 			<div class="input-row">
 				<label for="receiverPhone">전화번호:</label>
-				<input type="text" id="receiverPhone" placeholder="휴대번호 입력 (-제외)" value="gg">
+				<input type="text" name="receiverPhone" id="receiverPhone" th:text="${receiverPhone}" placeholder="휴대번호 입력 (-제외)">
 			</div>
 			<div class="input-row">
 				<label for="receiver_addr">주소:</label>
-				<input type="text" name="receiverAddr" id="receiver_addr" placeholder="주소를 입력하세요" autocomplete="street-address" readonly>
-				<button onclick="execDaumPostcode()">주소 검색</button>
+				<input type="text" name="receiverAddr" id="receiver_addr" th:text="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" readonly>
+				<button type="button" onclick="execDaumPostcode()">주소 검색</button>
 			</div>
 			<div class="input-row">
 				<label for="receiver_addr_detail">상세 주소:</label>
-				<input type="text" name="receiver_addr_detail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요">
+				<input type="text" name="receiverAddrDetail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요">
 			</div>
 			<div class="input-row">
 				<label for="deliveryRequest">배송 요청:</label>
-				<select id="deliveryRequest" onchange="toggleCustomRequest()">
+				<select id="deliveryRequest" name="deliveryMessage" onchange="toggleCustomRequest()">
 					<option value="">선택하세요</option>
 					<option value="door">문 앞에 놓아주세요</option>
 					<option value="guard">경비실에 맡겨주세요</option>
@@ -226,7 +234,7 @@
 				</select>
 			</div>
 			<div class="form-group delivery-request-custom">
-				<input type="text" id="customDeliveryRequest" placeholder="요청 사항을 입력하세요">
+				<input type="text" id="customDeliveryRequest" name="customDeliveryRequest" placeholder="요청 사항을 입력하세요">
 			</div>
 		</div>
 
@@ -234,9 +242,9 @@
 		<div class="title">쿠폰</div>
 		<hr class="section-divider">
 		<div class="form-group">
-			<select>
-				<option>쿠폰을 선택해주세요.</option>
-				<option>가입 감사 쿠폰 5천원</option>
+			<select name="coupon">
+				<option value="">쿠폰을 선택해주세요.</option>
+				<option value="5000">가입 감사 쿠폰 5천원</option>
 			</select>
 		</div>
 
@@ -244,29 +252,30 @@
 		<div class="title">결제 수단</div>
 		<hr class="section-divider">
 		<div class="payment-methods">
-			<button data-card="true">신한-체크카드</button>
-			<button>toss pay</button>
-			<button>PAYCO</button>
-			<button data-card="true">국제카드체크</button>
-			<button>SSGPAY</button>
-			<button>LPAY</button>
-			<button>카카오페이</button>
-			<button>네이버페이</button>
+			<button type="button" data-card="true" data-method="shinhan-check">신한-체크카드</button>
+			<button type="button" data-method="toss">toss pay</button>
+			<button type="button" data-method="payco">PAYCO</button>
+			<button type="button" data-card="true" data-method="international-check">국제카드체크</button>
+			<button type="button" data-method="ssgpay">SSGPAY</button>
+			<button type="button" data-method="lpay">LPAY</button>
+			<button type="button" data-method="kakao">카카오페이</button>
+			<button type="button" data-method="naver">네이버페이</button>
 		</div>
+		<input type="hidden" id="paymentMethod" name="paymentMethod">
 		<div class="form-group card-select" id="cardSelect">
-			<select id="cardCompany">
-				<option>카드사 선택</option>
-				<option>신한카드</option>
-				<option>삼성카드</option>
-				<option>현대카드</option>
-				<option>롯데카드</option>
-				<option>비씨카드</option>
-				<option>하나카드</option>
-				<option>NH농협카드</option>
+			<select id="cardCompany" name="cardCompany">
+				<option value="">카드사 선택</option>
+				<option value="shinhan">신한카드</option>
+				<option value="samsung">삼성카드</option>
+				<option value="hyundai">현대카드</option>
+				<option value="lotte">롯데카드</option>
+				<option value="bc">비씨카드</option>
+				<option value="hana">하나카드</option>
+				<option value="nh">NH농협카드</option>
 			</select>
 		</div>
 		<hr class="section-divider">
-	</div>
+	</form>
 </div>
 
 <!-- 결제 금액 -->
@@ -274,40 +283,43 @@
 	<div class="title">결제 금액</div>
 	<div class="summary-item">
 		<span>총 제품 금액</span>
-		<span>30,000원</span>
+		<span id="totalProductPrice" th:text="${totalProductPrice}">0원</span>
 	</div>
 	<div class="summary-item">
 		<span>쿠폰 할인</span>
-		<span>-0원</span>
+		<span id="couponDiscount">-0원</span>
 	</div>
 	<div class="summary-item">
 		<span>적립금사용</span>
-		<span>-0원</span>
+		<span id="pointsUsed">-0원</span>
 	</div>
 	<div class="summary-item">
 		<span>배송비</span>
-		<span>0원</span>
+		<span id="shippingFee">0원</span>
 	</div>
 	<div class="summary-item total">
 		<span>총 결제 금액</span>
-		<span>30,000원</span>
+		<span id="totalPayment" th:text="${totalPayment}">0원</span>
 	</div>
 	<div class="note">
 		위 제품의 구매 조건을 확인하였으며, 결제 및 개인 정보 제3자 제공에 모두 동의합니다.
-		<input type="checkbox">
+		<input type="checkbox" id="agreeTerms">
 	</div>
-	<button class="purchase-btn">30,000원 결제하기</button>
+	<button type="submit" form="orderForm" class="purchase-btn" th:text="${totalPayment} + '원 결제하기'">0원 결제하기</button>
 </div>
 
 <script>
 	// 결제 수단 버튼 클릭 이벤트
     const paymentButtons = document.querySelectorAll('.payment-methods button');
     const cardSelect = document.getElementById('cardSelect');
+    const paymentMethodInput = document.getElementById('paymentMethod');
+    const agreeCheckbox = document.getElementById('agreeTerms');
 
     paymentButtons.forEach(button => {
         button.addEventListener('click', function() {
             paymentButtons.forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
+            paymentMethodInput.value = this.getAttribute('data-method');
 
             if (this.getAttribute('data-card') === 'true') {
                 cardSelect.classList.add('active');
@@ -317,7 +329,7 @@
         });
     });
 
-    // Daum Postcode API (예시용)
+    // Daum Postcode API
     function execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function(data) {
@@ -337,8 +349,53 @@
             customInput.style.display = 'none';
         }
     }
+
+    // 폼 제출 이벤트
+    function submitOrder(event) {
+        event.preventDefault();
+
+        if (!agreeCheckbox.checked) {
+            alert('결제 및 개인정보 제3자 제공에 동의하셔야 합니다.');
+            return;
+        }
+
+        const form = document.getElementById('orderForm');
+        const formData = new FormData(form);
+
+        // 오른쪽 섹션의 결제 금액 데이터 추가
+        const paymentData = {
+            totalProductPrice: document.getElementById('totalProductPrice').textContent.replace('원', '').replace(/,/g, ''),
+            couponDiscount: document.getElementById('couponDiscount').textContent.replace('원', '').replace(/,/g, ''),
+            pointsUsed: document.getElementById('pointsUsed').textContent.replace('원', '').replace(/,/g, ''),
+            shippingFee: document.getElementById('shippingFee').textContent.replace('원', '').replace(/,/g, ''),
+            totalPayment: document.getElementById('totalPayment').textContent.replace('원', '').replace(/,/g, '')
+        };
+
+        for (const [key, value] of Object.entries(paymentData)) {
+            formData.append(key, value);
+        }
+
+        // 백엔드로 전송
+        fetch('/order/rest/process', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('주문이 완료되었습니다!');
+                window.location.href = '/order/complete';
+            } else {
+                alert('주문 처리 중 오류가 발생했습니다: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('주문 처리 중 오류가 발생했습니다.');
+        });
+    }
 </script>
-<!-- Daum Postcode API 스크립트 추가 (실제 사용 시 API 키 필요) -->
+<!-- Daum Postcode API 스크립트 추가 -->
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </body>
 </html>
