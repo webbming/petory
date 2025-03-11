@@ -120,7 +120,12 @@ public class UserService {
     String imgUrl = user.getUserImg().getUrl();
     int couponCount = 3;
 
-    return new UserResponseDTO.MypageInfo(nickname, quantity, couponCount , imgUrl);
+    return UserResponseDTO.MypageInfo.builder()
+            .nickname(nickname)
+            .couponCount(couponCount)
+            .cartQuantity(quantity)
+            .url(imgUrl)
+            .build();
   }
 
   // 유저 수정

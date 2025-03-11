@@ -26,6 +26,7 @@ public class UserResponseDTO {
   @Setter
   @NoArgsConstructor
   @AllArgsConstructor
+  @Builder
   public static class MypageInfo{
     private String nickname;
     private int cartQuantity;

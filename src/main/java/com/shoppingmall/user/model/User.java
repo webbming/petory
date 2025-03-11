@@ -80,6 +80,12 @@ public class User {
       this.cart = new Cart(); // User 생성 시 자동으로 Cart 생성
       this.cart.setUser(this); // Cart의 user도 설정
     }
+
+    if ( this.userImg == null){
+      this.userImg = new UserImg();
+      this.userImg.setUser(this);
+      this.userImg.setUrl("/images/user-basic.jpg");
+    }
   }
 
 
