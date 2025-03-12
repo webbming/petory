@@ -1,31 +1,19 @@
-* {
-  box-sizing: border-box;
-  font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-}
-
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  background-color: #f5f6f7;
-  padding: 20px 0;
-}
 
 .register-container {
   width: 450px;
   padding: 20px;
+  margin: 0 auto;
 }
 
-h2 {
+.register-container h2 {
   text-align: center;
   margin-bottom: 30px;
 }
 
-input, select {
+#registerForm input,select {
   width: 100%;
   padding: 13px;
+  height: 50px;
   margin-bottom: 15px;
   border: 1px solid #dadada;
   border-radius: 5px;
@@ -33,12 +21,18 @@ input, select {
 }
 
 .input-error{
-  border: 1px solid red;
+  border: 1px solid red !important;
 }
 
-input:focus, select:focus {
+#registerForm input:focus, select:focus {
   outline: none;
-  border-color: #4285f4;
+  border-color: #68a5fe;
+}
+
+#registerForm .security-question > span{
+  color: #767678;
+  display: block;
+  margin-bottom: 7px;
 }
 
 .section-divider {
@@ -49,6 +43,8 @@ input:focus, select:focus {
 
 .address-container {
   display: flex;
+  justify-items: center;
+
   gap: 10px;
   margin-bottom: 15px;
 }
@@ -57,12 +53,19 @@ input:focus, select:focus {
   flex: 1;
   margin-bottom: 0;
 }
+.address-description{
+  color: #767678;
+  display: block;
+  margin-bottom: 7px;
+}
 
 .inline-button {
-  padding: 15px;
-  background-color: #4e9eff;
+  padding: 10px;
+  background-color: #68a5fe;
   color: white;
   border: none;
+  top: 0;
+  height: 50px; /* 입력란과 동일한 높이 설정 */
   border-radius: 5px;
   font-size: 14px;
   font-weight: bold;
@@ -73,10 +76,10 @@ input:focus, select:focus {
 .registerBtn {
   width: 100%;
   padding: 15px;
-  background-color: #4e9eff;
+  background-color: #68a5fe;
   color: white;
   border: none;
-  border-radius: 30px;
+  border-radius: 10px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;

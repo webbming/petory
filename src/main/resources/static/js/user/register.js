@@ -18,7 +18,8 @@ function updateErrorMessages(){
 
   Object.keys(errorState).forEach(fieldName =>{
 
-    const inputField = document.querySelector(`[name="${fieldName}"]`)
+    const inputField = document.querySelector( `[name="${fieldName}"]`)
+    console.log(inputField)
     if (!errorState[fieldName]){
       inputField.classList.remove("input-error")
       return;
