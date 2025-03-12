@@ -1,57 +1,93 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>카테고리 관리</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
+    /* 전체 레이아웃 */
     body {
       font-family: Arial, sans-serif;
-      background-color: #e0f7fa; /* 연한 하늘색 배경 */
+      background-color: #f8f9fa; /* 아주 연한 회색 배경 */
       margin: 0;
       padding: 20px;
     }
     h1 {
       text-align: center;
-      color: #01579b; /* 어두운 파란색 */
+      color: #01579b;
       margin-bottom: 30px;
     }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      text-decoration: none;
+      color: #01579b;
+      font-weight: bold;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    /* 필터 버튼 */
     .filter-container {
       text-align: center;
       margin-bottom: 20px;
     }
     .filter-button {
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 6px 14px;
+      font-size: 14px;
       cursor: pointer;
-      border: 2px solid #03a9f4; /* 하늘색 계열 */
-      background-color: white;
-      border-radius: 5px;
+      border: 1px solid #0288d1;
+      background-color: #fff;
+      border-radius: 4px;
       transition: background-color 0.3s, color 0.3s;
-      margin: 0 5px;
+      margin: 0 4px;
     }
-    .filter-button:hover,
+    .filter-button:hover {
+      background-color: #0288d1;
+      color: #fff;
+    }
     .filter-button.active {
-      background-color: #03a9f4;
-      color: white;
+      background-color: #0288d1;
+      color: #fff;
+      border-color: #0288d1;
     }
 
     /* 폼 컨테이너 */
     .form-container {
-      background-color: white;
+      background-color: #fff;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       max-width: 500px;
       margin: 20px auto;
-      margin-bottom: 20px;
     }
-    select, input[type="text"], button {
+    .form-container h3 {
+      color: #01579b;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    select,
+    input[type="text"],
+    button {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ddd;
       border-radius: 5px;
+      font-size: 14px;
+    }
+    button[type="submit"] {
+      background-color: #03a9f4;
+      color: white;
+      font-weight: bold;
+      border: none;
+      transition: background-color 0.3s;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #0288d1;
     }
 
     /* 카테고리 목록 */
@@ -65,27 +101,29 @@
       margin-bottom: 20px;
     }
     .category-grid {
-	  display: grid;
-	  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-	  gap: 20px;
-	  align-items: start; /* 각 아이템을 그리드 행의 시작 부분에서 정렬 */
-	  grid-auto-flow: row; /* 행 기반으로 아이템 채우기, 필요에 따라 column 사용 */
-	  list-style: none;
-	  padding: 0;
-	  margin: 0;
-	}
-	
-	.category-item {
-	  background-color: #ffffff;
-	  border-radius: 8px;
-	  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-	  padding: 20px;
-	  display: flex;
-	  flex-direction: column;
-	  justify-content: space-between;
-	}
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      align-items: start;
+      grid-auto-flow: row;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .category-item {
+      background-color: #fff;
+      border: 1px solid #e0e0e0; /* 테두리 추가 */
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 그림자 살짝 */
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s;
+    }
     .category-item:hover {
-      transform: translateY(-5px);
+      transform: translateY(-3px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1); /* hover 시 약간 강한 그림자 */
     }
     .category-header {
       display: flex;
@@ -94,26 +132,22 @@
       margin-bottom: 10px;
     }
     .category-header strong {
-      font-size: 18px;
+      font-size: 16px;
       color: #01579b;
     }
-
-    /* 삭제 버튼 */
     .delete-button {
-      background-color: #03a9f4; /* 하늘색 */
+      background-color: #03a9f4;
       color: white;
       border: none;
       padding: 5px 10px;
       cursor: pointer;
       border-radius: 3px;
       transition: background-color 0.3s;
-      font-size: 14px;
+      font-size: 13px;
     }
     .delete-button:hover {
       background-color: #0288d1;
     }
-
-    /* 서브카테고리 목록 */
     .subcategory-list {
       margin: 0;
       padding: 0;
@@ -122,12 +156,14 @@
     .subcategory-item {
       padding: 8px 12px;
       margin: 5px 0;
-      background-color: #b3e5fc; /* 더 연한 파란색 */
+      background-color: #fff;
       border-radius: 5px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 14px;
+      font-size: 13px;
+      border: 1px solid #ddd;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     .subcategory-item button {
       background-color: #03a9f4;
@@ -142,31 +178,18 @@
     .subcategory-item button:hover {
       background-color: #0288d1;
     }
-
-    /* 목록으로 돌아가기 링크 */
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 30px;
-      text-decoration: none;
-      color: #01579b;
-      font-weight: bold;
-    }
-    .back-link:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
   <h1>카테고리 및 서브카테고리 관리</h1>
-  
+
   <!-- 펫 타입 필터 -->
   <div class="filter-container">
-    <button class="filter-button active" onclick="filterCategories('ALL')">🐾전체</button>
+    <button class="filter-button active" onclick="filterCategories('ALL')">🐾 전체</button>
     <button class="filter-button" onclick="filterCategories('CAT')">🐱 고양이</button>
     <button class="filter-button" onclick="filterCategories('DOG')">🐶 강아지</button>
   </div>
-  
+
   <!-- 카테고리 추가 폼 -->
   <div class="form-container">
     <h3>카테고리 추가</h3>
@@ -179,7 +202,7 @@
       <button type="submit">카테고리 추가</button>
     </form>
   </div>
-  
+
   <!-- 서브카테고리 추가 폼 -->
   <div class="form-container">
     <h3>서브카테고리 추가</h3>
@@ -188,29 +211,32 @@
         <option th:each="category : ${categories}" 
                 th:value="${category.categoryId}" 
                 th:text="${category.categoryName}"
-                th:data-pettype="${category.petType}">
-        </option>
+                th:data-pettype="${category.petType}"></option>
       </select>
       <input type="text" name="subcategoryName" placeholder="새 서브카테고리 이름" required>
       <button type="submit">서브카테고리 추가</button>
     </form>
   </div>
-  
+
   <!-- 카테고리 및 서브카테고리 목록 -->
   <div class="category-list">
     <h3>카테고리 목록</h3>
     <ul class="category-grid">
-      <li th:each="category : ${categories}" 
-          th:attr="data-pettype=${category.petType}" 
+      <li th:each="category : ${categories}"
+          th:attr="data-pettype=${category.petType}"
           class="category-item">
         <div class="category-header">
           <strong th:text="${category.categoryName}"></strong>
-          <button class="delete-button" th:onclick="'deleteCategory(' + ${category.categoryId} + ');'">삭제</button>
+          <button class="delete-button"
+                  th:onclick="'deleteCategory(' + ${category.categoryId} + ');'">
+            삭제
+          </button>
         </div>
         <ul class="subcategory-list">
-          <li th:each="subcategory : ${category.subcategories}" class="subcategory-item">
+          <li th:each="subcategory : ${category.subcategories}"
+              class="subcategory-item">
             <span th:text="${subcategory.subcategoryName}"></span>
-            <button class="delete-button" 
+            <button class="delete-button"
                     th:onclick="'deleteSubcategory(' + ${category.categoryId} + ',' + ${subcategory.subcategoryId} + ');'">
               삭제
             </button>
@@ -219,16 +245,13 @@
       </li>
     </ul>
   </div>
-  
+
   <a href="/products" class="back-link">목록으로 돌아가기</a>
-  
+
   <script>
     function filterCategories(petType) {
-      // 버튼 active 클래스 처리
       document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
       document.querySelector(`[onclick="filterCategories('${petType}')"]`).classList.add('active');
-      
-      // 카테고리 필터링
       document.querySelectorAll(".category-item").forEach(item => {
         if (petType === "ALL" || item.getAttribute("data-pettype") === petType) {
           item.style.display = "flex";
@@ -236,8 +259,6 @@
           item.style.display = "none";
         }
       });
-      
-      // 서브카테고리 추가 폼의 카테고리 select 옵션도 필터링
       document.querySelectorAll("#categoryId option").forEach(option => {
         if (petType === "ALL" || option.getAttribute("data-pettype") === petType) {
           option.style.display = "block";
@@ -246,13 +267,13 @@
         }
       });
     }
-    
+
     function deleteCategory(categoryId) {
       if (confirm('카테고리를 삭제하시겠습니까?')) {
         $.ajax({
           url: '/categories/delete/' + categoryId,
           method: 'DELETE',
-          success: function(result) {
+          success: function() {
             alert('카테고리가 삭제되었습니다.');
             window.location.reload();
           },
@@ -262,13 +283,13 @@
         });
       }
     }
-    
+
     function deleteSubcategory(categoryId, subcategoryId) {
       if (confirm('서브카테고리를 삭제하시겠습니까?')) {
         $.ajax({
           url: `/categories/${categoryId}/subcategories/delete/${subcategoryId}`,
           method: 'DELETE',
-          success: function(result) {
+          success: function() {
             alert('서브카테고리가 삭제되었습니다.');
             window.location.reload();
           },
@@ -278,9 +299,9 @@
         });
       }
     }
-    
+
     document.addEventListener("DOMContentLoaded", function () {
-      filterCategories('ALL'); // 초기에는 전체 카테고리 표시
+      filterCategories('ALL');
     });
   </script>
 </body>

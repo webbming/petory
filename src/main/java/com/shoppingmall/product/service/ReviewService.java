@@ -59,11 +59,14 @@ public class ReviewService {
     
     private void updateProductRating(Long productId) {
         List<Review> reviews = reviewRepository.findByProductId(productId);
-        BigDecimal avgRating = reviews.stream()
+        BigDecimal avgRating = BigDecimal.ZERO;
+        if (!reviews.isEmpty()) {
+            avgRating = reviews.stream()
                 .map(Review::getRating)
                 .map(BigDecimal::valueOf)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .divide(BigDecimal.valueOf(reviews.size()), 2, RoundingMode.HALF_UP);
+        }
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
         product.setAverageRating(avgRating);
@@ -74,7 +77,7 @@ public class ReviewService {
         return reviewRepository.findByProductId(productId);
     }
     
-    // 페이징 처리된 리뷰 목록 반환 메서드 추가
+    // 페이징 처리된 리뷰 목록 반환
     public Page<Review> getPagedReviewsByProductId(Long productId, Pageable pageable) {
         return reviewRepository.findByProductId(productId, pageable);
     }
@@ -91,7 +94,7 @@ public class ReviewService {
         Map<String, Object> newComment = new HashMap<>();
         newComment.put("userId", userId);
         newComment.put("content", content);
-        newComment.put("createdAt", new Date());
+        newComment.put("createdAt", new Date().getTime());
         commentsList.add(newComment);
         String updatedComments = new ObjectMapper().writeValueAsString(commentsList);
         review.setComments(updatedComments);
@@ -107,4 +110,33 @@ public class ReviewService {
         }
         return new ArrayList<>();
     }
+    
+    public void updateReview(Long reviewId, Review updatedReview, MultipartFile imageFile) {
+        Review existingReview = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+        existingReview.setRating(updatedReview.getRating());
+        existingReview.setComment(updatedReview.getComment());
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = uploadFile(imageFile);
+            if (imageUrl != null) {
+                existingReview.setImageUrl(imageUrl);
+            }
+        }
+        reviewRepository.save(existingReview);
+        updateProductRating(existingReview.getProductId());
+    }
+
+    public void deleteReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+        Long productId = review.getProductId();
+        reviewRepository.delete(review);
+        updateProductRating(productId);
+    }
+    
+    public Review getReviewById(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+    }
+
 }

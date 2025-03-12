@@ -37,7 +37,9 @@ public class Product {
     private int price;
     private String option;
     private String content;
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     
     @Column(name = "reviewCount", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int reviewCount;  // DB 저장 필드로 변경
