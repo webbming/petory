@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shoppingmall.product.model.Category;
+import com.shoppingmall.product.model.PetType;
 import com.shoppingmall.product.model.Product;
 import com.shoppingmall.product.model.Subcategory;
 import com.shoppingmall.product.service.CategoryService;
@@ -53,9 +54,9 @@ public class CategoryController {
 	}
 	// 카테고리 추가
 	@PostMapping("/add")
-    public String addCategory(@RequestParam String categoryName, RedirectAttributes redirectAttributes) {
+    public String addCategory(@RequestParam String categoryName, @RequestParam PetType petType,  RedirectAttributes redirectAttributes) {
         try {
-            Category category = categoryService.createCategory(categoryName);
+            Category category = categoryService.createCategory(categoryName, petType);
             redirectAttributes.addFlashAttribute("successMessage", "카테고리 '" + categoryName + "'가 성공적으로 추가되었습니다.");
             return "redirect:/categories";
         } catch (Exception e) {
@@ -64,17 +65,19 @@ public class CategoryController {
         }
     }
 	// 서브 카테고리 추가
-    @PostMapping("/{categoryId}/subcategories/add")
-    public String addSubcategory(@PathVariable Long categoryId, @RequestParam String subcategoryName, RedirectAttributes redirectAttributes) {
-        try {
-            Subcategory subcategory = categoryService.createSubcategory(categoryId, subcategoryName);
-            redirectAttributes.addFlashAttribute("successMessage", "서브카테고리 '" + subcategoryName + "'가 성공적으로 추가되었습니다.");
-            return "redirect:/categories";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "서브카테고리 추가 실패: " + e.getMessage());
-            return "redirect:/categories";
-        }
-    }
+	@PostMapping("/subcategories/add")
+	public String addSubcategory(@RequestParam Long categoryId, 
+	                             @RequestParam String subcategoryName, 
+	                             RedirectAttributes redirectAttributes) {
+	    try {
+	        categoryService.createSubcategory(categoryId, subcategoryName);
+	        redirectAttributes.addFlashAttribute("successMessage", "서브카테고리 추가 성공!");
+	        return "redirect:/categories";
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "서브카테고리 추가 실패: " + e.getMessage());
+	        return "redirect:/categories";
+	    }
+	}
     
  // 카테고리 삭제
     @DeleteMapping("/delete/{categoryId}")

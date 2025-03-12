@@ -4,6 +4,8 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +31,12 @@ public class Category {
 	@Column(name = "category_name", nullable = false, unique = true) 
 	private String categoryName;
 	
+	// 반려동물 타입(고양이/강아지)
+	@Column(name = "pet_type", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PetType petType;
+	
 	// 서브카테고리 목록 관리용으로 추가
-	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
 	private List<Subcategory> subcategories;
 }

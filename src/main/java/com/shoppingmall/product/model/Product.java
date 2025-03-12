@@ -1,7 +1,5 @@
 package com.shoppingmall.product.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +9,8 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,20 +19,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Getter
-@Setter
 @Entity
 @Table(name = "products")
+@Getter
+@Setter
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,10 +34,12 @@ public class Product {
 
     @Column(name = "product_name")
     private String productName;
-    private BigDecimal price;
+    private int price;
     private String option;
     private String content;
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     
     @Column(name = "reviewCount", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int reviewCount;  // DB 저장 필드로 변경
@@ -53,16 +48,22 @@ public class Product {
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     private List<String> imageUrls = new ArrayList<>();
-    private String imageUrl;
-    
-    @Setter
-    @Getter
-    @ElementCollection
-    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_url")
-    private List<String> detailImageUrls = new ArrayList<>();
 
-  @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    
+    @ElementCollection
+    @CollectionTable(name = "product_detail_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "detail_image_url")
+    private List<String> detailImageUrls = new ArrayList<>();
+    
+    public void setDetailImageUrls(List<String> detailImageUrls) {
+        this.detailImageUrls = detailImageUrls;
+    }
+
+    public List<String> getDetailImageUrls() {
+        return detailImageUrls;
+    }
+
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     // **평균 평점 추가**
@@ -77,9 +78,10 @@ public class Product {
     @JoinColumn(name = "subcategory_id", nullable = false)
     private Subcategory subcategory;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Wishlist> wishlists;
-
+    @Column(name = "pet_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PetType petType; // 강아지,고양이 필터용 필드 추가
+    
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();

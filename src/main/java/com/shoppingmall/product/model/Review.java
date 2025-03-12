@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -40,6 +41,7 @@ public class Review {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Lob
     @Column(columnDefinition = "TEXT")
     private String comments;
 }
