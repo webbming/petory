@@ -1,14 +1,10 @@
 package com.shoppingmall.cart.controller;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,21 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.shoppingmall.cart.model.Cart;
 import com.shoppingmall.cart.model.CartDTO;
-import com.shoppingmall.cart.model.CartItem;
-import com.shoppingmall.cart.model.CartItemDTO;
-import com.shoppingmall.cart.model.CartResponseDTO;
 import com.shoppingmall.cart.service.CartService;
-import com.shoppingmall.product.Product;
-import com.shoppingmall.product.ProductService;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
-import com.shoppingmall.user.service.UserService;
-
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -64,28 +50,22 @@ public class CartController {
         BigDecimal totalPrice = cartDTO.getTotalPrice();
 
         model.addAttribute("cartItems", cartDTO.getCartItems());
-        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("totalPrice", cartDTO.getTotalPrice());
 
         return "cart/cart";
     }
 
     // 상품 장바구니에 추가
     @PostMapping("/items/{productId}/add")
-    public String addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity, Model model) {
+    @ResponseBody
+    public ResponseEntity<CartDTO> addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity) {
         String userId = getUserId(authentication);
         User user = userRepository.findByUserId(userId);
 
         // 장바구니에 상품 추가
-        cartService.addProductToCart(user, productId, quantity);
-
-        // 장바구니 정보 가져오기
-        CartDTO cartDTO = cartService.getCartByUser(user);
-
-        // 모델에 장바구니 항목 추가
-        model.addAttribute("cartItems", cartDTO.getCartItems());
-        model.addAttribute("totalPrice", cartDTO.getTotalPrice());
+        CartDTO updatedCartDTO = cartService.addProductToCart(user, productId, quantity);
         
-        return "redirect:/cart"; 
+        return ResponseEntity.ok(updatedCartDTO); 
     }
 
     // 상품 삭제

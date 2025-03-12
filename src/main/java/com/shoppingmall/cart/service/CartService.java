@@ -12,11 +12,10 @@ import com.shoppingmall.cart.model.CartDTO;
 import com.shoppingmall.cart.model.CartItem;
 import com.shoppingmall.cart.model.CartItemDTO;
 import com.shoppingmall.cart.repository.CartItemRepository;
-import com.shoppingmall.cart.repository.CartRepository;
 import com.shoppingmall.product.Product;
 import com.shoppingmall.product.ProductService;
 import com.shoppingmall.user.model.User;
-import com.shoppingmall.user.repository.UserRepository;
+
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class CartService {
     private final ProductService productService;
     private final CartItemRepository cartItemRepository;
-    private final CartRepository cartRepository;
 
     // 사용자의 장바구니 가져오기
     public CartDTO getCartByUser(User user) {
