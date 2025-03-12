@@ -38,8 +38,9 @@ public String index2() {
 @Autowired
 	PurchaseProductRepository prodrepo;
 @GetMapping("/orders")
-public String cartToPurchase(@ModelAttribute List<PurchaseProductDto> dtos,
+public String cartToPurchase(@ModelAttribute CartToPuchaseDto cartToPuchaseDto,
 					 Model model) {
+
 model.addAttribute("product", prodrepo.findAll());
 //model.addAttribute("product", prodrepo.dtos);
 	return "order/cartToOrder";
