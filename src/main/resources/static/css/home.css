@@ -63,13 +63,14 @@
   margin: 0;
   padding-right: 28px;
   color: #343434;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   background-color: transparent;
-  background-size: 26px;
+  background-size: 18px;
   background-repeat: no-repeat;
   background-position: right center;
+  background-image: url("../images/arrow-right.png");
 
 }
 .filter{
