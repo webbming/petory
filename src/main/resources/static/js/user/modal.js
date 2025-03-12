@@ -44,6 +44,9 @@ export function modalUtil(){
     const formData = new FormData();
     const fileInput = document.getElementById('profilePhotoFile')
     const newNickname = document.getElementById("newNickname").value.trim();
+    const img = document.querySelector(".mypage-top .user .img img")
+    const error = document.querySelector(".error")
+
 
     if(fileInput.files.length > 0){
       formData.append('profilePhotoFile',fileInput.files[0])
@@ -61,16 +64,23 @@ export function modalUtil(){
 
       })
 
+      const data = await response.json();
+
       if(response.status === 400){
         error.style.display = "block"
         return;
       }
-      error.style.display = "none"
-      nicknameField.textContent = newNickname;
-      modal.style.display = "none"; // 모달 닫기
+
+      if(response.status === 200){
+
+        error.style.display = "none"
+        nicknameField.textContent = newNickname;
+        modal.style.display = "none"; // 모달 닫기
+        img.src = data.data.url;
+      }
 
     }catch(e){
-      console.error("Error" , error)
+      console.error("Error" , e)
     }
 
   });

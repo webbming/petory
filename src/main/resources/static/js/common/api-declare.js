@@ -64,7 +64,7 @@ export async function loadPetList() {
             <div class="box" data-item-id="${pet.id}">
               <div class="name">${pet.name}</div>
               <div class="img" style="cursor: pointer">
-                <img src="https://img.lifet.co.kr/profile/default.png?w=420&h=420">
+                <img src="https://img.lifet.co.kr/profile/default.png?w=420&h=420" alt="">
               </div>
               <button type="button" class="layer_open"></button>
               <ul class="layer_modify" style="display: none">

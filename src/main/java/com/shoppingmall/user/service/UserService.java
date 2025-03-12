@@ -183,57 +183,86 @@ public class UserService {
   }
 
   // 유저의 닉네임과 프로필사진 을 업데이트 하는 기능
-  public void userProfileUpdate(String userId, String nickname , MultipartFile file) {
+  public String userProfileUpdate(String userId, String nickname , MultipartFile file) {
     User user = userRepository.findByUserId(userId);
+    if (user == null) {
+      throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+    }
 
+    String imageUrl = null;
+
+    // 중복 닉네임 검사
     if (userRepository.existsByNickname(nickname) && !nickname.equals(user.getNickname())) {
       throw new DuplicateException();
     }
 
-    if(file != null && !file.isEmpty()) {
-      String imageUrl = saveProfileImage(file);
-      System.out.println(imageUrl);
+    // 파일이 있을 경우 저장
+    if (file != null && !file.isEmpty()) {
+      // 지정 경로에 파일 저장
+      imageUrl = saveProfileImage(file);
+      System.out.println("이미지 URL: " + imageUrl);
 
       UserImg existingUserImg = userImgRepository.findByUser(user);
-
+      System.out.println(existingUserImg.getUrl());
       if (existingUserImg != null) {
         // 기존 이미지가 있을 경우 업데이트
+        String url = existingUserImg.getUrl();
+        deleteProfileImage(url);
         existingUserImg.setUrl(imageUrl);
-        userImgRepository.save(existingUserImg); // 기존 UserImg 업데이트
+        userImgRepository.save(existingUserImg);
       } else {
         // 기존 이미지가 없을 경우 새 UserImg 저장
         UserImg userImg = new UserImg();
         userImg.setUrl(imageUrl);
         userImg.setUser(user);
-        userImgRepository.save(userImg); // 새 UserImg 저장
-        user.setUserImg(userImg); // 유저에 UserImg 설정
+        userImgRepository.save(userImg);
+        user.setUserImg(userImg);
       }
     }
 
+    // 닉네임 업데이트
     user.setNickname(nickname);
     userRepository.save(user);
+
+    return imageUrl;
+
+  }
+
+  private void deleteProfileImage(String imageUrl) {
+      String basePath =  new File("src/main/resources/static").getAbsolutePath();
+
+      if(imageUrl != null || !imageUrl.isEmpty()) {
+        File oldFile = new File(basePath + imageUrl);
+
+        if(oldFile.exists()) {
+          boolean delete = oldFile.delete();
+          System.out.println("기존이미지 삭제 여부 " + delete);
+        }
+
+      }
   }
 
   private String saveProfileImage(MultipartFile file) {
+      if (file == null || file.isEmpty()) {
+        return null;
+      }
 
-
-    if (!file.isEmpty()) {
+      // 지정된 외부 경로 사용
       String basePath = new File("src/main/resources/static/images").getAbsolutePath();
       String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
       String filePath = basePath + File.separator + fileName;
       File destinationFile = new File(filePath);
-      System.out.println(destinationFile.getAbsolutePath());
-      System.out.println("저장된 대표 이미지 경로: " + filePath);
 
-      try {
-        file.transferTo(destinationFile); // 파일을 지정한 경로에 저장
+      System.out.println("저장된 대표 이미지 경로: " + filePath);
+      // 파일 저장
+      try{
+        file.transferTo(destinationFile);
         return "/images/" + fileName;
+
       } catch (IOException e) {
         e.printStackTrace();
-        throw new RuntimeException("파일 저장에 실패했습니다.");
+        throw new RuntimeException("파일 저장에 실패했습니다: " + e.getMessage());
       }
-    }
-    return null;
   }
 
   // 현재 사용자의 회원 정보를 가져오는 기능

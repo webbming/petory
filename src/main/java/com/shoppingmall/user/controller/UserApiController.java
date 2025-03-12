@@ -117,11 +117,26 @@ public class UserApiController {
       @RequestParam("nickname") String nickname ,
       @RequestParam(value = "profilePhotoFile", required = false) MultipartFile profilePhotoFile , Authentication authentication) {
 
-    String userId = authentication.getName();
-    System.out.println("여긴 컨트롤러 " + userId);
+    try {
+      String userId = authentication.getName();
+      System.out.println("프로필 업데이트 요청 - 사용자 ID: " + userId);
 
-    userService.userProfileUpdate(userId , nickname , profilePhotoFile);
-    return ResponseEntity.status(HttpStatus.OK).build();
+      // 서비스 메소드 호출
+      String imageUrl = userService.userProfileUpdate(userId, nickname, profilePhotoFile);
+      System.out.println("프로필 업데이트 완료 - 이미지 URL: " + imageUrl);
+
+      // 응답 데이터 준비
+      Map<String, Object> data = new HashMap<>();
+      data.put("url", imageUrl != null ? imageUrl : "");
+      data.put("nickname", nickname);
+
+      return ResponseEntity.ok(ApiResponse.success(data));
+    } catch (Exception e) {
+      // 오류 발생 시 로그 출력 후 예외 전파
+      System.err.println("프로필 업데이트 오류: " + e.getMessage());
+      e.printStackTrace();
+      throw e;
+    }
   }
 
   @PatchMapping("/me/profile")
