@@ -1,5 +1,7 @@
 package com.shoppingmall.product.controller;
 
+import com.shoppingmall.product.dto.ProductResponseDTO;
+import com.shoppingmall.user.dto.ApiResponse;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -338,5 +340,10 @@ public class ProductController {
                                @PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
         return "redirect:/products/" + productId;
+    }
+    @GetMapping("/api/products")
+    public ResponseEntity<ApiResponse<?>> getProduct() {
+        List<ProductResponseDTO> list =  productService.bestLikeProducts();
+        return ResponseEntity.ok(ApiResponse.success(list));
     }
 }
