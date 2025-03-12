@@ -14,14 +14,9 @@ import com.shoppingmall.cart.model.CartDTO;
 import com.shoppingmall.cart.model.CartItem;
 import com.shoppingmall.cart.model.CartItemDTO;
 import com.shoppingmall.cart.repository.CartItemRepository;
-import com.shoppingmall.cart.repository.CartRepository;
-
 import com.shoppingmall.product.model.Product;
 import com.shoppingmall.product.service.ProductService;
 import com.shoppingmall.user.model.User;
-import com.shoppingmall.user.repository.UserRepository;
-
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class CartService {
     private final ProductService productService;
     private final CartItemRepository cartItemRepository;
-    private final CartRepository cartRepository;
 
     // 사용자의 장바구니 가져오기
     public CartDTO getCartByUser(User user) {
@@ -60,7 +54,9 @@ public class CartService {
             cartItem.updateTotalPrice(); // 가격 계산 갱신
             cartItemRepository.save(cartItem);
         } else {
-            CartItem cartItem = new CartItem(cart, product, quantity, product.getPrice(), product.getPrice().multiply(BigDecimal.valueOf(quantity)));
+            CartItem cartItem = new CartItem(cart, product, quantity,
+                BigDecimal.valueOf(product.getPrice()), // int를 BigDecimal로 변환
+                BigDecimal.valueOf(product.getPrice()).multiply(BigDecimal.valueOf(quantity))); // int를 BigDecimal로 변환
             cart.addCartItem(cartItem);
             cartItemRepository.save(cartItem);
         }
