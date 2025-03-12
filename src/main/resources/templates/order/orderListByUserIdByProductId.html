@@ -33,11 +33,12 @@
         <tr th:each="item : ${item}">
             <td><img th:src="@{${item.imageUrl}}" alt="이미지"/>
             </td>
-                    <td th:text="${item.productId}">
-                    </td>
                     <td th:text="${item.productName}">
                     </td>
-                  <td><a th:href="@{/order/orders/{purchaseId}(purchaseId=${item.purchase.purchaseId})}" class="button">상세보기</a>
+                  <td><form action="/order/one" method="get">
+                      <input type="hidden" name="purchaseProductId" th:value="${item.purchaseProductId}">
+                      <button class="button">상세보기</button>
+                  </form>
                     </td>
                     <td th:text="${item.deliveryStatus}"></td>
                     <td th:text="${item.option}"></td>
@@ -48,7 +49,7 @@
     <button type="button" class="button" data-bs-toggle="modal"
             th:data-bs-target="'#reviewModal' + ${item.purchase.purchaseId}"
             th:data-purchase-id="${item.purchase.purchaseId}"
-            th:if="${item.deliveryStatus == '배송완료' && item.purchase.cancelAt == null}">
+            th:if="${item.deliveryStatus == '배송완료' && item.cancelAt == null}">
         리뷰작성
     </button>
 
