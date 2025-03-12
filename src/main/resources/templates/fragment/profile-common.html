@@ -15,7 +15,7 @@
         <div class="mypage-top" th:fragment="mypage-top">
               <div class="user">
                 <div class="img">
-                  <div class="profile-img"></div>
+                      <img src="/images/user-basic.jpg" alt="기본 프로필">
                 </div>
                 <strong class="nickname"></strong>
                 <button type="button" class="profile_btn">설정</button>
@@ -23,16 +23,31 @@
               <div class="mypage_top_content">
                 <div class="inner-wrap">
                   <div class="inner">
-                    <span>쿠폰</span>
-                    <strong class="coupon">1개</strong>
+                    <div class="inner-img">
+                      <a>
+                        <img src="/images/coupon4.png" >
+                      </a>
+                      <span class="quantity coupon"></span>
+                    </div>
+                    <h3>쿠폰</h3>
                   </div>
                   <div class="inner">
-                    <span>장바구니 물품</span>
-                    <strong class="cartQuantity"></strong>
+                    <div class="inner-img">
+                      <a href="/cart">
+                        <img src="/images/cart3.png" >
+                      </a>
+                      <span class="quantity cartQuantity"></span>
+                    </div>
+                    <h3>장바구니</h3>
                   </div>
                   <div class="inner">
-                    <span>멤버십</span>
-                    <strong>1억포인트</strong>
+                    <div class="inner-img">
+                      <a>
+                        <img src="/images/delivery2.png" >
+                      </a>
+                      <span class="quantity delivery">2</span>
+                    </div>
+                    <h3>배송중</h3>
                   </div>
                 </div>
 
@@ -93,16 +108,18 @@
             <!-- 기본 마이페이지 -->
               <div class="right_info" th:fragment="mypage-mainInfo">
                 <h2>진후님의 반려동물</h2>
-                <a class="new_pet">펫 등록</a>
+                <a class="new_pet" href="/pets">펫 등록</a>
                 <div class="animal_list">
-                  <div>
-                    <a href="#" class="profile_add">프로필 추가</a>
+                  <div class="last-div">
+                    <a href="/pets" class="profile_add">프로필 추가</a>
                   </div>
                 </div>
                 <div class="like_area">
                   <h2 class="border">좋아요한 제품</h2>
                   <a href="#" class="more">더보기</a>
-                  <ul class="product_list"></ul>
+                  <ul class="product_list">
+
+                  </ul>
                 </div>
               </div>
             <!-- 회원 정보 관리 페이지  -->
@@ -158,10 +175,26 @@
         </div>
   </section>
 </div>
+
+
             <div id="nicknameModal" class="modal" th:fragment="modal">
               <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>닉네임 변경</h2>
+                  <div class="head">
+                      <span class="close">&times;</span>
+                      <h2>프로필 수정</h2>
+                  </div>
+                <div class="profile-default">
+                  <div class="default-img">
+                    <img src="/images/user_default.png" alt="기본 프로필" id="profileOriginImg">
+                    <div class="upload_pic">
+                      <img id="profilePhotoImg" src>
+                    </div>
+                  </div>
+                  <label for="profilePhotoFile"></label>
+                  <input type="file" name="profilePhotoFile" id="profilePhotoFile" accept=".jpg , .jpeg, .png" class="hidden">
+                </div>
+                <a>기본 이미지</a>
+                  <h2>닉네임</h2>
                 <input type="text" id="newNickname" name="nickname" placeholder="새 닉네임 입력">
                 <span class="error">이미 존재하는 닉네임 입니다.</span>
                 <button id="saveNickname" disabled>저장</button>

@@ -10,8 +10,17 @@
   height: 70px;
   margin: 0 auto 16px;
   text-align: center;
-  border-radius: 50%;
+  border-radius: 50%; /* 원형 모양 */
   background-color: #F6F6F6;
+  justify-content: center;
+  align-items: center;
+
+}
+.user .img img{
+  width: 100%; /* 이미지가 80%만 차지하도록 설정 */
+  height: 100%; /* 이미지가 80%만 차지하도록 설정 */
+  object-fit: contain; /* 이미지를 잘리지 않게 비율을 맞추도록 설정 */
+  object-position: center;
 }
 
 button{
@@ -42,6 +51,7 @@ button{
   border-radius: 13px;
   border: 1px solid #D9D9D9;
 }
+
 .mypage_top_content{
   display: flex;
   align-items: center;
@@ -60,11 +70,41 @@ button{
   width: 173px;
   border-left: 0;
   text-align: center;
+  position: relative;
 }
 .inner span{
   display: block;
   font-size: 20px;
 }
+.inner h3{
+  margin-top: 8px;
+}
+.inner .inner-img{
+
+  overflow: hidden;
+  margin: 0 auto;
+  width: 70px;
+  height: 70px;
+}
+.inner .inner-img img{
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+.inner-img .quantity{
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  z-index: 3;
+  position: absolute;
+  top: 0; /* 상단에서의 위치 */
+  right:40px;
+  line-height: 35px;
+  background-color: #FF5F5F;
+  color: white;
+  border-radius: 50%;
+}
+
 .mypage_top_content .inner strong{
   margin-top: 10px;
   font-size: 28px;
@@ -172,19 +212,97 @@ a{
   box-shadow: none;
 }
 
-.right_info .animal_list > div:last-child .profile_add{
+.animal_list .layer_open{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  text-indent: -9999px;
+  border: 0;
+  cursor: pointer;
+  background: url(../images/settings.png) no-repeat center center;
+  background-size: 100%;
+}
+
+.animal_list .last-div .profile_add{
   display: inline-block;
   width: 202px;
   height: 248px;
   padding-top: 167px;
-  color: #CECECE;
+  color: #cecece;
   font-weight: 600;
   font-size: 18px;
   text-align: center;
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.08);
-  background-color: #ffffff;
+  box-shadow: 0 0 16px rgba(0,0,0,0.08);
+  background: #fff url("../images/plus.png") no-repeat center;  /* 수정된 부분 */
+  background-size: 70px;  /* 이미지 크기 조절 */
+  background-position-y: 70px;
   border-radius: 15px;
 }
+.animal_list .box{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column-reverse;
+  align-items: center;
+  width: 202px;
+  height: 248px;
+  margin: 0 20px 20px 0;
+  padding: 32px 31px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.08);
+  border-radius: 15px;
+  background-color: #fff;
+}
+.animal_list .box .name{
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.animal_list .box .img{
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+}
+.animal_list .box img{
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.animal_list .box .layer_modify {
+  width: 95px;
+  padding: 5px;
+  right: -55px;
+  top: 44px;
+}
+.animal_list .box .layer_modify li {
+  padding: 5px 5px;
+}
+.animal_list .box .layer_modify li:hover {
+  background-color: #e3e3e3;
+}
+.animal_list .box .layer_modify li a {
+  width: 100%;
+}
+.animal_list .box .layer_modify .deleteBtn{
+  color: red;
+}
+.layer_modify{
+  z-index: 100000;
+  position: absolute;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  background-color: #fff;
+}
+
 
 .mypage-bottom-content .right_info h2.border{
   padding-bottom: 14px;
@@ -262,6 +380,166 @@ a{
   background-color: #ff6347;
 }
 
+.modal-content .head{
+  border-bottom: 1px solid #e3e3e3 ;
+}
+.modal-content h2{
+  padding: 10px 0 10px;
+}
+
+.profile-default {
+  position: relative;
+  margin: 30px auto;
+  width: 110px; /* 원하는 크기 설정 */
+  height: 110px; /* 원하는 크기 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.profile-default .default-img{
+  overflow: hidden;
+  border-radius: 50%;
+  border: 1px solid #e3e3e3;
+  width: 110px;
+  height: 110px;
+  background-color: #f6f6f6;
+}
+.hidden{
+  position: absolute;
+  left: -9999px;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+}
+
+.modal-content .profile-default label{
+  right: -10px;
+  bottom: 0;
+  width: 36px;
+  height: 36px;
+  background-size: 24px;
+}
+
+.profile-default label{
+  position: absolute;
+  cursor: pointer;
+  text-indent: -9999px;
+  border-radius: 50%;
+  border: 1px solid #E2E2E2;
+  background: #fff url(https://img.lifet.co.kr/profile/prifle_camera.png) no-repeat center center;
+}
+
+.modal-content .profile-default + a{
+  width: auto;
+  margin-top: 14px;
+  color: #999;
+  font-size: 14px;
+}
+
+.profile-default + a{
+  display: block;
+  font-weight: 600;
+  text-align: center;
+  line-height: 130%;
+  text-decoration: underline;
+
+}
+
+.profile-default img {
+  width: 110px; /* 부모 요소에 맞게 이미지 크기 설정 */
+  height: 110px; /* 부모 요소에 맞게 이미지 크기 설정 */
+  object-fit: cover; /* 이미지를 잘리지 않게 비율을 맞추도록 설정 */
+  border-radius: 0;
+}
+
+/* 찜한제품 css */
+
+
+.product_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.product_list li {
+  position: relative;
+  margin-bottom: 50px;
+  margin-right: 17px;
+}
+
+.like_area .product_list li{
+  width: 226px;
+}
+
+.like_area .product_list li .img{
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 226px;
+  height: 226px;
+  margin-bottom: 10px;
+  border-radius: 7px;
+}
+.like_area .product_list li .img img{
+  width: 226px;
+  height: 226px;
+}
+.pro_name > span:first-child{
+  margin-top: 10px;
+  color: #808080;
+  font-size: 12px;
+  line-height: 130%;
+}
+.pro_name p {
+  margin: 2px 0 4px;
+  color: #343434;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 130%;
+}
+.pro_name .rate {
+  margin-right: 10px;
+  padding-left: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 130%;
+  background: url("../images/star.png") no-repeat left center;
+  background-size: 15px;
+}
+
+.product_list li .heart.active {
+  background-image: url(../images/heart.png);
+}
+
+.like_area .product_list li .heart {
+  width: 28px;
+  height: 28px;
+  background-size: 28px;
+}
+
+.product_list li .heart {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  text-indent: -9999px;
+  cursor: pointer;
+  background: url("../images/heart-blank.png")
+
+}
+
+.pro_name .review_count{
+margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 130%;
+}
+.review_count{
+  margin-top: 30px;
+}
 
 
 

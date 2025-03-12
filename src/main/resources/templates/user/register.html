@@ -5,78 +5,88 @@
   <title>회원가입</title>
   <link href="https://fonts.cdnfonts.com/css/jetbrains-mono" rel="stylesheet">
   <link rel="stylesheet" href="/css/register.css">
+  <link rel="stylesheet" href="/css/layout/common.css">
 
 </head>
 <body>
-<div class="register-container">
-  <div>
-    <h2>회원가입</h2>
-  </div>
-  <form id="registerForm">
-    <div>
-      <input type="text" id="userId" name="userId" placeholder="아이디를 입력해주세요">
-    </div>
-    <div>
-      <input type="password" id="password" name="password" placeholder="비밀번호">
+<div th:replace="fragment/header :: headerFragment"></div>
+<div class="container">
+    <div class="pm-section">
+      <div class="register-container">
+        <div>
+          <h2>회원가입</h2>
+        </div>
+        <form id="registerForm">
+          <div>
+            <input type="text" id="userId" name="userId" placeholder="아이디를 입력해주세요">
+          </div>
+          <div>
+            <input type="password" id="password" name="password" placeholder="비밀번호">
+          </div>
+
+          <div>
+            <input type="text" id="email" name="email"
+                   placeholder="example@domain.com (비밀번호 찾기 등 본인 확인용) ">
+          </div>
+
+          <div>
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요">
+          </div>
+
+          <div>
+            <ul id="errorList1" class="errorList">
+            </ul>
+          </div>
+          <hr class="section-divider">
+
+          <div class="security-question">
+            <span>* 보안 질문과 답변은 아이디 찾기에 사용됩니다. </span>
+            <select id="question" name="question">
+              <option value="">보안 질문을 선택하세요</option>
+              <option value="q1">어릴 적 살던 동네는?</option>
+              <option value="q2">초등학교 때 가장 친했던 친구의 이름은?</option>
+              <option value="q3">처음 키운 반려동물의 이름은?</option>
+              <option value="q4">가장 기억에 남는 선생님의 성함은?</option>
+            </select>
+          </div>
+
+          <div>
+            <input type="text" id="answer" name="answer" placeholder="질문에 대한 답변 (한글 20자 이내) (아이디 찾기용)"
+                   pattern="[가-힣]+" maxlength="20" title="한글만 입력 가능합니다.">
+          </div>
+
+
+          <span class="address-description">* 주소찾기 버튼을 눌러 검색해주세요.</span>
+          <div class="address-container">
+            <input type="text" id="address" name="address" placeholder="주소" readonly>
+            <button type="button" class="inline-button" onClick="addrFind(event)">주소 찾기</button>
+          </div>
+
+          <div>
+            <ul id="errorList2" class="errorList">
+            </ul>
+          </div>
+
+          <button type="submit" class="registerBtn">회원가입</button>
+        </form>
+      </div>
     </div>
 
-    <div>
-      <input type="text" id="email" name="email"
-             placeholder="example@domain.com (비밀번호 찾기 등 본인 확인용) ">
-    </div>
-
-    <div>
-      <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요">
-    </div>
-
-    <div>
-      <ul id="errorList1" class="errorList">
-      </ul>
-    </div>
-    <hr class="section-divider">
-
-    <div>
-      <select id="question" name="question">
-        <option value="">보안 질문을 선택하세요</option>
-        <option value="q1">어릴 적 살던 동네는?</option>
-        <option value="q2">초등학교 때 가장 친했던 친구의 이름은?</option>
-        <option value="q3">처음 키운 반려동물의 이름은?</option>
-        <option value="q4">가장 기억에 남는 선생님의 성함은?</option>
-      </select>
-    </div>
-
-    <div>
-      <input type="text" id="answer" name="answer" placeholder="질문에 대한 답변 (한글 20자 이내) (아이디 찾기용)"
-             pattern="[가-힣]+" maxlength="20" title="한글만 입력 가능합니다.">
-    </div>
-
-    <div class="address-container">
-      <input type="text" id="address" name="address" placeholder="주소" readonly>
-      <button type="button" class="inline-button" onClick="addrFind(event)">주소 찾기</button>
-    </div>
-
-    <div>
-      <ul id="errorList2" class="errorList">
-      </ul>
-    </div>
-
-    <button type="submit" class="registerBtn">회원가입</button>
-  </form>
-
-  <script>
-    const addrFind = (event) => {
-      event.preventDefault();
-      let size = "width = 650px, height=550px, top=300px, left=300px, scrollbars=yes";
-      let openUrl = '/users/addr';
-      window.open(openUrl, 'pop', size);
-    }
-  </script>
-  <script>
-    function receiveData(data) {
-      document.getElementById('address').value = `${data.address}`;
-    }
-  </script>
-  <script type="module" src="/js/user/register.js"></script>
 </div>
+<div th:replace="fragment/footer :: footerFragment"></div>
+<script>
+  const addrFind = (event) => {
+    event.preventDefault();
+    let size = "width = 650px, height=550px, top=300px, left=300px, scrollbars=yes";
+    let openUrl = '/users/addr';
+    window.open(openUrl, 'pop', size);
+  }
+</script>
+<script>
+  function receiveData(data) {
+    document.getElementById('address').value = `${data.address}`;
+  }
+</script>
+<script type="module" src="/js/user/register.js"></script>
 </body>
 </html>

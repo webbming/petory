@@ -91,6 +91,10 @@
     border-bottom: 1px solid #d9d9d9;
 
 }
+.activities_content > ul li:hover{
+    border-bottom: 1px solid black;
+    transition: 0.3s;
+}
 
 .activities_content > ul li  a{
     position: relative;
@@ -98,9 +102,14 @@
     padding: 30px 0 30px;
      /* 원하는 패딩 값으로 수정 */
 }
+.activities_content > ul li  a:hover{
+
+}
 
 .top .tit {
     margin: 10px 0;
+    font-size: 20px;
+    font-weight: 500;
 }
 .top p{
     display: -webkit-box;            /* Flexbox처럼 동작하도록 설정 */
@@ -138,4 +147,8 @@
 .bottom{
     display: flex;
     justify-content: space-between;
+}
+.bottom span {
+    display: inline-block;
+    margin-right: 5px;
 }

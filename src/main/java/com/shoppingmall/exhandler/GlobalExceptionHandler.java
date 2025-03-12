@@ -19,6 +19,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.web.multipart.MultipartException.class)
+    public ResponseEntity<ApiResponse<?>> handleMultipartException(org.springframework.web.multipart.MultipartException e) {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ApiResponse.error("파일 업로드 중 오류가 발생했습니다: " + e.getMessage()));
+    }
+
     // 중복 예외 핸들러
     @ExceptionHandler(DuplicateException.class)
     public ResponseEntity<ApiResponse<?>> handleDuplicateException(DuplicateException e) {

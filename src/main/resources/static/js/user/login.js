@@ -1,3 +1,4 @@
+/* 로그인 기능 */
 
 const loginForm = document.querySelector("#loginForm")
 

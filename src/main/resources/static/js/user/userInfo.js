@@ -1,4 +1,12 @@
+import {modalUtil} from "./modal.js";
+import {loadTopInfo} from "../common/api-declare.js";
+
+/* 프로필 페이지 안 회원 정보를 불러오는 기능 userInfo.js*/
+
 document.addEventListener("DOMContentLoaded", async (e) => {
+
+    modalUtil();
+    await loadTopInfo();
 
 const response = await fetch("/api/users/me/profile" ,{
     method: "GET",

@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <title>아이디 찾기</title>
   <link rel="stylesheet" href="/css/find.css">
-  <link rel="stylesheet" href="/css/common.css">
-  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/layout/common.css">
   <link href="https://fonts.cdnfonts.com/css/jetbrains-mono" rel="stylesheet">
 </head>
 <body>
@@ -54,7 +53,8 @@
     </div>
     </section>
 </div>
-
-<script src="/js/user/findId.js"></script>
+<div th:replace="fragment/footer :: footerFragment"></div>
+<script type="module"  src="/js/user/findId.js"></script>
+<script type="module" src="/js/common/api.js"></script>
 </body>
 </html>

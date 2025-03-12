@@ -25,7 +25,7 @@ public class Comment {
     private String content;
 
     @Column(name = "like_count", nullable = false)
-    private Integer likeCount;
+    private Integer likeCount = 0;
 
     @Lob
     @Column(name = "like_contain")

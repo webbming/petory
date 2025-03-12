@@ -1,16 +1,22 @@
 package com.shoppingmall.board.model;
 
+import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.user.utils.TimeUtils;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.shoppingmall.user.model.User;
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "board")
 @Getter @Setter
@@ -22,6 +28,9 @@ public class Board {
 
     @Column(nullable = false, length = 50)
     private String title;
+    
+    @Column(nullable = true, length = 50)
+    private String image;
 
     @Column(nullable = false)
     private String nickname;
@@ -65,5 +74,19 @@ public class Board {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    public BoardResponseDTO toDTO(){
+        return BoardResponseDTO.builder()
+                .boardId(boardId)
+                .title(title)
+                .categoryId(categoryId)
+                .nickname(nickname)
+                .content(content)
+                .commentCount(commentCount)
+                .viewCount(viewCount)
+                .likeCount(likeCount)
+                .createAt(TimeUtils.getTimeAgo(LocalDate.from(createdAt)))
+                .build();
     }
 }

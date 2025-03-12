@@ -1,3 +1,5 @@
+/* address.js 주소 검색 기능 */
+
 function receiveData(data) {
   document.getElementById('address').value = `${data.address}`;
 }

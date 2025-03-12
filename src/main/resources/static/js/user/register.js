@@ -1,3 +1,4 @@
+/* register.js 회원가입 기능 */
 import { validationRules } from './validationRules.js';
 
 const validationState = {
@@ -17,7 +18,8 @@ function updateErrorMessages(){
 
   Object.keys(errorState).forEach(fieldName =>{
 
-    const inputField = document.querySelector(`[name="${fieldName}"]`)
+    const inputField = document.querySelector( `[name="${fieldName}"]`)
+    console.log(inputField)
     if (!errorState[fieldName]){
       inputField.classList.remove("input-error")
       return;

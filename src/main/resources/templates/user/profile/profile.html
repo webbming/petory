@@ -5,8 +5,7 @@
   <meta charset="UTF-8">
   <title>회원 정보 수정</title>
   <link rel="stylesheet" href="/css/profile.css">
-  <link rel="stylesheet" href="/css/header.css">
-  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/layout/common.css">
   <!-- 페이지별 추가 CSS -->
 </head>
 <body>
@@ -17,7 +16,6 @@
     <!-- 공통 상단 영역 -->
 
     <!--/*@thymesVar id="userInfo" type=""*/-->
-    <div th:text="${userInfo}"></div>
 
     <div th:replace="fragment/profile-common :: mypage-top"></div>
 
@@ -30,12 +28,12 @@
     </div>
   </section>
 </div>
-
+<div th:replace="fragment/footer :: footerFragment"></div>
 <!-- 공통 모달 -->
 <div th:replace="fragment/profile-common :: modal"></div>
 
 <!-- 공통 스크립트 -->
-<script src="/js/user/profile.js"></script>
+<script type="module" src="/js/user/profile.js"></script>
 <!-- 페이지별 추가 스크립트 -->
 <script src="/js/user/address.js"></script>
 </body>

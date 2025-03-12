@@ -5,8 +5,7 @@
   <meta charset="UTF-8">
   <title>회원 정보 수정</title>
   <link rel="stylesheet" href="/css/profile.css">
-  <link rel="stylesheet" href="/css/header.css">
-  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/layout/common.css">
   <link rel="stylesheet" href="/css/my-page.css">
 </head>
 <body>
@@ -21,10 +20,10 @@
     </div>
   </section>
 </div>
+<div th:replace="fragment/footer :: footerFragment"></div>
 <div th:replace="fragment/profile-common :: modal"></div>
 <script src="/js/user/address.js"></script>
-<script src="/js/user/profile.js"></script>
-<script src="/js/user/activities.js"></script>
+<script type="module" src="/js/user/activities.js"></script>
 </body>
 </html>
 

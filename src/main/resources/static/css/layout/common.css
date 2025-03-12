@@ -1,0 +1,420 @@
+* { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; font-family: 'Pretendard', -apple-system,Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a,
+abbr, address, big, cite, code, del, dfn, em, font, img, ins, q, s, samp, small,
+strike, strong, sub, sup, tt, var, b, u, i, ul, ol, li, dl, dt, dd, table, caption,
+tbody, tfoot, thead, tr, th, td, fieldset, fo7m, label, legend, input, button, textarea, select {
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background-color: #fff;
+  margin: 0; height: 100%;
+  font-size: 14px;
+  min-height: 100vh;
+  color: #343434;
+  /* 스크롤 바 밀림 현상  항상 스크롤바 표시로 */
+  overflow-y: scroll;
+  min-width: 1200px;
+}
+input, select, textarea {
+  border: 1px solid #ccc; height: 40px; padding: 5px 15px; /*font-family:"Droid Sans";*/ outline: none; font-size: 1em;
+}
+textarea {
+  resize: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #333;
+}
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url(https://img.lifet.co.kr/icon/select_down.svg);
+  background-position: right 20px center;
+  background-repeat: no-repeat;
+  padding-right: 50px;
+}
+select::-ms-expand {display: none;}
+select.holder {color: #c9c9c9;}
+select.holder option {color: #343434;}
+input::placeholder, textarea::placeholder {color: #c3c3c3;}
+input[type="text"] {width:100%;}
+input[name="title"] {font-size: 21px; font-weight: 800; text-align: center;}
+input[type="password" i] { /*font-family:"Droid Sans";*/ }
+input[type="password" i]::placeholder {font-family: 'Pretendard', -apple-system,Arial, sans-serif;}
+input[type="search" i]::-webkit-search-cancel-button { -webkit-appearance: none; width: 30px; height: 30px; background-image: url(https://img.lifet.co.kr/icon/close_b.svg); background-size: contain; cursor: pointer;}
+button {color: #343434; border: 0; cursor:pointer; background-color: transparent;}
+em { font-style: inherit; }
+ul, ol { list-style: none; }
+a { text-decoration: none; color: currentColor; cursor: pointer; }
+i { font-style: inherit; }
+
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.text-left {text-align: left;}
+.text-center {text-align: center}
+.text-right {text-align: right;}
+.ellipsis2 { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.2em; height: 2.4em;}
+.error{
+  display: none;
+  font-size: 12px;
+  color: red;
+}
+
+/* 스크롤바 배경 */
+
+/* header 시작 */
+
+.header-border{
+  width: 100%;
+  border-bottom: 1px solid #D8D8D8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background-color: #fff;
+  height: 90px;
+
+}
+
+.header-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  min-width: 750px ;
+  padding-top: 20px;
+  margin: 0 auto;
+}
+
+.top-links {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  padding-top:5px;
+  padding-bottom: 5px;
+}
+
+.top-link {
+  margin-left: 15px;
+  color: #666;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.header-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+  text-decoration: none;
+}
+
+.logo svg {
+  fill: #4B89DC;
+  margin-right: 5px;
+}
+
+.logo-text {
+  color: #4B89DC;
+  padding-left: 10px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nav-menu {
+  display: flex;
+  list-style-type: none;
+}
+
+.nav-item {
+  margin-right: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+.nav-item.community {
+  display: flex;
+  align-items: center;
+}
+
+.community-badge {
+  background-color: #FF5F5F;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  margin-left: 2px;
+}
+
+.right-section {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  position: relative;
+  margin-right: 20px;
+}
+
+.search-input {
+  width: 300px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid #e1e1e1;
+  padding: 0 45px 0 20px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  cursor: pointer;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+}
+
+.icon-button {
+  margin-left: 15px;
+  cursor: pointer;
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #FF5F5F;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+/*  header 끝  */
+
+/* footer 시작 */
+footer{
+  background-color: #ececec;
+  padding: 87px 15px 116px 15px;
+  color: #7b7b7b;
+  line-height: 1.5em;
+
+}
+
+footer .inner{
+  position: relative;
+  width: 100%;
+  max-width: 1170px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+}
+
+footer .terms {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  color: #343434;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+footer .terms li {
+  margin-right: 10px;
+}
+
+footer .cptxt {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+footer .inner > article + article {
+  margin-left: 123px;
+  margin-top: 20px;
+
+}
+
+footer .tel {
+  background-repeat: no-repeat;
+  background-position: left center;
+
+  margin-bottom: 12px;
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+  color: #343434;
+}
+
+footer h5.tit {
+  font-size: 18px;
+  font-weight: 600;
+  color:#343434;
+  margin-bottom: 10px;
+}
+
+footer .sns-area{
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: absolute;
+  right: 0;
+  top: 35px;
+  z-index: 1;
+}
+
+footer .sns-area li + li {
+  margin-left: 10px;
+}
+footer .sns-area li a{
+  display: block;
+}
+footer .sns-area img{
+  width: 39px;
+  vertical-align: top;
+}
+footer a.logo img {
+  width: 40px;
+  height: 40px;
+}
+.inner .logo{
+  margin-bottom: 15px;
+}
+
+/* footer 끝 */
+
+/* 공통적인 레이아웃 */
+.container{
+  padding-top: 90px;
+  min-height: 100vh;
+}
+
+.pm-section{
+  width: 1200px;
+  margin: 0 auto;
+  padding: 50px 0 80px;
+}
+
+.scrolling-tab{
+  padding-top: 90px;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  z-index: 8100;
+  transition: .5s all;
+}
+
+.scrolling-tab .page-tab-area{
+
+}
+
+.page-tab-area {
+  position: relative;
+  background-color: #fff;
+  min-width: 750px;
+  border-bottom: 1px solid #d8d8d8;
+}
+.page-tab-area ul {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-flow: nowrap;
+  max-width: 1200px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.page-tab-area ul li.active a{
+  font-weight: 700;
+  color: #68a5fe;
+}
+.page-tab-area ul li.active a:after{
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 3px;
+  background-color:#68A5FE;
+}
+.page-tab-area ul li a{
+  position: relative;
+  display: block;
+  padding: 0 20px;
+  font-size: 16px;
+  line-height: 50px;
+}
+
+
+.main-Btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #68a5fe;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+
+/* 글쓰기 버튼은 이걸로*/
+.write_btn{
+  position: absolute;
+  right: 50%;
+  top: 7px;
+  height: 37px;
+  margin-right: -600px;
+  padding: 8px 12px 8px 32px;
+  color: black;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 130%;
+  border-radius: 40px;
+  border: 1px solid black;
+  background: #fff url("../../images/edit.png") no-repeat left 8px center;
+  background-size: 20px;
+}
