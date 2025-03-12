@@ -144,7 +144,12 @@
         <input type="hidden" id="productId" th:value="${product.productId}"/>
         <input type="hidden" name="quantity" id="quantity-value" th:value="1"/>
         <button id="wishlistButton" type="button" class="wishlist-btn">❤️ 찜하기</button>
-        <button type="submit" class="add-to-cart">장바구니 담기</button>
+
+        <!-- 장바구니 담기 버튼(수정X)-->
+        <label for="quantity">수량:</label>
+        <input type="number" id="quantity" value="1" min="1" required>
+        <button type="button" class="add-to-cart" onclick="addToCart()">장바구니 담기</button>
+
       </form>
     </div>
   </div>
@@ -540,6 +545,30 @@
           alert("댓글 등록 중 오류 발생");
         });
       return false;
+    }
+
+    <!-- 장바구니 상품 담기 ajax-->
+    function addToCart() {
+      let productId = "[[${product.productId}]]";
+      let quantity = document.getElementById("quantity").value;
+
+      fetch(`/cart/items/${productId}/add?quantity=${quantity}`, {  // URL에 쿼리 스트링으로 전달
+        method: "POST"
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("네트워크 응답이 올바르지 않습니다.");
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert("장바구니에 상품이 추가되었습니다!");  // 성공 메시지
+        console.log("업데이트된 장바구니:", data);  // 장바구니 데이터 확인
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("오류가 발생했습니다.");
+      });
     }
   </script>
 </body>

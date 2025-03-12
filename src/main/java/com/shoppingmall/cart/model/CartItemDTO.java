@@ -14,6 +14,7 @@ public class CartItemDTO {
     private String imageUrl;      
     private BigDecimal price;     
     private int quantity;
+    @Getter
     private BigDecimal totalPrice;
 
 
@@ -21,13 +22,10 @@ public class CartItemDTO {
         this.id = cartItem.getId();
         this.productId = cartItem.getProduct().getProductId();
         this.productName = cartItem.getProduct().getProductName();
-        this.imageUrl = cartItem.getProduct().getImageUrl();
+        this.imageUrl = cartItem.getProduct().getImageUrls().toString();
         this.price = cartItem.getPrice();
         this.quantity = cartItem.getQuantity();
         this.totalPrice = this.price.multiply(BigDecimal.valueOf(this.quantity));       
     }
-    
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
+
 }

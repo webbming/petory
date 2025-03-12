@@ -3,6 +3,7 @@ package com.shoppingmall.product.dto;
 
 import com.shoppingmall.product.model.Product;
 import java.math.BigDecimal;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,11 +18,11 @@ import lombok.Setter;
 public class ProductResponseDTO {
   private long productId;
   private String productName;
-  private BigDecimal price;
+  private int price;
   private String option;
   private String content;
   private String description;
-  private String imageUrl;
+  private List<String> imageUrl;
   private int reviewCount;
   private BigDecimal averageRating;
 
@@ -34,7 +35,7 @@ public class ProductResponseDTO {
         .content(product.getContent())
         .description(product.getDescription())
         .reviewCount(product.getReviewCount())
-        .imageUrl(product.getImageUrl())
+        .imageUrl(product.getImageUrls())
         .averageRating(product.getAverageRating())
         .build();
   }

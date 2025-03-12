@@ -8,7 +8,7 @@ import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseProductRepository;
 import com.shoppingmall.order.repository.PurchaseRepository;
 import com.shoppingmall.order.service.PurchaseService;
-import com.shoppingmall.product.Product;
+import com.shoppingmall.product.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;

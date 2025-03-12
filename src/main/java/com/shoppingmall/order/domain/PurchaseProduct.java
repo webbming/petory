@@ -1,7 +1,7 @@
 package com.shoppingmall.order.domain;
 
 
-import com.shoppingmall.product.Product;
+import com.shoppingmall.product.model.Product;
 import jakarta.persistence.*;
 import lombok.Data;
 

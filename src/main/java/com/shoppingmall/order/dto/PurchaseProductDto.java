@@ -1,7 +1,7 @@
 package com.shoppingmall.order.dto;
 
 import com.shoppingmall.order.domain.PurchaseProduct;
-import com.shoppingmall.product.Product;
+import com.shoppingmall.product.model.Product;
 import lombok.*;
 
 import java.time.LocalDateTime;

@@ -54,9 +54,7 @@ public class CartService {
             cartItem.updateTotalPrice(); // 가격 계산 갱신
             cartItemRepository.save(cartItem);
         } else {
-            CartItem cartItem = new CartItem(cart, product, quantity,
-                BigDecimal.valueOf(product.getPrice()), // int를 BigDecimal로 변환
-                BigDecimal.valueOf(product.getPrice()).multiply(BigDecimal.valueOf(quantity))); // int를 BigDecimal로 변환
+            CartItem cartItem = new CartItem(cart, product, quantity, BigDecimal.valueOf(product.getPrice()), BigDecimal.valueOf(product.getPrice()).multiply(BigDecimal.valueOf(quantity)));
             cart.addCartItem(cartItem);
             cartItemRepository.save(cartItem);
         }

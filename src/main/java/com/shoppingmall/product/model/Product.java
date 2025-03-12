@@ -40,30 +40,24 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    
+
     @Column(name = "reviewCount", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int reviewCount;  // DB 저장 필드로 변경
-    
+
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     private List<String> imageUrls = new ArrayList<>();
 
-    
+
+    @Getter
+    @Setter
     @ElementCollection
     @CollectionTable(name = "product_detail_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "detail_image_url")
     private List<String> detailImageUrls = new ArrayList<>();
-    
-    public void setDetailImageUrls(List<String> detailImageUrls) {
-        this.detailImageUrls = detailImageUrls;
-    }
 
-    public List<String> getDetailImageUrls() {
-        return detailImageUrls;
-    }
-
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     // **평균 평점 추가**
@@ -81,7 +75,7 @@ public class Product {
     @Column(name = "pet_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private PetType petType; // 강아지,고양이 필터용 필드 추가
-    
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
