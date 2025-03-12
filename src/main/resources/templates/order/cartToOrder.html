@@ -174,7 +174,7 @@
 		<div class="title">주문제품</div>
 		<hr class="section-divider">
 		<div th:each="product, iterStat : ${product}" class="product-item">
-			<img th:src="${#strings.replace(#strings.replace(#strings.replace(product.imageUrl, 'http://localhost:8080/', ''), '[', ''), ']', '')}" alt="Product Image" />
+			<img th:src="${#strings.replace(#strings.replace(#strings.replace(product.imageUrl, 'http://localhost:8080/', ''), '[', ''), ']', '')}" alt="Product Image"/>
 			<div class="product-info">
 				<p>상품명: <span name="productName" th:text="${product.productName}"></span>g</p>
 				<p>옵션: <span name="option" th:text="${product.option != null ? product.option : '없음'}"></span>g</p>
