@@ -25,13 +25,6 @@ import java.util.List;
 @Controller
 public class PurchaseController {
 
-@GetMapping("/cart")
-public String cartToPurchase(@ModelAttribute PurchaseProductDto dto,
-							 Model model){
-model.addAttribute("item", dto);
-return "order/cartToPurchase";
-}
-
 @GetMapping
 public String index() {
 	return "order/index";
@@ -39,16 +32,17 @@ public String index() {
 
 @GetMapping("/index2")
 public String index2() {
-	System.out.println("응애");
 	return "order/index2";
 }
 
 @Autowired
 	PurchaseProductRepository prodrepo;
-@GetMapping("/index4")
-public String index4(Model model) {
+@GetMapping("/orders")
+public String cartToPurchase(@ModelAttribute List<PurchaseProductDto> dtos,
+					 Model model) {
 model.addAttribute("product", prodrepo.findAll());
-	return "order/index4";
+//model.addAttribute("product", prodrepo.dtos);
+	return "order/cartToOrder";
 }
 
 
@@ -64,57 +58,57 @@ PurchaseService service;
 @Autowired
 PurchaseReviewRepository purchaseReviewRepository;
 
-@PostMapping("/purchase/review")
-public void reviews(@RequestParam(name = "productId")Long productId,
-											@RequestParam(name = "comment") String comment,
-											@RequestParam(name = "rating") int rating,
-											@RequestParam(name = "reviewImages") List<MultipartFile> reviewImages,
-											Model model){
-	System.out.println(productId);
-	System.out.println(comment);
-	System.out.println(reviewImages);
-	List<String> imagePaths = new ArrayList<>();
-
-	try {
-		for (MultipartFile file : reviewImages) {
-			String fileName = file.getOriginalFilename();
-			String filePath = "/images/" + fileName;  // 이미지 경로
-
-			// 실제 파일 저장은 하지 않지만, 경로는 DB에 저장
-			imagePaths.add(filePath);
-		}
-
-		// Review 객체 생성
-		PurchaseReview review = new PurchaseReview();
-		review.setComment(comment);
-		review.setImagePaths(imagePaths);
-		review.setRating(rating);
-
-		// 리뷰 저장 (DB에 저장)
-		purchaseReviewRepository.save(review);
-
-		// 모델에 경로 넘기기
-		model.addAttribute("imagePaths", imagePaths);
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-
-}
+//@PostMapping("/purchase/review")
+//public void reviews(@RequestParam(name = "productId")Long productId,
+//											@RequestParam(name = "comment") String comment,
+//											@RequestParam(name = "rating") int rating,
+//											@RequestParam(name = "reviewImages") List<MultipartFile> reviewImages,
+//											Model model){
+//	System.out.println(productId);
+//	System.out.println(comment);
+//	System.out.println(reviewImages);
+//	List<String> imagePaths = new ArrayList<>();
+//
+//	try {
+//		for (MultipartFile file : reviewImages) {
+//			String fileName = file.getOriginalFilename();
+//			String filePath = "/images/" + fileName;  // 이미지 경로
+//
+//			// 실제 파일 저장은 하지 않지만, 경로는 DB에 저장
+//			imagePaths.add(filePath);
+//		}
+//
+//		// Review 객체 생성
+//		PurchaseReview review = new PurchaseReview();
+//		review.setComment(comment);
+//		review.setImagePaths(imagePaths);
+//		review.setRating(rating);
+//
+//		// 리뷰 저장 (DB에 저장)
+//		purchaseReviewRepository.save(review);
+//
+//		// 모델에 경로 넘기기
+//		model.addAttribute("imagePaths", imagePaths);
+//	} catch (IOException e) {
+//		e.printStackTrace();
+//	}
+//
+//}
 
 //주문 요청
-@GetMapping("/order")
-public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseDelivery delivery,
-										@ModelAttribute PurchaseProduct item,
-										@RequestParam(name = "receiver_addr_detail") String receiveDetailAddr,
-										Model model){
-	model.addAttribute("message", service.order(purchase, delivery, item, receiveDetailAddr));
-	PurchaseAllDto purchaseAllDto = service.getOrderDetails(purchase.getPurchaseId());
-	model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
-	model.addAttribute("purchase", purchaseAllDto.getPurchase());
-	model.addAttribute("item", purchaseAllDto.getPurchaseProduct());
-	model.addAttribute("dto", purchaseAllDto);
-	return "order/orderResult";
-}
+//@GetMapping("/order")
+//public String order(@ModelAttribute Purchase purchase, @ModelAttribute PurchaseDelivery delivery,
+//										@ModelAttribute PurchaseProduct item,
+//										@RequestParam(name = "receiver_addr_detail") String receiveDetailAddr,
+//										Model model){
+//	model.addAttribute("message", service.order(purchase, delivery, item, receiveDetailAddr));
+//	PurchaseAllDto purchaseAllDto = service.getOrderDetails(purchase.getPurchaseId());
+//	model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
+//	model.addAttribute("purchase", purchaseAllDto.getPurchase());
+//	model.addAttribute("item", purchaseAllDto.getPurchaseProduct());
+//	model.addAttribute("dto", purchaseAllDto);
+//	return "order/orderResult";
+//}
 
 	//주문번호 기준 주문검색
 @GetMapping("/orders/{purchaseId}")
@@ -170,17 +164,20 @@ return "order/orderResultAll";
 	@GetMapping("/orders/userId")
 	public String orderListByUserId(
 									Authentication authentication,
+//									@SessionAttribute("userId") String userId,
 									@RequestParam(name = "page", defaultValue = "0") int page,
 									@RequestParam(name = "size", defaultValue = "3") int size,
 									@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
 									@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
-									@RequestParam(name = "userId", required = false, defaultValue = "null") String userId,
+//									@RequestParam(name = "userId", required = false, defaultValue = "null") String userId,
 									Model model) {
 		Pageable pageable = PageRequest.of(page, size);
-		System.out.println(purchaseState);
-		System.out.println(admin);
-		// mushroom19 관리자의 경우
+
+		String userId = authentication.getName();
+		System.out.println(userId);
+        // mushroom19 관리자의 경우
 		if (admin.equals("admin")) {
+//		if (userId.equals("admin")) {
 			PurchasePageDto adminPurchasePageDto = service.orderListByUserId(userId, purchaseState, pageable);
 
 			model.addAttribute("purchase", adminPurchasePageDto.getPurchase());
@@ -189,7 +186,6 @@ return "order/orderResultAll";
 			model.addAttribute("currentPage", page);
 			model.addAttribute("totalPages", adminPurchasePageDto.getPurchase().getTotalPages());
 			model.addAttribute("pageSize", size);
-
 
 //			return "headerFragment/order/mypage-admin-purchaseAndDelivery";
 			return "order/adminOrderByUserId";
@@ -221,11 +217,13 @@ return "order/orderResultAll";
 			}
 	return "redirect:/order";
 	}
-
+	
+	//주문번호 기준 상세보기
 	@GetMapping("/one")
-	public String purchaseNumber(@RequestParam(name = "userId") String userId,
-														@RequestParam(name = "purchaseProductId") Long purchaseProductId,
-														Model model){
+	public String purchaseNumber(@SessionAttribute(name = "userId") String userId,
+//								@RequestParam(name = "userId") String userId,
+								@RequestParam(name = "purchaseProductId") Long purchaseProductId,
+								Model model){
 	System.out.println(userId + purchaseProductId);
 	 ProductAndDeliveryDto productAndDeliveryDto = service.purchaseNumber(userId, purchaseProductId);
 	 if(productAndDeliveryDto.equals("false")){

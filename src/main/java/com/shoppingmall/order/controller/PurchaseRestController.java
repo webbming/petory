@@ -67,7 +67,7 @@ public class PurchaseRestController {
       purchRepo.save(purchase);
       delivery.setPurchase(purchase);
       deliRepo.save(delivery);
-      dtos.forEach(dto -> {
+        dtos.forEach(dto -> {
         PurchaseProduct product = new PurchaseProduct();
         product.setProductId(dto.getProductId());
         product.setProductName(dto.getProductName());

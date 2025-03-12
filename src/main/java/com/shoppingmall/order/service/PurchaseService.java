@@ -232,6 +232,8 @@ public class PurchaseService {
 
 	public void processOrder(CartToPuchaseDto cartDto) {
 		// 주문 데이터 처리 로직 예제
+		List<PurchaseProductDto> productList = cartDto.getPurchaseProductDtos();
+		if (productList != null) {
 		Purchase purchase = new Purchase();
 		PurchaseProduct products = new PurchaseProduct();
 		PurchaseDelivery delivery = new PurchaseDelivery();
@@ -241,11 +243,15 @@ public class PurchaseService {
 		delivery.setReceiverName(cartDto.getReceiverName());
 		delivery.setReceiverPhone(cartDto.getReceiverPhone());
 		delivery.setPurchase(purchase);
-		purchaseRepo.save(purchase);
-		deliveryRepo.save(delivery);
+
 		// 주문상품 목록 처리
-		List<PurchaseProductDto> productList = cartDto.getPurchaseProductDtos();
-		if (productList != null) {
+			int totalPrice = 0;
+		for (PurchaseProductDto product : productList) {
+			totalPrice += product.getPrice();
+		}
+			purchase.setTotalPrice(totalPrice);
+			purchaseRepo.save(purchase);
+			deliveryRepo.save(delivery);
 			for (PurchaseProductDto product : productList) {
 				products.setOption(product.getOption());
 				products.setUserId(cartDto.getUserId());

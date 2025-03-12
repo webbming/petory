@@ -299,7 +299,7 @@
 	</div>
 	<div class="summary-item total">
 		<span>총 결제 금액</span>
-		<span id="totalPayment" th:text="${totalPayment}">0원</span>
+		<span id="totalPrice" th:text="${totalPrice}">0원</span>
 	</div>
 	<div class="note">
 		위 제품의 구매 조건을 확인하였으며, 결제 및 개인 정보 제3자 제공에 모두 동의합니다.
@@ -308,6 +308,10 @@
 	<button type="submit" form="orderForm" class="purchase-btn" th:text="${totalPayment} + '원 결제하기'">0원 결제하기</button>
 </div>
 <script>
+	const totalPayment = document.getElementById('orderForm');
+	totalPayment.forEach((value, key) => {
+        console.log(key, value);  // 각 key와 value를 출력해서 확인
+   		 });
 	// 결제 수단 버튼 클릭 이벤트
     const paymentButtons = document.querySelectorAll('.payment-methods button');
     const cardSelect = document.getElementById('cardSelect');
@@ -371,7 +375,7 @@
             couponDiscount: document.getElementById('couponDiscount').textContent.replace('원', '').replace(/,/g, ''),
             pointsUsed: document.getElementById('pointsUsed').textContent.replace('원', '').replace(/,/g, ''),
             shippingFee: document.getElementById('shippingFee').textContent.replace('원', '').replace(/,/g, ''),
-            totalPayment: document.getElementById('totalPayment').textContent.replace('원', '').replace(/,/g, '')
+            totalPrice: document.getElementById('totalPrice').textContent.replace('원', '').replace(/,/g, '')
         };
 
         for (const [key, value] of Object.entries(paymentData)) {

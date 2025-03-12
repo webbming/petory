@@ -4,12 +4,9 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<script th:if="${message}" th:inline="javascript">
-        alert([[${message}]]);
-    </script>
 <body>
 <a href="/order/index2">TEST용(조건 : userId모두 일치시키기)</a>
-<a href="/order/index4">구매페이지</a>
+<a href="/order/orders">구매페이지</a>
 	<h1>주문</h1>
 	<form action="/order/order" method="get">
 		<div>
