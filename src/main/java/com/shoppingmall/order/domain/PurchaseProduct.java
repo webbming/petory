@@ -1,6 +1,7 @@
 package com.shoppingmall.order.domain;
 
 
+import com.shoppingmall.product.Product;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,8 +19,8 @@ public class PurchaseProduct {
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)
     private Purchase purchase;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_id") // 상품 ID (FK)
+    private String imageUrl;
+
     private Long productId;
 
     private String userId;
@@ -38,4 +39,8 @@ public class PurchaseProduct {
     private LocalDateTime cancelAt; // 주문 취소 시간
 
     private int totalPrice; // 해당 상품 총 가격
+
+    private String deliveryStatus;
+
+//    private LocalDateTime review;
 }

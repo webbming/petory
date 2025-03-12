@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeliveryChangeDto {
+    private Long purchaseProductId;
+
     private Long purchaseId;
 
     private String receiverName;
@@ -23,5 +25,4 @@ public class DeliveryChangeDto {
     private String detailAddr;
 
     private String deliveryMessage;
-
 }

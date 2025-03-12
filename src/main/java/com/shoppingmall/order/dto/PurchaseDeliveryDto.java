@@ -11,19 +11,21 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PurchaseDeliveryDto {
 
   private Long deliveryId;
   private String receiverName;
   private String receiverPhone;
   private String receiverAddr;
+  private String receiverAddrDetail;
   private String deliveryMessage;
   private String deliveryStatus;
   private LocalDateTime deliveredAt;
 
   @Builder
   public PurchaseDeliveryDto(Long deliveryId, String receiverName, String receiverPhone, String receiverAddr,
-                             String deliveryMessage, String deliveryStatus, LocalDateTime deliveredAt, String userId,LocalDateTime cancelAt) {
+                             String deliveryMessage, String deliveryStatus, LocalDateTime deliveredAt) {
     this.deliveryId = deliveryId;
     this.receiverName = receiverName;
     this.receiverPhone = receiverPhone;
