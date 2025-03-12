@@ -58,42 +58,42 @@ PurchaseService service;
 @Autowired
 PurchaseReviewRepository purchaseReviewRepository;
 
-//@PostMapping("/purchase/review")
-//public void reviews(@RequestParam(name = "productId")Long productId,
-//											@RequestParam(name = "comment") String comment,
-//											@RequestParam(name = "rating") int rating,
-//											@RequestParam(name = "reviewImages") List<MultipartFile> reviewImages,
-//											Model model){
-//	System.out.println(productId);
-//	System.out.println(comment);
-//	System.out.println(reviewImages);
-//	List<String> imagePaths = new ArrayList<>();
-//
-//	try {
-//		for (MultipartFile file : reviewImages) {
-//			String fileName = file.getOriginalFilename();
-//			String filePath = "/images/" + fileName;  // 이미지 경로
-//
-//			// 실제 파일 저장은 하지 않지만, 경로는 DB에 저장
-//			imagePaths.add(filePath);
-//		}
-//
-//		// Review 객체 생성
-//		PurchaseReview review = new PurchaseReview();
-//		review.setComment(comment);
-//		review.setImagePaths(imagePaths);
-//		review.setRating(rating);
-//
-//		// 리뷰 저장 (DB에 저장)
-//		purchaseReviewRepository.save(review);
-//
-//		// 모델에 경로 넘기기
-//		model.addAttribute("imagePaths", imagePaths);
-//	} catch (IOException e) {
-//		e.printStackTrace();
-//	}
-//
-//}
+@PostMapping("/purchase/review")
+public void reviews(@RequestParam(name = "productId")Long productId,
+											@RequestParam(name = "comment") String comment,
+											@RequestParam(name = "rating") int rating,
+											@RequestParam(name = "reviewImages") List<MultipartFile> reviewImages,
+											Model model){
+	System.out.println(productId);
+	System.out.println(comment);
+	System.out.println(reviewImages);
+	List<String> imagePaths = new ArrayList<>();
+
+	try {
+		for (MultipartFile file : reviewImages) {
+			String fileName = file.getOriginalFilename();
+			String filePath = "/images/" + fileName;  // 이미지 경로
+
+			// 실제 파일 저장은 하지 않지만, 경로는 DB에 저장
+			imagePaths.add(filePath);
+		}
+
+		// Review 객체 생성
+		PurchaseReview review = new PurchaseReview();
+		review.setComment(comment);
+		review.setImagePaths(imagePaths);
+		review.setRating(rating);
+
+		// 리뷰 저장 (DB에 저장)
+		purchaseReviewRepository.save(review);
+
+		// 모델에 경로 넘기기
+		model.addAttribute("imagePaths", imagePaths);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+
+}
 
 //주문 요청
 //@GetMapping("/order")
@@ -220,10 +220,11 @@ return "order/orderResultAll";
 	
 	//주문번호 기준 상세보기
 	@GetMapping("/one")
-	public String purchaseNumber(@SessionAttribute(name = "userId") String userId,
+	public String purchaseNumber(Authentication authentication,
 //								@RequestParam(name = "userId") String userId,
 								@RequestParam(name = "purchaseProductId") Long purchaseProductId,
 								Model model){
+	String userId = authentication.getName();
 	System.out.println(userId + purchaseProductId);
 	 ProductAndDeliveryDto productAndDeliveryDto = service.purchaseNumber(userId, purchaseProductId);
 	 if(productAndDeliveryDto.equals("false")){
