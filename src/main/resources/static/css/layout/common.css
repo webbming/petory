@@ -341,7 +341,7 @@ footer a.logo img {
   left: 0;
   width: 100%;
   z-index: 8100;
-  transition: .5s all;
+  transition: 0.8s all;
 }
 
 .scrolling-tab .page-tab-area{

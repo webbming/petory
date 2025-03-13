@@ -38,7 +38,7 @@ public class CustomSuccessHandler2 extends SimpleUrlAuthenticationSuccessHandler
       session.setAttribute("cartCount", 0); // 사용자 정보가 없을 경우 0으로 설정
     }
 
-    setDefaultTargetUrl("http://localhost:8080/home");
+    setDefaultTargetUrl("http://localhost:8080");
     // 기본 인증 성공 핸들러 호출
     super.onAuthenticationSuccess(request, response, authentication);
 

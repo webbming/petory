@@ -139,7 +139,7 @@ public class SecurityConfig {
 
         // 로그아웃 설정
         http.logout(logout -> logout
-                .logoutSuccessUrl("/home")            // 로그아웃 성공 시 리다이렉트 경로
+                .logoutSuccessUrl("/")            // 로그아웃 성공 시 리다이렉트 경로
                 .permitAll()
         );
 

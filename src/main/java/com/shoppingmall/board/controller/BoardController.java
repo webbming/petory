@@ -270,7 +270,7 @@ public class BoardController {
 
 	@GetMapping("/board/list/{type}")
 	public ResponseEntity<ApiResponse<?>> boardList(@PathVariable("type") String type) {
-		System.out.println("하하 왓당게 ");
+
 		 List<BoardResponseDTO> boardResponseDTO = boardService.getBoardContent(type);
 		 return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}

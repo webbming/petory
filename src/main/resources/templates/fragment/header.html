@@ -12,7 +12,7 @@
         <div class="header-wrap">
           <div class="top-links">
             <div class="top-link" sec:authorize="isAuthenticated()">
-              <a th:text="${#authentication.getName()}">님</a>님&nbsp;
+              <a th:text="${#authentication.principal.nickname}">님</a>님&nbsp;
               <a onclick="window.location.href='/logout'">로그아웃</a>
             </div>
             <div class="top-link" sec:authorize="!isAuthenticated()">
@@ -23,7 +23,7 @@
 
           <div class="header-container">
             <div class="left-section">
-              <a href="/home" class="logo">
+              <a href="/" class="logo">
                 <img src="/images/dog-img.png" width="40" height="40">
                 <span class="logo-text">에이콘</span>
               </a>

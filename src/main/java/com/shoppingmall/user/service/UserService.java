@@ -114,7 +114,7 @@ public class UserService {
     if (user == null) {
       throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
     }
-    System.out.println("가져오는중");
+
     String nickname = user.getNickname();
     int quantity = user.getCart().getUniqueItemCount();
     String imgUrl = user.getUserImg().getUrl();
