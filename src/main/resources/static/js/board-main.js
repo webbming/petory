@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded",function(){
                         <div class="tit">${post.title}</div>
                         <p>${post.content}</p>
                       </div>
-                      <img src="">
+                      ${post.imageUrl ? `<img src="${post.imageUrl}">` : ''}
                     </div>
                     <div class="bottom">
                       <div class="date">
