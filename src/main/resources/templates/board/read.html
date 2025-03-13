@@ -34,7 +34,9 @@
         <div th:utext="${board.content}" class="content ck-content"></div>
       </div>
       
-      <p><a href="/board/hashtag" class="mt-2 text-sm text-gray-500" th:text="${board.hashtag}"></a></p>
+      <span th:each="hashtag : ${board.hashtag}">
+      	<a th:href="@{/board/board(hashtag=${hashtag})}" class="mt-2 text-sm text-gray-500" th:text="${hashtag}"></a>
+      </span>
       
       <div class="mt-6 flex space-x-2">
         <a href="/board/board" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">목록으로</a>
@@ -43,8 +45,7 @@
       </div>
       
       <div class="mt-4 flex items-center space-x-2">
-        <a th:href="@{/board/like(boardId=${board.boardId})}" class="text-red-500">❤️</a>
-        <span th:text="${board.likeCount}" class="text-gray-700"></span>
+        <a href="#" id="likeButton" class="text-red-500" th:data-board-id="${board.boardId}">❤️ [[${board.likeCount}]]</a>
       </div>
       
       <h3 class="mt-6 text-lg font-bold">댓글</h3>
@@ -75,4 +76,29 @@
     </div>
   </div>
 </body>
+<script>
+	document.getElementById("likeButton").addEventListener("click", e => {
+		e.preventDefault();
+		
+		const boardId = document.getElementById("likeButton").dataset.boardId;
+		
+		fetch("/board/like", {
+	        method: 'POST',
+	        headers: {
+	        	"Content-Type" : "application/json"
+	        },
+	        credentials: "include",
+	        body: JSON.stringify({boardId : boardId})
+	    })
+	    .then(response => response.json())
+	    .then(data => {
+	    	if (data.success) {
+                document.getElementById("likeButton").textContent = data.likeCount;
+            } else {
+                alert("좋아요 처리 중 오류 발생!");
+            }
+	    })
+	    .catch(error => console.error('Error:', error));
+	});
+</script>
 </html>

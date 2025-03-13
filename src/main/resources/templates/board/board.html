@@ -226,9 +226,13 @@ img {
                 <option th:selected="${bydate == '전체'}">전체</option>
             </select>
             <button type="submit">검색</button>
-        </form><br><br>
+        </form><br>
         
         <a href="/board/write" class="write-button">글쓰기</a>
+        
+        <div th:if="${hashtag != 'all'}">
+        	<h3>[[${hashtag}]]</h3>
+        </div>
 
         <div class="board-container">
             <div th:each="board : ${board}" class="board-item">
@@ -245,7 +249,9 @@ img {
                 </div>
                 <div class="board-category">
                     <span class="category" th:text="${board.categoryId}"></span>
-                    <a href="/board/hashtag" class="hashtag" th:text="${board.hashtag}"></a>
+                    <span th:each="hashtag : ${board.hashtag}">
+                    	<a th:href="@{/board/board(hashtag = ${hashtag})}" class="hashtag" th:text="${hashtag}"></a>
+                    </span>
                 </div>
                 <div th:utext="${board.content}" class="board-content"></div>
                 <div th:utext="${board.image}" class="board-image"></div>
@@ -253,16 +259,16 @@ img {
         </div>
 
         <div class="paging">
-            <a th:if="${currentPage >= 10}" th:href="@{/board/board(page=${currentPage - 10}, keyword=${keyword}, category=${category})}">&lt;&lt;</a>
-            <a th:if="${currentPage > 0}" th:href="@{/board/board(page=${currentPage - 1}, keyword=${keyword}, category=${category})}">&lt;</a>
+            <a th:if="${currentPage >= 10}" th:href="@{/board/board(page=${currentPage - 10}, keyword=${keyword}, category=${category}, hashtag=${hashtag})}">&lt;&lt;</a>
+            <a th:if="${currentPage > 0}" th:href="@{/board/board(page=${currentPage - 1}, keyword=${keyword}, category=${category}, hashtag=${hashtag})}">&lt;</a>
 
             <div class="pagingNumber">
                 <span th:each="i : ${#numbers.sequence((currentPage / 10) * 10, ((currentPage / 10) + 1) * 10 - 1)}" th:if="${i >= 0 and i < board.totalPages}">
-                    <a th:href="@{/board/board(page=${i}, keyword=${keyword}, category=${category}, orderby=${orderby})}" th:text="${i + 1}" th:classappend="${i == currentPage ? 'current' : ''}"></a>
+                    <a th:href="@{/board/board(page=${i}, keyword=${keyword}, category=${category}, orderby=${orderby}, hashtag=${hashtag})}" th:text="${i + 1}" th:classappend="${i == currentPage ? 'current' : ''}"></a>
                 </span>
             </div>
-            <a th:if="${currentPage + 1 < board.totalPages}" th:href="@{/board/board(page=${currentPage + 1}, keyword=${keyword}, category=${category})}">&gt;</a>
-            <a th:if="${((currentPage / 10) + 1) * 10 < board.totalPages}" th:href="@{/board/board(page=${currentPage + 10 - currentPage}, keyword=${keyword}, category=${category})}">&gt;&gt;</a>
+            <a th:if="${currentPage + 1 < board.totalPages}" th:href="@{/board/board(page=${currentPage + 1}, keyword=${keyword}, category=${category}, hashtag=${hashtag})}">&gt;</a>
+            <a th:if="${((currentPage / 10) + 1) * 10 < board.totalPages}" th:href="@{/board/board(page=${currentPage + 10 - currentPage}, keyword=${keyword}, category=${category}, hashtag=${hashtag})}">&gt;&gt;</a>
         </div>
     </div>
 </div>

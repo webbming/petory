@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +17,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +39,7 @@ import com.shoppingmall.board.service.CommentService;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -52,19 +57,17 @@ public class BoardController {
 	
 	//리스트 조회
 	@GetMapping("/board")
-    public String getBoardByKeyword(@RequestParam(name = "page", required = false) Integer page,
+    public String getBoardByKeyword(@RequestParam(name = "page", defaultValue="0") Integer page,
                            @RequestParam(name = "size", defaultValue = "2") int size,
                            @RequestParam(name = "keyword", defaultValue = "") String keyword,
                            @RequestParam(name = "category", defaultValue="") String category,
-                           @RequestParam(name = "orderby", defaultValue="최신순") String orderby,
+                           @RequestParam(name = "orderby", defaultValue="최신순") String order,
                            @RequestParam(name = "bydate", defaultValue="전체") String bydate,
+                           @RequestParam(name = "hashtag", defaultValue="all") String hashtag,
                            Model model, HttpSession session) {
 		Integer sessionPage = (Integer) session.getAttribute("page");
-	    if (sessionPage == null) {
-	        sessionPage = 0;
-	    }
 	    
-	    if (category != null && !category.isEmpty() && page == null) {
+	    if (category != null && !category.isEmpty() && page == 0) {
 	        session.setAttribute("page", page);
 	    } else if (page == null) {
 	        page = sessionPage;
@@ -73,7 +76,7 @@ public class BoardController {
 	    }
 		
 		LocalDateTime startDate = boardService.getStartDateForPeriod(bydate);
-		Page<Board> board = boardService.getPostByKeyword(keyword, category, orderby, bydate, startDate, page, size);
+		Page<Board> board = boardService.getPostByKeyword(keyword, category, order, bydate, startDate, hashtag, page, size);
 		
 		board.forEach(i -> {
 			Pattern pattern = Pattern.compile("<img[^>]*>");
@@ -94,9 +97,9 @@ public class BoardController {
 		});
 		
 		
-		
+		model.addAttribute("hashtag", hashtag);
 		model.addAttribute("bydate", bydate);
-		model.addAttribute("orderby", orderby);
+		model.addAttribute("order", order);
 		model.addAttribute("category", category);
         model.addAttribute("board", board);
         model.addAttribute("keyword", keyword);
@@ -120,7 +123,10 @@ public class BoardController {
 	
 	//등록
 	@PostMapping("/write")
-	public String writePost(@ModelAttribute Board board, Authentication auth, Model model) {
+	public String writePost(@ModelAttribute Board board,
+					@RequestParam("hashtags") String hashtags,
+					Authentication auth, Model model) {
+		board.setHashtag(extractAndSaveHashtags(hashtags));
         String nickname = userRepository.findByUserId(auth.getName()).getNickname();
         board.setUser(userRepository.findByUserId(auth.getName()));
         board.setNickname(nickname);
@@ -129,6 +135,19 @@ public class BoardController {
 		model.addAttribute("board", board);
 		return "board/read";
 	}
+	
+	private Set<String> extractAndSaveHashtags(String hashtagsInput) {
+        Set<String> hashtags = new HashSet<>();
+        String[] hashtagArray = hashtagsInput.split("(?=#)");
+        String tagName;
+        for (String tag : hashtagArray) {
+            tag = tag.replaceAll("[^#\\w\\p{IsHangul}]", "");
+
+            tagName = tag.toLowerCase();
+            hashtags.add(tagName);
+        }
+        return hashtags;
+    }
 	
 	//이미지 업로드
 	@PostMapping("/images")
@@ -200,8 +219,9 @@ public class BoardController {
 			@RequestParam("title") String title, 
 			@RequestParam("content") String content, 
 			@RequestParam("categoryId") String categoryId,
-			@RequestParam("hashtag") String hashtag,
+			@RequestParam("hashtags") String hashtags,
 			Model model) {
+		Set<String> hashtag = extractAndSaveHashtags(hashtags);
 		boardService.updatePost(boardId, title, content, categoryId, hashtag);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
@@ -214,11 +234,18 @@ public class BoardController {
 	}
 	
 	//게시글 좋아요
-	@GetMapping("/like")
-	public String likePost(Authentication auth, @RequestParam("boardId") Long boardId) {
-		User user = userRepository.findByUserId(auth.getName());
-		boardService.likePost(boardId, user);
-		return "redirect:/board/read?boardId=" + boardId;
+	@PostMapping("/like")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> likePost(Authentication auth, @RequestBody Map<String, Long> requestData) {
+		Map<String, Object> response = new HashMap<>();
+		Long boardId = requestData.get("boardId");
+		
+        User user = userRepository.findByUserId(auth.getName());
+		int likeCount = boardService.likePost(boardId, user);
+		System.out.println(likeCount);
+        response.put("success", true);
+        response.put("likeCount", likeCount);
+        return ResponseEntity.ok(response);
 	}
 	
 	//댓글 좋아요
@@ -227,11 +254,6 @@ public class BoardController {
 		User user = userRepository.findByUserId(auth.getName());
 		commentService.likeComment(commentId, user);
 		return "redirect:/board/read?boardId=" + boardId;
-	}
-	
-	@GetMapping("/hashtag")
-	public String hashtag() {
-		return "redirect:/board/board";
 	}
 	
 	//댓글 등록

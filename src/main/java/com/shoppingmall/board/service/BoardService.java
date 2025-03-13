@@ -1,10 +1,16 @@
 package com.shoppingmall.board.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,9 +38,25 @@ public class BoardService {
     }
 	
 	//검색
-	public Page<Board> getPostByKeyword(String keyword, String category, String orderby, String bydate, LocalDateTime startDate, int page, int size){
+	public Page<Board> getPostByKeyword(String keyword, String category, String order, String bydate, LocalDateTime startDate, String hashtag, int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
-		return repository.searchBoards(keyword, category, orderby, bydate, startDate, pageable);
+		List<Board> boardList = repository.searchBoards(keyword, category, order, bydate, startDate);
+		if(!hashtag.equals("all")) {
+			List<Board> returnList = new ArrayList<Board>();
+			boardList.forEach(board->{
+				if(board.getHashtag().contains(hashtag)) {
+					returnList.add(board);
+				}
+			});
+			int start = Math.min((int) pageable.getOffset(), returnList.size());
+		    int end = Math.min((start + pageable.getPageSize()), returnList.size());
+			return new PageImpl<Board>(returnList.subList(start, end), pageable, returnList.size());
+		}
+		else {
+			int start = Math.min((int) pageable.getOffset(), boardList.size());
+		    int end = Math.min((start + pageable.getPageSize()), boardList.size());
+			return new PageImpl<Board>(boardList.subList(start, end), pageable, boardList.size());
+		}
 	}
 	
 	//날짜 검색
@@ -83,7 +105,7 @@ public class BoardService {
 	}
 	
 	//게시글 좋아요
-	public void likePost(Long boardId, User user) {
+	public int likePost(Long boardId, User user) {
 		Board board = repository.findById(boardId).orElse(null);
 		Set<Long> container = board.getLikeContain();
 		
@@ -94,6 +116,7 @@ public class BoardService {
 			likeCount++;
 			board.setLikeCount(likeCount);
 			repository.save(board);
+			return likeCount;
 		}
 		else {
 			container.remove(user.getId());
@@ -102,11 +125,12 @@ public class BoardService {
 			likeCount--;
 			board.setLikeCount(likeCount);
 			repository.save(board);
+			return likeCount;
 		}
 	}
 	
 	//수정
-	public Board updatePost(Long boardId, String title, String content, String categoryId, String hashtag) {
+	public Board updatePost(Long boardId, String title, String content, String categoryId, Set<String> hashtag) {
 		Board board = repository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("Invalid board Id"));
 		board.setTitle(title);
 		board.setContent(content);
