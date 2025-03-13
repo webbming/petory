@@ -126,11 +126,15 @@ public class BoardService {
 	}
 
   public List<BoardResponseDTO> getBoardContent(String type) {
+		System.out.println("아니되는거맞음 ?");
 		if(type.equals("best")){
-				return boardRepository.findTop9ByOrderByLikeCountDesc()
-				.stream()
-				.map(Board :: toDTO)
-				.toList();
+			List<BoardResponseDTO> list = boardRepository.findTop9ByOrderByLikeCountDesc()
+					.stream()
+					.map(Board :: toDTO)
+					.toList();
+
+				System.out.println("리스트 길이" + list.size());
+				return list;
 
 
 		}else {

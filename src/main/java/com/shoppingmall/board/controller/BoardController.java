@@ -270,8 +270,36 @@ public class BoardController {
 
 	@GetMapping("/board/list/{type}")
 	public ResponseEntity<ApiResponse<?>> boardList(@PathVariable("type") String type) {
-
+		System.out.println("type 요청오니");
+		System.out.println(type);
 		 List<BoardResponseDTO> boardResponseDTO = boardService.getBoardContent(type);
 		 return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}
+
+	@GetMapping("/list")
+	public ResponseEntity<ApiResponse<?>> boardList(@RequestParam int page ,@RequestParam int size) {
+		List<BoardResponseDTO> boardResponseDTO = boardService.getAllPosts(page , size)
+				.stream().map(Board :: toDTO).toList();
+		return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
+	}
+
+
+
+	@GetMapping("/wiki")
+	public String boardPageWiki() {
+		System.out.println("요청옴");
+		return "board/board-wiki";
+	}
+
+	@GetMapping("/main")
+	public String boardPageMain() {
+		return "board/board-main";
+	}
+
+	@GetMapping("/best")
+	public String boardPageBest() {
+		return "board/board-best";
+	}
+
+
 }

@@ -35,8 +35,8 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
 	@Query(value = "SELECT * FROM board WHERE like_contain LIKE CONCAT('%', :userId, '%')", nativeQuery = true)
 	List<Board> findBoardsLikedByUser(Long userId);
 
-	@Query(value = "SELECT b FROM Board b ORDER BY b.createdAt DESC")
+
 	List<Board> findTop9ByOrderByCreatedAtDesc();
-	@Query(value = "SELECT b FROM Board b ORDER BY b.likeCount DESC")
+
 	List<Board> findTop9ByOrderByLikeCountDesc();
 }

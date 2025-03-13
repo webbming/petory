@@ -8,7 +8,7 @@
   margin-bottom: 100px;
 }
 
-.pm-section section h2{
+.pm-section .inner-120 h2{
   margin: 70px 0 26px;
   font-weight: 700;
   font-size: 24px;
@@ -249,7 +249,7 @@
   font-size: 20px;
 
 }
-.common_sense > ul li a .tit{
+.common_sense .inner > .tit{
   font-size: 20px;
   overflow: hidden;
   white-space: nowrap;

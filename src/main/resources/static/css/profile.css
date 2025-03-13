@@ -500,6 +500,10 @@ a{
   font-weight: 500;
   font-size: 15px;
   line-height: 130%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }
 .pro_name .rate {
   margin-right: 10px;
