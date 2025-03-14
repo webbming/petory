@@ -16,7 +16,7 @@
 }
 .content-wrap{
     width: 410px;
-    height: 376px;
+    height: auto;
 }
 h1{
     color: #343434;
@@ -35,11 +35,12 @@ h2{
 
 .find-input , .find-select{
     width: 100%;
-    padding: 15px;
+    padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #dadada;
     border-radius: 5px;
     font-size: 15px;
+    height: 50px;
 }
 
 .find-input:focus {

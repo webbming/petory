@@ -4,19 +4,87 @@
 <head>
   <meta charset="UTF-8">
   <title>로그인</title>
-  <link rel="stylesheet" href="/css/common.css">
-  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/home.css">
+  <link rel="stylesheet" href="/css/layout/common.css">
+  <link rel="stylesheet" type="text/css" href="/slick/slick.css"/>
+  <link rel="stylesheet" type="text/css" href="/slick/slick-theme.css"/>
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="/slick/slick.min.js"></script>
 </head>
 <body>
-<div th:replace="headerFragment/header :: headerFragment"></div>
-  <h1> 메인 홈페이지 </h1>
-  <a href="/users/profile">프로필</a>
-  <div  sec:authorize="isAuthenticated()">
-    <span  th:text="|${#authentication.name}님 환영합니다 |"></span>
-    <button onclick="window.location.href='/logout'">로그아웃</button>
+<div th:replace="fragment/header :: headerFragment"></div>
+<div th:replace="fragment/nav :: navFragment"></div>
+<div class="container">
+  <div class="pm-section">
+    <section>
+      <article class="inner-120">
+        <div class="post-slider">
+          <div class="post-wrapper">
+            <div class="post">
+              <img src="/images/banner2.png">
+            </div>
+            <div class="post">
+              <img src="/images/banner3.png">
+            </div>
+            <div class="post">
+              <img src="/images/banner4.png">
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+    <section class="popular">
+      <article class="inner-120">
+        <h2>인기 급상승🔥</h2>
+        <div class="filter">
+          <button class="active" data-type="best">인기글</button>
+          <button data-type="trend">최신글</button>
+        </div>
+        <div class="popular_slick false">
+
+
+        </div>
+        <a class="more" href="/board/board">더보기</a>
+      </article>
+    </section>
+    <section>
+      <article class="inner-120">
+        <h2>베스트 상품 👍</h2>
+        <div class="scroll">
+          <ul class="product_list">
+
+          </ul>
+        </div>
+
+        <a class="more" href="/products">더보기</a>
+      </article>
+    </section>
+    <section>
+      <article class="inner-120">
+        <h2>반려견 상식</h2>
+
+        <a class="more">더보기</a>
+      </article>
+    </section>
+    <section>
+      <article class="inner-120"></article>
+    </section>
   </div>
-  <div sec:authorize="!isAuthenticated()">
-    <a href="/login">로그인</a>
-  </div>
+</div>
+
+<div th:replace="fragment/footer :: footerFragment"></div>
+<script type="module" src="/js/home.js"></script>
+<script>
+  $('.post-wrapper').slick({
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    dots: true,
+    autoplay: true,
+    arrows: false,
+    autoplaySpeed: 2000,
+    fade: true
+  });
+</script>
 </body>
 </html>

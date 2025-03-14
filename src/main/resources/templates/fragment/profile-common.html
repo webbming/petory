@@ -1,0 +1,204 @@
+<!--마이페이지 공통 요소 정의 html 템플릿 -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>회원 정보 수정</title>
+</head>
+<body>
+<div th:replace="fragment/header :: headerFragment"></div>
+<div class="container">
+  <div class="nav-bar"></div>
+  <section class="pm-section">
+        <!--  마이페이지의 공통 상단 부분  -->
+        <div class="mypage-top" th:fragment="mypage-top">
+              <div class="user">
+                <div class="img">
+                      <img src="/images/user-basic.jpg" alt="기본 프로필">
+                </div>
+                <strong class="nickname"></strong>
+                <button type="button" class="profile_btn">설정</button>
+              </div>
+              <div class="mypage_top_content">
+                <div class="inner-wrap">
+                  <div class="inner">
+                    <div class="inner-img">
+                      <a>
+                        <img src="/images/coupon4.png" >
+                      </a>
+                      <span class="quantity coupon"></span>
+                    </div>
+                    <h3>쿠폰</h3>
+                  </div>
+                  <div class="inner">
+                    <div class="inner-img">
+                      <a href="/cart">
+                        <img src="/images/cart3.png" >
+                      </a>
+                      <span class="quantity cartQuantity"></span>
+                    </div>
+                    <h3>장바구니</h3>
+                  </div>
+                  <div class="inner">
+                    <div class="inner-img">
+                      <a>
+                        <img src="/images/delivery2.png" >
+                      </a>
+                      <span class="quantity delivery">2</span>
+                    </div>
+                    <h3>배송중</h3>
+                  </div>
+                </div>
+
+                <div class="inner-rig">
+                  <p>
+                    쿠폰
+                    <strong>0개</strong>
+                  </p>
+                  <p>
+                    적립금
+                    <strong>0P</strong>
+                  </p>
+                </div>
+              </div>
+          </div>
+
+    <div class="mypage-bottom-content">
+        <!--  마이페이지의 공통 사이드 바 부분  -->
+              <div class="left" th:fragment="mypage-sidebar">
+                <ul class="my-menu">
+                    <li>
+                        <span>마이페이지 홈</span>
+                        <a href="/users/me">기본 정보</a>
+                    </li>
+                  <li>
+                    <span>커뮤니티</span>
+                    <a href="/users/me/activities">나의 활동</a>
+                  </li>
+                  <li>
+                    <span>나의 쇼핑 정보</span>
+                    <a href="/order/orders">카트->주문하기(물품위치 puchaseProduct의 db)</a>
+                    <a href="/order/admin/orderList">관리자용 주문/배송 리스트</a>
+                    <a href="/order/orders/userId">주문/배송</a>
+                    <a href="/users/me/likes">교환/반품</a>
+                    <a href="#">찜한제품</a>
+                    <a href="/users/me/reviews">제품리뷰</a>
+                  </li>
+                  <li>
+                    <span>나의 반려 동물</span>
+                  </li>
+                  <li>
+                    <span>쿠폰/적립금</span>
+                    <a href="/users/me/coupons">쿠폰</a>
+                    <a href="/users/me/points">적립금</a>
+                  </li>
+                  <li>
+                    <span>나의 정보</span>
+                    <a href="/users/me/profile">회원 정보 관리</a>
+                  </li>
+                  <li>
+                    <span>고객센터</span>
+                    <a href="#">고객센터</a>
+                    <a href="#">문의내역</a>
+                  </li>
+                </ul>
+              </div>
+
+            <!-- 기본 마이페이지 -->
+              <div class="right_info" th:fragment="mypage-mainInfo">
+                <h2>진후님의 반려동물</h2>
+                <a class="new_pet" href="/pets">펫 등록</a>
+                <div class="animal_list">
+                  <div class="last-div">
+                    <a href="/pets" class="profile_add">프로필 추가</a>
+                  </div>
+                </div>
+                <div class="like_area">
+                  <h2 class="border">좋아요한 제품</h2>
+                  <a href="#" class="more">더보기</a>
+                  <ul class="product_list">
+
+                  </ul>
+                </div>
+              </div>
+            <!-- 회원 정보 관리 페이지  -->
+              <div class="right_info" th:fragment="mypage-userInfo">
+                  <div class="sign-wrap">
+                      <section class="user_details_section">
+                          <h2 class="border">회원 정보</h2>
+                          <div class="field">
+                              <h5>닉네임</h5>
+                              <div class="result user-nickname"></div>
+                          </div>
+                          <div class="field">
+                              <h5>이메일</h5>
+                              <div class="result user-email"></div>
+                          </div>
+                          <div class="field">
+                              <h5>주소</h5>
+                              <div class="result user-address"></div>
+                          </div>
+                          <div class="field">
+                              <h5>가입 날짜</h5>
+                              <div class="result user-created"></div>
+                          </div>
+                          <div class="field">
+                              <h5>회원 분류</h5>
+                              <div class="result user-type"></div>
+                          </div>
+                      </section>
+                      <section class="user_agreement_section">
+                          <div class="user_agreement">
+                              <h2 class="border">마케팅 수신 동의 설정</h2>
+                              <ul class="product_list"></ul>
+                          </div>
+                      </section>
+                  </div>
+              </div>
+        <!-- 회원 활동           -->
+                <div class="right_info" th:fragment="mypage-activities">
+                    <h2 class="border_none">나의 활동</h2>
+                    <article class="consult__tab">
+                        <ul class="tab">
+                            <li><a class="active" data-type="boards">작성한 글</a></li>
+                            <li><a data-type="comments">댓글단 글</a></li>
+                            <li><a data-type="likes">좋아요한 글</a></li>
+                        </ul>
+                    </article>
+                    <div class="activities_content">
+                        <ul>
+
+                        </ul>
+                    </div>
+                </div>
+        </div>
+  </section>
+</div>
+
+
+            <div id="nicknameModal" class="modal" th:fragment="modal">
+              <div class="modal-content">
+                  <div class="head">
+                      <span class="close">&times;</span>
+                      <h2>프로필 수정</h2>
+                  </div>
+                <div class="profile-default">
+                  <div class="default-img">
+                    <img src="/images/user_default.png" alt="기본 프로필" id="profileOriginImg">
+                    <div class="upload_pic">
+                      <img id="profilePhotoImg" src>
+                    </div>
+                  </div>
+                  <label for="profilePhotoFile"></label>
+                  <input type="file" name="profilePhotoFile" id="profilePhotoFile" accept=".jpg , .jpeg, .png" class="hidden">
+                </div>
+                <a>기본 이미지</a>
+                  <h2>닉네임</h2>
+                <input type="text" id="newNickname" name="nickname" placeholder="새 닉네임 입력">
+                <span class="error">이미 존재하는 닉네임 입니다.</span>
+                <button id="saveNickname" disabled>저장</button>
+              </div>
+            </div>
+</body>
+</html>

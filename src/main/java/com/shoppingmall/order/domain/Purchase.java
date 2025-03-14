@@ -1,9 +1,11 @@
 package com.shoppingmall.order.domain;
 
+import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,11 +16,15 @@ public class Purchase {
     @Column(name = "purchase_id")
     private Long purchaseId; // 주문 ID (PK)
 
-    private Long cartId; // 장바구니 ID (FK), 단순한 Long 타입 필드
+    @OneToMany(mappedBy = "purchase")
+    private List<PurchaseProduct> purchaseProduct;
+
+    @OneToOne(mappedBy = "purchase")
+    private PurchaseDelivery purchaseDelivery;
 
     private String userId; // 사용자 ID (단순한 String)
 
-    private String totalPrice; // 총 가격
+    private Integer totalPrice; // 총 가격
 
 //    @Column(nullable = false, updatable = false)
     private LocalDateTime createAt; // 주문 생성 시간

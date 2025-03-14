@@ -4,6 +4,8 @@ import com.shoppingmall.user.repository.UserRepository;
 import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,9 +39,22 @@ public class UserController {
 		return "user/register";
 	}
 
-	@GetMapping("/profile")
-	public String profileG(@RequestParam(name = "agree", defaultValue = "false") boolean agree) {
-		return "user/profile";
+	@GetMapping("/me")
+	public String profileG(Authentication authentication, HttpSession session) {
+
+		return "user/profile/profile";
+	}
+
+	@GetMapping("/me/profile")
+	public String profileInfo(Authentication authentication , HttpSession session) {
+		if(authentication == null) {
+			return null;
+		}
+		return "user/profile/profile-userInfo";
+	}
+	@GetMapping("/me/activities")
+	public String profileActivities() {
+		return "user/profile/profile-activities";
 	}
 
 	//주소검색 팝업연결

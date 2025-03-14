@@ -3,14 +3,13 @@ package com.shoppingmall.order.service;
 import com.shoppingmall.order.domain.PurchaseDelivery;
 import com.shoppingmall.order.domain.PurchaseProduct;
 import com.shoppingmall.order.domain.Purchase;
-import com.shoppingmall.order.dto.DeliveryChangeDto;
-import com.shoppingmall.order.dto.PurchaseDeliveryDto;
-import com.shoppingmall.order.dto.PurchaseDto;
+import com.shoppingmall.order.dto.*;
 import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import com.shoppingmall.order.repository.PurchaseProductRepository;
 import com.shoppingmall.order.repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +23,7 @@ public class PurchaseService {
 	@Autowired
 	PurchaseRepository purchaseRepo;
 	@Autowired
-    PurchaseProductRepository productRepo;
+	PurchaseProductRepository productRepo;
 
 	public String order(Purchase purchase, PurchaseDelivery delivery, PurchaseProduct item, String receiveDetailAddr) {
 
@@ -46,28 +45,26 @@ public class PurchaseService {
 	}
 
 	//전체 주문 / 취소 검색
-	public PurchaseDto purchaseList(String purchasestate){
-		List<Purchase> purchases;
-		List<PurchaseDelivery> deliveries;
-		List<PurchaseProduct> products;
+	public PurchasePageDto purchaseList(String purchasestate, Pageable pageable) {
+		Page<Purchase> purchases;
+		Page<PurchaseDelivery> deliveries;
+		Page<PurchaseProduct> products;
 
-		if(purchasestate.equals("all")){
-			purchases = purchaseRepo.findAll(Sort.by(Sort.Direction.DESC, "purchaseId"));
-			deliveries = deliveryRepo.findAllOrderByPurchaseIdDesc();
-			products = productRepo.findAllOrderByPurchaseIdDesc();
-		}
-		else if(purchasestate.equals("cancel")){
-			purchases = purchaseRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
-			deliveries = deliveryRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
-			products = productRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc();
-		}
-		else{
-			purchases = purchaseRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
-			deliveries = deliveryRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
-			products = productRepo.findByCancelAtIsNullOrderByPurchaseIdDesc();
+		if (purchasestate.equals("all")) {
+			purchases = purchaseRepo.findAllOrderByPurchaseIdDesc(pageable);
+			deliveries = deliveryRepo.findAllOrderByPurchaseIdDesc(pageable);
+			products = productRepo.findAllOrderByPurchaseIdDesc(pageable);
+		} else if (purchasestate.equals("cancel")) {
+			purchases = purchaseRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc(pageable);
+			deliveries = deliveryRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc(pageable);
+			products = productRepo.findByCancelAtIsNotNullOrderByPurchaseIdDesc(pageable);
+		} else {
+			purchases = purchaseRepo.findByCancelAtIsNullOrderByPurchaseIdDesc(pageable);
+			deliveries = deliveryRepo.findByCancelAtIsNullOrderByPurchaseIdDesc(pageable);
+			products = productRepo.findByCancelAtIsNullOrderByPurchaseIdDesc(pageable);
 		}
 
-		return PurchaseDto.builder()
+		return PurchasePageDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
 				.purchaseProduct(products)
@@ -76,13 +73,13 @@ public class PurchaseService {
 	}
 
 	//주문번호로 상세 주문 검색
-	public PurchaseDto getOrderDetails(Long purchaseId) {
+	public PurchaseAllDto getOrderDetails(Long purchaseId) {
 
 		List<Purchase> purchases = purchaseRepo.findByPurchaseId(purchaseId);
-		List<PurchaseDelivery> deliveries  = deliveryRepo.findByPurchaseId(purchaseId);
+		List<PurchaseDelivery> deliveries = deliveryRepo.findByPurchaseId(purchaseId);
 		List<PurchaseProduct> products = productRepo.findByPurchaseId(purchaseId);
 
-		return PurchaseDto.builder()
+		return PurchaseAllDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
 				.purchaseProduct(products)
@@ -90,27 +87,25 @@ public class PurchaseService {
 	}
 
 	//userId별 주문 검색
-	public PurchaseDto orderListByUserId(String userId, String purchaseState){
-		List<Purchase> purchases;
-		List<PurchaseDelivery> deliveries;
-		List<PurchaseProduct> products;
+	public PurchasePageDto orderListByUserId(String userId, String purchaseState, Pageable pageable) {
+		Page<Purchase> purchases;
+		Page<PurchaseDelivery> deliveries;
+		Page<PurchaseProduct> products;
 
-		if(purchaseState.equals("all")){
-			purchases =  purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId);
-			deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId);
-			products = productRepo.findByUserIdOrderByPurchaseIdDesc(userId);
+		if (purchaseState.equals("all")) {
+			purchases = purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
+			deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
+			products = productRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
+		} else if (purchaseState.equals("cancel")) {
+			purchases = purchaseRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+			deliveries = deliveryRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+			products = productRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+		} else {
+			purchases = purchaseRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+			deliveries = deliveryRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
+			products = productRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 		}
-		else if(purchaseState.equals("cancel")){
-			purchases = purchaseRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
-			deliveries = deliveryRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
-			products = productRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId);
-		}
-		else{
-			purchases = purchaseRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
-			deliveries = deliveryRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
-			products = productRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId);
-		}
-		return PurchaseDto.builder()
+		return PurchasePageDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
 				.purchaseProduct(products)
@@ -118,24 +113,23 @@ public class PurchaseService {
 	}
 
 	//배송 상태 변경
-	public String deliveryChange(String deliveryState, Long purchaseId){
-		 PurchaseDelivery changeState = deliveryRepo.findPurchaseDeliveryByPurchaseId(purchaseId);
-		if(deliveryState.equals("onDelivery")){
+	public String deliveryChange(String deliveryState, Long purchaseProductId) {
+		if (deliveryState.equals("onDelivery")) {
 			deliveryState = "배송중";
-		}
-		else if(deliveryState.equals("finDelivery")){
+		} else if (deliveryState.equals("finDelivery")) {
 			deliveryState = "배송완료";
-		}
-		else{
+		} else {
 			deliveryState = "배송취소";
 		}
-			changeState.setDeliveryStatus(deliveryState);
-			deliveryRepo.save(changeState);
-		return "주문상태 변경: " + deliveryState;
+		System.out.println("SER" + "안녕" + deliveryState);
+		PurchaseProduct product = productRepo.findByPurchaseProductId(purchaseProductId).get(0);
+		product.setDeliveryStatus(deliveryState);
+		productRepo.save(product);
+		return deliveryState;
 	}
-	
-//주문 취소
-	public String purchaseCancel(Long purchaseId){
+
+	//주문 취소
+	public String purchaseCancel(Long purchaseId) {
 		List<Purchase> purchases = purchaseRepo.findByPurchaseId(purchaseId);
 		List<PurchaseDelivery> deliveries = deliveryRepo.findByPurchaseId(purchaseId);
 		List<PurchaseProduct> products = productRepo.findByPurchaseId(purchaseId);
@@ -152,22 +146,21 @@ public class PurchaseService {
 		purchaseRepo.save(purchase);
 		return "취소되었습니다";
 	}
-	
+
 	//배송정보 수정 관련
-	public PurchaseDeliveryDto receiverChange(DeliveryChangeDto dto, String state){
-		System.out.print(dto.getPurchaseId());
-	 	List<PurchaseDelivery> receiver = deliveryRepo.findByPurchaseId(dto.getPurchaseId());
-		 PurchaseDelivery receiverChanse = receiver.get(0);
-		 if(state.equals("change")){
-			 receiverChanse.setReceiverName(dto.getReceiverName());
-			 receiverChanse.setReceiverPhone(dto.getReceiverPhone());
-				 if(dto.getDetailAddr()==null){
-					 dto.setDetailAddr("");
-				 }
-			 receiverChanse.setReceiverAddr(dto.getReceiverAddr() + "  " + dto.getDetailAddr());
-			 receiverChanse.setDeliveryMessage(dto.getDeliveryMessage());
-			 deliveryRepo.save(receiverChanse);
-		 }
+	public PurchaseDeliveryDto receiverChange(DeliveryChangeDto dto, String state) {
+		List<PurchaseDelivery> receiver = deliveryRepo.findByPurchaseId(dto.getPurchaseId());
+		PurchaseDelivery receiverChanse = receiver.get(0);
+		if (state.equals("change")) {
+			receiverChanse.setReceiverName(dto.getReceiverName());
+			receiverChanse.setReceiverPhone(dto.getReceiverPhone());
+			if (dto.getDetailAddr() == null) {
+				dto.setDetailAddr("");
+			}
+			receiverChanse.setReceiverAddr(dto.getReceiverAddr() + "  " + dto.getDetailAddr());
+			receiverChanse.setDeliveryMessage(dto.getDeliveryMessage());
+			deliveryRepo.save(receiverChanse);
+		}
 		return PurchaseDeliveryDto.builder()
 				.deliveryId(receiverChanse.getDeliveryId())
 				.receiverName(receiverChanse.getReceiverName())
@@ -176,4 +169,97 @@ public class PurchaseService {
 				.deliveryMessage(receiverChanse.getDeliveryMessage())
 				.build();
 	}
+
+	public ProductAndDeliveryDto purchaseNumber(String userId, Long purchaseProductId) {
+		List<PurchaseProduct> products = productRepo.findByPurchaseProductId(purchaseProductId);
+			if(products.get(0).getUserId().equals(userId)){
+				List<PurchaseDelivery> deliveries = deliveryRepo.findByPurchaseId(products.get(0).getPurchase().getPurchaseId());
+
+				return ProductAndDeliveryDto.builder()
+						.purchaseDelivery(deliveries)
+						.purchaseProduct(products)
+						.build();
+			}
+			return ProductAndDeliveryDto.builder()
+					.message("false")
+					.build();
+
+	}
+
+	public String change(DeliveryUpdateRequestDto dto) {
+		List<PurchaseDelivery> receiver = deliveryRepo.findByPurchaseId(dto.getPurchaseId());
+		PurchaseDelivery receiverChanse = receiver.get(0);
+		receiverChanse.setReceiverName(dto.getReceiverName());
+		receiverChanse.setReceiverPhone(dto.getReceiverPhone());
+		if (dto.getReceiverAddrDetail() == null) {
+			dto.setReceiverAddrDetail("");
+		}
+		receiverChanse.setReceiverAddr(dto.getReceiverAddr() + " " + dto.getReceiverAddrDetail());
+		receiverChanse.setDeliveryMessage(dto.getDeliveryMessage());
+		deliveryRepo.save(receiverChanse);
+		String message = "수정 되었습니다.";
+		return message;
+	}
+	
+//	주문 등록
+	public void process(ProductAndDeliveryDto dtos) {
+		Purchase purchase = new Purchase();
+		System.out.println("dtos" + dtos);
+		PurchaseDelivery delivery = dtos.getPurchaseDelivery().get(0);
+		System.out.println("de" + delivery);
+		System.out.println(dtos.getPurchaseDelivery().get(0).getDeliveryMessage());
+		delivery.setPurchase(purchase);
+		deliveryRepo.save(delivery);
+		dtos.getPurchaseProduct().forEach(dto ->{
+			PurchaseProduct product = new PurchaseProduct();
+			product.setPurchase(purchase);
+			product.setOption(dto.getOption());
+			System.out.println(dto.getOption());
+			product.setProductName(dto.getProductName());
+			product.setProductId(dto.getProductId());
+			product.setQuantity(dto.getQuantity());
+			product.setPrice(dto.getPrice());
+			product.setUserId(dto.getUserId());
+			product.setProductName(dto.getProductName());
+			product.setDeliveryStatus("배송준비중");
+			product.setCreateAt(LocalDateTime.now());
+		});
+	}
+
+	public void processOrder(CartToPuchaseDto cartDto, String userId) {
+		// 주문 데이터 처리 로직 예제
+		List<PurchaseProductDto> productList = cartDto.getPurchaseProductDtos();
+		if (productList != null) {
+		Purchase purchase = new Purchase();
+		PurchaseProduct products = new PurchaseProduct();
+		PurchaseDelivery delivery = new PurchaseDelivery();
+
+		purchase.setUserId(userId);
+		delivery.setReceiverAddr(cartDto.getReceiverAddr());
+		delivery.setReceiverName(cartDto.getReceiverName());
+		delivery.setReceiverPhone(cartDto.getReceiverPhone());
+		delivery.setPurchase(purchase);
+
+		// 주문상품 목록 처리
+			int totalPrice = 0;
+		for (PurchaseProductDto product : productList) {
+			totalPrice += product.getPrice();
+		}
+			purchase.setTotalPrice(totalPrice);
+			purchaseRepo.save(purchase);
+			deliveryRepo.save(delivery);
+			for (PurchaseProductDto product : productList) {
+				products.setOption(product.getOption());
+				products.setUserId(userId);
+				products.setPurchase(purchase);
+				products.setProductName(product.getProductName());
+				products.setDeliveryStatus("배송준비중");
+				products.setCreateAt(LocalDateTime.now());
+				products.setQuantity(product.getQuantity());
+				productRepo.save(products);
+			}
+		}
+		System.out.println("주문이 처리되었습니다. 사용자 ID: " + cartDto.getUserId());
+	}
+
 }

@@ -5,7 +5,7 @@ import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import com.shoppingmall.oauth2.dto.GoogleResponse;
 import com.shoppingmall.oauth2.dto.NaverResponse;
 import com.shoppingmall.oauth2.dto.OAuth2Response;
-import com.shoppingmall.user.dto.PasswordGenerator;
+import com.shoppingmall.user.utils.PasswordGenerator;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.model.UserRoleType;
 import com.shoppingmall.user.repository.UserRepository;

@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<script th:if="${message}" th:inline="javascript">
-        alert([[${message}]]);
-    </script>
 <body>
+<a href="/order/index2">TEST용(조건 : userId모두 일치시키기)</a>
+<a href="/order/orders">구매페이지</a>
 	<h1>주문</h1>
 	<form action="/order/order" method="get">
 		<div>
@@ -33,6 +32,21 @@
 			사용자 id<input type="text" name="userId" placeholder="사용자 id">
 		</div>
 		<div>
+			상품id<input type="text" name="productId" placeholder="상품id">
+		</div>
+		<div>
+			상품명<input type="text" name="productName" placeholder="상품명">
+		</div>
+		<div>
+			수량<input type="text" name="quantity" placeholder="수량">
+		</div>
+		<div>
+			옵션<input type="text" name="option" placeholder="옵션">
+		</div>
+		<div>
+			상품id<input type="text" name="productId" placeholder="상품id">
+		</div>
+		<div>
 			상품명<input type="text" name="productName" placeholder="상품명">
 		</div>
 		<div>
@@ -46,7 +60,7 @@
 		</div>
 		<button>주문하기</button>
 	</form>
-	
+
 <form action="/order/admin/orderList" method="get">
 	<label for="searchAll">관리자용 전체 주문 관리:</label>
 	<select id="searchAll" name="purchaseState">
@@ -66,7 +80,14 @@
         <input type="text" name="userId" placeholder="아이디를 입력해주세요" />
         <button type="submit">검색</button>
  </form>
+
+<form action="order/one" method="get">
+	ID<input type="text" name="userId">
+	상품ID<input type="text" name="purchaseProductId">
+	<button>전송</button>
+</form>
 <a href="/order/purchase">주문넘겨주는 페이지</a>
+	<a href="/order/review">리뷰작성</a>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     function execDaumPostcode() {

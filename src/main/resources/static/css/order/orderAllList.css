@@ -1,0 +1,100 @@
+/* 제목 스타일 */
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* 버튼 공통 스타일 */
+.button, .btn {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* 기본 버튼 스타일 */
+.button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* 테이블 스타일 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* 리뷰 버튼 스타일 */
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+/* 모달 스타일 */
+.modal-content {
+    border-radius: 10px;
+}
+
+/* 모달 내부 스타일 */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 파일 업로드 버튼 스타일 */
+input[type="file"] {
+    margin-top: 5px;
+}
+
+/* 이미지 미리보기 스타일 */
+img[alt="미리보기 이미지"] {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+}
+
+/* 리뷰 제출 버튼 */
+.button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.button[type="submit"]:hover {
+    background-color: #0056b3;
+}

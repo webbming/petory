@@ -1,9 +1,13 @@
 package com.shoppingmall.board.service;
 
+import com.shoppingmall.board.dto.BoardResponseDTO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Arrays;
 import java.util.HashSet;
+=======
+>>>>>>> aac8e1b00e434bff43076d82509ad323f3bf018c
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,7 +29,9 @@ public class BoardService {
 	@Autowired
 	private BoardRepository repository;
 	private UserRepository userRepository;
-	
+  @Autowired
+  private BoardRepository boardRepository;
+
 	//저장
 	public void savePost(Board board){
 		repository.save(board);
@@ -143,4 +149,21 @@ public class BoardService {
 	public void deletePost(Long board_id) {
 		repository.deleteById(board_id);
 	}
+
+  public List<BoardResponseDTO> getBoardContent(String type) {
+		if(type.equals("best")){
+				return boardRepository.findTop9ByOrderByLikeCountDesc()
+				.stream()
+				.map(Board :: toDTO)
+				.toList();
+
+
+		}else {
+		 	return boardRepository.findTop9ByOrderByCreatedAtDesc()
+					.stream()
+					.map(Board :: toDTO)
+					.toList();
+		}
+
+  }
 }
