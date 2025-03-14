@@ -3,6 +3,7 @@ package com.shoppingmall.board.service;
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +42,8 @@ public class BoardService {
 		Pageable pageable = PageRequest.of(page, size);
 		return repository.searchBoards(keyword, category, orderby, bydate, startDate, pageable);
 	}
+
+
 	
 	//날짜 검색
 	public LocalDateTime getStartDateForPeriod(String bydate) {
@@ -88,7 +91,7 @@ public class BoardService {
 	}
 	
 	//게시글 좋아요
-	public void likePost(Long boardId, User user) {
+	public Integer likePost(Long boardId, User user) {
 		Board board = repository.findById(boardId).orElse(null);
 		Set<Long> container = board.getLikeContain();
 		
@@ -99,6 +102,7 @@ public class BoardService {
 			likeCount++;
 			board.setLikeCount(likeCount);
 			repository.save(board);
+			return likeCount;
 		}
 		else {
 			container.remove(user.getId());
@@ -107,6 +111,7 @@ public class BoardService {
 			likeCount--;
 			board.setLikeCount(likeCount);
 			repository.save(board);
+			return likeCount;
 		}
 	}
 	
@@ -126,16 +131,13 @@ public class BoardService {
 	}
 
   public List<BoardResponseDTO> getBoardContent(String type) {
-		System.out.println("아니되는거맞음 ?");
 		if(type.equals("best")){
 			List<BoardResponseDTO> list = boardRepository.findTop9ByOrderByLikeCountDesc()
 					.stream()
 					.map(Board :: toDTO)
 					.toList();
 
-				System.out.println("리스트 길이" + list.size());
 				return list;
-
 
 		}else {
 		 	return boardRepository.findTop9ByOrderByCreatedAtDesc()
@@ -145,4 +147,9 @@ public class BoardService {
 		}
 
   }
+	// 모든 게시물을 인기순으로 스크롤을 내릴때마다 5개씩
+	public List<Board> getAllPostsSortedByLikes(int page, int size) {
+		Page<Board> boardPage =	boardRepository.findAllSortedByLikes(PageRequest.of(page, size));
+		return boardPage.getContent();
+	}
 }

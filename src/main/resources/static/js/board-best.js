@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded",function(){
 
   let page = 0;
@@ -13,7 +11,7 @@ document.addEventListener("DOMContentLoaded",function(){
     isLoading = true;
 
     try {
-      const response = await fetch(`/board/list?page=${page}&size=${size}`, {
+      const response = await fetch(`/board/list?page=${page}&size=${size}&sort=best`, {
         method : "GET",
         headers : {
           "Content-Type" : "application/json"
@@ -26,7 +24,7 @@ document.addEventListener("DOMContentLoaded",function(){
       if(data.length > 0) {
         data.forEach(post =>{
           const li = document.createElement("li");
-            li.innerHTML = `
+          li.innerHTML = `
                   <a href="/board/read?boardId=${post.boardId}">
                     <div class="wrap">
                       <div class="inner">
@@ -49,7 +47,7 @@ document.addEventListener("DOMContentLoaded",function(){
                     </div>
                   </a>
             `;
-            boardList.appendChild(li)
+          boardList.appendChild(li)
         });
         page ++;
 

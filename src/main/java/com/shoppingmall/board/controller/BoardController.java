@@ -1,5 +1,6 @@
 package com.shoppingmall.board.controller;
 
+import com.shoppingmall.board.dto.BoardRequestDTO;
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import com.shoppingmall.user.dto.ApiResponse;
 import java.io.File;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -223,11 +225,17 @@ public class BoardController {
 	}
 	
 	//게시글 좋아요
-	@GetMapping("/like")
-	public String likePost(Authentication auth, @RequestParam("boardId") Long boardId) {
-		User user = userRepository.findByUserId(auth.getName());
-		boardService.likePost(boardId, user);
-		return "redirect:/board/read?boardId=" + boardId;
+	@PostMapping("/like")
+	@ResponseBody
+	public ResponseEntity<ApiResponse<?>> likePost(@RequestBody BoardRequestDTO.Likes likes , Authentication auth) {
+		String userId = auth.getName();
+		long boardId =  likes.getBoardId();
+		User user = userRepository.findByUserId(userId);
+
+     Integer likeCount =  boardService.likePost(boardId, user);
+		 Map<String, Object> response = new HashMap<>();
+		 response.put("likeCount", likeCount);
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 	
 	//댓글 좋아요
@@ -270,16 +278,25 @@ public class BoardController {
 
 	@GetMapping("/board/list/{type}")
 	public ResponseEntity<ApiResponse<?>> boardList(@PathVariable("type") String type) {
-		System.out.println("type 요청오니");
 		System.out.println(type);
 		 List<BoardResponseDTO> boardResponseDTO = boardService.getBoardContent(type);
 		 return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<ApiResponse<?>> boardList(@RequestParam int page ,@RequestParam int size) {
-		List<BoardResponseDTO> boardResponseDTO = boardService.getAllPosts(page , size)
-				.stream().map(Board :: toDTO).toList();
+	public ResponseEntity<ApiResponse<?>> boardList(@RequestParam int page
+			,@RequestParam int size
+			,@RequestParam(required = false) String sort) {
+		List<BoardResponseDTO> boardResponseDTO;
+
+		if("best".equals(sort)) {
+			boardResponseDTO = boardService.getAllPostsSortedByLikes(page, size )
+					.stream().map(Board :: toDTO).toList();
+		}else{
+			 boardResponseDTO = boardService.getAllPosts(page , size)
+					.stream().map(Board :: toDTO).toList();
+		}
+
 		return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}
 

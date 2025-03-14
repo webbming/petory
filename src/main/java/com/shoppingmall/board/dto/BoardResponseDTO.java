@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardResponseDTO {
+
     private Long boardId;
     private String title;
     private String categoryId;

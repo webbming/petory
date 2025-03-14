@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <link rel="stylesheet" href="/css/home.css">
+  <link rel="stylesheet" href="/css/layout/common.css">
+  <style>
+    .consult__tab {
+      margin-bottom: -10px;
+
+    }
+    .consult__tab ul {
+      margin: 32px 0 50px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex-wrap: wrap;
+      border-bottom: 2px solid #e3e3e3;
+    }
+    .consult__tab ul li {
+      width: auto;
+      position: relative;
+      text-align: center;
+    }
+
+    .consult__tab ul li a {
+      padding : 0 20px;
+    }
+    .consult__tab a.active {
+      color: #343435;
+    }
+    .consult__tab a {
+      display: flex;
+      justify-content: center;
+      height: 39px;
+      font-size: 18px;
+      line-height: 130%;
+    }
+  </style>
 </head>
 <body>
+<div th:replace="fragment/header :: headerFragment"></div>
+<div th:replace="fragment/nav :: navFragment" class="nav-var"></div>
+<div class="container">
+  <div class="pm-section">
+    <div class="inner-120">
+      <h2 th:text="|'${keyword}' 로 검색된 결과입니다.|"></h2>
 
+      <article class="consult__tab">
+        <ul>
+          <li>
+            <a>통합</a>
+          </li>
+          <li>
+            <a>스토어</a>
+          </li>
+          <li>
+            <a>커뮤니티</a>
+          </li>
+        </ul>
+      </article>
+
+      <div class="total total-container">
+        <div class="search-tit"></div>
+
+        <div class="search-tit"></div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+</div>
+
+
+<div th:replace="fragment/footer :: footerFragment"></div>
+<script type="module" src="/js/home.js"></script>
+<script type="module" src="/js/nav.js"></script>
 </body>
 </html>
