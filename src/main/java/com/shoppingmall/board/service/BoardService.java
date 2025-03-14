@@ -3,14 +3,8 @@ package com.shoppingmall.board.service;
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-<<<<<<< HEAD
-import java.util.Arrays;
-import java.util.HashSet;
-=======
->>>>>>> aac8e1b00e434bff43076d82509ad323f3bf018c
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
