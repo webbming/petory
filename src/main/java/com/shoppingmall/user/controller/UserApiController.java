@@ -117,7 +117,6 @@ public class UserApiController {
       @RequestParam("nickname") String nickname ,
       @RequestParam(value = "profilePhotoFile", required = false) MultipartFile profilePhotoFile , Authentication authentication) {
 
-    try {
       String userId = authentication.getName();
       System.out.println("프로필 업데이트 요청 - 사용자 ID: " + userId);
 
@@ -131,12 +130,7 @@ public class UserApiController {
       data.put("nickname", nickname);
 
       return ResponseEntity.ok(ApiResponse.success(data));
-    } catch (Exception e) {
-      // 오류 발생 시 로그 출력 후 예외 전파
-      System.err.println("프로필 업데이트 오류: " + e.getMessage());
-      e.printStackTrace();
-      throw e;
-    }
+
   }
 
   @PatchMapping("/me/profile")
