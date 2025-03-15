@@ -88,6 +88,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
         page++;
       } else {
+        boardList.innerHTML = `
+          <div class="myboard-empty">
+          <p>검색된 결과가 없습니다.</p>
+          </div>
+        `
         window.removeEventListener("scroll", handleScroll); // 더 이상 스크롤 이벤트를 처리하지 않음
       }
     } catch (e) {
