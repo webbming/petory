@@ -88,12 +88,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
         page++;
       } else {
-        boardList.innerHTML = `
-          <div class="myboard-empty">
-          <p>검색된 결과가 없습니다.</p>
-          </div>
-        `
         window.removeEventListener("scroll", handleScroll); // 더 이상 스크롤 이벤트를 처리하지 않음
+        const div = document.createElement("div");
+        div.classList.add("myboard-empty");
+        div.innerHTML =
+            `
+            <p>검색된 결과가 없습니다.</p>
+            `
+        boardList.appendChild(div)
       }
     } catch (e) {
       console.error(e + " 목록을 불러오지 못했습니다.");
