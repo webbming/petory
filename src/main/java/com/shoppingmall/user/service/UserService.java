@@ -183,41 +183,36 @@ public class UserService {
   }
 
   // 유저의 닉네임과 프로필사진 을 업데이트 하는 기능
-  public String userProfileUpdate(String userId, String nickname , MultipartFile file) {
+  public String userProfileUpdate(String userId, String nickname, MultipartFile file) {
     User user = userRepository.findByUserId(userId);
     if (user == null) {
       throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
     }
 
-    String imageUrl = null;
+    // 기존 프로필 이미지 가져오기
+    UserImg existingUserImg = userImgRepository.findByUser(user);
+    if (existingUserImg == null) {
+      throw new IllegalStateException("기본 프로필 이미지가 존재하지 않습니다.");
+    }
+
+    String imageUrl = existingUserImg.getUrl(); // 기존 이미지 URL 유지
 
     // 중복 닉네임 검사
     if (userRepository.existsByNickname(nickname) && !nickname.equals(user.getNickname())) {
       throw new DuplicateException();
     }
 
-    // 파일이 있을 경우 저장
+    // 새 프로필 이미지 업로드 (파일이 있는 경우)
     if (file != null && !file.isEmpty()) {
-      // 지정 경로에 파일 저장
       imageUrl = saveProfileImage(file);
-      System.out.println("이미지 URL: " + imageUrl);
 
-      UserImg existingUserImg = userImgRepository.findByUser(user);
-      System.out.println(existingUserImg.getUrl());
-      if (existingUserImg != null) {
-        // 기존 이미지가 있을 경우 업데이트
-        String url = existingUserImg.getUrl();
-        deleteProfileImage(url);
-        existingUserImg.setUrl(imageUrl);
-        userImgRepository.save(existingUserImg);
-      } else {
-        // 기존 이미지가 없을 경우 새 UserImg 저장
-        UserImg userImg = new UserImg();
-        userImg.setUrl(imageUrl);
-        userImg.setUser(user);
-        userImgRepository.save(userImg);
-        user.setUserImg(userImg);
+      // 기존 이미지가 기본 이미지가 아닐 경우에만 삭제
+      if (!isDefaultImage(existingUserImg.getUrl())) {
+        deleteProfileImage(existingUserImg.getUrl());
       }
+
+      existingUserImg.setUrl(imageUrl);
+      userImgRepository.save(existingUserImg);
     }
 
     // 닉네임 업데이트
@@ -225,7 +220,11 @@ public class UserService {
     userRepository.save(user);
 
     return imageUrl;
+  }
 
+  // 기본 이미지 여부를 체크하는 메서드
+  private boolean isDefaultImage(String imageUrl) {
+    return "/images/user-basic.jpg".equals(imageUrl); // 기본 이미지 경로를 확인
   }
 
   private void deleteProfileImage(String imageUrl) {

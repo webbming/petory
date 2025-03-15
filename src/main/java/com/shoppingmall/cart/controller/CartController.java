@@ -1,6 +1,7 @@
 package com.shoppingmall.cart.controller;
 
 import com.shoppingmall.cart.model.CartItem;
+import com.shoppingmall.cart.model.CartItemDTO;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.List;
@@ -50,6 +51,9 @@ public class CartController {
         // 총 금액 계산
         BigDecimal totalPrice = cartDTO.getTotalPrice();
         updateCartSession(user , session);
+        for (CartItemDTO dto : cartDTO.getCartItems()) {
+            System.out.println(dto.getImageUrl());
+        }
         model.addAttribute("cartItems", cartDTO.getCartItems());
         model.addAttribute("totalPrice", cartDTO.getTotalPrice());
 

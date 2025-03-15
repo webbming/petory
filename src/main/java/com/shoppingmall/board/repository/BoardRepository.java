@@ -39,4 +39,11 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
 	List<Board> findTop9ByOrderByCreatedAtDesc();
 
 	List<Board> findTop9ByOrderByLikeCountDesc();
+
+	@Query("SELECT b FROM Board b ORDER BY b.likeCount DESC")
+	Page<Board> findAllSortedByLikes(Pageable pageable);
+
+
+	@Query("SELECT b FROM Board b WHERE b.title LIKE %:keyword% OR b.content LIKE %:keyword%")
+	List<Board> searchByKeyword(String keyword);
 }

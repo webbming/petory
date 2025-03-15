@@ -119,7 +119,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   await productContent();
 
-
   const navbar = document.querySelector(".scrolling-tab")
   let lastScrollTop = 0;
   window.addEventListener("scroll" , function (){
