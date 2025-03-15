@@ -117,10 +117,6 @@ public class UserApiController {
       @RequestParam("nickname") String nickname ,
       @RequestParam(value = "profilePhotoFile", required = false) MultipartFile profilePhotoFile , Authentication authentication) {
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 46f1f14bf09f674df7c73a1b2dbe1985c36de089
       String userId = authentication.getName();
       System.out.println("프로필 업데이트 요청 - 사용자 ID: " + userId);
 

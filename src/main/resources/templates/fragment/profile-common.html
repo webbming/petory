@@ -200,5 +200,22 @@
                 <button id="saveNickname" disabled>저장</button>
               </div>
             </div>
+
+            <div id="filter-Modal" class="modal" th:fragment="filter-modal">
+                <div class="modal-content">
+                    <div class="head">
+                        <span class="close">&times;</span>
+                        <h2>검색 필터</h2>
+                    </div>
+                    <div>
+
+                    </div>
+                    <a>기본 이미지</a>
+                    <h2>닉네임</h2>
+                    <input type="text" id="newNickname" name="nickname" placeholder="새 닉네임 입력">
+                    <span class="error">이미 존재하는 닉네임 입니다.</span>
+                    <button id="search-filter" disabled>저장</button>
+                </div>
+            </div>
 </body>
 </html>

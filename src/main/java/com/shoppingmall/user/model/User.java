@@ -6,6 +6,8 @@ import com.shoppingmall.cart.model.Cart;
 import com.shoppingmall.pet.model.Pet;
 import com.shoppingmall.user.dto.UserResponseDTO;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -25,7 +27,7 @@ import lombok.Setter;
 @Table(uniqueConstraints = {
     @UniqueConstraint(columnNames = {"email", "accountType"})
 })
-public class User {
+public class User implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -286,16 +286,14 @@ public class BoardController {
 	@GetMapping("/list")
 	public ResponseEntity<ApiResponse<?>> boardList(@RequestParam int page
 			,@RequestParam int size
-			,@RequestParam(required = false) String sort) {
-		List<BoardResponseDTO> boardResponseDTO;
+			,@RequestParam(required = false) String sort
+			,@RequestParam(required = false) String search
+			,@RequestParam(required = false) String period
+			,@RequestParam(required = true) String category) {
 
-		if("best".equals(sort)) {
-			boardResponseDTO = boardService.getAllPostsSortedByLikes(page, size )
+		List<BoardResponseDTO> boardResponseDTO;
+		boardResponseDTO = boardService.getAllPosts(page , size , category , sort , search , period)
 					.stream().map(Board :: toDTO).toList();
-		}else{
-			 boardResponseDTO = boardService.getAllPosts(page , size)
-					.stream().map(Board :: toDTO).toList();
-		}
 
 		return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}
