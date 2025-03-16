@@ -35,7 +35,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     Page<Product> findAll(Pageable pageable);
 
-    List<Product> findTop4ByOrderByAverageRating();
+    List<Product> findTop4ByOrderByAverageRatingDesc();
     @Query("SELECT b FROM Product b WHERE b.productName LIKE %:keyword% OR b.content LIKE %:keyword%")
     List<Product> searchByKeyword(String keyword);
 }

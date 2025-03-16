@@ -152,6 +152,39 @@
       justify-content: space-between;
       align-items: center;
     }
+    .search-container {
+      margin-bottom: 30px;
+    }
+    .search-container form {
+      display: flex;
+    }
+    .search-container form input {
+
+      margin-right: 20px;
+      border-radius: 20px;
+    }
+    .search-container form select {
+      margin-right: 10px;
+      border-radius: 20px;
+    }
+
+    .search-container form button {
+      width: 200px;
+      border: 1px solid #68a5fe;
+      background-color: #68a5fe;
+      border-radius: 20px;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .myboard-empty {
+      margin-top: 100px;
+      width: 100%;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -161,14 +194,17 @@
   <div class="pm-section">
     <div class="inner-120">
       <h2>BEST</h2>
+
       <div class="common_sense">
+
         <div class="left consult-wrapper">
 
           <div class="consult__tab">
-            <a class="tool_filter">
-              <span class="text">필터</span>
-            </a>
-            <button type="button" class="keyword active">전체</button>
+            <button type="button" class="keyword active" data-type="all">전체</button>
+            <button type="button" class="keyword " data-type="반슐랭">반슐랭</button>
+            <button type="button" class="keyword " data-type="육아팁">육아팁</button>
+            <button type="button" class="keyword " data-type="일상공유">일상공유</button>
+            <button type="button" class="keyword " data-type="상품후기">상품후기</button>
           </div>
 
           <div class="exposure_tag">
@@ -179,7 +215,7 @@
 
         </div>
         <div class="rig">
-          <h3>해시태그</h3>
+          <h3>가장 많이 조회된 게시글</h3>
           <ol>
 
           </ol>
@@ -188,8 +224,6 @@
     </div>
   </div>
 </div>
-
-
 <div th:replace="fragment/footer :: footerFragment"></div>
 <script src="/js/board-best.js"></script>
 <script src="/js/nav.js"></script>

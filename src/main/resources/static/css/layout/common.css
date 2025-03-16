@@ -415,6 +415,6 @@ footer a.logo img {
   line-height: 130%;
   border-radius: 40px;
   border: 1px solid black;
-  background: #fff url("../../images/edit.png") no-repeat left 8px center;
+  background: #fff url("../../images/ui/edit.png") no-repeat left 8px center;
   background-size: 20px;
 }

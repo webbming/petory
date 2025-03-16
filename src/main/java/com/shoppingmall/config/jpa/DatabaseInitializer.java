@@ -2,7 +2,10 @@ package com.shoppingmall.config.jpa;
 
 import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.repository.BoardRepository;
+import com.shoppingmall.product.model.Category;
+import com.shoppingmall.product.model.PetType;
 import com.shoppingmall.product.model.Product;
+import com.shoppingmall.product.model.Subcategory;
 import com.shoppingmall.product.repository.CategoryRepository;
 import com.shoppingmall.product.repository.ProductRepository;
 import com.shoppingmall.product.repository.SubcategoryRepository;
@@ -13,9 +16,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+
+// 초기 데이터 로드 클래스
+// 유저 ADMIN 과 게시글 10개
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
     private final ProductRepository productRepository;
@@ -55,25 +64,93 @@ public class DatabaseInitializer implements CommandLineRunner {
         // Board 데이터가 이미 있으면 추가하지 않음
         if (boardRepository.count() == 0) {
 
-
             List<Board> boards = List.of(
-                    new Board("게시글 1", "/images/1.jpg", "nickname1", "내용 1", "#hashtag1", "category1", user),
-                    new Board("게시글 2", "/images/2.jpg", "nickname2", "내용 2", "#hashtag2", "category2", user),
-                    new Board("게시글 3", "/images/3.jpg", "nickname3", "내용 3", "#hashtag3", "category3", user),
-                    new Board("게시글 4", "/images/4.jpg", "nickname4", "내용 4", "#hashtag4", "category4", user),
-                    new Board("게시글 5", "/images/5.jpg", "nickname5", "내용 5", "#hashtag5", "category5", user),
-                    new Board("게시글 6", "/images/6.jpg", "nickname6", "내용 6", "#hashtag6", "category6", user),
-                    new Board("게시글 7", "/images/7.jpg", "nickname7", "내용 7", "#hashtag7", "category7", user),
-                    new Board("게시글 8", "/images/8.jpg", "nickname8", "내용 8", "#hashtag8", "category8", user),
-                    new Board("게시글 9", "/images/9.jpg", "nickname9", "내용 9", "#hashtag9", "category9", user),
-                    new Board("게시글 10", "/images/10.jpg", "nickname10", "내용 10", "#hashtag10", "category10", user)
+                    new Board("강아지가 기침을 계속하네요...", null, user.getNickname(), "내용 1", "#hashtag1", "반슐랭", user),
+                    new Board("다들 사료 어떤 브랜드 먹이세요?", null, user.getNickname(), "내용 2", "#hashtag2", "육아팁", user),
+                    new Board("강아지가 좋아하는 장난감!", null, user.getNickname(), "내용 3", "#hashtag3", "상품후기", user),
+                    new Board("강아지랑 갈만한 곳 추천좀요!", null, user.getNickname(), "내용 4", "#hashtag4", "육아팁", user),
+                    new Board("슈나우저 피부병 ㅜㅜ", null, user.getNickname(), "내용 5", "#hashtag5", "반슐랭", user),
+                    new Board("고양이 깨무는 습관 어떻게 고쳐요?", null, user.getNickname(), "내용 6", "#hashtag6", "일상공유", user),
+                    new Board("저희 아이 자랑 좀 할게요", null, user.getNickname(), "내용 7", "#hashtag7", "반슐랭", user),
+                    new Board("왓더퍽", null, user.getNickname(), "내용 8", "#hashtag8", "육아팁", user),
+                    new Board("쒯퍼킹", null, user.getNickname(), "내용 9", "#hashtag9", "상품후기", user),
+                    new Board("추천 100개 달성 시 패드 무료 나눔", null, user.getNickname(), "내용 10", "#hashtag10", "일상공유", user)
             );
 
 
             boardRepository.saveAll(boards); // DB에 Board 데이터 삽입
         }
+
+
+        if (categoryRepository.count() == 0) {
+            List<Category> categories = List.of(
+                    new Category(null, "사료", PetType.DOG, new ArrayList<>())
+            );
+            categoryRepository.saveAll(categories); // 카테고리 저장
+        }
+
+// 저장된 카테고리를 가져옴
+        Category category = categoryRepository.findByCategoryName("사료")
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        if (subcategoryRepository.count() == 0) {
+            List<Subcategory> subcategories = List.of(
+                    new Subcategory(null, category, "건식 사료", "강아지 건식 사료"),
+                    new Subcategory(null, category, "습식 사료", "강아지 습식 사료")
+            );
+            subcategoryRepository.saveAll(subcategories);
+        }
+
+        if (productRepository.count() == 0) {
+            Subcategory subcategory = subcategoryRepository.findBySubcategoryName("건식 사료")
+                    .orElseThrow(() -> new RuntimeException("Subcategory not found"));
+
+            List<Product> products = new ArrayList<>(); // ArrayList로 초기화
+            products.add(new Product(
+                    null, "고양이 화장실 청소용 스쿱", 25000, "스쿱", "스쿱", "고양이 모래에서 배변을 걸러내기 위한 스쿱",
+                    0, new ArrayList<>(List.of("/images/product/1.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+                    category, subcategory, PetType.DOG
+            ));
+            products.add(new Product(
+                    null, "고양이 배변에 잘 붙는 모래!", 28000, "고양이 모래", "고양이 화장실에 이 모래를 써보세요", "이 모래는 아주 부드럽고 고양이들이 좋아해요",
+                    0, new ArrayList<>(List.of("/images/product/2.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+                    category, subcategory, PetType.DOG
+            ));
+            // 나머지 제품들도 동일한 방식으로 추가
+            products.add(new Product(
+                    null, "고양이들이 좋아하는 사료 유아용", 30000, "1", "고단백 사료", "근육 발달을 돕는 사료",
+                    0, new ArrayList<>(List.of("/images/product/3.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+                    category, subcategory, PetType.DOG
+            ));
+            products.add(new Product(
+                    null, "고양이들이 좋아하는 사료 전연령", 22000, "전연령용", "오가닉 사료", "자연 원료로 만든 건강한 사료",
+                    0, new ArrayList<>(List.of("/images/product/4.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+                    category, subcategory, PetType.DOG
+            ));
+            products.add(new Product(
+                    null, "반려견 반려묘 바닥 패드", 26000, "성묘/성견용", "패드", "패드",
+                    0, new ArrayList<>(List.of("/images/product/11.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+                    category, subcategory, PetType.CAT
+            ));
+            products.add(new Product(
+                    null, "강아지 털방석 노랑색", 29000, "성견용", "강아지들이 좋아해요", "푹신푹신 방석",
+                    0, new ArrayList<>(List.of("/images/product/12.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+                    category, subcategory, PetType.CAT
+            ));
+            products.add(new Product(
+                    null, "강아지 빗", 31000, "퍼피용", "강아지용 빗", "애견 빗",
+                    0, new ArrayList<>(List.of("/images/product/13.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+                    category, subcategory, PetType.CAT
+            ));
+            products.add(new Product(
+                    null, "반려묘 반려견 담요", 32000, "1", "담요", "담요",
+                    0, new ArrayList<>(List.of("/images/product/14.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+                    category, subcategory, PetType.CAT
+            ));
+
+            productRepository.saveAll(products);  // DB에 Product 데이터 삽입
+        }
+
     }
-
-
 
 }

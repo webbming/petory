@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   finalSearchBtn.addEventListener("click", async function (e){
     e.preventDefault();
+
     const searchForm = document.querySelector("#search-form");
     const searchValue = searchForm.querySelector(".search-query").value;
     const sortValue = searchForm.querySelector(".sorted").value;
@@ -61,15 +62,18 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (data.length > 0) {
         data.forEach(post => {
           const li = document.createElement("li");
+          const contentWithoutFigures = post.content.replace(/<figure.*?>.*?<\/figure>/g, '').trim();
+          const contentTextOnly = contentWithoutFigures.replace(/<p.*?>(.*?)<\/p>/g, '$1').trim();
+
           li.innerHTML = `
                   <a href="/board/read?boardId=${post.boardId}">
                     <div class="wrap">
                       <div class="inner">
                         <span>${post.categoryId}</span>
                         <div class="tit">${post.title}</div>
-                        <p>${post.content}</p>
+                        <p>${contentTextOnly}</p>
                       </div>
-                     <img src="">
+                    ${post.image ? `<img src="${post.image}" />` : ''}
                     </div>
                     <div class="bottom">
                       <div class="date">
@@ -87,6 +91,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           boardList.appendChild(li);
         });
         page++;
+        window.addEventListener("scroll", handleScroll);
       } else {
         window.removeEventListener("scroll", handleScroll); // 더 이상 스크롤 이벤트를 처리하지 않음
         const div = document.createElement("div");
@@ -130,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         data.forEach((post, index) => {
           const li = document.createElement("li");
           li.innerHTML = `
-                <a>
+                <a href="/board/read?boardId=${post.boardId}">
                   <span class="num">${index + 1}</span>
                   <p>${post.title}</p>
                   <span class="same">변동없음</span>

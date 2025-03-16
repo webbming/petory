@@ -99,6 +99,12 @@ public class BoardService {
 					.stream()
 					.map(Board::toDTO)
 					.toList();
+
+		}else if("view".equals(type)) {
+			return repository.findTop9ByOrderByViewCountDesc()
+					.stream()
+					.map(Board::toDTO)
+					.toList();
 		} else {
 			return repository.findTop9ByOrderByCreatedAtDesc()
 					.stream()

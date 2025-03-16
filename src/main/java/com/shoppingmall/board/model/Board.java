@@ -29,7 +29,7 @@ public class Board {
     @Column(nullable = false, length = 50)
     private String title;
     
-    @Column(nullable = true, length = 50)
+    @Column(nullable = true, length = 255)
     private String image;
 
     @Column(nullable = false)
@@ -97,7 +97,9 @@ public class Board {
                 .boardId(boardId)
                 .title(title)
                 .categoryId(categoryId)
+                .image(image)
                 .nickname(nickname)
+                .hashtag(hashtag)
                 .content(content)
                 .commentCount(commentCount)
                 .viewCount(viewCount)

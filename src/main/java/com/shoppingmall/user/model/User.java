@@ -86,7 +86,7 @@ public class User implements Serializable {
     if ( this.userImg == null){
       this.userImg = new UserImg();
       this.userImg.setUser(this);
-      this.userImg.setUrl("/images/user-basic.jpg");
+      this.userImg.setUrl("/images/ui/my-page-user-basic.jpg");
     }
   }
 

@@ -1,8 +1,12 @@
 package com.shoppingmall.board.repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
+import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.board.model.Comment;
+import com.shoppingmall.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -64,4 +68,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
 	Page<Board> findByCategoryIdAndCreatedAtAfterAndTitleContaining(
 			String categoryId, LocalDateTime startDate, String search, Pageable pageable);
+
+    List<Board> findTop9ByOrderByViewCountDesc();
+
+    List<Board> findTop5BoardByUser(User user);
+
+    @Query("SELECT c FROM Comment c JOIN FETCH c.board WHERE c.user = :user")
+    List<Comment> findTop5CommentsWithBoardsByUser(@Param("user") User user);
 }

@@ -13,11 +13,14 @@ import com.shoppingmall.user.repository.UserImgRepository;
 import com.shoppingmall.user.repository.UserRepository;
 
 import jakarta.mail.Multipart;
+
+import java.awt.print.Pageable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -182,6 +185,7 @@ public class UserService {
     return user.getUserId();
   }
 
+  @Transactional
   // 유저의 닉네임과 프로필사진 을 업데이트 하는 기능
   public String userProfileUpdate(String userId, String nickname, MultipartFile file) {
     User user = userRepository.findByUserId(userId);
@@ -224,7 +228,7 @@ public class UserService {
 
   // 기본 이미지 여부를 체크하는 메서드
   private boolean isDefaultImage(String imageUrl) {
-    return "/images/user-basic.jpg".equals(imageUrl); // 기본 이미지 경로를 확인
+    return "/images/my-page-user-basic.jpg".equals(imageUrl); // 기본 이미지 경로를 확인
   }
 
   private void deleteProfileImage(String imageUrl) {
@@ -240,6 +244,7 @@ public class UserService {
 
       }
   }
+
 
   private String saveProfileImage(MultipartFile file) {
       if (file == null || file.isEmpty()) {
@@ -276,21 +281,22 @@ public class UserService {
   // 작성한 게시물 목록 , 좋아요한 게시물 목록 , 댓글 쓴 게시물 목록을 가져오는 기능
   public Map<String, Object> getActivities(String type, String userId) {
 
+
+
     Map<String, Object> response = new HashMap<>();
     List<BoardResponseDTO> boardsDtos = null;
     User user = userRepository.findByUserId(userId);
     if (type.equals("boards")) {
-      boardsDtos = user.getBoards().stream().map(Board::toDTO).toList();
+      boardsDtos = boardRepository.findTop5BoardByUser(user).stream().map(Board :: toDTO).toList();
 
       response.put("boards", boardsDtos);
 
     } else if (type.equals("comments")) {
 
-      boardsDtos =
-          user.getComments().stream()
+      boardsDtos = boardRepository.findTop5CommentsWithBoardsByUser(user).stream()
               .map(comment -> comment.getBoard().toDTO())
-              .distinct()
-              .toList();
+                      .toList();
+
 
       response.put("comments", boardsDtos);
 

@@ -2,6 +2,7 @@ package com.shoppingmall.board.controller;
 
 import com.shoppingmall.board.dto.BoardRequestDTO;
 import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.user.dto.ApiResponse;
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +57,9 @@ public class BoardController {
 	private CommentService commentService;
 	@Autowired
 	private UserRepository userRepository;
-	
+	@Autowired
+    private BoardRepository boardRepository;
+
 	//리스트 조회
 	@GetMapping("/board")
     public String getBoardByKeyword(@RequestParam(name = "page", required = false) Integer page,
@@ -133,9 +136,19 @@ public class BoardController {
 	@PostMapping("/write")
 	public String writePost(@ModelAttribute Board board, Authentication auth, Model model) {
         String nickname = userRepository.findByUserId(auth.getName()).getNickname();
-        board.setUser(userRepository.findByUserId(auth.getName()));
+		String content = board.getContent();
+		String regex = "<img\\s+src=\"([^\"]+)\"";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(content);
+
+		board.setUser(userRepository.findByUserId(auth.getName()));
         board.setNickname(nickname);
 
+		while (matcher.find()) {
+			String src = matcher.group(1); // 첫 번째 그룹이 src 값
+			System.out.println("Extracted src: " + src);
+			board.setImage(src);
+		}
 		boardService.savePost(board);
 		model.addAttribute("board", board);
 		return "board/read";
@@ -257,12 +270,18 @@ public class BoardController {
 		User user = userRepository.findByUserId(auth.getName());
 		Comment comment = new Comment();
 		Board board = boardService.getPostById(boardId);
+
+
+		int commentCount = board.getCommentCount() + 1;
+		board.setCommentCount(commentCount); // board 객체에 댓글 수 갱신
+
 		comment.setUser(user);
 		comment.setNickname(user.getNickname());
 		comment.setContent(content);
 		comment.setBoard(board);
 		comment.setUser(userRepository.findByUserId(board.getUser().getUserId()));
 		commentService.saveComment(comment);
+		boardService.savePost(board);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
 	
@@ -271,7 +290,13 @@ public class BoardController {
 	//댓글 삭제
 	@GetMapping("/commentDelete")
 	public String commentDelete(@RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId) {
+		Board board = boardService.getPostById(boardId);
+
+		int commentCount = board.getCommentCount() - 1;
+		board.setCommentCount(commentCount); // board 객체에 댓글 수 갱신
+
 		commentService.deleteComment(commentId);
+		boardService.savePost(board);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
 

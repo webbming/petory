@@ -13,7 +13,9 @@ public class BoardResponseDTO {
     private String title;
     private String categoryId;
     private String nickname;
+    private String image;
     private String content;
+    private String hashtag;
     private Integer viewCount;
     private Integer likeCount;
     private Integer commentCount;
