@@ -74,23 +74,27 @@ public class ProductController {
         model.addAttribute("sort", sort);
 
         if ("storeHome".equals(sort)) {
-            // 1) 스토어홈 (갓성비, 베스트, 따끈따끈 신상품 4개씩)
+            // 1) 스토어홈 (가성비, 베스트, 신상품)
             List<Product> cheapList = productService.listAllProductsSorted("priceLowHigh");
+            // 리뷰 개수·평점 계산
+            setReviewCount(cheapList);
             List<Product> cheapProducts = cheapList.stream().limit(4).toList();
 
             List<Product> bestList = productService.listAllProductsSorted("rating");
+            setReviewCount(bestList);
             List<Product> bestProducts = bestList.stream().limit(4).toList();
 
             List<Product> newList = productService.listAllProductsSorted("newest");
+            setReviewCount(newList);
             List<Product> newProducts = newList.stream().limit(4).toList();
 
             model.addAttribute("cheapProducts", cheapProducts);
             model.addAttribute("bestProducts", bestProducts);
             model.addAttribute("newProducts", newProducts);
 
-            // 스토어홈에서는 별도 products 없음
             model.addAttribute("products", List.of());
-        } else if ("all".equals(sort)) {
+        }
+        else if ("all".equals(sort)) {
             // 2) 전체제품
             List<Product> products;
             if (petType != null) {
@@ -345,6 +349,7 @@ public class ProductController {
         model.addAttribute("products", products);
         model.addAttribute("subcategories", subcategories);
         model.addAttribute("selectedPetType", petType); // ✅ 반드시 유지
+        model.addAttribute("selectedSubcategoryId", subId);
         return "product/index2";
     }
 
