@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       btn.classList.add("active")
 
       const tabType = btn.dataset.type;
+      console.log(tabType)
 
 
       boardContentData(tabType)
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       const {data} = await response.json();
+      console.log(data)
       const pupularSlick = document.querySelector(".popular_slick");
 
       pupularSlick.innerHTML = "";
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       for(let i = 0; i<data.length; i+=3){
         html += "<div>";
 
-        for(let j = i ; j< i + 3 && j <data.length; j++){
+        for(let j = i ; j< i + 3 && j < data.length; j++){
           html += `
             <a href="/board/read?boardId=${data[j].boardId}">
               <span class="num">${j + 1}</span>

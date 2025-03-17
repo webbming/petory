@@ -28,8 +28,8 @@ public class HomeController {
   public String search(@RequestParam String keyword, Model model) {
     SearchResponseDTO searchResponseDTO =  homeService.search(keyword);
 
-    model.addAttribute("boardList", searchResponseDTO.getBoardList());
-    model.addAttribute("productList", searchResponseDTO.getProductList());
+    model.addAttribute("boardList", searchResponseDTO.getBoardList().stream().limit(4).toList());
+    model.addAttribute("productList", searchResponseDTO.getProductList().stream().limit(4).toList());
     model.addAttribute("keyword", keyword);
     return "search-result";
   }

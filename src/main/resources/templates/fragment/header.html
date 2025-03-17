@@ -95,6 +95,15 @@
         window.location.href = `/search?keyword=${searchValue}`
       })
 
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();  // 폼 제출을 방지
+          if (searchValue && searchValue.trim() !== '') {
+            window.location.href = `/search?keyword=${searchValue}`;
+          }
+        }
+      });
+
     })
   </script>
 </div>

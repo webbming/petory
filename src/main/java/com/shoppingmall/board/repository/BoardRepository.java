@@ -39,10 +39,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
       @Param("startDate") LocalDateTime startDate,
       Pageable pageable);
 
-  @Query(
-      value = "SELECT * FROM board WHERE like_contain LIKE CONCAT('%', :userId, '%')",
-      nativeQuery = true)
-  List<Board> findBoardsLikedByUser(Long userId);
 
   List<Board> findTop9ByOrderByCreatedAtDesc();
 
@@ -71,8 +67,17 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findTop9ByOrderByViewCountDesc();
 
-    List<Board> findTop5BoardByUser(User user);
+    Page<Board> findBoardByUser(User user, Pageable pageable);
 
-    @Query("SELECT c FROM Comment c JOIN FETCH c.board WHERE c.user = :user")
-    List<Comment> findTop5CommentsWithBoardsByUser(@Param("user") User user);
+    int countByUser(User user);
+
+    // 사용자가 댓글 단 게시물 수 조회
+    @Query("SELECT COUNT(DISTINCT c.board) FROM Comment c WHERE c.user = :user")
+    int countDistinctBoardsByCommentUser(@Param("user") User user);
+
+    // 좋아요 수 조회는 네이티브 쿼리로 처리
+    @Query(value = "SELECT COUNT(*) FROM board WHERE like_contain LIKE %:userId%", nativeQuery = true)
+    int countBoardsByUserLikes(@Param("userId") Long userId);
+
+
 }

@@ -2,7 +2,9 @@ package com.shoppingmall.user.service;
 
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import com.shoppingmall.board.model.Board;
+import com.shoppingmall.board.model.Comment;
 import com.shoppingmall.board.repository.BoardRepository;
+import com.shoppingmall.board.repository.CommentRepository;
 import com.shoppingmall.user.dto.MypageTopInfoDTO;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
@@ -14,13 +16,15 @@ import com.shoppingmall.user.repository.UserRepository;
 
 import jakarta.mail.Multipart;
 
-import java.awt.print.Pageable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,13 +38,16 @@ public class UserService {
   private UserRepository userRepository;
   private BoardRepository boardRepository;
   private BCryptPasswordEncoder bCryptPasswordEncoder;
+  private CommentRepository commentRepository;
 
   public UserService(
       UserRepository userRepository,
       BoardRepository boardRepository,
+      CommentRepository commentRepository,
       BCryptPasswordEncoder bCryptPasswordEncoder, UserImgRepository userImgRepository) {
     this.userRepository = userRepository;
     this.boardRepository = boardRepository;
+    this.commentRepository = commentRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     this.userImgRepository = userImgRepository;
   }
@@ -279,41 +286,63 @@ public class UserService {
   }
 
   // 작성한 게시물 목록 , 좋아요한 게시물 목록 , 댓글 쓴 게시물 목록을 가져오는 기능
-  public Map<String, Object> getActivities(String type, String userId) {
-
-
-
+  public Map<String, Object> getActivities(String type, String userId , Pageable pageable) {
     Map<String, Object> response = new HashMap<>();
     List<BoardResponseDTO> boardsDtos = null;
     User user = userRepository.findByUserId(userId);
+
+    int totalCount = 0;
+
     if (type.equals("boards")) {
-      boardsDtos = boardRepository.findTop5BoardByUser(user).stream().map(Board :: toDTO).toList();
+
+      totalCount = boardRepository.countByUser(user);
+      Page<Board> boardsPage = boardRepository.findBoardByUser(user, pageable);
+      boardsDtos = boardsPage.getContent().stream()
+              .map(Board::toDTO)
+              .collect(Collectors.toList());
 
       response.put("boards", boardsDtos);
 
     } else if (type.equals("comments")) {
 
-      boardsDtos = boardRepository.findTop5CommentsWithBoardsByUser(user).stream()
-              .map(comment -> comment.getBoard().toDTO())
-                      .toList();
+      totalCount = boardRepository.countDistinctBoardsByCommentUser(user);
 
+      // 페이징 처리된 댓글 단 게시물 목록 조회
+      Page<Comment> commentsPage = commentRepository.findByUserOrderByCreatedAtDesc(user, pageable);
+      boardsDtos = commentsPage.getContent().stream()
+              .map(comment -> comment.getBoard().toDTO())
+              .distinct() // 중복 제거
+              .collect(Collectors.toList());
 
       response.put("comments", boardsDtos);
 
     } else if (type.equals("likes")) {
 
-      boardsDtos =
-          boardRepository.findAll().stream()
-              .filter(
-                  board -> {
-                    Set<Long> likes = board.getLikeContain();
-                    return likes != null && likes.contains(user.getId());
-                  })
+      List<Board> allBoards = boardRepository.findAll();
+
+      // 좋아요한 게시물만 필터링
+      List<Board> likedBoards = allBoards.stream()
+              .filter(board -> board.getLikeContain().contains(user.getId()))
+              .collect(Collectors.toList());
+
+      // 페이징 처리
+      int start = (int) pageable.getOffset();
+      int end = Math.min((start + pageable.getPageSize()), likedBoards.size());
+      List<Board> pagedBoards = likedBoards.subList(start, end);
+
+      // DTO로 변환
+      boardsDtos = pagedBoards.stream()
               .map(Board::toDTO)
-              .toList();
+              .collect(Collectors.toList());
 
       response.put("likes", boardsDtos);
+      totalCount = likedBoards.size();
     }
+    response.put("totalCount", totalCount);
+    response.put("currentPage", pageable.getPageNumber());
+    response.put("totalPages", (int)Math.ceil((double)totalCount / pageable.getPageSize()));
+    response.put("pageSize", pageable.getPageSize());
+
     return response;
   }
 }

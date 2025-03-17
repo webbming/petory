@@ -115,7 +115,7 @@
                   </div>
                 </div>
                 <div class="like_area">
-                  <h2 class="border">좋아요한 제품</h2>
+                  <h2 class="border">찜한 제품</h2>
                   <a href="#" class="more">더보기</a>
                   <ul class="product_list">
 
@@ -170,6 +170,11 @@
                         <ul>
 
                         </ul>
+                        <div class="pagination" style="display: none;">
+                            <ul class="page">
+                                <!-- 페이지 버튼이 여기에 생성됩니다 -->
+                            </ul>
+                        </div>
                     </div>
                 </div>
         </div>
@@ -185,7 +190,7 @@
                   </div>
                 <div class="profile-default">
                   <div class="default-img">
-                    <img src="/images/user_default.png" alt="기본 프로필" id="profileOriginImg">
+                    <img src="/images/ui/my-page-user-basic.jpg" alt="기본 프로필" id="profileOriginImg">
                     <div class="upload_pic">
                       <img id="profilePhotoImg" src>
                     </div>
@@ -215,6 +220,19 @@
                     <input type="text" id="newNickname" name="nickname" placeholder="새 닉네임 입력">
                     <span class="error">이미 존재하는 닉네임 입니다.</span>
                     <button id="search-filter" disabled>저장</button>
+                </div>
+            </div>
+
+            <div id="pet-modal" class="modal" th:fragment="pet-modal">
+                <div class="modal-content">
+                    <div class="head">
+                        <span class="close">&times;</span>
+                        <h2>펫 정보</h2>
+                    </div>
+                    <div class="pet-info">
+                    </div>
+                    <a>기본 이미지</a>
+                    <h2>달이</h2>
                 </div>
             </div>
 </body>
