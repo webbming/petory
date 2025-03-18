@@ -105,7 +105,7 @@ public class BoardService {
 	}
 	
 	//게시글 좋아요
-	public int likePost(Long boardId, User user) {
+	public Integer likePost(Long boardId, User user) {
 		Board board = repository.findById(boardId).orElse(null);
 		Set<Long> container = board.getLikeContain();
 		

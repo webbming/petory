@@ -1,6 +1,8 @@
 package com.shoppingmall.board.controller;
 
+import com.shoppingmall.board.dto.BoardRequestDTO;
 import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.board.dto.commentRequestDTO;
 import com.shoppingmall.user.dto.ApiResponse;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -240,26 +243,31 @@ public class BoardController {
 	}
 	
 	//게시글 좋아요
-	@PostMapping("/like")
-	@ResponseBody
-	public ResponseEntity<Map<String, Object>> likePost(Authentication auth, @RequestBody Map<String, Long> requestData) {
-		Map<String, Object> response = new HashMap<>();
-		Long boardId = requestData.get("boardId");
-		
-        User user = userRepository.findByUserId(auth.getName());
-		int likeCount = boardService.likePost(boardId, user);
-		System.out.println(likeCount);
-        response.put("success", true);
-        response.put("likeCount", likeCount);
-        return ResponseEntity.ok(response);
-	}
+	   @PostMapping("/like")
+	   @ResponseBody
+	   public ResponseEntity<ApiResponse<?>> likePost(@RequestBody BoardRequestDTO.Likes likes , Authentication auth) {
+	      String userId = auth.getName();
+	      Long boardId =  likes.getIdAsLong(likes.getBoardId());
+	      User user = userRepository.findByUserId(userId);
+
+	     Integer likeCount =  boardService.likePost(boardId, user);
+	       Map<String, Object> response = new HashMap<>();
+	       response.put("likeCount", likeCount);
+	      return ResponseEntity.ok(ApiResponse.success(response));
+	   }
 	
 	//댓글 좋아요
-	@GetMapping("/commentLike")
-	public String likeComment(Authentication auth, @RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId) {
-		User user = userRepository.findByUserId(auth.getName());
-		commentService.likeComment(commentId, user);
-		return "redirect:/board/read?boardId=" + boardId;
+	@PostMapping("/commentLike")
+	@ResponseBody
+	public ResponseEntity<ApiResponse<?>> likeComment(Authentication auth, @RequestBody commentRequestDTO.Likes likes) {
+		String userId = auth.getName();
+		Long commentId = likes.getIdAsLong(likes.getCommentId());
+		User user = userRepository.findByUserId(userId);
+		
+		Integer likeCount = boardService.likePost(commentId, user);
+		Map<String, Object> response = new HashMap<>();
+		response.put("commentLikeCount", likeCount);
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 	
 	//댓글 등록
