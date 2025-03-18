@@ -70,10 +70,10 @@ public class DatabaseInitializer implements CommandLineRunner {
                     new Board("강아지가 좋아하는 장난감!", null, user.getNickname(), "내용 3", "#hashtag3", "상품후기", user),
                     new Board("강아지랑 갈만한 곳 추천좀요!", null, user.getNickname(), "내용 4", "#hashtag4", "육아팁", user),
                     new Board("슈나우저 피부병 ㅜㅜ", null, user.getNickname(), "내용 5", "#hashtag5", "반슐랭", user),
-                    new Board("고양이 깨무는 습관 어떻게 고쳐요?", null, user.getNickname(), "내용 6", "#hashtag6", "일상공유", user),
-                    new Board("저희 아이 자랑 좀 할게요", null, user.getNickname(), "내용 7", "#hashtag7", "반슐랭", user),
-                    new Board("왓더퍽", null, user.getNickname(), "내용 8", "#hashtag8", "육아팁", user),
-                    new Board("쒯퍼킹", null, user.getNickname(), "내용 9", "#hashtag9", "상품후기", user),
+                    new Board("추천안누르면 너 신고", null, user.getNickname(), "내용 6", "#hashtag6", "일상공유", user),
+                    new Board("추천좀 제발", null, user.getNickname(), "내용 7", "#hashtag7", "반슐랭", user),
+                    new Board("귀여운 우리 강아지를 소개합니다", null, user.getNickname(), "내용 8", "#hashtag8", "육아팁", user),
+                    new Board("강아지발바닥이 까졌어요 ㅜㅜ", null, user.getNickname(), "내용 9", "#hashtag9", "상품후기", user),
                     new Board("추천 100개 달성 시 패드 무료 나눔", null, user.getNickname(), "내용 10", "#hashtag10", "일상공유", user)
             );
 

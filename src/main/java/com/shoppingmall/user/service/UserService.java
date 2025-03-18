@@ -219,7 +219,9 @@ public class UserService {
 
       // 기존 이미지가 기본 이미지가 아닐 경우에만 삭제
       if (!isDefaultImage(existingUserImg.getUrl())) {
+        System.out.println("기본 이미지가아닌 유저가가진 사진 " +  existingUserImg.getUrl());
         deleteProfileImage(existingUserImg.getUrl());
+        ;
       }
 
       existingUserImg.setUrl(imageUrl);
@@ -235,13 +237,15 @@ public class UserService {
 
   // 기본 이미지 여부를 체크하는 메서드
   private boolean isDefaultImage(String imageUrl) {
-    return "/images/my-page-user-basic.jpg".equals(imageUrl); // 기본 이미지 경로를 확인
+    return "/images/ui/my-page-user-basic.jpg".equals(imageUrl); // 기본 이미지 경로를 확인
   }
 
   private void deleteProfileImage(String imageUrl) {
       String basePath =  new File("src/main/resources/static").getAbsolutePath();
 
       if(imageUrl != null || !imageUrl.isEmpty()) {
+        System.out.println("삭제할 이미지 경로" + imageUrl);
+        System.out.println("삭제할 이미지 총 경로 " + basePath + imageUrl );
         File oldFile = new File(basePath + imageUrl);
 
         if(oldFile.exists()) {
@@ -259,7 +263,7 @@ public class UserService {
       }
 
       // 지정된 외부 경로 사용
-      String basePath = new File("src/main/resources/static/images").getAbsolutePath();
+      String basePath = new File("src/main/resources/static/images/user").getAbsolutePath();
       String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
       String filePath = basePath + File.separator + fileName;
       File destinationFile = new File(filePath);
@@ -268,7 +272,7 @@ public class UserService {
       // 파일 저장
       try{
         file.transferTo(destinationFile);
-        return "/images/" + fileName;
+        return "/images/user/" + fileName;
 
       } catch (IOException e) {
         e.printStackTrace();

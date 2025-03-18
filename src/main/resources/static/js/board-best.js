@@ -1,5 +1,5 @@
 import {apiClient} from "./common/api.js";
-import {createPostElement ,  createTop9PostElement} from "./common/Util.js";
+import {createPostElement ,  createTop9PostElement , scrollTabEffect} from "./common/Util.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
 
@@ -106,4 +106,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             await loadMorePosts();
         }
     }
+
+    window.addEventListener("scroll" ,scrollTabEffect )
 });

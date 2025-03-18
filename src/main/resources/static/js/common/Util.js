@@ -1,4 +1,19 @@
+let lastScrollTop = 0;
 
+export function scrollTabEffect(){
+  const navbar = document.querySelector(".scrolling-tab")
+
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+
+  if(scrollTop > lastScrollTop) {
+    navbar.style.opacity = '0';
+    navbar.style.transform = 'translateY(-100%)';
+  }else{
+    navbar.style.opacity = '1'; //
+    navbar.style.transform = 'translateY(0)';
+  }
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop
+}
 
 
 
