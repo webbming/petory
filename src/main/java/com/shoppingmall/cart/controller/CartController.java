@@ -2,10 +2,16 @@ package com.shoppingmall.cart.controller;
 
 import com.shoppingmall.cart.model.CartItem;
 import com.shoppingmall.cart.model.CartItemDTO;
+import com.shoppingmall.common.ApiResponse;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
+import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -63,13 +69,12 @@ public class CartController {
     // 상품 장바구니에 추가
     @PostMapping("/items/{productId}/add")
     @ResponseBody
-    public ResponseEntity<CartDTO> addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity) {
+    public ResponseEntity<CartDTO> addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity , HttpSession session) {
 
         String userId = getUserId(authentication);
         User user = userRepository.findByUserId(userId);
 
         // 장바구니에 상품 추가
-
         CartDTO updatedCartDTO = cartService.addProductToCart(user, productId, quantity);
         
         return ResponseEntity.ok(updatedCartDTO); 
@@ -114,6 +119,18 @@ public class CartController {
         CartDTO updatedCartDTO = cartService.updateProductQuantity(user, cartItemId, quantity); // 수정된 장바구니 데이터
         
         return ResponseEntity.ok(updatedCartDTO);
+    }
+
+    @GetMapping("/cartCount")
+    public ResponseEntity<?> responseCartCount(Authentication authentication) {
+        Map<String , Object> response = new HashMap<>();
+        if(authentication == null || !authentication.isAuthenticated()) {
+            response.put("cartCount", 0);
+            return ResponseEntity.ok(ApiResponse.success(response));
+        }
+        User user = userRepository.findByUserId(authentication.getName());
+        response.put("cartCount", cartService.getCartByUser(user).getCartItems().size());
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     private void updateCartSession(User user, HttpSession session) {

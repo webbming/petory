@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>게시글 상세</title>
-<script src="https://cdn.tailwindcss.com"></script>
+
 <style>
   .content p {
     margin: 0;
@@ -17,66 +17,71 @@
 </head>
 <body class="bg-gray-100 p-6">
 <div th:replace="fragment/header :: headerFragment"></div>
+<div th:replace="fragment/nav :: navFragment" class="nav-var"></div>
 <div class="container">
+  <div class="pm-section">
+
   <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
-    <div th:if="${board == null}" class="text-center text-gray-600">
-      <p>게시글을 찾을 수 없습니다.</p>
-    </div>
-    <div th:if="${board != null}">
-      <h1 class="text-2xl font-bold text-gray-900">게시글 상세 정보</h1>
-      <div class="mt-4">
-        <p><strong>제목:</strong> <span th:text="${board.title}" class="text-gray-700"></span></p>
-        <p><strong>카테고리:</strong> <span th:text="${board.categoryId}" class="text-gray-700"></span></p>
-        <p><strong>조회수:</strong> <span th:text="${board.viewCount}" class="text-gray-700"></span></p>
-        <p><strong>작성자:</strong> <span th:text="${board.nickname}" class="text-gray-700"></span></p>
-        <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}" class="text-gray-700"></span></p>
-      </div>
+            <div th:if="${board == null}" class="text-center text-gray-600">
+              <p>게시글을 찾을 수 없습니다.</p>
+            </div>
+            <div th:if="${board != null}">
+              <h1 class="text-2xl font-bold text-gray-900">게시글 상세 정보</h1>
+              <div class="mt-4">
+                <p><strong>제목:</strong> <span th:text="${board.title}" class="text-gray-700"></span></p>
+                <p><strong>카테고리:</strong> <span th:text="${board.categoryId}" class="text-gray-700"></span></p>
+                <p><strong>조회수:</strong> <span th:text="${board.viewCount}" class="text-gray-700"></span></p>
+                <p><strong>작성자:</strong> <span th:text="${board.nickname}" class="text-gray-700"></span></p>
+                <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}" class="text-gray-700"></span></p>
+              </div>
 
-      <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <h2 class="font-semibold text-lg">내용</h2>
-        <div th:utext="${board.content}" class="content ck-content"></div>
-      </div>
+              <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h2 class="font-semibold text-lg">내용</h2>
+                <div th:utext="${board.content}" class="content ck-content"></div>
+              </div>
 
-      <p><a href="/board/hashtag" class="mt-2 text-sm text-gray-500" th:text="${board.hashtag}"></a></p>
+              <p><a href="/board/hashtag" class="mt-2 text-sm text-gray-500" th:text="${board.hashtag}"></a></p>
 
-      <div class="mt-6 flex space-x-2">
-        <a href="/board/board" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">목록으로</a>
-        <a th:href="@{/board/update(boardId=${board.boardId})}" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">수정</a>
-        <a th:href="@{/board/delete(boardId=${board.boardId})}" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">삭제</a>
-      </div>
+              <div class="mt-6 flex space-x-2">
+                <a href="/board/board" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">목록으로</a>
+                <a th:href="@{/board/update(boardId=${board.boardId})}" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">수정</a>
+                <a th:href="@{/board/delete(boardId=${board.boardId})}" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">삭제</a>
+              </div>
 
-      <div class="mt-4 flex items-center space-x-2">
-        <a class="text-red-500" th:data-board-id="${board.boardId}">❤️</a>
-        <span th:text="${board.likeCount}" class="text-gray-700 likeCount"></span>
-      </div>
+              <div class="mt-4 flex items-center space-x-2">
+                <a class="text-red-500" th:data-board-id="${board.boardId}">❤️</a>
+                <span th:text="${board.likeCount}" class="text-gray-700 likeCount"></span>
+              </div>
 
-      <h3 class="mt-6 text-lg font-bold">댓글</h3>
-      <hr class="my-2">
+              <h3 class="mt-6 text-lg font-bold">댓글</h3>
+              <hr class="my-2">
 
-      <div class="mt-4 space-y-4" th:each="comment : ${comment}">
-        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <p class="text-gray-700 font-semibold" th:text="${comment.nickname}"></p>
-          <p class="text-sm text-gray-500" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
-          <p class="mt-2 text-gray-700" th:text="${comment.content}"></p>
-          <div class="mt-2 flex space-x-2">
-            <a th:href="@{/board/commentUpdate(commentId=${comment.commentId})}" class="text-blue-500">수정</a>
-            <a th:href="@{/board/commentDelete(commentId=${comment.commentId}, boardId=${board.boardId})}" class="text-red-500">삭제</a>
-            <a th:href="@{/board/commentLike(commentId=${comment.commentId}, boardId=${board.boardId})}" class="text-red-500">❤️</a>
-            <span th:text="${comment.likeCount}" class="text-gray-700"></span>
-          </div>
-        </div>
-      </div>
+              <div class="mt-4 space-y-4" th:each="comment : ${comment}">
+                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p class="text-gray-700 font-semibold" th:text="${comment.nickname}"></p>
+                  <p class="text-sm text-gray-500" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></p>
+                  <p class="mt-2 text-gray-700" th:text="${comment.content}"></p>
+                  <div class="mt-2 flex space-x-2">
+                    <a th:href="@{/board/commentUpdate(commentId=${comment.commentId})}" class="text-blue-500">수정</a>
+                    <a th:href="@{/board/commentDelete(commentId=${comment.commentId}, boardId=${board.boardId})}" class="text-red-500">삭제</a>
+                    <a th:href="@{/board/commentLike(commentId=${comment.commentId}, boardId=${board.boardId})}" class="text-red-500">❤️</a>
+                    <span th:text="${comment.likeCount}" class="text-gray-700"></span>
+                  </div>
+                </div>
+              </div>
 
-      <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <form action="/board/commentCreate" class="space-y-2">
-          <input type="hidden" name="boardId" th:value="${board.boardId}">
-          <label for="content" class="block text-gray-700">댓글 내용:</label>
-          <textarea id="content" name="content" rows="4" class="w-full p-2 border rounded" placeholder="댓글을 작성하세요" required></textarea>
-          <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">댓글 작성</button>
-        </form>
-      </div>
-    </div>
+              <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <form action="/board/commentCreate" class="space-y-2">
+                  <input type="hidden" name="boardId" th:value="${board.boardId}">
+                  <label for="content" class="block text-gray-700">댓글 내용:</label>
+                  <textarea id="content" name="content" rows="4" class="w-full p-2 border rounded" placeholder="댓글을 작성하세요" required></textarea>
+                  <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">댓글 작성</button>
+                </form>
+              </div>
+            </div>
+
   </div>
+</div>
 </div>
 
   <div th:replace="fragment/footer :: footerFragment"></div>

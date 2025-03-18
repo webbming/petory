@@ -17,6 +17,7 @@ export function scrollTabEffect(){
 
 
 
+
 // 나열되는 게시글
 export function createPostElement(post) {
     const li = document.createElement("li");
@@ -62,3 +63,4 @@ export function createTop9PostElement(post,index){
           `;
     return li;
 }
+
