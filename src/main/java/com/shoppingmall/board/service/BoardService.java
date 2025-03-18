@@ -113,21 +113,15 @@ public class BoardService {
 					.toList();
 		}
 	}
-
-	// 키워드, 카테고리, 정렬 조건, 날짜 범위로 검색
-	public Page<Board> getPostByKeyword(String keyword, String category, String orderby,
-										String bydate, LocalDateTime startDate, int page, int size) {
-		Pageable pageable = PageRequest.of(page, size);
-		return repository.searchBoards(keyword, category, orderby, bydate, startDate, pageable);
-	}
 	
 	//검색
 	public Page<Board> getPostByKeyword(String keyword, String category, String orderby, String bydate, LocalDateTime startDate, String hashtag, int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
-		List<Board> boardList = repository.searchBoards(keyword, category, orderby, bydate, startDate);
+		List<Board> boardList = repository.searchBoards(keyword, category, orderby, bydate, startDate, hashtag);
 		if(!hashtag.equals("all")) {
 			List<Board> returnList = new ArrayList<Board>();
 			boardList.forEach(board->{
+				System.out.println("여기는 내꺼" + board.getHashtag());
 				if(board.getHashtag().contains(hashtag)) {
 					returnList.add(board);
 				}

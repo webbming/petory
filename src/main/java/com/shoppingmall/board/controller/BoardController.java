@@ -328,12 +328,12 @@ public class BoardController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<ApiResponse<?>> boardList(@RequestParam int page
-			,@RequestParam int size
-			,@RequestParam(required = false) String sort
-			,@RequestParam(required = false) String search
-			,@RequestParam(required = false) String period
-			,@RequestParam(required = true) String category) {
+	public ResponseEntity<ApiResponse<?>> boardList(@RequestParam("page") int page
+			,@RequestParam("size") int size
+			,@RequestParam(name = "sort", required = false) String sort
+			,@RequestParam(name = "search", required = false) String search
+			,@RequestParam(name = "period", required = false) String period
+			,@RequestParam(name = "category", required = true) String category) {
 
 		List<BoardResponseDTO> boardResponseDTO;
 		boardResponseDTO = boardService.getAllPosts(page , size , category , sort , search , period)
