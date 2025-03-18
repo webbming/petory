@@ -120,15 +120,8 @@ public class BoardController {
 	
 	//작성페이지 이동
 	@GetMapping("/write")
-	public String writePostPage(Authentication auth, Model model) {
-		try {
-	        if (auth == null || !auth.isAuthenticated()) {
-	            return "redirect:/login";
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        model.addAttribute("errorMessage", "게시글을 불러오는 중 오류가 발생했습니다.");
-	    }
+	public String writePostPage() {
+
 		return "board/write";
 	}
 	
@@ -190,22 +183,13 @@ public class BoardController {
 	//상세페이지 이동
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
-	    try {
-	        if (auth == null || !auth.isAuthenticated()) {
-	            return "redirect:/login";
-	        }
-	        else {
 		        User user = userRepository.findByUserId(auth.getName());
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
 		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        model.addAttribute("errorMessage", "게시글을 불러오는 중 오류가 발생했습니다.");
-	    }
+
 	    return "board/read";
 	}
 	

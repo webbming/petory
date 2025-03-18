@@ -103,7 +103,7 @@ public class SecurityConfig {
                 // 사용자 관련 페이지
                 .requestMatchers("/users/agree", "/users", "/users/find/**", "/users/addr").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/find/**", "/api/users/check").permitAll()
-
+                .requestMatchers("/search").permitAll()
                 // 팀원별 기능 페이지 - 모두 접근 가능 설정
                 // ex) /cart/** -> cart 부터 아래의 하위 경로 허용
                 // ex) /cart    -> cart 경로 허용
@@ -111,11 +111,16 @@ public class SecurityConfig {
                 .requestMatchers("/cart/cartCount").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
                 .requestMatchers("/products" , "/product").permitAll()
+                // 게시판 페이지 허용
+                .requestMatchers("/board/main" , "/board/wiki" , "/board/best" ).permitAll()
+                // 게시판 api 허용
+                .requestMatchers("/board/list").permitAll()
                 .requestMatchers("/board/board/list/**") .permitAll()   // 준서님
                 .requestMatchers("/order/**").permitAll()// 성호님
 
                 // 정적 리소스 접근 허용
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**" , "/slick/**").permitAll()
+
 
                 // Swagger 문서 접근 허용
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
