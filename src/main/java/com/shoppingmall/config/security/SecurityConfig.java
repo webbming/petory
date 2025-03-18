@@ -10,10 +10,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -36,21 +38,19 @@ public class SecurityConfig {
   private CustomAuthenticationFailureHandler failureHandler;
   private CustomOAuth2UserService customOAuth2UserService;
   private final CustomSuccessHandler2 successHandler;
-  private final JWTUtil jwtUtil;
 
   public SecurityConfig(CustomUserDetailsService userDetailsService,
                         CustomAuthenticationFailureHandler failureHandler,
                         CustomOAuth2UserService customOAuth2UserService,
-                        CustomSuccessHandler2 successHandler,
-                        JWTUtil jwtUtil) {
+                        CustomSuccessHandler2 successHandler
+                       ) {
       this.userDetailsService = userDetailsService;
       this.failureHandler = failureHandler;
       this.customOAuth2UserService = customOAuth2UserService;
       this.successHandler = successHandler;
-      this.jwtUtil = jwtUtil;
+
+
   }
-
-
 
     @Bean
     public MultipartFilter multipartFilter() {
@@ -72,8 +72,10 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, UserRepository userRepository) throws Exception {
+
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         // 기본 HTTP 인증 비활성화
         http.httpBasic(auth -> auth.disable());
 
@@ -140,7 +142,7 @@ public class SecurityConfig {
 
         // 로그아웃 설정
         http.logout(logout -> logout
-                .logoutSuccessUrl("/home")            // 로그아웃 성공 시 리다이렉트 경로
+                .logoutSuccessUrl("/")            // 로그아웃 성공 시 리다이렉트 경로
                 .permitAll()
         );
 

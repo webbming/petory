@@ -15,8 +15,10 @@
 	height: auto;
 }
 </style>
+  <link rel="stylesheet" href="/css/layout/common.css">
 </head>
 <body class="bg-gray-100 p-6">
+
 	<div th:replace="fragment/header :: headerFragment"></div>
 	<div th:replace="fragment/nav :: navFragment"></div>
 
@@ -118,6 +120,7 @@
 	</div>
 
 	<div th:replace="fragment/footer :: footerFragment"></div>
+
 </body>
 <script>
 document.addEventListener("DOMContentLoaded", (e) =>{

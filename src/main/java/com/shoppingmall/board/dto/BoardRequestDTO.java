@@ -19,9 +19,5 @@ public class BoardRequestDTO {
     public Long getIdAsLong(String boardId) {
       return Long.parseLong(boardId);
     }
-
-
   }
-
-
 }

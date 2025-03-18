@@ -2,7 +2,9 @@ package com.shoppingmall.user.service;
 
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import com.shoppingmall.board.model.Board;
+import com.shoppingmall.board.model.Comment;
 import com.shoppingmall.board.repository.BoardRepository;
+import com.shoppingmall.board.repository.CommentRepository;
 import com.shoppingmall.user.dto.MypageTopInfoDTO;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
@@ -13,11 +15,16 @@ import com.shoppingmall.user.repository.UserImgRepository;
 import com.shoppingmall.user.repository.UserRepository;
 
 import jakarta.mail.Multipart;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,13 +38,16 @@ public class UserService {
   private UserRepository userRepository;
   private BoardRepository boardRepository;
   private BCryptPasswordEncoder bCryptPasswordEncoder;
+  private CommentRepository commentRepository;
 
   public UserService(
       UserRepository userRepository,
       BoardRepository boardRepository,
+      CommentRepository commentRepository,
       BCryptPasswordEncoder bCryptPasswordEncoder, UserImgRepository userImgRepository) {
     this.userRepository = userRepository;
     this.boardRepository = boardRepository;
+    this.commentRepository = commentRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     this.userImgRepository = userImgRepository;
   }
@@ -114,7 +124,7 @@ public class UserService {
     if (user == null) {
       throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
     }
-    System.out.println("가져오는중");
+
     String nickname = user.getNickname();
     int quantity = user.getCart().getUniqueItemCount();
     String imgUrl = user.getUserImg().getUrl();
@@ -182,42 +192,40 @@ public class UserService {
     return user.getUserId();
   }
 
+  @Transactional
   // 유저의 닉네임과 프로필사진 을 업데이트 하는 기능
-  public String userProfileUpdate(String userId, String nickname , MultipartFile file) {
+  public String userProfileUpdate(String userId, String nickname, MultipartFile file) {
     User user = userRepository.findByUserId(userId);
     if (user == null) {
       throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
     }
 
-    String imageUrl = null;
+    // 기존 프로필 이미지 가져오기
+    UserImg existingUserImg = userImgRepository.findByUser(user);
+    if (existingUserImg == null) {
+      throw new IllegalStateException("기본 프로필 이미지가 존재하지 않습니다.");
+    }
+
+    String imageUrl = existingUserImg.getUrl(); // 기존 이미지 URL 유지
 
     // 중복 닉네임 검사
     if (userRepository.existsByNickname(nickname) && !nickname.equals(user.getNickname())) {
       throw new DuplicateException();
     }
 
-    // 파일이 있을 경우 저장
+    // 새 프로필 이미지 업로드 (파일이 있는 경우)
     if (file != null && !file.isEmpty()) {
-      // 지정 경로에 파일 저장
       imageUrl = saveProfileImage(file);
-      System.out.println("이미지 URL: " + imageUrl);
 
-      UserImg existingUserImg = userImgRepository.findByUser(user);
-      System.out.println(existingUserImg.getUrl());
-      if (existingUserImg != null) {
-        // 기존 이미지가 있을 경우 업데이트
-        String url = existingUserImg.getUrl();
-        deleteProfileImage(url);
-        existingUserImg.setUrl(imageUrl);
-        userImgRepository.save(existingUserImg);
-      } else {
-        // 기존 이미지가 없을 경우 새 UserImg 저장
-        UserImg userImg = new UserImg();
-        userImg.setUrl(imageUrl);
-        userImg.setUser(user);
-        userImgRepository.save(userImg);
-        user.setUserImg(userImg);
+      // 기존 이미지가 기본 이미지가 아닐 경우에만 삭제
+      if (!isDefaultImage(existingUserImg.getUrl())) {
+        System.out.println("기본 이미지가아닌 유저가가진 사진 " +  existingUserImg.getUrl());
+        deleteProfileImage(existingUserImg.getUrl());
+        ;
       }
+
+      existingUserImg.setUrl(imageUrl);
+      userImgRepository.save(existingUserImg);
     }
 
     // 닉네임 업데이트
@@ -225,13 +233,19 @@ public class UserService {
     userRepository.save(user);
 
     return imageUrl;
+  }
 
+  // 기본 이미지 여부를 체크하는 메서드
+  private boolean isDefaultImage(String imageUrl) {
+    return "/images/ui/my-page-user-basic.jpg".equals(imageUrl); // 기본 이미지 경로를 확인
   }
 
   private void deleteProfileImage(String imageUrl) {
       String basePath =  new File("src/main/resources/static").getAbsolutePath();
 
       if(imageUrl != null || !imageUrl.isEmpty()) {
+        System.out.println("삭제할 이미지 경로" + imageUrl);
+        System.out.println("삭제할 이미지 총 경로 " + basePath + imageUrl );
         File oldFile = new File(basePath + imageUrl);
 
         if(oldFile.exists()) {
@@ -242,13 +256,14 @@ public class UserService {
       }
   }
 
+
   private String saveProfileImage(MultipartFile file) {
       if (file == null || file.isEmpty()) {
         return null;
       }
 
       // 지정된 외부 경로 사용
-      String basePath = new File("src/main/resources/static/images").getAbsolutePath();
+      String basePath = new File("src/main/resources/static/images/user").getAbsolutePath();
       String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
       String filePath = basePath + File.separator + fileName;
       File destinationFile = new File(filePath);
@@ -257,7 +272,7 @@ public class UserService {
       // 파일 저장
       try{
         file.transferTo(destinationFile);
-        return "/images/" + fileName;
+        return "/images/user/" + fileName;
 
       } catch (IOException e) {
         e.printStackTrace();
@@ -275,40 +290,63 @@ public class UserService {
   }
 
   // 작성한 게시물 목록 , 좋아요한 게시물 목록 , 댓글 쓴 게시물 목록을 가져오는 기능
-  public Map<String, Object> getActivities(String type, String userId) {
-
+  public Map<String, Object> getActivities(String type, String userId , Pageable pageable) {
     Map<String, Object> response = new HashMap<>();
     List<BoardResponseDTO> boardsDtos = null;
     User user = userRepository.findByUserId(userId);
+
+    int totalCount = 0;
+
     if (type.equals("boards")) {
-      boardsDtos = user.getBoards().stream().map(Board::toDTO).toList();
+
+      totalCount = boardRepository.countByUser(user);
+      Page<Board> boardsPage = boardRepository.findBoardByUser(user, pageable);
+      boardsDtos = boardsPage.getContent().stream()
+              .map(Board::toDTO)
+              .collect(Collectors.toList());
 
       response.put("boards", boardsDtos);
 
     } else if (type.equals("comments")) {
 
-      boardsDtos =
-          user.getComments().stream()
+      totalCount = boardRepository.countDistinctBoardsByCommentUser(user);
+
+      // 페이징 처리된 댓글 단 게시물 목록 조회
+      Page<Comment> commentsPage = commentRepository.findByUserOrderByCreatedAtDesc(user, pageable);
+      boardsDtos = commentsPage.getContent().stream()
               .map(comment -> comment.getBoard().toDTO())
-              .distinct()
-              .toList();
+              .distinct() // 중복 제거
+              .collect(Collectors.toList());
 
       response.put("comments", boardsDtos);
 
     } else if (type.equals("likes")) {
 
-      boardsDtos =
-          boardRepository.findAll().stream()
-              .filter(
-                  board -> {
-                    Set<Long> likes = board.getLikeContain();
-                    return likes != null && likes.contains(user.getId());
-                  })
+      List<Board> allBoards = boardRepository.findAll();
+
+      // 좋아요한 게시물만 필터링
+      List<Board> likedBoards = allBoards.stream()
+              .filter(board -> board.getLikeContain().contains(user.getId()))
+              .collect(Collectors.toList());
+
+      // 페이징 처리
+      int start = (int) pageable.getOffset();
+      int end = Math.min((start + pageable.getPageSize()), likedBoards.size());
+      List<Board> pagedBoards = likedBoards.subList(start, end);
+
+      // DTO로 변환
+      boardsDtos = pagedBoards.stream()
               .map(Board::toDTO)
-              .toList();
+              .collect(Collectors.toList());
 
       response.put("likes", boardsDtos);
+      totalCount = likedBoards.size();
     }
+    response.put("totalCount", totalCount);
+    response.put("currentPage", pageable.getPageNumber());
+    response.put("totalPages", (int)Math.ceil((double)totalCount / pageable.getPageSize()));
+    response.put("pageSize", pageable.getPageSize());
+
     return response;
   }
 }

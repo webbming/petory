@@ -15,6 +15,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -117,7 +119,6 @@ public class UserApiController {
       @RequestParam("nickname") String nickname ,
       @RequestParam(value = "profilePhotoFile", required = false) MultipartFile profilePhotoFile , Authentication authentication) {
 
-    try {
       String userId = authentication.getName();
       System.out.println("프로필 업데이트 요청 - 사용자 ID: " + userId);
 
@@ -131,12 +132,6 @@ public class UserApiController {
       data.put("nickname", nickname);
 
       return ResponseEntity.ok(ApiResponse.success(data));
-    } catch (Exception e) {
-      // 오류 발생 시 로그 출력 후 예외 전파
-      System.err.println("프로필 업데이트 오류: " + e.getMessage());
-      e.printStackTrace();
-      throw e;
-    }
   }
 
   @PatchMapping("/me/profile")
@@ -211,9 +206,17 @@ public class UserApiController {
 
   @GetMapping("/me/activities/{type}")
   public ResponseEntity<ApiResponse<?>> getActivities(
-      @PathVariable String type, Authentication authentication) {
+      @PathVariable String type,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "5") int size,
+      Authentication authentication) {
+
+    System.out.println(page);
+    System.out.println(size);
+
+    Pageable pageable = PageRequest.of(page, size);
     String userId = authentication.getName();
-    return ResponseEntity.ok(ApiResponse.success(userService.getActivities(type, userId)));
+    return ResponseEntity.ok(ApiResponse.success(userService.getActivities(type, userId , pageable)));
   }
 
   // 에러 핸들링 메소드

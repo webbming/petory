@@ -12,7 +12,7 @@
         <div class="header-wrap">
           <div class="top-links">
             <div class="top-link" sec:authorize="isAuthenticated()">
-              <a th:text="${#authentication.getName()}">님</a>님&nbsp;
+              <a th:text="${#authentication.principal.nickname}">님</a>님&nbsp;
               <a onclick="window.location.href='/logout'">로그아웃</a>
             </div>
             <div class="top-link" sec:authorize="!isAuthenticated()">
@@ -23,13 +23,13 @@
 
           <div class="header-container">
             <div class="left-section">
-              <a href="/home" class="logo">
-                <img src="/images/dog-img.png" width="40" height="40">
+              <a href="/" class="logo">
+                <img src="/images/ui/petAdd-dog.png" width="40" height="40">
                 <span class="logo-text">에이콘</span>
               </a>
               <ul class="nav-menu">
                 <li class="nav-item community">
-                  <a href="/board/board">커뮤니티</a>
+                  <a href="/">커뮤니티</a>
                     <div class="community-badge">N</div>
                 </li>
                 <li class="nav-item">
@@ -76,6 +76,38 @@
           </div>
         </div>
       </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function (){
+      const searchInput = document.querySelector(".right-section .search-bar > input");
+      const searchButton = document.querySelector(".search-icon")
+
+      let searchValue = null;
+      searchInput.addEventListener("input" , (e) =>{
+        searchValue = e.target.value;
+      })
+
+      searchButton.addEventListener("click" , async (e) =>{
+        e.preventDefault();
+
+        if (!searchValue || searchValue.trim() === '') {
+          return;
+        }
+        window.location.href = `/search?keyword=${searchValue}`
+      })
+
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();  // 폼 제출을 방지
+          if (searchValue && searchValue.trim() !== '') {
+            window.location.href = `/search?keyword=${searchValue}`;
+          }
+        }
+      });
+
+    })
+  </script>
 </div>
+
+
 </body>
 </html>

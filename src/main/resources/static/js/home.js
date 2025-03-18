@@ -1,22 +1,6 @@
-
+import {scrollTabEffect} from "./common/Util.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
-  const menuItems = document.querySelectorAll(".page-tab-area ul li a");
-
-  menuItems.forEach(item => {
-    item.addEventListener("click", function (event) {
-
-
-      // 기존 활성화된 요소의 .active 제거
-      document.querySelectorAll(".page-tab-area ul li").forEach(li => {
-        li.classList.remove("active");
-      });
-
-      // 클릭한 요소의 부모인 li에 .active 추가
-      this.parentElement.classList.add("active");
-    });
-  });
-
 
 
   /* 인기 급 상승 */
@@ -33,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       btn.classList.add("active")
 
       const tabType = btn.dataset.type;
+      console.log(tabType)
 
 
       boardContentData(tabType)
@@ -57,6 +42,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       const {data} = await response.json();
+      console.log(data)
       const pupularSlick = document.querySelector(".popular_slick");
 
       pupularSlick.innerHTML = "";
@@ -64,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       for(let i = 0; i<data.length; i+=3){
         html += "<div>";
 
-        for(let j = i ; j< i + 3 && j <data.length; j++){
+        for(let j = i ; j< i + 3 && j < data.length; j++){
           html += `
             <a href="/board/read?boardId=${data[j].boardId}">
               <span class="num">${j + 1}</span>
@@ -134,6 +120,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   await productContent();
+
+
+
+  window.addEventListener("scroll" ,scrollTabEffect )
+
+
 
 
 

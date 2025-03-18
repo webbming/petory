@@ -3,6 +3,7 @@ package com.shoppingmall.board.controller;
 import com.shoppingmall.board.dto.BoardRequestDTO;
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import com.shoppingmall.board.dto.commentRequestDTO;
+import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.user.dto.ApiResponse;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,7 +46,6 @@ import com.shoppingmall.board.service.CommentService;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -59,7 +60,9 @@ public class BoardController {
 	private CommentService commentService;
 	@Autowired
 	private UserRepository userRepository;
-	
+	@Autowired
+    private BoardRepository boardRepository;
+
 	//리스트 조회
 	@GetMapping("/board")
     public String getBoardByKeyword(@RequestParam(name = "page", defaultValue="0") Integer page,
@@ -137,9 +140,19 @@ public class BoardController {
 					Authentication auth, Model model) {
 		board.setHashtag(extractAndSaveHashtags(hashtags));
         String nickname = userRepository.findByUserId(auth.getName()).getNickname();
-        board.setUser(userRepository.findByUserId(auth.getName()));
+		String content = board.getContent();
+		String regex = "<img\\s+src=\"([^\"]+)\"";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(content);
+
+		board.setUser(userRepository.findByUserId(auth.getName()));
         board.setNickname(nickname);
 
+		while (matcher.find()) {
+			String src = matcher.group(1); // 첫 번째 그룹이 src 값
+			System.out.println("Extracted src: " + src);
+			board.setImage(src);
+		}
 		boardService.savePost(board);
 		model.addAttribute("board", board);
 		return "board/read";
@@ -276,12 +289,18 @@ public class BoardController {
 		User user = userRepository.findByUserId(auth.getName());
 		Comment comment = new Comment();
 		Board board = boardService.getPostById(boardId);
+
+
+		int commentCount = board.getCommentCount() + 1;
+		board.setCommentCount(commentCount); // board 객체에 댓글 수 갱신
+
 		comment.setUser(user);
 		comment.setNickname(user.getNickname());
 		comment.setContent(content);
 		comment.setBoard(board);
 		comment.setUser(userRepository.findByUserId(board.getUser().getUserId()));
 		commentService.saveComment(comment);
+		boardService.savePost(board);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
 	
@@ -290,15 +309,56 @@ public class BoardController {
 	//댓글 삭제
 	@GetMapping("/commentDelete")
 	public String commentDelete(@RequestParam("commentId") Long commentId, @RequestParam("boardId") Long boardId) {
+		Board board = boardService.getPostById(boardId);
+
+		int commentCount = board.getCommentCount() - 1;
+		board.setCommentCount(commentCount); // board 객체에 댓글 수 갱신
+
 		commentService.deleteComment(commentId);
+		boardService.savePost(board);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
 
 
 	@GetMapping("/board/list/{type}")
 	public ResponseEntity<ApiResponse<?>> boardList(@PathVariable("type") String type) {
-		System.out.println("하하 왓당게 ");
+		System.out.println(type);
 		 List<BoardResponseDTO> boardResponseDTO = boardService.getBoardContent(type);
 		 return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}
+
+	@GetMapping("/list")
+	public ResponseEntity<ApiResponse<?>> boardList(@RequestParam int page
+			,@RequestParam int size
+			,@RequestParam(required = false) String sort
+			,@RequestParam(required = false) String search
+			,@RequestParam(required = false) String period
+			,@RequestParam(required = true) String category) {
+
+		List<BoardResponseDTO> boardResponseDTO;
+		boardResponseDTO = boardService.getAllPosts(page , size , category , sort , search , period)
+					.stream().map(Board :: toDTO).toList();
+
+		return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
+	}
+
+
+
+	@GetMapping("/wiki")
+	public String boardPageWiki() {
+		System.out.println("요청옴");
+		return "board/board-wiki";
+	}
+
+	@GetMapping("/main")
+	public String boardPageMain() {
+		return "board/board-main";
+	}
+
+	@GetMapping("/best")
+	public String boardPageBest() {
+		return "board/board-best";
+	}
+
+
 }

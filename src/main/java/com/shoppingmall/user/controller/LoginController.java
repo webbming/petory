@@ -13,6 +13,6 @@ public class LoginController {
     if(authentication == null || authentication.getPrincipal() == null) {
       return "user/login";
     }
-    return "redirect:/home";
+    return "redirect:/";
   }
 }

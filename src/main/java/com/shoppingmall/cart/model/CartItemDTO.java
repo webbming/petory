@@ -2,6 +2,7 @@ package com.shoppingmall.cart.model;
 
 import java.math.BigDecimal;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,8 @@ public class CartItemDTO {
         this.id = cartItem.getId();
         this.productId = cartItem.getProduct().getProductId();
         this.productName = cartItem.getProduct().getProductName();
-        this.imageUrl = cartItem.getProduct().getImageUrls().toString();
+        List<String> imageUrls = cartItem.getProduct().getImageUrls();
+        this.imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
         this.price = cartItem.getPrice();
         this.quantity = cartItem.getQuantity();
         this.totalPrice = this.price.multiply(BigDecimal.valueOf(this.quantity));       

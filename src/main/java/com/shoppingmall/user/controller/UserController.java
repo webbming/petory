@@ -5,7 +5,10 @@ import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +44,11 @@ public class UserController {
 
 	@GetMapping("/me")
 	public String profileG(Authentication authentication, HttpSession session) {
-
+		System.out.println("마이페이지 요청이 왔어요 역할확인");
+		Collection<? extends GrantedAuthority> authority = authentication.getAuthorities();
+		for (GrantedAuthority grantedAuthority : authority) {
+			System.out.println(grantedAuthority.getAuthority());
+		}
 		return "user/profile/profile";
 	}
 

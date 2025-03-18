@@ -171,7 +171,7 @@ public class ProductService {
     }
     public List<ProductResponseDTO> bestLikeProducts() {
 
-        return productRepository.findTop4ByOrderByAverageRating()
+        return productRepository.findTop4ByOrderByAverageRatingDesc()
             .stream().map(ProductResponseDTO :: toDTO).toList();
 
     }

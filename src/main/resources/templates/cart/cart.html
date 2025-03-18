@@ -194,7 +194,6 @@
                 	console.log('AJAX 요청 성공');
                     updateCartUI(response);
                     updateSelectedTotal();
-                    updateCartCount(response.cartItems.length);
                     alert('수량이 변경되었습니다!');
                 },
                 error: function() {

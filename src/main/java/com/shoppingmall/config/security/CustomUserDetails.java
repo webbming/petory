@@ -28,9 +28,13 @@ public class CustomUserDetails implements UserDetails {
     return user.getAccountType();
   }
 
+  public String getNickname() {
+    return user.getNickname();
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-   return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
+   return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
   }
 
 
