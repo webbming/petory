@@ -48,19 +48,30 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         // User가 존재하는지 확인하고 없으면 하나 생성
         if (userRepository.count() == 0) {
+            User admin = new User();
             User user = new User();
-            user.setUserId("admin");  // 유저의 ID 지정
+            admin.setUserId("admin");  // 유저의 ID 지정
+            admin.setPassword(passwordEncoder.encode("1111"));  // 유저 비밀번호 설정
+            admin.setEmail("admin1@example.com");  // 이메일 설정
+            admin.setNickname("어드민");  // 유저의 nickname 설정
+            admin.setAccountType("normal");  // 계정 유형 설정
+            admin.setRole(UserRoleType.ADMIN);  // 기본 사용자 역할 설정
+
+            user.setUserId("user");  // 유저의 ID 지정
             user.setPassword(passwordEncoder.encode("1111"));  // 유저 비밀번호 설정
             user.setEmail("user1@example.com");  // 이메일 설정
-            user.setNickname("어드민");  // 유저의 nickname 설정
+            user.setNickname("유저");  // 유저의 nickname 설정
             user.setAccountType("normal");  // 계정 유형 설정
-            user.setRole(UserRoleType.ADMIN);  // 기본 사용자 역할 설정
+            user.setRole(UserRoleType.USER);  // 기본 사용자 역할 설정
+
+
 
             // User 생성 시 Cart와 UserImg 자동 생성되므로 추가 설정 필요 없음
+            userRepository.save(admin);
             userRepository.save(user);
         }
 
-        User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(2L).orElseThrow(() -> new RuntimeException("User not found"));
         // Board 데이터가 이미 있으면 추가하지 않음
         if (boardRepository.count() == 0) {
 

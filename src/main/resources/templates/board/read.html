@@ -45,7 +45,7 @@
               <div class="mt-6 flex space-x-2">
                 <a href="/board/board" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">목록으로</a>
                 <a th:href="@{/board/update(boardId=${board.boardId})}" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">수정</a>
-                <a th:href="@{/board/delete(boardId=${board.boardId})}" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">삭제</a>
+                <a th:href="@{/board/delete(boardId=${board.boardId})}" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 deleteBtn"  th:data-board-id="${board.boardId}">삭제</a>
               </div>
 
               <div class="mt-4 flex items-center space-x-2">
@@ -63,8 +63,8 @@
                   <p class="mt-2 text-gray-700" th:text="${comment.content}"></p>
                   <div class="mt-2 flex space-x-2">
                     <a th:href="@{/board/commentUpdate(commentId=${comment.commentId})}" class="text-blue-500">수정</a>
-                    <a th:href="@{/board/commentDelete(commentId=${comment.commentId}, boardId=${board.boardId})}" class="text-red-500">삭제</a>
-                    <a th:href="@{/board/commentLike(commentId=${comment.commentId}, boardId=${board.boardId})}" class="text-red-500">❤️</a>
+                    <a th:href="@{/board/commentDelete(commentId=${comment.commentId}, boardId=${board.boardId})}" class="text-red-500" >삭제</a>
+                    <a th:href="@{/board/commentLike(commentId=${comment.commentId}, boardId=${board.boardId})}" class="text-red-500 ">❤️</a>
                     <span th:text="${comment.likeCount}" class="text-gray-700"></span>
                   </div>
                 </div>
@@ -120,6 +120,31 @@
       likeCount.textContent = result.data.likeCount
 
 
+    })
+
+
+    const deleteBtn = document.querySelector(".deleteBtn")
+    console.log(deleteBtn)
+    deleteBtn.addEventListener("click", async (e) =>{
+      e.preventDefault();
+      const boardId = deleteBtn.getAttribute("data-board-id");
+
+      const conn = confirm("정말 삭제하시겠습니까?")
+      if (conn){
+        const response = await fetch(`/board/delete?boardId=${Number(boardId)}` , {
+          method : "DELETE",
+          credentials : "include"
+        })
+
+        if(!response.ok){
+          console.log("삭제 실패했습니다.")
+        }
+
+        if(response.ok){
+          alert("게시물 삭제 완료")
+          window.location.href = "/board/board"
+        }
+      }
     })
   })
 </script>

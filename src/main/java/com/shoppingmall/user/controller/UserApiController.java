@@ -59,7 +59,7 @@ public class UserApiController {
     }
 
     String userId = authentication.getName();
-    UserResponseDTO userResponseDTO = userService.getUser(userId);
+    UserResponseDTO userResponseDTO = userService.getUserDTO(userId);
 
     return ResponseEntity.ok(ApiResponse.success(userResponseDTO));
   }
@@ -108,7 +108,7 @@ public class UserApiController {
           "인증된 사용자의 정보를 받아와 출력 / 현재 시큐리티 permitAll 때문에 인증이 안된 사용자는 에러페이지 , 인증이 된 사용자만 마이페이지 ")
   public ResponseEntity<?> profileG(Authentication authentication) {
     if (authentication.isAuthenticated()) {
-      User user = userRepository.findByUserId(authentication.getName());
+      User user = userService.getUser(authentication.getName());
       return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(user.toDTO()));
     }
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("인증되지 않은 사용자"));

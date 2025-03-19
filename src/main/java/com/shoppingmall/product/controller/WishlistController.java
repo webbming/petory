@@ -41,7 +41,7 @@ public class WishlistController {
         Map<String , Object> data = new HashMap<>();
         try {
 
-            User user = userRepository.findByUserId(authentication.getName());
+            User user = userService.getUser(authentication.getName());
             Wishlist added = wishlistService.addProductToWishlist(user.getId(), dto.getProductId());
             WishlistDTO wishlistDTO = new WishlistDTO();
             wishlistDTO.setId(added.getId());
@@ -67,7 +67,7 @@ public class WishlistController {
         if (dto.getProductId() == null) {
             return ResponseEntity.badRequest().body("유효하지 않은 요청입니다.");
         }
-        User user = userRepository.findByUserId(authentication.getName());
+        User user = userService.getUser(authentication.getName());
 
 
         wishlistService.removeProductFromWishlist(user.getId(), dto.getProductId());

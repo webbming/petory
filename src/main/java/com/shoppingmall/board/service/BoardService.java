@@ -1,14 +1,18 @@
 package com.shoppingmall.board.service;
 
 import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.user.model.UserRoleType;
+import com.shoppingmall.user.service.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,62 +27,65 @@ import com.shoppingmall.user.repository.UserRepository;
 public class BoardService {
 	private final BoardRepository repository;
 	private final UserRepository userRepository;
+	private final UserService userService;
 
 	@Autowired
-	public BoardService(BoardRepository repository, UserRepository userRepository) {
+	public BoardService(BoardRepository repository, UserRepository userRepository,
+			UserService userService) {
 		this.repository = repository;
 		this.userRepository = userRepository;
+		this.userService = userService;
 	}
 	//저장
 	public void savePost(Board board){
 		repository.save(board);
     }
 
-	// 전체 게시글 조회 (타입별 필터링)
-	public Page<Board> getAllPosts(int page, int size, String category , String sort , String search , String period) {
+	// 역할에 따른 게시글 조회
+	public Page<Board> getPostsByRole(int page, int size, String category, String sort, String search, String period, UserRoleType role) {
 		Sort sorting;
+		// 정렬 기준 설정
 		if ("인기순".equals(sort)) {
 			sorting = Sort.by(Sort.Direction.DESC, "likeCount");
-
 		} else {
-			// 기본 정렬은 최신순
 			sorting = Sort.by(Sort.Direction.DESC, "createdAt");
 		}
-
+		// 페이지와 정렬 기준 설정
 		Pageable pageable = PageRequest.of(page, size, sorting);
 
-
+		// 기간 설정
 		LocalDateTime startDate = null;
 		if (period != null && !period.isEmpty() && !"all".equals(period)) {
 			startDate = getStartDateForPeriod(period);
 		}
+
 		if (search != null && !search.isEmpty()) {
-			// 카테고리별 검색
+			// 카테고리별 검색 + 역할 필터링
 			if (!"all".equals(category)) {
-				return repository.findByCategoryIdAndCreatedAtAfterAndTitleContaining(
-						category, startDate, search, pageable);
+				return repository.findByCategoryIdAndUserRoleAndCreatedAtAfterAndTitleContaining(
+						category, role, startDate, search, pageable);
 			} else {
-				// 전체 카테고리 검색
-				return repository.findByCreatedAtAfterAndTitleContaining(
-						startDate, search, pageable);
+				// 전체 카테고리 검색 + 역할 필터링
+				return repository.findByUserRoleAndCreatedAtAfterAndTitleContaining(
+						role, startDate, search, pageable);
 			}
 		} else {
-			// 검색어 없이 카테고리만 필터링
+			// 검색어 없이 카테고리와 역할만 필터링
 			if (startDate != null) {
-				// 기간 필터링 적용
+				// 기간 필터링 적용 + 역할 필터링
 				if (!"all".equals(category)) {
-					return repository.findByCategoryIdAndCreatedAtAfter(
-							category, startDate, pageable);
+					return repository.findByCategoryIdAndUserRoleAndCreatedAtAfter(
+							category, role, startDate, pageable);
 				} else {
-					return repository.findByCreatedAtAfter(startDate, pageable);
+					return repository.findByUserRoleAndCreatedAtAfter(role, startDate, pageable);
 				}
 			} else {
-				// 기간 필터링 없음
+				// 기간 필터링 없음, 역할만 필터링
 				if (!"all".equals(category)) {
-					return repository.findByCategoryId(category, pageable);
+					return repository.findByCategoryIdAndUserRole(category, role, pageable);
 				} else {
-					// 아무 필터링 없이 전체 조회 (정렬만 적용)
-					return repository.findAll(pageable);
+					// 카테고리 필터링 없이 역할만 필터링
+					return repository.findByUserRole(role, pageable);
 				}
 			}
 		}
@@ -92,7 +99,7 @@ public class BoardService {
 		return boardPage.getContent();
 	}
 
-	// 메인화면용 상위 9개 게시글 조회 (최신순/인기순)
+	// 메인화면용 상위 9개 게시글 조회 (최신순/인기순/조회순/공지사항)
 	public List<BoardResponseDTO> getBoardContent(String type) {
 		if("best".equals(type)) {
 			return repository.findTop9ByOrderByLikeCountDesc()
@@ -105,7 +112,11 @@ public class BoardService {
 					.stream()
 					.map(Board::toDTO)
 					.toList();
-		} else {
+		} else if("공지".equals(type)) {
+			return repository.findTop9ByCategoryIdOrderByCreatedAtDesc("공지").stream()
+					.map(Board :: toDTO).toList();
+		}
+		else {
 			return repository.findTop9ByOrderByCreatedAtDesc()
 					.stream()
 					.map(Board::toDTO)
@@ -163,8 +174,8 @@ public class BoardService {
 	}
 	
 	//유저 아이디로 닉네임 호출
-	public User getNickname(String userId) {
-		return userRepository.findByUserId(userId);
+	public String getNickname(String userId) {
+		return userService.getUser(userId).getNickname();
 	}
 	
 	//게시글 좋아요

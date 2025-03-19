@@ -35,16 +35,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
 
   private final UserImgRepository userImgRepository;
-  private UserRepository userRepository;
-  private BoardRepository boardRepository;
-  private BCryptPasswordEncoder bCryptPasswordEncoder;
-  private CommentRepository commentRepository;
+  private final UserRepository userRepository;
+  private final BoardRepository boardRepository;
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final CommentRepository commentRepository;
 
   public UserService(
       UserRepository userRepository,
       BoardRepository boardRepository,
       CommentRepository commentRepository,
-      BCryptPasswordEncoder bCryptPasswordEncoder, UserImgRepository userImgRepository) {
+      BCryptPasswordEncoder bCryptPasswordEncoder,
+      UserImgRepository userImgRepository) {
     this.userRepository = userRepository;
     this.boardRepository = boardRepository;
     this.commentRepository = commentRepository;
@@ -108,23 +109,20 @@ public class UserService {
   }
 
   // 유저 조회
-  public UserResponseDTO getUser(String userId) {
-    // 해당하는 유저 검색
-    User user = userRepository.findByUserId(userId);
-    // 유저가 없다면 예외처리
-    if (user == null) {
-      throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
-    }
+  public UserResponseDTO getUserDTO(String userId) {
+    User user = getUser(userId);
     // 유저 정보 반환
     return user.toDTO();
   }
 
-  public UserResponseDTO.MypageInfo getMyPageTopInfo(String userId) {
-    User user = userRepository.findByUserId(userId);
-    if (user == null) {
-      throw new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다.");
-    }
+  public User getUser(String userId){
+    return userRepository
+        .findByUserId(userId)
+        .orElseThrow(() -> new UsernameNotFoundException("해당하는 정보로 찾지 못했습니다."));
+  }
 
+  public UserResponseDTO.MypageInfo getMyPageTopInfo(String userId) {
+    User user = getUser(userId);
     String nickname = user.getNickname();
     int quantity = user.getCart().getUniqueItemCount();
     String imgUrl = user.getUserImg().getUrl();
@@ -143,7 +141,7 @@ public class UserService {
   public void updateUser(UserRequestDTO.Update userDTO , String userId) {
     Map<String, String> errors = new HashMap<>();
     // 해당하는 유저 검색
-    User user = userRepository.findByUserId(userId);
+    User user = getUser(userId);
 
     // db의 유저 정보와 수정한 유저의 정보가 같지 않고 중복된 이메일이 있을때
     if (!user.getEmail().equals(userDTO.getEmail())
@@ -171,10 +169,7 @@ public class UserService {
   @Transactional
   public void deleteUser(String userId, String password) {
 
-    User user = userRepository.findByUserId(userId);
-    if (user == null) {
-      throw new UsernameNotFoundException("회원이 존재 하지 않습니다.");
-    }
+    User user = getUser(userId);
 
     if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
       throw new IllegalStateException("비밀번호가 일치 하지 않습니다.");
@@ -195,10 +190,7 @@ public class UserService {
   @Transactional
   // 유저의 닉네임과 프로필사진 을 업데이트 하는 기능
   public String userProfileUpdate(String userId, String nickname, MultipartFile file) {
-    User user = userRepository.findByUserId(userId);
-    if (user == null) {
-      throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
-    }
+    User user = getUser(userId);
 
     // 기존 프로필 이미지 가져오기
     UserImg existingUserImg = userImgRepository.findByUser(user);
@@ -221,7 +213,7 @@ public class UserService {
       if (!isDefaultImage(existingUserImg.getUrl())) {
         System.out.println("기본 이미지가아닌 유저가가진 사진 " +  existingUserImg.getUrl());
         deleteProfileImage(existingUserImg.getUrl());
-        ;
+
       }
 
       existingUserImg.setUrl(imageUrl);
@@ -244,8 +236,6 @@ public class UserService {
       String basePath =  new File("src/main/resources/static").getAbsolutePath();
 
       if(imageUrl != null || !imageUrl.isEmpty()) {
-        System.out.println("삭제할 이미지 경로" + imageUrl);
-        System.out.println("삭제할 이미지 총 경로 " + basePath + imageUrl );
         File oldFile = new File(basePath + imageUrl);
 
         if(oldFile.exists()) {
@@ -282,10 +272,7 @@ public class UserService {
 
   // 현재 사용자의 회원 정보를 가져오는 기능
   public User getCurrentUser(Authentication authentication) {
-    User user = userRepository.findByUserId(authentication.getName());
-    if (user == null) {
-      throw new UsernameNotFoundException("User not found");
-    }
+    User user = getUser(authentication.getName());
     return user;
   }
 
@@ -293,7 +280,7 @@ public class UserService {
   public Map<String, Object> getActivities(String type, String userId , Pageable pageable) {
     Map<String, Object> response = new HashMap<>();
     List<BoardResponseDTO> boardsDtos = null;
-    User user = userRepository.findByUserId(userId);
+    User user = getUser(userId);
 
     int totalCount = 0;
 

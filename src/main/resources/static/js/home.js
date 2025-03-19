@@ -17,9 +17,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       btn.classList.add("active")
 
       const tabType = btn.dataset.type;
-      console.log(tabType)
-
-
       boardContentData(tabType)
     })
   })
@@ -42,7 +39,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       const {data} = await response.json();
-      console.log(data)
       const pupularSlick = document.querySelector(".popular_slick");
 
       pupularSlick.innerHTML = "";
@@ -90,11 +86,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       const {data} = await response.json();
-
-      console.log(data)
-
       const product_list = document.querySelector(".product_list");
-      console.log(product_list)
 
       product_list.innerHTML = data.map((product) =>
         `

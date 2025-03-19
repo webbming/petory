@@ -204,9 +204,6 @@
 }
 
 .product_list li .pro_name p{
-  text-overflow: ellipsis;
-  overflow: hidden;
-  display: -webkit-box;
   font-size: 20px;
   font-weight: 600;
 }
@@ -224,6 +221,14 @@
   line-height: 35px;
   background: url("../images/ui/product-average.png") no-repeat left center;
   background-size: 15px;
+}
+
+.pro_name p {
+  width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }
 .common_sense > ul li {
   border-bottom: 1px solid #d9d9d9;

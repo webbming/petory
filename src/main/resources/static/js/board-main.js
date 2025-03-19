@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
     // 게시글을 불러오는 함수
-    async function loadMorePosts() {
+   async function loadMorePosts() {
         if (isLoading) return;
         isLoading = true;
 

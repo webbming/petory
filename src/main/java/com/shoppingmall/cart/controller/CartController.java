@@ -3,6 +3,7 @@ package com.shoppingmall.cart.controller;
 import com.shoppingmall.cart.model.CartItem;
 import com.shoppingmall.cart.model.CartItemDTO;
 import com.shoppingmall.common.ApiResponse;
+import com.shoppingmall.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class CartController {
 	
     private final CartService cartService;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     // userId 추출
     private String getUserId(Authentication authentication) {
@@ -51,7 +53,7 @@ public class CartController {
             return "redirect:/login";
         }
         String userId = authentication.getName();
-        User user = userRepository.findByUserId(userId);
+        User user = userService.getUser(userId);
         CartDTO cartDTO = cartService.getCartByUser(user);
 
         // 총 금액 계산
@@ -72,7 +74,7 @@ public class CartController {
     public ResponseEntity<CartDTO> addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity , HttpSession session) {
 
         String userId = getUserId(authentication);
-        User user = userRepository.findByUserId(userId);
+        User user = userService.getUser(userId);
 
         // 장바구니에 상품 추가
         CartDTO updatedCartDTO = cartService.addProductToCart(user, productId, quantity);
@@ -85,7 +87,7 @@ public class CartController {
     @DeleteMapping("/items/{cartItemId}/remove")
     public  ResponseEntity<CartDTO> removeFormCart(Authentication authentication, @PathVariable Long cartItemId , HttpSession session) {
         String userId = getUserId(authentication);
-        User user = userRepository.findByUserId(userId);
+        User user = userService.getUser(userId);
 
 
         // 장바구니에서 상품 삭제
@@ -99,7 +101,7 @@ public class CartController {
     @DeleteMapping("/items/remove")
     public ResponseEntity<CartDTO> removeItemsFromCart(Authentication authentication, @RequestBody List<Long> cartItemIds , HttpSession session) {
         String userId = getUserId(authentication);
-        User user = userRepository.findByUserId(userId);
+        User user = userService.getUser(userId);
 
         // 다중 삭제 처리
         CartDTO updatedCart = cartService.removeProductsFromCart(user, cartItemIds);
@@ -113,7 +115,7 @@ public class CartController {
     @PutMapping("/items/{cartItemId}/update")
     public ResponseEntity<CartDTO> updateQuantity(Authentication authentication, @PathVariable Long cartItemId, @RequestParam int quantity) {
         String userId = getUserId(authentication);
-        User user = userRepository.findByUserId(userId);
+        User user = userService.getUser(userId);
 
         // 장바구니 상품 수량 업데이트
         CartDTO updatedCartDTO = cartService.updateProductQuantity(user, cartItemId, quantity); // 수정된 장바구니 데이터
@@ -128,7 +130,7 @@ public class CartController {
             response.put("cartCount", 0);
             return ResponseEntity.ok(ApiResponse.success(response));
         }
-        User user = userRepository.findByUserId(authentication.getName());
+        User user = userService.getUser(authentication.getName());
         response.put("cartCount", cartService.getCartByUser(user).getCartItems().size());
         return ResponseEntity.ok(ApiResponse.success(response));
     }

@@ -3,24 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="stylesheet" href="/css/layout/common.css">
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.2.1/ckeditor5.css" crossorigin>
 <style>
-        body {
-            background-color: #f8f9fc;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin-top: 50px;
-        }
+
         .card {
+            margin: 0 auto;
+            width: 800px;
             padding: 40px;
-            border-radius: 12px;
+            border-radius: 10px;
             background-color: #ffffff;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
         h2 {
             font-size: 2rem;
@@ -30,6 +24,7 @@
         }
         .form-control, .form-select, .hashtag-input {
             border-radius: 10px;
+            height: 48px;
             border: 1px solid #ced4da;
             padding: 12px;
             font-size: 1rem;
@@ -40,31 +35,49 @@
             box-shadow: 0 0 8px rgba(78, 115, 223, 0.5);
         }
         .btn-primary {
+            width: 360px;
             background-color: #4e73df;
             border-color: #4e73df;
-            width: 48%;
+            color: white;
+
         }
         .btn-primary:hover {
             background-color: #375a7f;
             border-color: #375a7f;
         }
         .btn-secondary {
+            display: block;
+            width: 360px;
             background-color: #f1f3f5;
             border-color: #ced4da;
-            width: 48%;
+            text-align: center;
+            color: black;
+
         }
         .btn-secondary:hover {
             background-color: #e2e6ea;
             border-color: #dae0e5;
         }
         .d-flex {
-            margin-top: 20px;
-            justify-content: space-between;
+            display: flex;
+            margin-top: 40px;
+            justify-content: center;
+            gap: 20px;
         }
-        .mb-3 label {
+        .d-flex .btn {
+            padding: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 12px;
+        }
+
+        .mb-3 > label.form-label {
             font-weight: 600;
             color: #495057;
-            margin-bottom: 8px;
+
+        }
+        .mb-3 {
+            margin-bottom: 20px;
         }
         .hashtag-note {
             font-size: 0.9rem;
@@ -77,52 +90,62 @@
         .ck-editor__editable {
             min-height: 300px;
         }
+        #boardUpdateForm{
+            padding: 50px;
+            width: 700px ;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
+<div th:replace="fragment/header :: headerFragment"></div>
     <div class="container">
-        <div class="card">
-            <h2 class="text-center">📝 게시글 작성/수정</h2>
-            <form action="/board/update" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="boardId" th:value="${board.boardId}">
-                
-                <!-- 제목 입력 -->
-                <div class="mb-3">
-                    <label for="title" class="form-label">제목</label>
-                    <input type="text" id="title" name="title" th:value="${board.title}" class="form-control" placeholder="제목을 입력하세요" required>
-                </div>
+        <div class="pm-section">
+            <div class="board-container">
+                <div class="card">
+                    <h2 class="text-center">📝 게시글 수정</h2>
+                    <form action="/board/update" method="POST" enctype="multipart/form-data" id="boardUpdateForm">
+                        <input type="hidden" name="boardId" th:value="${board.boardId}">
 
-                <!-- 카테고리 선택 -->
-                <div class="mb-3">
-                    <label for="categoryId" class="form-label">카테고리</label>
-                    <select id="categoryId" name="categoryId" class="form-select">
-                        <option value="반슐랭" th:selected="${board.categoryId == '반슐랭'}">반슐랭</option>
-                        <option value="육아팁" th:selected="${board.categoryId == '육아팁'}">육아팁</option>
-                        <option value="일상공유" th:selected="${board.categoryId == '일상공유'}">일상공유</option>
-                    </select>
-                </div>
+                        <!-- 제목 입력 -->
+                        <div class="mb-3">
+                            <input type="text" id="title" name="title" th:value="${board.title}" class="form-control" placeholder="제목을 입력하세요" required>
+                        </div>
 
-                <!-- CKEditor 입력 -->
-                <div class="mb-3">
-                    <label for="editor" class="form-label">내용</label>
-                    <textarea id="editor" name="content" rows="10" class="form-control" placeholder="내용을 입력하세요" required>[[${board.content}]]</textarea>
-                </div>
+                        <!-- 카테고리 선택 -->
+                        <div class="mb-3">
+                            <select id="categoryId" name="categoryId" class="form-select">
+                                <option th:if="${#authorization.expression('hasRole(''ADMIN'')')}" value="공지" selected>공지</option>
+                                <option th:if="${#authorization.expression('hasRole(''ADMIN'')')}" value="시사상식" selected>시사상식</option>
+                                <option value="반슐랭" th:selected="${board.categoryId == '반슐랭'}">반슐랭</option>
+                                <option value="육아팁" th:selected="${board.categoryId == '육아팁'}">육아팁</option>
+                                <option value="일상공유" th:selected="${board.categoryId == '일상공유'}">일상공유</option>
+                            </select>
+                        </div>
 
-                <!-- 해시태그 입력 -->
-                <div class="mb-3">
-                    <label for="hashtags" class="form-label">해시태그</label>
-                    <input type="text" id="hashtags" name="hashtag" class="hashtag-input" th:value="${board.hashtag}" placeholder="예: #육아 #일상">
-                    <div class="hashtag-note">여러 해시태그를 입력할 경우, 공백으로 구분해주세요.</div>
-                </div>
+                        <!-- CKEditor 입력 -->
+                        <div class="mb-3">
+                            <textarea id="editor" name="content" rows="10" class="form-control" placeholder="내용을 입력하세요" >[[${board.content}]]</textarea>
+                        </div>
 
-                <!-- 버튼 -->
-                <div class="d-flex">
-                    <button type="submit" class="btn btn-primary">✅ 게시글 작성</button>
-                    <a th:href="@{/board/board(keyword=${keyword}, category=${category})}" class="btn btn-secondary">❌ 취소</a>
+                        <!-- 해시태그 입력 -->
+                        <div class="mb-3">
+                            <div class="hashtag-note">* 여러 해시태그를 입력할 경우, 공백으로 구분해주세요.</div>
+                            <input type="text" id="hashtags" name="hashtag" class="hashtag-input" th:value="${board.hashtag}" placeholder="예: #육아 #일상">
+                        </div>
+
+                        <!-- 버튼 -->
+                        <div class="d-flex">
+                            <button type="submit" class="btn btn-primary">✅ 게시글 작성</button>
+                            <a th:href="@{/board/board(keyword=${keyword}, category=${category})}" class="btn btn-secondary">❌ 취소</a>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            </div>
     </div>
+</div>
+<div th:replace="fragment/footer :: footerFragment"></div>
+
 <script src="https://cdn.ckeditor.com/ckeditor5/44.2.1/ckeditor5.umd.js" crossorigin></script>
 <script src="https://cdn.ckbox.io/ckbox/2.6.1/ckbox.js" crossorigin></script>
 <script src="/js/write.js"></script>

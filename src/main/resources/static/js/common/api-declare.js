@@ -1,6 +1,4 @@
 /* 마이페이지에 좋아요한 상품을 불러오는 함수  */
-import {apiClient} from "./api.js";
-
 
 
 export async function headerCartSize(){
