@@ -117,11 +117,10 @@ public class BoardService {
 	//검색
 	public Page<Board> getPostByKeyword(String keyword, String category, String orderby, String bydate, LocalDateTime startDate, String hashtag, int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
-		List<Board> boardList = repository.searchBoards(keyword, category, orderby, bydate, startDate, hashtag);
+		List<Board> boardList = repository.searchBoards(keyword, category, orderby, bydate, startDate);
 		if(!hashtag.equals("all")) {
 			List<Board> returnList = new ArrayList<Board>();
 			boardList.forEach(board->{
-				System.out.println("여기는 내꺼" + board.getHashtag());
 				if(board.getHashtag().contains(hashtag)) {
 					returnList.add(board);
 				}

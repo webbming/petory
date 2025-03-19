@@ -13,9 +13,14 @@ public class commentRequestDTO {
 	  @AllArgsConstructor
 	  public static class Likes{
 	    private String commentId;
+	    private String userId;
 
 	    public Long getIdAsLong(String commentId) {
 	      return Long.parseLong(commentId);
+	    }
+	    
+	    public Long getUserIdAsLong(String userId) {
+	    	return Long.parseLong(userId);
 	    }
 
 

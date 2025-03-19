@@ -1,0 +1,109 @@
+.pm-section{
+  width: 770px;
+  margin: 0 auto;
+  padding: 77px 0 80px;
+}
+
+hr {
+	height: 1px;
+	border: none;
+	background-color: #ccc;
+	margin: 30px 0;
+}
+
+.userInfo {
+	display: flex;
+	align-items: center;
+}
+
+.userInfo .userImage {
+	width: 44px;
+	height: 44px;
+}
+
+.userInfo .userInfoText {
+	display: flex;
+	flex-direction: column;
+}
+
+.createdAt {
+	text-align: right;
+}
+
+.boardContent {
+	font-size: 17px;
+}
+
+.boardHashtag {
+	font-size: 20px;
+	color: #5b57a8;
+}
+
+.boardNickname {
+	font-weight: bold;
+}
+
+.buttons {
+	text-align: right;
+}
+
+.buttons .delete {
+	color: red;
+}
+
+.likeContain .commentButton {
+	margin: 0 0 0 40px;
+}
+
+.comments {
+	margin: 50px 0;
+}
+
+.commentWrite {
+	margin: 20px 0;
+	display: flex;
+}
+
+.commentWrite .commentWriteContent {
+	width: 700px;
+	height: 50px;
+	margin: 0 10px;
+}
+
+.commentWrite .commentWriteUserImage {
+	width: 44px;
+	height: 44px;
+}
+
+.commentWrite .commentWriteButton {
+	text-align: right;
+}
+
+.commentList {
+	display: flex;
+}
+
+.commentList .comment {
+	margin: 8px;
+}
+
+.commentUserImage {
+	width: 44px;
+	height: 44px;
+}
+
+.comment .commentNicknameCreatedAt {
+	display: flex;
+}
+
+.comment .commentNicknameCreatedAt .commentNickname {
+	font-weight: bold;
+}
+
+.comment .commentNicknameCreatedAt .commentCreatedAt {
+	opacity: 0.5;
+}
+
+.comment p {
+	margin: 5px;
+}

@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.aspectj.apache.bcel.Repository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
@@ -154,7 +155,10 @@ public class BoardController {
 			board.setImage(src);
 		}
 		boardService.savePost(board);
-		model.addAttribute("board", board);
+		User user = userRepository.findByUserId(auth.getName());
+        Board returnBoard = boardService.viewPost(board.getBoardId(), user);
+		model.addAttribute("board", returnBoard);
+		model.addAttribute("user", user);
 		return "board/read";
 	}
 	
@@ -218,6 +222,7 @@ public class BoardController {
 		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
+		        model.addAttribute("user", user);
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -266,6 +271,11 @@ public class BoardController {
 	     Integer likeCount =  boardService.likePost(boardId, user);
 	       Map<String, Object> response = new HashMap<>();
 	       response.put("likeCount", likeCount);
+	       Board board = boardService.getPostById(boardId);
+	       
+	       if(board.getLikeContain().contains(likes.getIdAsLong(likes.getUserId()))) {
+	    	   response.put("contain", "contained");
+	       }
 	      return ResponseEntity.ok(ApiResponse.success(response));
 	   }
 	
@@ -274,12 +284,18 @@ public class BoardController {
 	@ResponseBody
 	public ResponseEntity<ApiResponse<?>> likeComment(Authentication auth, @RequestBody commentRequestDTO.Likes likes) {
 		String userId = auth.getName();
-		Long commentId = likes.getIdAsLong(likes.getCommentId());
+		Long commentId = likes.getUserIdAsLong(likes.getCommentId());
 		User user = userRepository.findByUserId(userId);
 		
-		Integer likeCount = boardService.likePost(commentId, user);
+		Integer likeCount = commentService.likeComment(commentId, user);
 		Map<String, Object> response = new HashMap<>();
 		response.put("commentLikeCount", likeCount);
+		Comment comment = commentService.getCommentById(commentId);
+		
+		if(comment.getLikeContain().contains(likes.getUserIdAsLong(likes.getUserId()))) {
+	    	   response.put("contain", "contained");
+	       }
+		
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 	

@@ -34,8 +34,8 @@ public class CommentService {
 	    return repository.save(comment);
 	}
 	
-	//게시글 좋아요
-	public void likeComment(Long commentId, User user) {
+	//댓글 좋아요
+	public Integer likeComment(Long commentId, User user) {
 		Comment comment = repository.findById(commentId).orElse(null);
 		Set<Long> container = comment.getLikeContain();
 		
@@ -46,6 +46,7 @@ public class CommentService {
 			likeCount++;
 			comment.setLikeCount(likeCount);
 			repository.save(comment);
+			return likeCount;
 		}
 		else {
 			container.remove(user.getId());
@@ -54,6 +55,7 @@ public class CommentService {
 			likeCount--;
 			comment.setLikeCount(likeCount);
 			repository.save(comment);
+			return likeCount;
 		}
 	}
 	
