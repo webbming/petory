@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shoppingmall.config.security.CustomUserDetails;
 import com.shoppingmall.product.dto.ProductResponseDTO;
 import com.shoppingmall.product.model.Category;
 import com.shoppingmall.product.model.PetType;
@@ -167,13 +169,13 @@ public class ProductController {
 
     private String uploadFile(MultipartFile file) {
         if (!file.isEmpty()) {
-            String basePath = new File("src/main/resources/static/images").getAbsolutePath();
+            String basePath = new File("src/main/resources/static/images/product").getAbsolutePath();
             String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
             String filePath = basePath + File.separator + fileName;
             File destinationFile = new File(filePath);
             try {
                 file.transferTo(destinationFile);
-                return "/images/" + fileName;
+                return "/images/product/" + fileName;
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -361,13 +363,20 @@ public class ProductController {
         return "/product/index2";
     }
 
+    // 리뷰 로그인한 유저id 받아오도록 수정
     @PostMapping("/products/{productId}/reviews")
-    public String addReview(@PathVariable Long productId, @ModelAttribute Review review, @RequestParam("imageFile") MultipartFile imageFile) {
+    public String addReview(@PathVariable Long productId,
+                            @ModelAttribute Review review,
+                            @RequestParam("imageFile") MultipartFile imageFile,
+                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+    	
+        review.setUserId(userDetails.getUser().getId());
         review.setProductId(productId);
-        review.setUserId(1L);
+
         reviewService.saveReview(review, imageFile);
         return "redirect:/products/" + productId;
     }
+
 
     @GetMapping("/products/{productId}/reviews")
     public ResponseEntity<List<Review>> getReviews(@PathVariable Long productId) {
@@ -381,20 +390,27 @@ public class ProductController {
         @PathVariable Long productId,
         @PathVariable Long reviewId,
         @RequestParam String content,
-        @RequestParam Long userId
+        @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Map<String, Object> result = new HashMap<>();
         try {
-            reviewService.addComment(reviewId, content, userId);
+            Long userId = userDetails.getUser().getId();
+            String nickname = userDetails.getUser().getNickname();
+            reviewService.addComment(reviewId, content, userId, nickname);
+            result.put("status", "success");
             result.put("userId", userId);
+            result.put("nickname", nickname);
             result.put("content", content);
             result.put("createdAt", new Date());
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            result.put("error", "댓글 추가에 실패하였습니다: " + e.getMessage());
+            result.put("status", "error");
+            result.put("message", "서버 오류가 발생했습니다: " + e.getMessage());
         }
         return result;
     }
+
+
 
     @GetMapping("/{productId}/reviews/{reviewId}/comments")
     @ResponseBody

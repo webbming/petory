@@ -745,7 +745,7 @@
 
         <!-- 지금 주문 시 내일 발송 (회색 배경) -->
         <div class="shipping-block" id="shipping-block">
-          <!-- 자바스크립트에서 로켓아이콘+문구 삽입 -->
+          <!-- 자바스크립트에서 트럭아이콘+문구 삽입 -->
         </div>
 
         <!-- 옵션명 + 수량버튼 + 실시간 금액 -->
@@ -913,13 +913,13 @@
                th:if="${reviewComments[review.reviewId] != null and #lists.size(reviewComments[review.reviewId]) > 0}">
             <h4>댓글</h4>
             <ul>
-              <li th:each="c : ${reviewComments[review.reviewId]}">
-                <strong th:text="${c.userId}"></strong> :
-                <span th:text="${c.content}"></span>
-                <small th:text="${#dates.format(c.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
-                       th:if="${c.createdAt != null}"></small>
-              </li>
-            </ul>
+			  <li th:each="c : ${reviewComments[review.reviewId]}">
+			    <strong th:text="${c.nickname}"></strong> :  <!-- ✅ nickname 표시 -->
+			    <span th:text="${c.content}"></span>
+			    <small th:text="${#dates.format(c.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
+			           th:if="${c.createdAt != null}"></small>
+			  </li>
+			</ul>
           </div>
         </div>
 
@@ -945,7 +945,7 @@
       </form>
       <a id="openReviewModalBtnFixed" href="javascript:void(0);" onclick="openReviewModal()">리뷰 작성하기</a>
       <a href="/products">목록으로</a>
-      <a href="/wishlist">찜한상품</a>
+      <!-- <a href="/wishlist">찜한상품</a> -->
     </div>
 
     <!-- 이미지 팝업 -->
@@ -1000,7 +1000,7 @@
         <h2>댓글</h2>
         <form id="commentForm" onsubmit="return submitCommentAjax(event)">
           <input type="text" name="content" placeholder="댓글 입력" required />
-          <input type="hidden" name="userId" value="1"/>
+          <!-- <input type="hidden" name="userId" value="1"/> -->
           <button type="submit">댓글 추가</button>
         </form>
       </div>
@@ -1049,7 +1049,7 @@
       const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
       const dd = String(tomorrow.getDate()).padStart(2, '0');
       shippingBlock.innerHTML = `
-        <img src="/images/roket.png" alt="로켓 아이콘"/>
+        <img src="/images/truck.png" alt="트럭 아이콘"/>
         지금 주문 시 내일(${mm}.${dd}) 바로 발송
       `;
     }
@@ -1249,11 +1249,11 @@
               updatedComments.forEach(c => {
                 const li = document.createElement('li');
                 li.innerHTML = `
-                  <strong>${c.userId}</strong> : <span>${c.content}</span>
-                  <small style="margin-left:5px;font-size:12px;color:#888;">
-                    ${new Date(c.createdAt).toLocaleString()}
-                  </small>
-                `;
+                	  <strong>${c.nickname}</strong> : <span>${c.content}</span>
+                	  <small style="margin-left:5px;font-size:12px;color:#888;">
+                	    ${new Date(c.createdAt).toLocaleString()}
+                	  </small>
+                	`;
                 ul.appendChild(li);
               });
             } else {
