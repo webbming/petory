@@ -328,6 +328,7 @@ public class BoardController {
 	@GetMapping("/commentCreate")
 	public String commentCreate(Authentication auth, @RequestParam("content") String content, @RequestParam("boardId") Long boardId) {
 		User user = userService.getUser(auth.getName());
+    System.out.println("댓글등록시 유저의 id" + user.getId());
 		Comment comment = new Comment();
 		Board board = boardService.getPostById(boardId);
 
@@ -339,7 +340,7 @@ public class BoardController {
 		comment.setNickname(user.getNickname());
 		comment.setContent(content);
 		comment.setBoard(board);
-		comment.setUser(userService.getUser(board.getUser().getUserId()));
+		comment.setUser(user);
 		commentService.saveComment(comment);
 		boardService.savePost(board);
 		return "redirect:/board/read?boardId=" + boardId;

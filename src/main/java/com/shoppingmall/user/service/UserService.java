@@ -280,7 +280,10 @@ public class UserService {
   public Map<String, Object> getActivities(String type, String userId , Pageable pageable) {
     Map<String, Object> response = new HashMap<>();
     List<BoardResponseDTO> boardsDtos = null;
+    System.out.println("호출이되야지왜안되냐고");
     User user = getUser(userId);
+    System.out.println(user.getNickname());
+    System.out.println(user.getId());
 
     int totalCount = 0;
 

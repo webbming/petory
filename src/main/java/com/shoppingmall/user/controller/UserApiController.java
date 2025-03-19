@@ -211,6 +211,7 @@ public class UserApiController {
       @RequestParam(defaultValue = "5") int size,
       Authentication authentication) {
 
+    System.out.println(type);
     System.out.println(page);
     System.out.println(size);
 
