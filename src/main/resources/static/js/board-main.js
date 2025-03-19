@@ -36,9 +36,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         page = 0;
 
         await loadMorePosts()
-        searchQuery = ""
-        sortOrder = "latest"
-        period = "1개월";
     })
 
 
@@ -107,6 +104,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     categoryBtns.forEach((btn) => {
         btn.addEventListener("click", async (e) => {
+
             // 모든 버튼에서 'active' 클래스를 제거하고 클릭한 버튼에 'active' 추가
             categoryBtns.forEach(btn => {
                 btn.classList.remove("active");

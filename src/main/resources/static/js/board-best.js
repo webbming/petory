@@ -102,4 +102,5 @@ document.addEventListener("DOMContentLoaded", async function () {
             await loadMorePosts();
         }
     }
+    window.addEventListener("scroll" ,scrollTabEffect )
 });
