@@ -107,3 +107,25 @@ hr {
 .comment p {
 	margin: 5px;
 }
+
+.contentContain {
+	width: 770px;
+}
+.contentContain .boardContent figure{
+
+	padding: 0;
+	margin: 0 ;
+}
+
+.contentContain .boardContent figure picture img {
+	width: 770px;
+	height: 500px;
+
+}
+
+.contentContain .boardContent figure picture{
+
+}
+.pm-section > div {
+	margin: 0 auto;
+}
