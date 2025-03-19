@@ -76,16 +76,16 @@ public class DatabaseInitializer implements CommandLineRunner {
         if (boardRepository.count() == 0) {
 
             List<Board> boards = List.of(
-                    new Board("강아지가 기침을 계속하네요...", null, user.getNickname(), "내용 1", "#hashtag1", "반슐랭", user),
-                    new Board("다들 사료 어떤 브랜드 먹이세요?", null, user.getNickname(), "내용 2", "#hashtag2", "육아팁", user),
-                    new Board("강아지가 좋아하는 장난감!", null, user.getNickname(), "내용 3", "#hashtag3", "상품후기", user),
-                    new Board("강아지랑 갈만한 곳 추천좀요!", null, user.getNickname(), "내용 4", "#hashtag4", "육아팁", user),
-                    new Board("슈나우저 피부병 ㅜㅜ", null, user.getNickname(), "내용 5", "#hashtag5", "반슐랭", user),
-                    new Board("추천안누르면 너 신고", null, user.getNickname(), "내용 6", "#hashtag6", "일상공유", user),
-                    new Board("추천좀 제발", null, user.getNickname(), "내용 7", "#hashtag7", "반슐랭", user),
-                    new Board("귀여운 우리 강아지를 소개합니다", null, user.getNickname(), "내용 8", "#hashtag8", "육아팁", user),
-                    new Board("강아지발바닥이 까졌어요 ㅜㅜ", null, user.getNickname(), "내용 9", "#hashtag9", "상품후기", user),
-                    new Board("추천 100개 달성 시 패드 무료 나눔", null, user.getNickname(), "내용 10", "#hashtag10", "일상공유", user)
+                    new Board("강아지가 기침을 계속하네요...", null, user.getNickname(), "내용 1", new HashSet(), "반슐랭", user),
+                    new Board("다들 사료 어떤 브랜드 먹이세요?", null, user.getNickname(), "내용 2", new HashSet(), "육아팁", user),
+                    new Board("강아지가 좋아하는 장난감!", null, user.getNickname(), "내용 3", new HashSet(), "상품후기", user),
+                    new Board("강아지랑 갈만한 곳 추천좀요!", null, user.getNickname(), "내용 4", new HashSet(), "육아팁", user),
+                    new Board("슈나우저 피부병 ㅜㅜ", null, user.getNickname(), "내용 5", new HashSet(), "반슐랭", user),
+                    new Board("추천안누르면 너 신고", null, user.getNickname(), "내용 6", new HashSet(), "일상공유", user),
+                    new Board("추천좀 제발", null, user.getNickname(), "내용 7", new HashSet(), "반슐랭", user),
+                    new Board("귀여운 우리 강아지를 소개합니다", null, user.getNickname(), "내용 8", new HashSet(), "육아팁", user),
+                    new Board("강아지발바닥이 까졌어요 ㅜㅜ", null, user.getNickname(), "내용 9", new HashSet(), "상품후기", user),
+                    new Board("추천 100개 달성 시 패드 무료 나눔", null, user.getNickname(), "내용 10", new HashSet(), "일상공유", user)
             );
 
 

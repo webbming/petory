@@ -123,12 +123,27 @@ public class BoardService {
 					.toList();
 		}
 	}
-
-	// 키워드, 카테고리, 정렬 조건, 날짜 범위로 검색
-	public Page<Board> getPostByKeyword(String keyword, String category, String orderby,
-										String bydate, LocalDateTime startDate, int page, int size) {
+	
+	//검색
+	public Page<Board> getPostByKeyword(String keyword, String category, String orderby, String bydate, LocalDateTime startDate, String hashtag, int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
-		return repository.searchBoards(keyword, category, orderby, bydate, startDate, pageable);
+		List<Board> boardList = repository.searchBoards(keyword, category, orderby, bydate, startDate);
+		if(!hashtag.equals("all")) {
+			List<Board> returnList = new ArrayList<Board>();
+			boardList.forEach(board->{
+				if(board.getHashtag().contains(hashtag)) {
+					returnList.add(board);
+				}
+			});
+			int start = Math.min((int) pageable.getOffset(), returnList.size());
+		    int end = Math.min((start + pageable.getPageSize()), returnList.size());
+			return new PageImpl<Board>(returnList.subList(start, end), pageable, returnList.size());
+		}
+		else {
+			int start = Math.min((int) pageable.getOffset(), boardList.size());
+		    int end = Math.min((start + pageable.getPageSize()), boardList.size());
+			return new PageImpl<Board>(boardList.subList(start, end), pageable, boardList.size());
+		}
 	}
 
 
@@ -204,7 +219,7 @@ public class BoardService {
 	}
 	
 	//수정
-	public Board updatePost(Long boardId, String title, String content, String categoryId, String hashtag) {
+	public Board updatePost(Long boardId, String title, String content, String categoryId, Set<String> hashtag) {
 		Board board = repository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("Invalid board Id"));
 		board.setTitle(title);
 		board.setContent(content);

@@ -14,14 +14,15 @@ public class BoardRequestDTO {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class Likes{
-    private long boardId;
+    private String boardId;
+    private String userId;
 
     public Long getIdAsLong(String boardId) {
       return Long.parseLong(boardId);
     }
-
-
+    
+    public Long getUserIdAsLong(String userId) {
+    	return Long.parseLong(userId);
+    }
   }
-
-
 }

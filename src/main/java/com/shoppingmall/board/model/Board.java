@@ -38,8 +38,8 @@ public class Board {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(length = 100)
-    private String hashtag;
+    @Column(length = 500)
+    private Set<String> hashtag;
 
     @Column(name = "comment_count", nullable = false)
     private Integer commentCount = 0;
@@ -77,7 +77,7 @@ public class Board {
     }
 
 
-    public Board(String title, String image, String nickname, String content, String hashtag, String categoryId, User user) {
+    public Board(String title, String image, String nickname, String content, Set<String> hashtag, String categoryId, User user) {
         this.title = title;
         this.image = image;
         this.nickname = nickname;

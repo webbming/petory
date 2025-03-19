@@ -1,5 +1,7 @@
 package com.shoppingmall.board.dto;
 
+import java.util.Set;
+
 import lombok.*;
 
 @Builder
@@ -15,7 +17,7 @@ public class BoardResponseDTO {
     private String nickname;
     private String image;
     private String content;
-    private String hashtag;
+    private Set<String> hashtag;
     private Integer viewCount;
     private Integer likeCount;
     private Integer commentCount;
