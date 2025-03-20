@@ -72,7 +72,6 @@ public class CartController {
     @PostMapping("/items/{productId}/add")
     @ResponseBody
     public ResponseEntity<CartDTO> addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity , HttpSession session) {
-
         String userId = getUserId(authentication);
         User user = userService.getUser(userId);
 
