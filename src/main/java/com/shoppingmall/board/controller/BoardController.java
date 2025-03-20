@@ -137,23 +137,24 @@ public class BoardController {
 	public String writePost(@ModelAttribute Board board,
 					@RequestParam("hashtags") String hashtags,
 					Authentication auth, Model model) {
+		User user = userRepository.findByUserId(auth.getName());
 		board.setHashtag(extractAndSaveHashtags(hashtags));
-        String nickname = userRepository.findByUserId(auth.getName()).getNickname();
+        String nickname = user.getNickname();
+        
 		String content = board.getContent();
 		String regex = "<img\\s+src=\"([^\"]+)\"";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(content);
 
-		board.setUser(userRepository.findByUserId(auth.getName()));
+		board.setUser(user);
         board.setNickname(nickname);
 
 		while (matcher.find()) {
-			String src = matcher.group(1); // 첫 번째 그룹이 src 값
-			System.out.println("Extracted src: " + src);
+			String src = matcher.group(1);
 			board.setImage(src);
 		}
 		boardService.savePost(board);
-		User user = userRepository.findByUserId(auth.getName());
+		
         Board returnBoard = boardService.viewPost(board.getBoardId(), user);
 		model.addAttribute("board", returnBoard);
 		model.addAttribute("user", user);
