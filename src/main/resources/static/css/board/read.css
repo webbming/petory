@@ -19,6 +19,7 @@ hr {
 .userInfo .userImage {
 	width: 44px;
 	height: 44px;
+	border-radius: 20px;
 }
 
 .userInfo .userInfoText {
@@ -64,19 +65,29 @@ hr {
 	display: flex;
 }
 
-.commentWrite .commentWriteContent {
-	width: 700px;
-	height: 50px;
-	margin: 0 10px;
-}
-
 .commentWrite .commentWriteUserImage {
 	width: 44px;
 	height: 44px;
+	border-radius: 20px;
 }
 
-.commentWrite .commentWriteButton {
+.commentWrite .commentBox {
+	position: relative;
+}
+
+.commentWrite .commentBox .commentWriteContent {
+	width: 700px;
+	height: 50px;
+	margin: 0 10px;
+	border-radius: 10px;
+}
+
+.commentWrite .commentBox .commentWriteButton {
+	position: absolute;
+	rigtht: 10px;
+	bottom: 10px;
 	text-align: right;
+	font-size: 20px;
 }
 
 .commentList {
@@ -87,9 +98,17 @@ hr {
 	margin: 8px;
 }
 
+.commentList .commentEditTextarea {
+	width: 700px;
+	height: 50px;
+	margin: 0 10px;
+	border-radius: 10px;
+}
+
 .commentUserImage {
 	width: 44px;
 	height: 44px;
+	border-radius: 20px;
 }
 
 .comment .commentNicknameCreatedAt {
@@ -106,4 +125,18 @@ hr {
 
 .comment p {
 	margin: 5px;
+}
+
+.commentSaveBox {
+	display: flex;
+	position: relative;
+	padding-right: 40px;
+}
+
+.commentSaveBox .commentSave {
+	position: absolute;
+	right: 15px;
+	bottom: 10px;
+	text-align: right;
+	font-size: 20px;
 }

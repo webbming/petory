@@ -17,7 +17,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.aspectj.apache.bcel.Repository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -117,7 +115,7 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", page);
-        return "board/board";
+        return "board/board-main";
     }
 	
 	//작성페이지 이동
@@ -220,6 +218,10 @@ public class BoardController {
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
 		        
+		        if(board.getUser().getId() == user.getId()) {
+		        	model.addAttribute("master", "master");
+		        }
+		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
 		        model.addAttribute("user", user);
@@ -235,6 +237,12 @@ public class BoardController {
 	@GetMapping("/update")
 	public String updatePostPage(@RequestParam("boardId") Long boardId, Model model) {
 		Board board = boardService.getPostById(boardId);
+		final String[] hashtags = {""};
+		board.getHashtag().forEach(hashtag -> {
+			hashtags[0] = hashtags[0] + " " + hashtag;
+		});
+		
+		model.addAttribute("hashtags", hashtags[0]);
 		model.addAttribute("board", board);
 		return "board/update";
 	}
@@ -300,7 +308,7 @@ public class BoardController {
 	}
 	
 	//댓글 등록
-	@GetMapping("/commentCreate")
+	@PostMapping("/commentCreate")
 	public String commentCreate(Authentication auth, @RequestParam("content") String content, @RequestParam("boardId") Long boardId) {
 		User user = userRepository.findByUserId(auth.getName());
 		Comment comment = new Comment();
@@ -314,13 +322,23 @@ public class BoardController {
 		comment.setNickname(user.getNickname());
 		comment.setContent(content);
 		comment.setBoard(board);
-		comment.setUser(userRepository.findByUserId(board.getUser().getUserId()));
 		commentService.saveComment(comment);
 		boardService.savePost(board);
 		return "redirect:/board/read?boardId=" + boardId;
 	}
 	
 	//댓글 수정
+	@PostMapping("/commentUpdate")
+	@ResponseBody
+	public ResponseEntity<ApiResponse<?>> commentUpdate(@RequestBody commentRequestDTO.Likes likes, Authentication auth){
+		Long commentId = Long.parseLong(likes.getCommentId());
+		String commentContent = likes.getContent();
+		commentService.commentUpdate(commentId, commentContent);
+		
+		Map<String, Object> response = new HashMap<>();
+	    response.put("success", true);
+		return ResponseEntity.ok(ApiResponse.success(response));
+	}
 	
 	//댓글 삭제
 	@GetMapping("/commentDelete")
