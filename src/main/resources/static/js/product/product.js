@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function(){
     const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
     const dd = String(tomorrow.getDate()).padStart(2, '0');
     shippingBlock.innerHTML = `
-        <img src="/images/truck.png" alt="트럭 아이콘"/>
+        <img src="/images/product/truck.png" alt="트럭 아이콘"/>
         지금 주문 시 내일(${mm}.${dd}) 바로 발송
       `;
   }
