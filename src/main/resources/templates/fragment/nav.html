@@ -29,11 +29,22 @@
   <div class="scrolling-tab">
     <section class="page-tab-area">
       <ul>
-        <li><a>스토어 홈</a></li>
-        <li><a>전체 제품</a></li>
-        <li><a>베스트</a></li>
-        <li><a>NEW</a></li>
-        <li><a>리뷰 후기</a></li>
+        <li>
+          <a th:href="@{/products(sort='storeHome')}" 
+             th:classappend="${sort}=='storeHome' ? 'active'">스토어홈</a>
+        </li>
+        <li>
+          <a th:href="@{/products(sort='all')}"
+             th:classappend="${sort}=='all' ? 'active'">전체제품</a>
+        </li>
+        <li>
+          <a th:href="@{/products(sort='rating')}"
+             th:classappend="${sort}=='rating' ? 'active'">베스트</a>
+        </li>
+        <li>
+          <a th:href="@{/products(sort='newest')}"
+             th:classappend="${sort}=='newest' ? 'active'">NEW</a>
+        </li>
       </ul>
     </section>
   </div>

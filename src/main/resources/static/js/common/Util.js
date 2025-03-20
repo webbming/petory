@@ -1,3 +1,5 @@
+
+
 let lastScrollTop = 0;
 
 export function scrollTabEffect(){
@@ -17,11 +19,24 @@ export function scrollTabEffect(){
 
 
 
+
 // 나열되는 게시글
 export function createPostElement(post) {
     const li = document.createElement("li");
-    const contentWithoutFigures = post.content.replace(/<figure.*?>.*?<\/figure>/g, '').trim();
-    const contentTextOnly = contentWithoutFigures.replace(/<p.*?>(.*?)<\/p>/g, '$1').trim();
+  // 모든 HTML 태그 제거 및 스타일 속성 제거를 위한 개선된 방법
+  let contentTextOnly = post.content;
+
+  // 이미지/figure 태그 제거
+  contentTextOnly = contentTextOnly.replace(/<figure.*?>.*?<\/figure>/g, '');
+
+  // 모든 HTML 태그 제거
+  contentTextOnly = contentTextOnly.replace(/<[^>]*>/g, ' ');
+
+  // 연속된 공백 제거 및 텍스트 정리
+  contentTextOnly = contentTextOnly.replace(/\s+/g, ' ').trim();
+
+  // 필요하다면 텍스트 길이 제한 (예: 100자)
+  contentTextOnly = contentTextOnly.length > 100 ? contentTextOnly.substring(0, 100) + '...' : contentTextOnly;
 
     li.innerHTML = `
     <a href="/board/read?boardId=${post.boardId}">
@@ -29,7 +44,9 @@ export function createPostElement(post) {
         <div class="inner">
           <span>${post.categoryId}</span>
           <div class="tit">${post.title}</div>
-          <p>${contentTextOnly}</p>
+          <div class="content-preview">
+            <p>${contentTextOnly}</p>
+          </div>
         </div>
         ${post.image ? `<img src="${post.image}" />` : ''}
       </div>
@@ -62,3 +79,4 @@ export function createTop9PostElement(post,index){
           `;
     return li;
 }
+

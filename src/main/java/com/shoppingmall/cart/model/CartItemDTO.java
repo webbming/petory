@@ -1,6 +1,7 @@
 package com.shoppingmall.cart.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import java.util.List;
 import lombok.Getter;
@@ -11,11 +12,10 @@ import lombok.Setter;
 public class CartItemDTO {
     private Long id;
     private Long productId;
-    private String productName;   
-    private String imageUrl;      
-    private BigDecimal price;     
+    private String productName;
+    private String imageUrl;
+    private BigDecimal price;
     private int quantity;
-    @Getter
     private BigDecimal totalPrice;
 
 
@@ -27,7 +27,7 @@ public class CartItemDTO {
         this.imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
         this.price = cartItem.getPrice();
         this.quantity = cartItem.getQuantity();
-        this.totalPrice = this.price.multiply(BigDecimal.valueOf(this.quantity));       
+        this.totalPrice = this.price.multiply(BigDecimal.valueOf(this.quantity));
     }
 
 }

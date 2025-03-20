@@ -1,6 +1,7 @@
 package com.shoppingmall.product.service;
 
 import com.shoppingmall.product.dto.ProductResponseDTO;
+import com.shoppingmall.user.service.UserService;
 import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
@@ -23,11 +24,14 @@ public class WishlistService {
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository, UserRepository userRepository) {
+    public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository, UserRepository userRepository,
+        UserService userService) {
         this.wishlistRepository = wishlistRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public Wishlist addProductToWishlist(Long userId, Long productId) throws Exception {
@@ -64,7 +68,7 @@ public class WishlistService {
 
     // 로그인 없이도 찜 목록 전체 조회 가능하도록 수정
     public List<ProductResponseDTO> getUserWishlists(String userId ) {
-        User user = userRepository.findByUserId(userId);
+        User user = userService.getUser(userId);
         List<Wishlist> wishes = wishlistRepository.findTop5ByUserId(user.getId() , PageRequest.of(0,5));
         return wishes.stream()
             .map(Wishlist::getProduct)

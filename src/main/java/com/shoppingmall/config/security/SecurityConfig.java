@@ -94,8 +94,8 @@ public class SecurityConfig {
         // URL 기반 접근 권한 설정
         http
                 .authorizeHttpRequests(auth -> auth
-                // 공통 페이지 - 인증 없이 접근 가능
-                .requestMatchers("/", "/home", "/index.html").permitAll()
+                // 공통 페이지 - 인증 없이 접근 가능 // 홈
+                .requestMatchers("/").permitAll()
 
                 // 로그인 관련 페이지
                 .requestMatchers(regexMatcher("/login.*")).permitAll()
@@ -103,25 +103,28 @@ public class SecurityConfig {
                 // 사용자 관련 페이지
                 .requestMatchers("/users/agree", "/users", "/users/find/**", "/users/addr").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/find/**", "/api/users/check").permitAll()
-
+                .requestMatchers("/search").permitAll()
                 // 팀원별 기능 페이지 - 모두 접근 가능 설정
                 // ex) /cart/** -> cart 부터 아래의 하위 경로 허용
                 // ex) /cart    -> cart 경로 허용
 
-                .requestMatchers("/cart/**").permitAll()// 수민님
-                .requestMatchers("/cart/cart/**").permitAll()
-                .requestMatchers("/product/**" , "/products/**").permitAll() // 진호님
-                .requestMatchers("/board/**").permitAll()                                          // 준서님
+                .requestMatchers("/cart/cartCount").permitAll()
+                .requestMatchers("/api/products/**").permitAll()
+                .requestMatchers("/products" , "/product").permitAll()
+                // 게시판 페이지 허용
+                .requestMatchers("/board/main" , "/board/wiki" , "/board/best" ).permitAll()
+                // 게시판 api 허용
+                .requestMatchers("/board/list").permitAll()
+                .requestMatchers("/board/board/list/**") .permitAll()   // 준서님
                 .requestMatchers("/order/**").permitAll()// 성호님
 
                 // 정적 리소스 접근 허용
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**" , "/slick/**").permitAll()
                 // Swagger 문서 접근 허용
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
                 // 그 외 모든 요청은 인증 필요
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
         );
 
         // 폼 로그인 설정

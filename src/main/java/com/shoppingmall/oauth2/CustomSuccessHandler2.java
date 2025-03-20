@@ -28,7 +28,7 @@ public class CustomSuccessHandler2 extends SimpleUrlAuthenticationSuccessHandler
     String userId = authentication.getName();
 
     // 사용자 정보 조회
-    User user = userRepository.findByUserId(userId);
+    User user = userRepository.findByUserId(userId).orElse(null);
     if (user != null) {
       // 카트 수량 가져오기
       int cartCount = user.getCart().getUniqueItemCount();

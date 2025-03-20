@@ -1,5 +1,6 @@
 package com.shoppingmall.board.repository;
 
+import com.shoppingmall.user.model.UserRoleType;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -42,34 +43,25 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
   @Query("SELECT b FROM Board b WHERE b.title LIKE %:keyword% OR b.content LIKE %:keyword%")
   List<Board> searchByKeyword(String keyword);
 
-  Page<Board> findByCategoryId(String category, Pageable pageable);
+  List<Board> findTop9ByOrderByViewCountDesc();
 
+  Page<Board> findBoardByUser(User user, Pageable pageable);
 
-	Page<Board> findByCategoryIdAndCreatedAtAfter(String categoryId, LocalDateTime startDate, Pageable pageable);
-
-
-	Page<Board> findByCreatedAtAfter(LocalDateTime startDate, Pageable pageable);
-
-
-	Page<Board> findByCreatedAtAfterAndTitleContaining(
-			LocalDateTime startDate, String search, Pageable pageable);
-
-	Page<Board> findByCategoryIdAndCreatedAtAfterAndTitleContaining(
-			String categoryId, LocalDateTime startDate, String search, Pageable pageable);
-
-    List<Board> findTop9ByOrderByViewCountDesc();
-
-    Page<Board> findBoardByUser(User user, Pageable pageable);
-
-    int countByUser(User user);
+  int countByUser(User user);
 
     // 사용자가 댓글 단 게시물 수 조회
-    @Query("SELECT COUNT(DISTINCT c.board) FROM Comment c WHERE c.user = :user")
-    int countDistinctBoardsByCommentUser(@Param("user") User user);
+  @Query("SELECT COUNT(DISTINCT c.board) FROM Comment c WHERE c.user = :user")
+  int countDistinctBoardsByCommentUser(@Param("user") User user);
 
-    // 좋아요 수 조회는 네이티브 쿼리로 처리
-    @Query(value = "SELECT COUNT(*) FROM board WHERE like_contain LIKE %:userId%", nativeQuery = true)
-    int countBoardsByUserLikes(@Param("userId") Long userId);
+  List<Board> findTop9ByCategoryIdOrderByCreatedAtDesc(String 공지);
+  Page<Board> findByUserRole(UserRoleType role, Pageable pageable);
+  Page<Board> findByUserRoleAndCreatedAtAfter(UserRoleType role, LocalDateTime startDate, Pageable pageable);
+  // 카테고리 + 역할 필터링 메서드
+  Page<Board> findByCategoryIdAndUserRole(String category, UserRoleType role, Pageable pageable);
+  Page<Board> findByCategoryIdAndUserRoleAndCreatedAtAfter(String category, UserRoleType role, LocalDateTime startDate, Pageable pageable);
+  // 검색 + 역할 필터링 메서드
+  Page<Board> findByUserRoleAndCreatedAtAfterAndTitleContaining(UserRoleType role, LocalDateTime startDate, String search, Pageable pageable);
+  Page<Board> findByCategoryIdAndUserRoleAndCreatedAtAfterAndTitleContaining(String category, UserRoleType role, LocalDateTime startDate, String search, Pageable pageable);
 
 
 }

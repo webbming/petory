@@ -1,4 +1,4 @@
-import {scrollTabEffect} from "./common/Util.js";
+import {createPostElement, scrollTabEffect} from "./common/Util.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
 
@@ -17,9 +17,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       btn.classList.add("active")
 
       const tabType = btn.dataset.type;
-      console.log(tabType)
-
-
       boardContentData(tabType)
     })
   })
@@ -42,7 +39,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       const {data} = await response.json();
-      console.log(data)
       const pupularSlick = document.querySelector(".popular_slick");
 
       pupularSlick.innerHTML = "";
@@ -90,11 +86,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       const {data} = await response.json();
-
-      console.log(data)
-
       const product_list = document.querySelector(".product_list");
-      console.log(product_list)
 
       product_list.innerHTML = data.map((product) =>
         `
@@ -127,7 +119,44 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 
+  let page = 0;
+  const size = 4;
+  const boardList = document.querySelector(".exposure_tag ul");
+  let currentCategory = "시사상식"; // 기본적으로 전체 카테고리로 설정
+  let searchQuery = ""; // 기본 검색어
+  let sortOrder = "최신순"; // 기본적으로 최신순
+  let period = "1개월"; // 기본적으로 1개월
 
+  async function loadMorePosts() {
+
+    try {
+      const response = await fetch(`/board/list?page=${page}&size=${size}&category=${currentCategory}&sort=${sortOrder}&search=${searchQuery}&period=${period}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include"
+      });
+      const {data} = await response.json();
+      console.log(data)
+
+      if (data.length > 0) {
+        data.forEach(post => {  boardList.appendChild(createPostElement(post)); });
+        page++;
+
+      } else {
+
+        const div = document.createElement("div");
+        div.classList.add("myboard-empty");
+        div.innerHTML = `<p>검색된 결과가 없습니다.</p>`
+        boardList.appendChild(div)
+      }
+    } catch (e) {
+      console.error(e + " 목록을 불러오지 못했습니다.");
+    }
+  }
+
+ await loadMorePosts()
 
 });
 

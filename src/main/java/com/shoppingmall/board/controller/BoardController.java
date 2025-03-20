@@ -4,7 +4,10 @@ import com.shoppingmall.board.dto.BoardRequestDTO;
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import com.shoppingmall.board.dto.commentRequestDTO;
 import com.shoppingmall.board.repository.BoardRepository;
+
 import com.shoppingmall.user.dto.ApiResponse;
+import com.shoppingmall.user.model.UserRoleType;
+import com.shoppingmall.user.service.UserService;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -16,16 +19,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,14 +56,24 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/board")
 @Tag(name = "Response Estimate", description = "Response Estimate API")
 public class BoardController {
-	@Autowired
-	private BoardService boardService;
-	@Autowired
-	private CommentService commentService;
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-    private BoardRepository boardRepository;
+
+	private final BoardService boardService;
+
+	private final CommentService commentService;
+
+	private final UserRepository userRepository;
+
+  private final BoardRepository boardRepository;
+	private final UserService userService;
+
+	public BoardController(BoardService boardService , CommentService commentService , UserRepository userRepository , BoardRepository boardRepository,
+			UserService userService) {
+		this.boardService = boardService;
+		this.commentService = commentService;
+		this.userRepository = userRepository;
+		this.boardRepository = boardRepository;
+		this.userService = userService;
+	}
 
 	//리스트 조회
 	@GetMapping("/board")
@@ -120,27 +133,28 @@ public class BoardController {
 	
 	//작성페이지 이동
 	@GetMapping("/write")
-	public String writePostPage(Authentication auth, Model model) {
-		try {
-	        if (auth == null || !auth.isAuthenticated()) {
-	            return "redirect:/login";
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        model.addAttribute("errorMessage", "게시글을 불러오는 중 오류가 발생했습니다.");
-	    }
+	public String writePostPage() {
+
 		return "board/write";
 	}
 	
 	//등록
 	@PostMapping("/write")
-	public String writePost(@ModelAttribute Board board,
-					@RequestParam("hashtags") String hashtags,
-					Authentication auth, Model model) {
-		User user = userRepository.findByUserId(auth.getName());
+	public String writePost(@ModelAttribute Board board, @RequestParam(name = "hashtags" , required = true) String hashtags, Authentication auth, Model model) {
+		User user = userService.getUser(auth.getName());
+
+		System.out.println("입력한 해시태그 " + hashtags);
+
 		board.setHashtag(extractAndSaveHashtags(hashtags));
-        String nickname = user.getNickname();
-        
+		String nickname = user.getNickname();
+		boolean isAdmin = auth.getAuthorities().stream()
+				.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
+		if(board.getCategoryId().equals("시사상식") && !isAdmin) {
+			model.addAttribute("error" , "시사상식 카테고리는 관리자만 작성 가능합니다.");
+			return "board/write";
+		}
+
 		String content = board.getContent();
 		String regex = "<img\\s+src=\"([^\"]+)\"";
 		Pattern pattern = Pattern.compile(regex);
@@ -153,9 +167,14 @@ public class BoardController {
 			String src = matcher.group(1);
 			board.setImage(src);
 		}
-		boardService.savePost(board);
 		
-        Board returnBoard = boardService.viewPost(board.getBoardId(), user);
+		boardService.savePost(board);
+		Board returnBoard = boardService.viewPost(board.getBoardId(), user);
+		
+		if(returnBoard.getUser().getId().equals(user.getId())) {
+        	model.addAttribute("master", "master");
+        }
+		
 		model.addAttribute("board", returnBoard);
 		model.addAttribute("user", user);
 		return "board/read";
@@ -210,27 +229,18 @@ public class BoardController {
 	//상세페이지 이동
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
-	    try {
-	        if (auth == null || !auth.isAuthenticated()) {
-	            return "redirect:/login";
-	        }
-	        else {
-		        User user = userRepository.findByUserId(auth.getName());
+		        User user = userService.getUser(auth.getName());
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
 		        
-		        if(board.getUser().getId() == user.getId()) {
+		        if(board.getUser().getId().equals(user.getId())) {
 		        	model.addAttribute("master", "master");
 		        }
 		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
 		        model.addAttribute("user", user);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        model.addAttribute("errorMessage", "게시글을 불러오는 중 오류가 발생했습니다.");
-	    }
+
 	    return "board/read";
 	}
 	
@@ -263,20 +273,40 @@ public class BoardController {
 	}
 	
 	//삭제
-	@GetMapping("/delete")
-	public String deletePost(@RequestParam("boardId") Long boardId, Model model) {
-		boardService.deletePost(boardId);
-		return "redirect:/board/board";
+	@DeleteMapping("/delete")
+	@ResponseBody
+	public ResponseEntity<?> deletePost(@RequestParam("boardId") Long boardId, Authentication auth) {
+		if (auth.isAuthenticated()) {
+			// 삭제를 요청하는 사용자
+			User user = userService.getUser(auth.getName());
+
+			// 삭제를 요청하는 게시물
+			Board board = boardService.getPostById(boardId);
+
+			// 게시물이 존재하는지 확인
+			if (board == null) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시물이 존재하지 않습니다."); // 게시물 없음
+			}
+
+			// 삭제를 요청하는 게시물의 주인이 삭제를 요청하는 사용자와 같은지 확인
+			if (board.getUser().getId().equals(user.getId())) {
+				boardService.deletePost(boardId);
+				return ResponseEntity.ok().build();
+			} else {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다."); // 권한 없음
+			}
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 인증되지 않은 경우
 	}
 	
 	//게시글 좋아요
+
 	   @PostMapping("/like")
 	   @ResponseBody
 	   public ResponseEntity<ApiResponse<?>> likePost(@RequestBody BoardRequestDTO.Likes likes , Authentication auth) {
 	      String userId = auth.getName();
 	      Long boardId =  likes.getIdAsLong(likes.getBoardId());
-	      User user = userRepository.findByUserId(userId);
-
+	      User user = userService.getUser(userId);
 	     Integer likeCount =  boardService.likePost(boardId, user);
 	       Map<String, Object> response = new HashMap<>();
 	       response.put("likeCount", likeCount);
@@ -289,12 +319,13 @@ public class BoardController {
 	   }
 	
 	//댓글 좋아요
+
 	@PostMapping("/commentLike")
 	@ResponseBody
 	public ResponseEntity<ApiResponse<?>> likeComment(Authentication auth, @RequestBody commentRequestDTO.Likes likes) {
 		String userId = auth.getName();
 		Long commentId = likes.getUserIdAsLong(likes.getCommentId());
-		User user = userRepository.findByUserId(userId);
+		User user = userService.getUser(userId);
 		
 		Integer likeCount = commentService.likeComment(commentId, user);
 		Map<String, Object> response = new HashMap<>();
@@ -311,7 +342,8 @@ public class BoardController {
 	//댓글 등록
 	@PostMapping("/commentCreate")
 	public String commentCreate(Authentication auth, @RequestParam("content") String content, @RequestParam("boardId") Long boardId) {
-		User user = userRepository.findByUserId(auth.getName());
+		User user = userService.getUser(auth.getName());
+    System.out.println("댓글등록시 유저의 id" + user.getId());
 		Comment comment = new Comment();
 		Board board = boardService.getPostById(boardId);
 
@@ -323,6 +355,7 @@ public class BoardController {
 		comment.setNickname(user.getNickname());
 		comment.setContent(content);
 		comment.setBoard(board);
+		comment.setUser(user);
 		commentService.saveComment(comment);
 		boardService.savePost(board);
 		return "redirect:/board/read?boardId=" + boardId;
@@ -371,8 +404,20 @@ public class BoardController {
 			,@RequestParam(name = "category", required = true) String category) {
 
 		List<BoardResponseDTO> boardResponseDTO;
-		boardResponseDTO = boardService.getAllPosts(page , size , category , sort , search , period)
-					.stream().map(Board :: toDTO).toList();
+
+		if (category.equals("시사상식") || category.equals("공지")) {
+			// 어드민 게시글 조회 - 데이터베이스에서 바로 필터링
+			boardResponseDTO = boardService.getPostsByRole(page, size, category, sort, search, period, UserRoleType.ADMIN)
+					.stream()
+					.map(Board::toDTO)
+					.toList();
+		} else {
+			// 일반 사용자 게시글 조회 - 데이터베이스에서 바로 필터링
+			boardResponseDTO = boardService.getPostsByRole(page, size, category, sort, search, period, UserRoleType.USER)
+					.stream()
+					.map(Board::toDTO)
+					.toList();
+		}
 
 		return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}

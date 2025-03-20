@@ -1,5 +1,24 @@
 /* 마이페이지에 좋아요한 상품을 불러오는 함수  */
-import {apiClient} from "./api.js";
+
+
+export async function headerCartSize(){
+    try {
+      const response = await fetch("/cart/cartCount" , {
+        method : "GET"
+      })
+      if(!response.ok){
+        console.log("요청 불가")
+      }
+      const data = await response.json()
+
+      const cartCount = document.querySelector(".cart-badge");
+
+      cartCount.textContent =data.body.data.cartCount
+
+    }catch (e){
+      console.log(e)
+    }
+}
 
 export async  function loadWishlist(){
   try{

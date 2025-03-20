@@ -2,15 +2,14 @@ import {apiClient} from "./common/api.js";
 import {createPostElement ,  createTop9PostElement , scrollTabEffect} from "./common/Util.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
-
-    const size = 5;
-    const boardList = document.querySelector(".exposure_tag ul");
-    const rigList = document.querySelector(".rig ol");
     let page = 0;
+    const size = 5;
     let isLoading = false;
+    const rigList = document.querySelector(".rig ol");
+    const boardList = document.querySelector(".exposure_tag ul");
     let currentCategory = "all"; // 기본적으로 전체 카테고리로 설정
-    let sortOrder = "인기순"; // 기본적으로 최신순
-
+    let searchQuery = ""; // 기본 검색어
+    let sortOrder = "최신순"; // 기본적으로 최신순
 
     // 기본 게시글 로딩
     await loadMorePosts();
@@ -21,23 +20,26 @@ document.addEventListener("DOMContentLoaded", async function () {
         isLoading = true;
 
         try {
-            const {data} = await apiClient.get(`/board/list?page=${page}&size=${size}&category=${currentCategory}&sort=${sortOrder}`)
-
-
+            const response = await fetch(`/board/list?page=${page}&size=${size}&category=${currentCategory}&sort=${sortOrder}&search=${searchQuery}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
+            const {data} = await response.json();
+            console.log(data);
 
             if (data.length > 0) {
                 data.forEach(post => boardList.appendChild(createPostElement(post)));
                 page++;
-
-                if(!isLoading){
-                    window.addEventListener("scroll", handleScroll);
-                }
+                window.addEventListener("scroll", handleScroll);
             } else {
-                window.removeEventListener("scroll" , handleScroll);
+                window.removeEventListener("scroll", handleScroll); // 더 이상 스크롤 이벤트를 처리하지 않음
                 const div = document.createElement("div");
                 div.classList.add("myboard-empty");
-                div.innerHTML = `<p>검색된 결과가 없습니다.</p>`
-                boardList.appendChild(div)
+                div.innerHTML = `<p>검색된 결과가 없습니다.</p>`;
+                boardList.appendChild(div);
             }
         } catch (e) {
             console.error(e + " 목록을 불러오지 못했습니다.");
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // 가장 많이 조회된 게시글
+
     async function loadBoardBest(type) {
         try {
             const {data} = await apiClient.get(`/board/board/list/${type}`);
@@ -56,9 +58,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             if (data.length > 0) {
-                data.forEach((post, index) => {
-                    rigList.appendChild(createTop9PostElement(post,index));
-                });
+                data.forEach((post, index) => rigList.appendChild(createTop9PostElement(post,index)));
             } else {
 
             }
@@ -68,9 +68,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
+    // 'best' 카테고리 불러오기
     await loadBoardBest("view");
-
-
 
     // 카테고리 버튼 클릭 시 이벤트 핸들러
     const categoryBtns = document.querySelectorAll(".keyword");
@@ -78,9 +77,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     categoryBtns.forEach((btn) => {
         btn.addEventListener("click", async (e) => {
             // 모든 버튼에서 'active' 클래스를 제거하고 클릭한 버튼에 'active' 추가
-            categoryBtns.forEach(btn => {
-                btn.classList.remove("active");
-            });
+            categoryBtns.forEach(btn => btn.classList.remove("active"));
             btn.classList.add("active");
 
             // 선택한 카테고리 타입을 설정
@@ -97,15 +94,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     // 스크롤 이벤트 추가
-    window.addEventListener("scroll" , handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-    // 스크롤 함수
     async function handleScroll() {
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
         if (scrollTop + clientHeight >= scrollHeight - 10) {
             await loadMorePosts();
         }
     }
-
     window.addEventListener("scroll" ,scrollTabEffect )
 });

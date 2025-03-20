@@ -43,12 +43,8 @@ public class UserController {
 	}
 
 	@GetMapping("/me")
-	public String profileG(Authentication authentication, HttpSession session) {
-		System.out.println("마이페이지 요청이 왔어요 역할확인");
-		Collection<? extends GrantedAuthority> authority = authentication.getAuthorities();
-		for (GrantedAuthority grantedAuthority : authority) {
-			System.out.println(grantedAuthority.getAuthority());
-		}
+	public String profileG() {
+
 		return "user/profile/profile";
 	}
 

@@ -221,6 +221,11 @@
       justify-content: space-between;
       height: 81px;
     }
+    .exposure_tag  img {
+      border-radius: 10px;
+      width: 89px;
+      height: 89px;
+    }
     .exposure_tag > ul li .bottom{
       position: relative;
       display: flex;
@@ -297,7 +302,6 @@
                       <div class="inner">
                         <span th:text="${board.categoryId}" class="new"></span>
                         <div class="tit" th:text="${board.title}"></div>
-                        <p th:text="${board.content}"></p>
                       </div>
                       <img th:if="${board.image}" th:src="@{${board.image}}" alt="Board Image" />
                     </div>
