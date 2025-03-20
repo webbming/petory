@@ -230,7 +230,7 @@
   text-overflow: ellipsis;
 
 }
-.common_sense > ul li {
+.common_sense .exposure_tag li {
   border-bottom: 1px solid #d9d9d9;
 }
 
@@ -274,6 +274,12 @@
 .common_sense .inner {
   overflow: hidden;
   position: relative;
+  width: 100%;
+}
+.common_sense .exposure_tag > ul li a{
+  display: block;
+  width: 100%;
+  padding: 34px 0 24px;
 }
 
 .common_sense > ul li a{
@@ -287,6 +293,13 @@
 .common_sense ul {
   display: block;
   margin-top: -4px;
+}
+
+.common_sense .exposure_tag ul li a .bottom {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 

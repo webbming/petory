@@ -120,8 +120,6 @@ public class SecurityConfig {
 
                 // 정적 리소스 접근 허용
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**" , "/slick/**").permitAll()
-
-
                 // Swagger 문서 접근 허용
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
