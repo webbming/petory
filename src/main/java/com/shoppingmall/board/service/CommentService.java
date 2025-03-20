@@ -1,6 +1,7 @@
 package com.shoppingmall.board.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,13 @@ public class CommentService {
 			repository.save(comment);
 			return likeCount;
 		}
+	}
+	
+	//댓글 수정
+	public void commentUpdate(Long commentId, String commentContent) {
+		Comment comment = repository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Invalid comment Id"));
+		comment.setContent(commentContent);
+		repository.save(comment);
 	}
 	
 	//댓글 삭제

@@ -1,11 +1,7 @@
 .pm-section{
-  width: 770px;
-  margin: 0 auto;
-  padding: 77px 0 80px;
-}
-.boardCategoryId {
-	margin-top: 27px;
-	display: inline-block;
+	width: 770px;
+	margin: 0 auto;
+	padding: 77px 0 80px;
 }
 
 hr {
@@ -15,29 +11,15 @@ hr {
 	margin: 30px 0;
 }
 
-.user-section{
-	border-bottom: 1px solid #d9d9d9;
-	margin-bottom: 30px;
-}
-.user-section .boardTitle {
-	margin-top: 10px;
-}
-
 .userInfo {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	margin: 15px 0;
 }
-.userInfo .userInfo-profile {
-	display: flex;
-}
-
 
 .userInfo .userImage {
 	width: 44px;
 	height: 44px;
-	margin-right: 10px;
+	border-radius: 20px;
 }
 
 .userInfo .userInfoText {
@@ -45,7 +27,9 @@ hr {
 	flex-direction: column;
 }
 
-
+.createdAt {
+	text-align: right;
+}
 
 .boardContent {
 	font-size: 17px;
@@ -60,21 +44,16 @@ hr {
 	font-weight: bold;
 }
 
+.buttons {
+	text-align: right;
+}
 
 .buttons .delete {
 	color: red;
 }
-.content-container{
-	border-bottom: 1px solid #d9d9d9;
-}
-.toggle-content{
-	display: flex;
-	justify-content: space-between;
-	margin: 20px 0;
-}
 
-.likeButton {
-	margin-right: 10px;
+.likeContain .commentButton {
+	margin: 0 0 0 40px;
 }
 
 .comments {
@@ -84,93 +63,80 @@ hr {
 .commentWrite {
 	margin: 20px 0;
 	display: flex;
-	width: 770px;
-}
-.commentWrite > form {
-	width: 100%;
-}
-.commentWrite .commentWriteContent {
-
-	height: 50px;
-	width: 100%;
-	border-radius: 5px;
-}
-.profileImg-sec{
-	margin-right: 10px;
 }
 
 .commentWrite .commentWriteUserImage {
 	width: 44px;
 	height: 44px;
+	border-radius: 20px;
 }
 
-.commentWrite .commentWriteButton {
-	background-color: #d9d9d9;
-	border-radius: 5px;
-	padding: 5px;
+.commentWrite .commentBox {
+	position: relative;
+}
+
+.commentWrite .commentBox .commentWriteContent {
+	width: 700px;
+	height: 50px;
+	margin: 0 10px;
+	border-radius: 10px;
+}
+
+.commentWrite .commentBox .commentWriteButton {
+	position: absolute;
+	rigtht: 10px;
+	bottom: 10px;
+	text-align: right;
+	font-size: 20px;
 }
 
 .commentList {
 	display: flex;
-	margin-top: 20px;
 }
 
 .commentList .comment {
-	width: 100%;
+	margin: 8px;
+}
+
+.commentList .commentEditTextarea {
+	width: 700px;
+	height: 50px;
+	margin: 0 10px;
+	border-radius: 10px;
 }
 
 .commentUserImage {
 	width: 44px;
 	height: 44px;
+	border-radius: 20px;
 }
 
 .comment .commentNicknameCreatedAt {
 	display: flex;
-	align-items: center;
-}
-.comment .commentNicknameCreatedAt{
-	margin-bottom: 5px;
 }
 
 .comment .commentNicknameCreatedAt .commentNickname {
 	font-weight: bold;
-	margin-right: 10px;
-}
-.comment .commentButtons {
-	display: flex;
-	justify-content: space-between;
-}
-
-.comment .commentContent {
-	margin : 10px 0;
-	border-radius: 5px;
-	width: 100%;
 }
 
 .comment .commentNicknameCreatedAt .commentCreatedAt {
 	opacity: 0.5;
 }
 
-
-.contentContain {
-	width: 770px;
-	min-height: 300px;
-}
-.contentContain .boardContent figure{
-
-	padding: 0;
-	margin: 0 ;
+.comment p {
+	margin: 5px;
 }
 
-.contentContain .boardContent figure picture img {
-	width: 770px;
-	height: 500px;
-
+.commentSaveBox {
+	display: flex;
+	position: relative;
+	padding-right: 40px;
 }
 
-.contentContain .boardContent figure picture{
-
-}
-.pm-section > div {
-	margin: 0 auto;
+.commentSaveBox .commentSave {
+	position: absolute;
+	right: 15px;
+	bottom: 10px;
+	text-align: right;
+	font-size: 20px;
 }

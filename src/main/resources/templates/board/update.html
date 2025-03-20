@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<link rel="stylesheet" href="/css/layout/common.css">
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.2.1/ckeditor5.css" crossorigin>
-<style>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <link rel="stylesheet" href="/css/layout/common.css">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.2.1/ckeditor5.css" crossorigin>
+    <style>
 
         .card {
             margin: 0 auto;
@@ -98,49 +98,49 @@
 </head>
 <body>
 <div th:replace="fragment/header :: headerFragment"></div>
-    <div class="container">
-        <div class="pm-section">
-            <div class="board-container">
-                <div class="card">
-                    <h2 class="text-center">📝 게시글 수정</h2>
-                    <form action="/board/update" method="POST" enctype="multipart/form-data" id="boardUpdateForm">
-                        <input type="hidden" name="boardId" th:value="${board.boardId}">
+<div class="container">
+    <div class="pm-section">
+        <div class="board-container">
+            <div class="card">
+                <h2 class="text-center">📝 게시글 수정</h2>
+                <form action="/board/update" method="POST" enctype="multipart/form-data" id="boardUpdateForm">
+                    <input type="hidden" name="boardId" th:value="${board.boardId}">
 
-                        <!-- 제목 입력 -->
-                        <div class="mb-3">
-                            <input type="text" id="title" name="title" th:value="${board.title}" class="form-control" placeholder="제목을 입력하세요" required>
-                        </div>
+                    <!-- 제목 입력 -->
+                    <div class="mb-3">
+                        <input type="text" id="title" name="title" th:value="${board.title}" class="form-control" placeholder="제목을 입력하세요" required>
+                    </div>
 
-                        <!-- 카테고리 선택 -->
-                        <div class="mb-3">
-                            <select id="categoryId" name="categoryId" class="form-select">
-                                <option th:if="${#authorization.expression('hasRole(''ADMIN'')')}" value="공지" selected>공지</option>
-                                <option th:if="${#authorization.expression('hasRole(''ADMIN'')')}" value="시사상식" selected>시사상식</option>
-                                <option value="반슐랭" th:selected="${board.categoryId == '반슐랭'}">반슐랭</option>
-                                <option value="육아팁" th:selected="${board.categoryId == '육아팁'}">육아팁</option>
-                                <option value="일상공유" th:selected="${board.categoryId == '일상공유'}">일상공유</option>
-                            </select>
-                        </div>
+                    <!-- 카테고리 선택 -->
+                    <div class="mb-3">
+                        <select id="categoryId" name="categoryId" class="form-select">
+                            <option th:if="${#authorization.expression('hasRole(''ADMIN'')')}" value="공지" selected>공지</option>
+                            <option th:if="${#authorization.expression('hasRole(''ADMIN'')')}" value="시사상식" selected>시사상식</option>
+                            <option value="반슐랭" th:selected="${board.categoryId == '반슐랭'}">반슐랭</option>
+                            <option value="육아팁" th:selected="${board.categoryId == '육아팁'}">육아팁</option>
+                            <option value="일상공유" th:selected="${board.categoryId == '일상공유'}">일상공유</option>
+                        </select>
+                    </div>
 
-                        <!-- CKEditor 입력 -->
-                        <div class="mb-3">
-                            <textarea id="editor" name="content" rows="10" class="form-control" placeholder="내용을 입력하세요" >[[${board.content}]]</textarea>
-                        </div>
+                    <!-- CKEditor 입력 -->
+                    <div class="mb-3">
+                        <textarea id="editor" name="content" rows="10" class="form-control" placeholder="내용을 입력하세요" >[[${board.content}]]</textarea>
+                    </div>
 
-                        <!-- 해시태그 입력 -->
-                        <div class="mb-3">
-                            <div class="hashtag-note">* 여러 해시태그를 입력할 경우, 공백으로 구분해주세요.</div>
-                            <input type="text" id="hashtags" name="hashtags" class="hashtag-input" th:value="${board.hashtag}" placeholder="예: #육아 #일상">
-                        </div>
+                    <!-- 해시태그 입력 -->
+                    <div class="mb-3">
+                        <div class="hashtag-note">* 여러 해시태그를 입력할 경우, 공백으로 구분해주세요.</div>
+                        <input type="text" id="hashtags" name="hashtags" class="hashtag-input" th:value="${board.hashtag}" placeholder="예: #육아 #일상">
+                    </div>
 
-                        <!-- 버튼 -->
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary">✅ 게시글 작성</button>
-                            <a th:href="@{/board/board(keyword=${keyword}, category=${category})}" class="btn btn-secondary">❌ 취소</a>
-                        </div>
-                    </form>
-                </div>
+                    <!-- 버튼 -->
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-primary">✅ 게시글 작성</button>
+                        <a th:href="@{/board/board(keyword=${keyword}, category=${category})}" class="btn btn-secondary">❌ 취소</a>
+                    </div>
+                </form>
             </div>
+        </div>
     </div>
 </div>
 <div th:replace="fragment/footer :: footerFragment"></div>
@@ -149,25 +149,25 @@
 <script src="https://cdn.ckbox.io/ckbox/2.6.1/ckbox.js" crossorigin></script>
 <script src="/js/write.js"></script>
 <script>
-/*
-    // CKEditor 초기화
-    ClassicEditor.create( document.querySelector( '#editor' ), {
-    	plugins: ['Font', 'FontSize'],
-        removePlugins: ['Heading'],
-        extraPlugins: [uploadAdapterPlugin],
-        language: "ko",
-        toolbar: [
-            'bold', 'italic', 'fontSize', 'link', '|',
-            'bulletedList', 'numberedList', '|',
-            'imageUpload', 'blockQuote', 'undo', 'redo', '|'
-        ],
-        fontSize: {
-            options: [
-                10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40
-            ]
-        },
-    });
-*/
+    /*
+        // CKEditor 초기화
+        ClassicEditor.create( document.querySelector( '#editor' ), {
+          plugins: ['Font', 'FontSize'],
+            removePlugins: ['Heading'],
+            extraPlugins: [uploadAdapterPlugin],
+            language: "ko",
+            toolbar: [
+                'bold', 'italic', 'fontSize', 'link', '|',
+                'bulletedList', 'numberedList', '|',
+                'imageUpload', 'blockQuote', 'undo', 'redo', '|'
+            ],
+            fontSize: {
+                options: [
+                    10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40
+                ]
+            },
+        });
+    */
     // 이미지 업로드 어댑터 클래스
     class UploadAdapter {
         constructor(loader) {

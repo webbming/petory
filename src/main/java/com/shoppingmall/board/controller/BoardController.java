@@ -128,7 +128,7 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", page);
-        return "board/board";
+        return "board/board-main";
     }
 	
 	//작성페이지 이동
@@ -227,6 +227,10 @@ public class BoardController {
 		        User user = userService.getUser(auth.getName());
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
+						System.out.println(board.getUser());
+		        if(board.getUser().getId().equals(user.getId())) {
+		        	model.addAttribute("master", "master");
+		        }
 		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
@@ -239,6 +243,12 @@ public class BoardController {
 	@GetMapping("/update")
 	public String updatePostPage(@RequestParam("boardId") Long boardId, Model model) {
 		Board board = boardService.getPostById(boardId);
+		final String[] hashtags = {""};
+		board.getHashtag().forEach(hashtag -> {
+			hashtags[0] = hashtags[0] + " " + hashtag;
+		});
+		
+		model.addAttribute("hashtags", hashtags[0]);
 		model.addAttribute("board", board);
 		return "board/update";
 	}
@@ -325,7 +335,7 @@ public class BoardController {
 	}
 	
 	//댓글 등록
-	@GetMapping("/commentCreate")
+	@PostMapping("/commentCreate")
 	public String commentCreate(Authentication auth, @RequestParam("content") String content, @RequestParam("boardId") Long boardId) {
 		User user = userService.getUser(auth.getName());
     System.out.println("댓글등록시 유저의 id" + user.getId());
@@ -347,6 +357,17 @@ public class BoardController {
 	}
 	
 	//댓글 수정
+	@PostMapping("/commentUpdate")
+	@ResponseBody
+	public ResponseEntity<ApiResponse<?>> commentUpdate(@RequestBody commentRequestDTO.Likes likes, Authentication auth){
+		Long commentId = Long.parseLong(likes.getCommentId());
+		String commentContent = likes.getContent();
+		commentService.commentUpdate(commentId, commentContent);
+		
+		Map<String, Object> response = new HashMap<>();
+	    response.put("success", true);
+		return ResponseEntity.ok(ApiResponse.success(response));
+	}
 	
 	//댓글 삭제
 	@GetMapping("/commentDelete")
