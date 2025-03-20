@@ -137,7 +137,7 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
     if(redirect) {
       window.location.href = "/login";
     } else {
-      window.location.href = "/home";
+      window.location.href = "/";
     }
   }catch(error){
     console.error(error)

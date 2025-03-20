@@ -29,7 +29,7 @@ public class Board {
     @Column(nullable = false, length = 50)
     private String title;
     
-    @Column(nullable = true, length = 50)
+    @Column(nullable = true, length = 255)
     private String image;
 
     @Column(nullable = false)
@@ -38,8 +38,8 @@ public class Board {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(length = 100)
-    private String hashtag;
+    @Column(length = 500)
+    private Set<String> hashtag;
 
     @Column(name = "comment_count", nullable = false)
     private Integer commentCount = 0;
@@ -76,12 +76,30 @@ public class Board {
         this.createdAt = LocalDateTime.now();
     }
 
+
+    public Board(String title, String image, String nickname, String content, Set<String> hashtag, String categoryId, User user) {
+        this.title = title;
+        this.image = image;
+        this.nickname = nickname;
+        this.content = content;
+        this.hashtag = hashtag;
+        this.categoryId = categoryId;
+        this.user = user;
+        this.commentCount = 0;  // 기본값
+        this.viewCount = 0;     // 기본값
+        this.likeCount = 0;     // 기본값
+        this.viewContain = new HashSet<>();  // 기본값
+        this.likeContain = new HashSet<>();  // 기본값
+    }
+
     public BoardResponseDTO toDTO(){
         return BoardResponseDTO.builder()
                 .boardId(boardId)
                 .title(title)
                 .categoryId(categoryId)
+                .image(image)
                 .nickname(nickname)
+                .hashtag(hashtag)
                 .content(content)
                 .commentCount(commentCount)
                 .viewCount(viewCount)

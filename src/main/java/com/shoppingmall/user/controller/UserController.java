@@ -5,7 +5,10 @@ import com.shoppingmall.user.service.EmailService;
 import com.shoppingmall.user.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +43,7 @@ public class UserController {
 	}
 
 	@GetMapping("/me")
-	public String profileG(Authentication authentication, HttpSession session) {
+	public String profileG() {
 
 		return "user/profile/profile";
 	}

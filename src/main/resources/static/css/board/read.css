@@ -1,0 +1,176 @@
+.pm-section{
+  width: 770px;
+  margin: 0 auto;
+  padding: 77px 0 80px;
+}
+.boardCategoryId {
+	margin-top: 27px;
+	display: inline-block;
+}
+
+hr {
+	height: 1px;
+	border: none;
+	background-color: #ccc;
+	margin: 30px 0;
+}
+
+.user-section{
+	border-bottom: 1px solid #d9d9d9;
+	margin-bottom: 30px;
+}
+.user-section .boardTitle {
+	margin-top: 10px;
+}
+
+.userInfo {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 15px 0;
+}
+.userInfo .userInfo-profile {
+	display: flex;
+}
+
+
+.userInfo .userImage {
+	width: 44px;
+	height: 44px;
+	margin-right: 10px;
+}
+
+.userInfo .userInfoText {
+	display: flex;
+	flex-direction: column;
+}
+
+
+
+.boardContent {
+	font-size: 17px;
+}
+
+.boardHashtag {
+	font-size: 20px;
+	color: #5b57a8;
+}
+
+.boardNickname {
+	font-weight: bold;
+}
+
+
+.buttons .delete {
+	color: red;
+}
+.content-container{
+	border-bottom: 1px solid #d9d9d9;
+}
+.toggle-content{
+	display: flex;
+	justify-content: space-between;
+	margin: 20px 0;
+}
+
+.likeButton {
+	margin-right: 10px;
+}
+
+.comments {
+	margin: 50px 0;
+}
+
+.commentWrite {
+	margin: 20px 0;
+	display: flex;
+	width: 770px;
+}
+.commentWrite > form {
+	width: 100%;
+}
+.commentWrite .commentWriteContent {
+
+	height: 50px;
+	width: 100%;
+	border-radius: 5px;
+}
+.profileImg-sec{
+	margin-right: 10px;
+}
+
+.commentWrite .commentWriteUserImage {
+	width: 44px;
+	height: 44px;
+}
+
+.commentWrite .commentWriteButton {
+	background-color: #d9d9d9;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+.commentList {
+	display: flex;
+	margin-top: 20px;
+}
+
+.commentList .comment {
+	width: 100%;
+}
+
+.commentUserImage {
+	width: 44px;
+	height: 44px;
+}
+
+.comment .commentNicknameCreatedAt {
+	display: flex;
+	align-items: center;
+}
+.comment .commentNicknameCreatedAt{
+	margin-bottom: 5px;
+}
+
+.comment .commentNicknameCreatedAt .commentNickname {
+	font-weight: bold;
+	margin-right: 10px;
+}
+.comment .commentButtons {
+	display: flex;
+	justify-content: space-between;
+}
+
+.comment .commentContent {
+	margin : 10px 0;
+	border-radius: 5px;
+	width: 100%;
+}
+
+.comment .commentNicknameCreatedAt .commentCreatedAt {
+	opacity: 0.5;
+}
+
+
+.contentContain {
+	width: 770px;
+	min-height: 300px;
+}
+.contentContain .boardContent figure{
+
+	padding: 0;
+	margin: 0 ;
+}
+
+.contentContain .boardContent figure picture img {
+	width: 770px;
+	height: 500px;
+
+}
+
+.contentContain .boardContent figure picture{
+
+}
+.pm-section > div {
+	margin: 0 auto;
+}
