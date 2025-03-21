@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>취소/반품 요청</title>
+  <!-- integrity와 crossorigin 속성을 제거한 Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/layout/common.css">
+  <link rel="stylesheet" href="/css/profile.css">
+  <style>
+    .order-container {
+      width: 100%;
+      margin: 0 2px 0 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    table th {
+      background-color: #d2e4f7;
+      color: #555;
+      text-align: center;
+      padding: 10px;
+    }
+    table td {
+      vertical-align: middle;
+      text-align: center;
+      padding: 5px;
+    }
+    .return-img:hover {
+      position: fixed;
+      transform: scale(10);
+      z-index: 9999;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .pagination {
+      display: flex;
+      list-style: none;
+      padding-left: 0;
+    }
+    .pagination li {
+      margin: 0 2px;
+    }
+    .pagination li a {
+      padding: 6px 12px;
+      color: #007bff;
+      text-decoration: none;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+    }
+    .pagination li.active a {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+    .pagination li.disabled a {
+      color: #6c757d;
+      pointer-events: none;
+      background-color: #fff;
+      border-color: #dee2e6;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="fragment/header :: headerFragment"></div>
+<div class="container">
+  <section class="pm-section">
+    <div th:replace="fragment/profile-common :: mypage-top"></div>
+    <div class="mypage-bottom-content">
+      <div th:replace="fragment/profile-common :: mypage-sidebar"></div>
+      <div class="order-container">
+        <h2>교환 요청 목록</h2>
+        <table>
+          <thead>
+          <tr>
+            <th>주문 번호</th>
+            <th>회원 ID</th>
+            <th>취소 정보</th>
+            <th>요청 내용</th>
+            <th>이미지</th>
+            <th>결제 페이지</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="req : ${returns.content}">
+            <td><strong><span th:text="${req.purchaseProduct.purchase.purchaseId}"></span></strong></td>
+            <td><span th:text="${req.userId}"></span></td>
+            <td>
+              <span th:text="${req.purchaseProduct.cancelReason}"></span><br>
+              <span th:text="${#temporals.format(req.purchaseProduct.cancelAt, 'yyyy-M-d a h시 mm분')}"></span>
+            </td>
+            <td th:text="${req.returnsContent}"></td>
+            <td>
+              <div th:if="${req.returnsImagePaths != null}">
+                <img class="return-img" th:each="path : ${#strings.arraySplit(req.returnsImagePaths, ',')}"
+                     th:src="@{${path}}"
+                     style="max-width: 100px; max-height: 100px; margin: 2px;" alt="업로드 이미지"/>
+              </div>
+            </td>
+            <td>
+              <a class="button" th:href="@{/order/orders/{purchaseId}?admin=admin(purchaseId=${req.purchaseProduct.purchase.purchaseId})}">
+                주문정보보기
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <!-- 페이지 네비게이션 컨트롤 -->
+        <div style="margin-top: 20px;">
+          <ul class="pagination">
+            <li th:classappend="${returns.first} ? 'disabled'">
+              <a th:href="@{?page=${returns.number-1}}">&laquo;</a>
+            </li>
+            <li th:if="" th:each="i : ${#numbers.sequence(1, returns.totalPages)}"
+                th:classappend="${returns.number+1 == i} ? 'active'">
+              <a th:href="@{?page=${i-1}}" th:text="${i}"></a>
+            </li>
+            <li th:classappend="${returns.last} ? 'disabled'">
+              <a th:href="@{?page=${returns.number+1}}">&raquo;</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div th:replace="fragment/footer :: footerFragment"></div>
+</body>
+</html>

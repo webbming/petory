@@ -1,6 +1,5 @@
 package com.shoppingmall.order.domain;
 
-import com.shoppingmall.order.repository.PurchaseDeliveryRepository;
 import jakarta.persistence.*;
 import lombok.Data;
 

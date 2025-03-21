@@ -1,7 +1,5 @@
 package com.shoppingmall.order.dto;
 
-import com.shoppingmall.order.domain.PurchaseProduct;
-import com.shoppingmall.product.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +23,8 @@ public class CartToPuchaseDto {
   private String coupon;
   private String paymentMethod;
   private String cardCompany;
+  private String totalPrice;
 
-  private List<PurchaseProductDto> purchaseProductDtos;  // 여러 개의 상품을 받을 리스트
+  private List<PurchaseReadyDto> product;  // 여러 개의 상품을 받을 리스트
 
 }
