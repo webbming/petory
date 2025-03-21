@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   async function loadMorePosts() {
 
     try {
-      const response = await fetch(`/board/list?page=${page}&size=${size}&category=${currentCategory}&sort=${sortOrder}&search=${searchQuery}&period=${period}`, {
+      const response = await fetch(`/board/list?page=${page}&size=${size}&categoryId=${currentCategory}&sort=${sortOrder}&search=${searchQuery}&period=${period}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json"

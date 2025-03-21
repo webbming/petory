@@ -2,11 +2,9 @@ import {apiClient} from "./common/api.js";
 import {createPostElement,  createTop9PostElement , scrollTabEffect} from "./common/Util.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
-
-
+    let isLoading = false;
     let page = 0;
     const size = 5;
-    let isLoading = false;
     const boardList = document.querySelector(".exposure_tag ul");
     const rigList = document.querySelector(".rig ol");
     let currentCategory = "all"; // 기본적으로 전체 카테고리로 설정
@@ -45,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         isLoading = true;
 
         try {
-            const response = await fetch(`/board/list?page=${page}&size=${size}&category=${currentCategory}&sort=${sortOrder}&search=${searchQuery}&period=${period}`, {
+            const response = await fetch(`/board/list?page=${page}&size=${size}&categoryId=${currentCategory}&sort=${sortOrder}&search=${searchQuery}&period=${period}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
