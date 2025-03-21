@@ -32,7 +32,6 @@ public class PurchaseController {
 public ResponseEntity<Map<String, String>> cartToPurchase(@RequestBody List<PurchaseReadyDto> dtos,
 																		 HttpSession session) {
 session.setAttribute("orderDto", dtos);
-System.out.println("ggggg1" + dtos.get(0).getPrice());
 	Map<String, String> response = new HashMap<>();
 	response.put("result", "good");
 	return ResponseEntity.ok(response);
@@ -43,6 +42,8 @@ public String orderPage(Model model, HttpSession session,
 						Authentication authentication) {
 	// 세션에 저장된 주문 데이터를 불러와 모델에 담기
 	Object sessionOrderObj = session.getAttribute("orderDto");
+	String userId = authentication.getName();
+	service.orderPage(sessionOrderObj, userId);
 	List<PurchaseReadyDto> orderData = new ArrayList<>();
 	if (sessionOrderObj instanceof List<?>) {
 		for (Object obj : (List<?>) sessionOrderObj) {
@@ -51,7 +52,6 @@ public String orderPage(Model model, HttpSession session,
 			}
 		}
 	}
-	System.out.println("b" + orderData.get(0).getPrice());
 	final int[] totalPrice = {0};
 	orderData.forEach(data -> {
 		String priceStr = data.getPrice().replace(",", "");
@@ -63,7 +63,7 @@ public String orderPage(Model model, HttpSession session,
 			data.setImageUrl(imageUrl);
 		}
 	});
-	String userId = authentication.getName();
+	model.addAttribute("coupon", service.choiceCoupon(userId));
 	model.addAttribute("product", orderData);
 	model.addAttribute("userId", userId);
 	model.addAttribute("totalPrice", totalPrice[0]);
@@ -87,9 +87,6 @@ public void reviews(@RequestParam(name = "productId")Long productId,
 											@RequestParam(name = "rating") int rating,
 											@RequestParam(name = "reviewImages") List<MultipartFile> reviewImages,
 											Model model){
-	System.out.println(productId);
-	System.out.println(comment);
-	System.out.println(reviewImages);
 	List<String> imagePaths = new ArrayList<>();
 
 	try {
@@ -270,7 +267,6 @@ return "order/adminOrder";
 	public String coupon(Model model,
 						 Authentication authentication,
 						 Pageable pageable){
-		System.out.println("ggggg");
 	String userId = authentication.getName();
 	model.addAttribute("coupons", service.getCoupon(pageable, userId));
 	return "order/coupon";

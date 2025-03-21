@@ -275,6 +275,14 @@ public class PurchaseService {
 
 		//적용된 할인
 		totalPurchasePrice[0] = onePrice[0] - totalPrice;
+		if(totalPurchasePrice[0]!=0){
+		List<Coupon> coupon = couponRepo.findByUserId(userId);
+		Coupon coupons = coupon.get(0);
+		List<CouponList> couponLists = coupons.getCouponList();
+		CouponList couponList = couponLists.get(0);
+		couponList.setUsedAt(LocalDateTime.now());
+		couponListRepo.save(couponList);
+		}
 
 		productList.forEach(product -> {
 			PurchaseProduct products = new PurchaseProduct();
@@ -283,6 +291,7 @@ public class PurchaseService {
 
 			//할인이 있을 경우
 			if (totalPurchasePrice[0] != 0) {
+
 				totalPurchasePrice[0] = totalPurchasePrice[0] - price;
 				if (totalPurchasePrice[0] < 0) {
 					products.setPrice(-totalPurchasePrice[0]);
@@ -406,10 +415,18 @@ public class PurchaseService {
 				pageable,
 				coupons.getTotalElements()
 		);
-
 		return couponDtos;
+	}
 
+  public List<CouponList> choiceCoupon(String userId) {
+		List<Coupon> coupon = couponRepo.findByUserId(userId);
+		List<CouponList> couponList = new ArrayList<>();
+		coupon.forEach(coupons -> {
+		couponList.addAll(coupons.getCouponList());
+		});
+		return couponList;
+  }
+
+	public void orderPage(Object sessionOrderObj, String userId) {
 	}
 }
-
-

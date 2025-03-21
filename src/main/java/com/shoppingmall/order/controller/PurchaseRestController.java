@@ -97,8 +97,6 @@ public class PurchaseRestController {
     try {
       // 주문 처리 로직 진행
       String userId = authentication.getName();
-      System.out.println("id" + cartToPuchaseDtos.getProduct().get(0).getProductId());
-      System.out.println("id");
       Long purchaseId = service.processOrder(cartToPuchaseDtos, userId);
       // 서비스 레이어로 주문 데이터 전달
       Map<String, Object> response = new HashMap<>();
