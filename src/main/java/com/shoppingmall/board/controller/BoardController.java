@@ -140,7 +140,10 @@ public class BoardController {
 	
 	//등록
 	@PostMapping("/write")
-	public String writePost(@ModelAttribute Board board, @RequestParam(name = "hashtags" , required = true) String hashtags, Authentication auth, Model model) {
+	public String writePost(@ModelAttribute Board board,
+							@RequestParam(name = "hashtags" , required = true) String hashtags,
+							Authentication auth,
+							Model model) {
 		User user = userService.getUser(auth.getName());
 
 		System.out.println("입력한 해시태그 " + hashtags);
@@ -237,6 +240,8 @@ public class BoardController {
 		        	model.addAttribute("master", "master");
 		        }
 		        
+		        System.out.println(board.getContent());
+		        
 		        model.addAttribute("board", board);
 		        model.addAttribute("comment", comment);
 		        model.addAttribute("user", user);
@@ -273,31 +278,28 @@ public class BoardController {
 	}
 	
 	//삭제
-	@DeleteMapping("/delete")
-	@ResponseBody
-	public ResponseEntity<?> deletePost(@RequestParam("boardId") Long boardId, Authentication auth) {
-		if (auth.isAuthenticated()) {
-			// 삭제를 요청하는 사용자
-			User user = userService.getUser(auth.getName());
+	   @GetMapping("/delete")
+	   public String deletePost(@RequestParam("boardId") Long boardId, Authentication auth) {
+	      if (!auth.isAuthenticated()) {
+	         return "redirect:/login";
+	      }
 
-			// 삭제를 요청하는 게시물
-			Board board = boardService.getPostById(boardId);
+	      if (auth.isAuthenticated()) {
+	         // 삭제를 요청하는 사용자
+	         User user = userService.getUser(auth.getName());
 
-			// 게시물이 존재하는지 확인
-			if (board == null) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시물이 존재하지 않습니다."); // 게시물 없음
-			}
+	         // 삭제를 요청하는 게시물
+	         Board board = boardService.getPostById(boardId);
 
-			// 삭제를 요청하는 게시물의 주인이 삭제를 요청하는 사용자와 같은지 확인
-			if (board.getUser().getId().equals(user.getId())) {
-				boardService.deletePost(boardId);
-				return ResponseEntity.ok().build();
-			} else {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다."); // 권한 없음
-			}
-		}
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 인증되지 않은 경우
-	}
+	         // 삭제를 요청하는 게시물의 주인이 삭제를 요청하는 사용자와 같은지 확인
+	         if (board.getUser().getId().equals(user.getId())) {
+	            boardService.deletePost(boardId);
+	            return "redirect:/board/main";
+	         }
+
+	      }
+	      return "redirect:/board/read?boardId=" + boardId;
+	   }
 	
 	//게시글 좋아요
 
@@ -401,7 +403,7 @@ public class BoardController {
 			,@RequestParam(name = "sort", required = false) String sort
 			,@RequestParam(name = "search", required = false) String search
 			,@RequestParam(name = "period", required = false) String period
-			,@RequestParam(name = "category", required = true) String category) {
+			,@RequestParam(name = "category", required = true, defaultValue="") String category){
 
 		List<BoardResponseDTO> boardResponseDTO;
 
@@ -421,8 +423,6 @@ public class BoardController {
 
 		return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}
-
-
 
 	@GetMapping("/wiki")
 	public String boardPageWiki() {

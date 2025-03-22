@@ -57,8 +57,9 @@ public class BoardService {
 		if (period != null && !period.isEmpty() && !"all".equals(period)) {
 			startDate = getStartDateForPeriod(period);
 		}
-
+		
 		if (search != null && !search.isEmpty()) {
+			
 			// 카테고리별 검색 + 역할 필터링
 			if (!"all".equals(category)) {
 				return repository.findByCategoryIdAndUserRoleAndCreatedAtAfterAndTitleContaining(

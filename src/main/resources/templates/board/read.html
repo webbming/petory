@@ -39,7 +39,7 @@
 			</div><br><br>
 
 			<span th:each="hashtag : ${board.hashtag}">
-               <a th:href="@{/board/board(hashtag=${hashtag})}" class="boardHashtag" th:text="${hashtag}"></a>
+               <a th:href="@{/board/list(hashtag=${hashtag})}" class="boardHashtag" th:text="${hashtag}"></a>
             </span><br><br><br>
 
 			<div class="buttons" th:if="${master} != null">
