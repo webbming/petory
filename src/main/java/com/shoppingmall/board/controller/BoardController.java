@@ -2,6 +2,7 @@ package com.shoppingmall.board.controller;
 
 import com.shoppingmall.board.dto.BoardRequestDTO;
 import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.board.dto.PostType;
 import com.shoppingmall.board.dto.commentRequestDTO;
 import com.shoppingmall.board.repository.BoardRepository;
 
@@ -140,61 +141,19 @@ public class BoardController {
 	
 	//등록
 	@PostMapping("/write")
-	public String writePost(@ModelAttribute Board board,
-							@RequestParam(name = "hashtags" , required = true) String hashtags,
-							Authentication auth,
-							Model model) {
+	public String writePost(@ModelAttribute BoardRequestDTO.Write boardRequestDTO, Authentication auth, Model model) {
+		System.out.println("입력한 해시태그 " + boardRequestDTO.getHashtags());
 		User user = userService.getUser(auth.getName());
 
-		System.out.println("입력한 해시태그 " + hashtags);
+		PostType postType = user.getRole() == UserRoleType.ADMIN ? PostType.NOTICE : PostType.GENERAL;
 
-		board.setHashtag(extractAndSaveHashtags(hashtags));
-		String nickname = user.getNickname();
-		boolean isAdmin = auth.getAuthorities().stream()
-				.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
-
-		if(board.getCategoryId().equals("시사상식") && !isAdmin) {
-			model.addAttribute("error" , "시사상식 카테고리는 관리자만 작성 가능합니다.");
-			return "board/write";
-		}
-
-		String content = board.getContent();
-		String regex = "<img\\s+src=\"([^\"]+)\"";
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(content);
-
-		board.setUser(user);
-        board.setNickname(nickname);
-
-		while (matcher.find()) {
-			String src = matcher.group(1);
-			board.setImage(src);
-		}
-		
-		boardService.savePost(board);
-		Board returnBoard = boardService.viewPost(board.getBoardId(), user);
-		
-		if(returnBoard.getUser().getId().equals(user.getId())) {
-        	model.addAttribute("master", "master");
-        }
-		
-		model.addAttribute("board", returnBoard);
+		Board boards =boardService.savePost(boardRequestDTO.toEntity(user, postType));
+		model.addAttribute("boardDto", boards);
 		model.addAttribute("user", user);
-		return "board/read";
+		return "redirect:/board/read?boardId=" + boards.getBoardId();
 	}
 	
-	private Set<String> extractAndSaveHashtags(String hashtagsInput) {
-        Set<String> hashtags = new HashSet<>();
-        String[] hashtagArray = hashtagsInput.split("(?=#)");
-        String tagName;
-        for (String tag : hashtagArray) {
-            tag = tag.replaceAll("[^#\\w\\p{IsHangul}]", "");
 
-            tagName = tag.toLowerCase();
-            hashtags.add(tagName);
-        }
-        return hashtags;
-    }
 	
 	//이미지 업로드
 	@PostMapping("/images")
@@ -232,6 +191,7 @@ public class BoardController {
 	//상세페이지 이동
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
+		System.out.println("상세조회 됨");
 		        User user = userService.getUser(auth.getName());
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
@@ -265,16 +225,10 @@ public class BoardController {
 	
 	//수정
 	@PostMapping("/update")
-	public String updatePost(
-			@RequestParam("boardId") Long boardId, 
-			@RequestParam("title") String title, 
-			@RequestParam("content") String content, 
-			@RequestParam("categoryId") String categoryId,
-			@RequestParam("hashtags") String hashtags,
-			Model model) {
-		Set<String> hashtag = extractAndSaveHashtags(hashtags);
-		boardService.updatePost(boardId, title, content, categoryId, hashtag);
-		return "redirect:/board/read?boardId=" + boardId;
+	public String updatePost(@ModelAttribute BoardRequestDTO.Update boardRequestDTO ,Model model) {
+
+		boardService.updatePost(boardRequestDTO);
+		return "redirect:/board/read?boardId=" + boardRequestDTO.getBoardId();
 	}
 	
 	//삭제
@@ -398,28 +352,18 @@ public class BoardController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<ApiResponse<?>> boardList(@RequestParam("page") int page
-			,@RequestParam("size") int size
-			,@RequestParam(name = "sort", required = false) String sort
-			,@RequestParam(name = "search", required = false) String search
-			,@RequestParam(name = "period", required = false) String period
-			,@RequestParam(name = "category", required = true, defaultValue="") String category){
+	public ResponseEntity<ApiResponse<?>> boardList(@ModelAttribute BoardRequestDTO.Search boardRequestDTO , Authentication authentication) {
+		System.out.println(boardRequestDTO.getHashtag());
+		PostType postType =
+				boardRequestDTO.getCategoryId().equals("시사상식") ||
+						boardRequestDTO.getCategoryId().equals("공지") ?
+						PostType.NOTICE : PostType.GENERAL;
 
-		List<BoardResponseDTO> boardResponseDTO;
+		System.out.println(postType);
+		boardRequestDTO.setPostType(postType);
+		Page<Board> boards = boardService.getPosts(boardRequestDTO);
 
-		if (category.equals("시사상식") || category.equals("공지")) {
-			// 어드민 게시글 조회 - 데이터베이스에서 바로 필터링
-			boardResponseDTO = boardService.getPostsByRole(page, size, category, sort, search, period, UserRoleType.ADMIN)
-					.stream()
-					.map(Board::toDTO)
-					.toList();
-		} else {
-			// 일반 사용자 게시글 조회 - 데이터베이스에서 바로 필터링
-			boardResponseDTO = boardService.getPostsByRole(page, size, category, sort, search, period, UserRoleType.USER)
-					.stream()
-					.map(Board::toDTO)
-					.toList();
-		}
+		List<BoardResponseDTO> 	boardResponseDTO = boards.stream().map(Board::toDTO).toList();
 
 		return ResponseEntity.ok(ApiResponse.success(boardResponseDTO));
 	}

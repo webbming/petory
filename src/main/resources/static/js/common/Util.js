@@ -37,16 +37,26 @@ export function createPostElement(post) {
 
   // 필요하다면 텍스트 길이 제한 (예: 100자)
   contentTextOnly = contentTextOnly.length > 100 ? contentTextOnly.substring(0, 100) + '...' : contentTextOnly;
-
+  const hashtags = typeof post.hashtag === "string" ? JSON.parse(post.hashtag) : post.hashtag;
     li.innerHTML = `
+    
     <a href="/board/read?boardId=${post.boardId}">
       <div class="wrap">
         <div class="inner">
+        
           <span>${post.categoryId}</span>
+          
           <div class="tit">${post.title}</div>
+          
           <div class="content-preview">
             <p>${contentTextOnly}</p>
+            <div>
+                ${post.hashtag.map(tag =>
+                    `<button class="tagBtn">${tag}</button>`    
+                ).join(' ')}
+            </div>
           </div>
+          
         </div>
         ${post.image ? `<img src="${post.image}" />` : ''}
       </div>

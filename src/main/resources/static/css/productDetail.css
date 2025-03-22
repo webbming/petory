@@ -190,7 +190,8 @@ body {
   width: 24px;
   text-align: center;
   border: none;
-  font-size: 12px;
+  font-size: 18px;
+  font-weight: bold;
 }
 .qty-input:focus {
   outline: none;
@@ -202,10 +203,12 @@ body {
   color: #333;
 }
 .total-price-row {
-  font-size: 18px;
+  font-size: 23px;
   font-weight: 700;
   color: #333;
   margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
 }
 .button-row {
   display: flex;
