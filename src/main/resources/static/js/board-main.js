@@ -113,7 +113,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             // 선택한 카테고리 타입을 설정
             currentCategory = e.target.dataset.type;
             console.log(currentCategory);
-            hashtag = "";
             // 게시글 리스트 초기화 및 페이지 초기화
             boardList.innerHTML = "";
             page = 0; // 페이지 초기화
@@ -183,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             await loadMorePosts();  // 게시글 로딩
 
-            hashtag = "";  // 해시태그 초기화 (리셋)
+
         }
     });
 
