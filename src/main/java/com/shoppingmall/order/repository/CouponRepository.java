@@ -18,4 +18,5 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
     @Query("SELECT d FROM Coupon d WHERE d.user.userId = :userId ORDER BY d.user.userId DESC")
     List<Coupon> findByUserId(@Param("userId") String userId);
+
 }

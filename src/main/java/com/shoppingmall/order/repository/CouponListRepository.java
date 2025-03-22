@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface CouponListRepository extends JpaRepository<CouponList, Long> {
-  List<CouponList> findByDiscount(int discount);
 }

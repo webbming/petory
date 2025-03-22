@@ -82,6 +82,8 @@ td.purchase-number .full-height {
 				</div>
 				<div class="info-section">
 					<strong>주문 시간:</strong> <span th:text="${#temporals.format(purchase.purchaseProduct[0].createAt, 'yyyy-M-d a h시 mm분')}"></span>
+					<div th:if="${purchase.purchaseProduct[0].cancelAt!=null}"><strong><span th:text="${purchase.purchaseProduct[0].cancelReason}"></span> 시간:</strong> <span th:text="${#temporals.format(purchase.purchaseProduct[0].cancelAt, 'yyyy-M-d a h시 mm분')}"></span>
+					</div>
 				</div>
 			</td>
 			<!-- 주문 정보 -->

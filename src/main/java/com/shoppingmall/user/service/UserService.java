@@ -5,6 +5,10 @@ import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.model.Comment;
 import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.board.repository.CommentRepository;
+import com.shoppingmall.order.domain.Coupon;
+import com.shoppingmall.order.domain.CouponList;
+import com.shoppingmall.order.repository.CouponRepository;
+import com.shoppingmall.order.repository.PurchaseProductRepository;
 import com.shoppingmall.user.dto.MypageTopInfoDTO;
 import com.shoppingmall.user.dto.UserRequestDTO;
 import com.shoppingmall.user.dto.UserResponseDTO;
@@ -39,13 +43,19 @@ public class UserService {
   private final BoardRepository boardRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final CommentRepository commentRepository;
+  private final CouponRepository couponRepository;
+  private final PurchaseProductRepository purchaseProductRepository;
 
   public UserService(
       UserRepository userRepository,
       BoardRepository boardRepository,
       CommentRepository commentRepository,
       BCryptPasswordEncoder bCryptPasswordEncoder,
+      CouponRepository couponRepository,
+      PurchaseProductRepository purchaseProductRepository,
       UserImgRepository userImgRepository) {
+    this.purchaseProductRepository = purchaseProductRepository;
+    this.couponRepository = couponRepository;
     this.userRepository = userRepository;
     this.boardRepository = boardRepository;
     this.commentRepository = commentRepository;
@@ -126,11 +136,22 @@ public class UserService {
     String nickname = user.getNickname();
     int quantity = user.getCart().getUniqueItemCount();
     String imgUrl = user.getUserImg().getUrl();
-    int couponCount = 3;
+    List<CouponList> coupons = couponRepository.findByUserId(userId).get(0).getCouponList();
+    final int[] canUseCouponCount = {0};
+    canUseCouponCount[0] = 0;
+    coupons.forEach(couponList -> {
+      if(couponList.getUsedAt()==null){
+        canUseCouponCount[0]++;
+      }
+    });
+
+    int onDeliveryStatusCount = purchaseProductRepository.countByUserIdAndDeliveryStatus(userId);
+    System.out.println(onDeliveryStatusCount);
 
     return UserResponseDTO.MypageInfo.builder()
+            .onDeliveryStatusCount(onDeliveryStatusCount)
             .nickname(nickname)
-            .couponCount(couponCount)
+            .couponCount(canUseCouponCount[0])
             .cartQuantity(quantity)
             .url(imgUrl)
             .build();

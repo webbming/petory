@@ -117,14 +117,14 @@
         <div style="margin-top: 20px;">
           <ul class="pagination">
             <li th:classappend="${returns.first} ? 'disabled'">
-              <a th:href="@{?page=${returns.number-1}}">&laquo;</a>
+              <a th:href="@{/order/returnsList(page=${returns.number-1})}">&laquo;</a>
             </li>
-            <li th:if="" th:each="i : ${#numbers.sequence(1, returns.totalPages)}"
+            <li th:each="i : ${#numbers.sequence(1, returns.totalPages)}"
                 th:classappend="${returns.number+1 == i} ? 'active'">
-              <a th:href="@{?page=${i-1}}" th:text="${i}"></a>
+              <a th:href="@{/order/returnsList(page=${i-1})}" th:text="${i}"></a>
             </li>
             <li th:classappend="${returns.last} ? 'disabled'">
-              <a th:href="@{?page=${returns.number+1}}">&raquo;</a>
+              <a th:href="@{/order/returnsList(page=${returns.number+1})}">&raquo;</a>
             </li>
           </ul>
         </div>

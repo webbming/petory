@@ -76,6 +76,7 @@ td.purchase-number .full-height {
 				</div>
 				<div class="info-section">
 					<strong>주문 시간:</strong> <span th:text="${#temporals.format(purchase.purchaseProduct[0].createAt, 'yyyy-M-d a h시 mm분')}"></span>
+					<div th:if="${purchase.purchaseProduct[0].cancelAt!=null}"><strong><span th:text="|${purchase.purchaseProduct[0].cancelReason} 시간: |"></span></strong> <span th:text="${#temporals.format(purchase.purchaseProduct[0].cancelAt, 'yyyy-M-d a h시 mm분')}"></span></div>
 				</div>
 				<div class="info-section">
 					<form th:action="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" method="get">

@@ -168,7 +168,9 @@ export let mypageTopInfo = null;
 
 function updateMyPageTopInfo(data) {
   document.querySelector(".nickname").textContent = data.data.nickname
+  document.querySelector(".delivery").textContent = data.data.onDeliveryStatusCount
   document.querySelector(".coupon").textContent = data.data.couponCount
+  document.querySelector(".coupon_count").textContent = data.data.couponCount + '개';
   document.querySelector(".cartQuantity").textContent = data.data.cartQuantity
   document.querySelector(".mypage-top .img img").src = data.data.url;
   document.querySelector(".profile-default .default-img img").src = data.data.url;

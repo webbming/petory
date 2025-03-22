@@ -1,11 +1,7 @@
 package com.shoppingmall.order.controller;
-
 import com.shoppingmall.order.domain.Purchase;
-import com.shoppingmall.order.domain.PurchaseReview;
 import com.shoppingmall.order.dto.*;
-import com.shoppingmall.order.repository.PurchaseReviewRepository;
 import com.shoppingmall.order.service.PurchaseService;
-import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -15,10 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +21,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PurchaseController {
 
+	final PurchaseService service;
+
+	//주문 페이지 내용 세션에 저장
 @PostMapping("/orders")
 public ResponseEntity<Map<String, String>> cartToPurchase(@RequestBody List<PurchaseReadyDto> dtos,
 																		 HttpSession session) {
@@ -37,21 +33,15 @@ session.setAttribute("orderDto", dtos);
 	return ResponseEntity.ok(response);
 }
 
+	//세션에 저장된 내용 받아와서 주문 완료 페이지로 반환
 @GetMapping("/cartToOrder")
 public String orderPage(Model model, HttpSession session,
 						Authentication authentication) {
 	// 세션에 저장된 주문 데이터를 불러와 모델에 담기
 	Object sessionOrderObj = session.getAttribute("orderDto");
 	String userId = authentication.getName();
-	service.orderPage(sessionOrderObj, userId);
-	List<PurchaseReadyDto> orderData = new ArrayList<>();
-	if (sessionOrderObj instanceof List<?>) {
-		for (Object obj : (List<?>) sessionOrderObj) {
-			if (obj instanceof PurchaseReadyDto) {
-				orderData.add((PurchaseReadyDto) obj);
-			}
-		}
-	}
+	List<PurchaseReadyDto> orderData = service.orderPage(sessionOrderObj);
+
 	final int[] totalPrice = {0};
 	orderData.forEach(data -> {
 		String priceStr = data.getPrice().replace(",", "");
@@ -63,55 +53,12 @@ public String orderPage(Model model, HttpSession session,
 			data.setImageUrl(imageUrl);
 		}
 	});
+
 	model.addAttribute("coupon", service.choiceCoupon(userId));
 	model.addAttribute("product", orderData);
 	model.addAttribute("userId", userId);
 	model.addAttribute("totalPrice", totalPrice[0]);
-	// 추가 주문자 정보, 총 결제 금액 등도 모델에 담아서 Thymeleaf 템플릿으로 전달
 	return "order/cartToOrder";
-}
-
-		@GetMapping("/purchase")
-public String purchase(){ return "order/purchaseReady";}
-
-@GetMapping("/review")
-public String review(){return "order/review";}
-
-final PurchaseService service;
-
-final PurchaseReviewRepository purchaseReviewRepository;
-
-@PostMapping("/purchase/review")
-public void reviews(@RequestParam(name = "productId")Long productId,
-											@RequestParam(name = "comment") String comment,
-											@RequestParam(name = "rating") int rating,
-											@RequestParam(name = "reviewImages") List<MultipartFile> reviewImages,
-											Model model){
-	List<String> imagePaths = new ArrayList<>();
-
-	try {
-		for (MultipartFile file : reviewImages) {
-			String fileName = file.getOriginalFilename();
-			String filePath = "/images/" + fileName;  // 이미지 경로
-
-			// 실제 파일 저장은 하지 않지만, 경로는 DB에 저장
-			imagePaths.add(filePath);
-		}
-
-		// Review 객체 생성
-		PurchaseReview review = new PurchaseReview();
-		review.setComment(comment);
-		review.setImagePaths(imagePaths);
-		review.setRating(rating);
-
-		// 리뷰 저장 (DB에 저장)
-		purchaseReviewRepository.save(review);
-
-		// 모델에 경로 넘기기
-		model.addAttribute("imagePaths", imagePaths);
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
 }
 
 	//주문번호 기준 주문검색
@@ -170,12 +117,6 @@ return "order/adminOrder";
 	return "redirect:/order/one?purchaseProductId=" + purchaseProductId;
 	}
 
-	@PostMapping("/orders/cancelAll")
-	public String purchaseCancelAll(@RequestParam(name = "purchaseId") Long purchaseId){
-		service.purchaseCancel(purchaseId);
-	return "redirect:/order/orders/{purchaseId}=" + purchaseId;
-	}
-
 	//userId 기준 주문 검색
 	@GetMapping("/orders/userId")
 	public String orderListByUserId(
@@ -186,9 +127,7 @@ return "order/adminOrder";
 									@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
 									Model model) {
 		Pageable pageable = PageRequest.of(page, size);
-
 		String userId = authentication.getName();
-
 			PurchasePageDto dto = service.orderListByUserId(userId, purchaseState, pageable);
 			if(dto.getPurchase()==null){
 				model.addAttribute("purchase", new Purchase());
@@ -211,19 +150,6 @@ return "order/adminOrder";
 		return "order/orderListByUserIdByProductId";
 	}
 
-	//수령인 정보 변경 / state가 false일 경우 경로이동
-	@GetMapping("/orders/receiver")
-	public String receiverChange(@ModelAttribute DeliveryChangeDto deliveryChangeDto,
-								 @RequestParam(name="state", required = false, defaultValue = "show") String state,
-								 Model model){
-	model.addAttribute("delivery", service.receiverChange(deliveryChangeDto, state));
-		if(state.equals("show")){
-			model.addAttribute("purchaseProductId", deliveryChangeDto.getPurchaseProductId());
-			return "order/receiverChange";
-			}
-	return "redirect:/order";
-	}
-	
 	//주문번호 기준 상세보기
 	@GetMapping("/one")
 	public String purchaseNumber(Authentication authentication,
@@ -255,7 +181,7 @@ return "order/adminOrder";
 	return "redirect:/order/orders/userId";
 	}
 	
-	//환불 리스트
+	//관리자용 환불 리스트
 	@GetMapping("/returnsList")
 	public String exchangeList(Model model,
 							   Pageable pageable) {

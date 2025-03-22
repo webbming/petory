@@ -147,39 +147,6 @@ public class PurchaseService {
 		productRepo.save(product);
 	}
 
-	//주문 전체 취소
-	public void purchaseCancelAll(Long purchaseId) {
-		List<PurchaseProduct> products = productRepo.findByPurchaseId(purchaseId);
-		products.forEach(product -> {
-			product.setCancelAt(LocalDateTime.now());
-			product.setCancelReason("취소");
-			productRepo.save(product);
-		});
-	}
-
-	//배송정보 수정 관련
-	public PurchaseDeliveryDto receiverChange(DeliveryChangeDto dto, String state) {
-		List<PurchaseDelivery> receiver = deliveryRepo.findByPurchaseId(dto.getPurchaseId());
-		PurchaseDelivery receiverChanse = receiver.get(0);
-		if (state.equals("change")) {
-			receiverChanse.setReceiverName(dto.getReceiverName());
-			receiverChanse.setReceiverPhone(dto.getReceiverPhone());
-			if (dto.getDetailAddr() == null) {
-				dto.setDetailAddr("");
-			}
-			receiverChanse.setReceiverAddr(dto.getReceiverAddr() + "  " + dto.getDetailAddr());
-			receiverChanse.setDeliveryMessage(dto.getDeliveryMessage());
-			deliveryRepo.save(receiverChanse);
-		}
-		return PurchaseDeliveryDto.builder()
-				.deliveryId(receiverChanse.getDeliveryId())
-				.receiverName(receiverChanse.getReceiverName())
-				.receiverAddr(receiverChanse.getReceiverAddr())
-				.receiverPhone(receiverChanse.getReceiverPhone())
-				.deliveryMessage(receiverChanse.getDeliveryMessage())
-				.build();
-	}
-
 	public ProductAndDeliveryDto purchaseNumber(String userId, Long purchaseProductId) {
 		List<PurchaseProduct> products = productRepo.findByPurchaseProductId(purchaseProductId);
 		if (products.get(0).getUserId().equals(userId)) {
@@ -309,7 +276,6 @@ public class PurchaseService {
 			products.setUserId(userId);
 			products.setPurchase(purchase);
 			products.setProductName(product.getProductName());
-
 			products.setDeliveryStatus("배송준비중");
 			products.setCreateAt(LocalDateTime.now());
 			products.setImageUrl(product.getImageUrl());
@@ -363,28 +329,23 @@ public class PurchaseService {
 						String originalFilename = file.getOriginalFilename();
 						String fileNameOnly = Paths.get(originalFilename).getFileName().toString();
 						String fileName = System.currentTimeMillis() + "_" + fileNameOnly;
-
 						// 실제 저장될 경로 (파일 시스템)
 						Path uploadPath = Paths.get("src/main/resources/static/images/order/returns");
 						if (!Files.exists(uploadPath)) {
 							Files.createDirectories(uploadPath);
 						}
-
 						// 파일 저장
 						Path filePath = uploadPath.resolve(fileName);
 						Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
 						// 웹 접근용 경로는 스프링 부트의 정적 리소스 매핑에 따른 경로를 직접 지정
 						String webPath = "/images/order/returns/" + fileName;
 						imagePaths.append(webPath).append(",");
-
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		}
-
 		// 마지막 콤마 제거
 		if (imagePaths.length() > 0) {
 			imagePaths.deleteCharAt(imagePaths.length() - 1);
@@ -418,15 +379,42 @@ public class PurchaseService {
 		return couponDtos;
 	}
 
-  public List<CouponList> choiceCoupon(String userId) {
-		List<Coupon> coupon = couponRepo.findByUserId(userId);
-		List<CouponList> couponList = new ArrayList<>();
-		coupon.forEach(coupons -> {
-		couponList.addAll(coupons.getCouponList());
-		});
-		return couponList;
+	//주문시 쿠폰리스트 반환
+  public List<CouponListDto> choiceCoupon(String userId) {
+	  List<Coupon> coupons = couponRepo.findByUserId(userId);
+	  List<CouponListDto> couponListDtos = new ArrayList<>();
+
+	  //순서 맞춰주기!!
+	  coupons.forEach(coupon -> {
+		  coupon.getCouponList().forEach(couponList -> {
+			  CouponListDto dto = new CouponListDto(
+					  couponList.getId(),            // couponId
+					  couponList.getDiscount(),      // discount
+					  couponList.getCouponComment(), // couponComment
+					  couponList.getCouponName(),    // couponName
+					  couponList.getCreateAt(),      // createAt
+					  couponList.getUsedAt()        // usedAt
+			  );
+			  couponListDtos.add(dto);
+		  });
+	  });
+		return couponListDtos;
   }
 
-	public void orderPage(Object sessionOrderObj, String userId) {
+  //주문 완료시 반환 정보 변환
+	public List<PurchaseReadyDto> orderPage(Object sessionOrderObj) {
+		List<PurchaseReadyDto> orderData = new ArrayList<>();
+		if (sessionOrderObj instanceof List<?>) {
+			for (Object obj : (List<?>) sessionOrderObj) {
+				if (obj instanceof PurchaseReadyDto) {
+					orderData.add((PurchaseReadyDto) obj);
+				}
+			}
+		}
+		return orderData;
+	}
+
+	public Integer onDeliveryCount(String userId) {
+		return productRepo.countByUserIdAndDeliveryStatus(userId);
 	}
 }

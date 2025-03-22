@@ -31,6 +31,7 @@ public class UserResponseDTO {
     private String nickname;
     private int cartQuantity;
     private int couponCount;
+    private int onDeliveryStatusCount;
     private String url;
   }
 

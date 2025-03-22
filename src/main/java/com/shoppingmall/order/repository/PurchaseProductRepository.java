@@ -44,5 +44,8 @@ public interface PurchaseProductRepository extends JpaRepository<PurchaseProduct
     List<PurchaseProduct> findByDeliveryStatusAndUserIdOrderByPurchaseProductIdDesc(String deliveryStatus, String userId);
 
   Page<PurchaseProduct> findByCancelAtIsNotNullAndUserIdOrderByPurchaseProductIdDesc(String userId, Pageable pageable);
+
+  @Query("SELECT COUNT(d) FROM PurchaseProduct d WHERE d.userId = :userId AND d.deliveryStatus = '배송중'")
+  int countByUserIdAndDeliveryStatus(@Param("userId")String userId);
 }
 
