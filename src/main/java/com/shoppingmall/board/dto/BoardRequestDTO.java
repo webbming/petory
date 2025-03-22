@@ -21,25 +21,28 @@ public class BoardRequestDTO {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class Write {
-    private long boardId;
     private String categoryId;
     private String title;
     private String content;
-    private String hashtag;
+    private String hashtags;
     private String image;
     private String postType;
 
     public Board toEntity(User user, PostType postType) {
       return Board.builder()
-              .boardId(boardId)
               .title(title)
               .user(user)
               .nickname(user.getNickname())
               .categoryId(categoryId)
               .content(content)
               .postType(postType)
+              .commentCount(0)
+              .likeCount(0)
+              .viewCount(0)
               .image(imageExtractor(content))
-              .hashtag(extractAndSaveHashtags(hashtag))
+              .likeContain(new HashSet<>())
+              .viewContain(new HashSet<>())
+              .hashtag(extractAndSaveHashtags(hashtags))
               .build();
     }
   }

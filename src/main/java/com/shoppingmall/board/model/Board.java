@@ -20,6 +20,7 @@ import com.shoppingmall.user.model.User;
 @Entity
 @Table(name = "board")
 @Getter @Setter
+
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

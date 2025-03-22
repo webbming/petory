@@ -142,16 +142,15 @@ public class BoardController {
 	//등록
 	@PostMapping("/write")
 	public String writePost(@ModelAttribute BoardRequestDTO.Write boardRequestDTO, Authentication auth, Model model) {
-		System.out.println("입력한 해시태그 " + boardRequestDTO.getHashtag());
+		System.out.println("입력한 해시태그 " + boardRequestDTO.getHashtags());
 		User user = userService.getUser(auth.getName());
 
 		PostType postType = user.getRole() == UserRoleType.ADMIN ? PostType.NOTICE : PostType.GENERAL;
 
-		boardService.savePost(boardRequestDTO.toEntity(user, postType));
-		Board returnBoard = boardService.viewPost(boardRequestDTO.getBoardId(), user);
-		model.addAttribute("board", returnBoard);
+		Board boards =boardService.savePost(boardRequestDTO.toEntity(user, postType));
+		model.addAttribute("boardDto", boards);
 		model.addAttribute("user", user);
-		return "board/read";
+		return "redirect:/board/read?boardId=" + boards.getBoardId();
 	}
 	
 
@@ -192,6 +191,7 @@ public class BoardController {
 	//상세페이지 이동
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
+		System.out.println("상세조회 됨");
 		        User user = userService.getUser(auth.getName());
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);

@@ -21,7 +21,7 @@
 				<span th:text="${board.categoryId}" class="boardCategoryId"></span>
 				<h2 th:text="${board.title}" class="boardTitle"></h2>
 				<div class="userInfo">
-					<img th:src="${board.user.userImg.url}" class="userImage">
+					<img th:src="${board.user.userImg.getUrl()}" class="userImage">
 					<div class="userInfoText">
 						<span th:text="${board.nickname}" class="boardNickname"></span>
 						<span class="boardViewCount">조회수 [[${board.viewCount}]]</span>
@@ -61,7 +61,7 @@
 			<h3 class="comments">댓글</h3>
 
 			<div class="commentWrite">
-				<img th:src="${user.userImg.url}" class="commentWriteUserImage">
+				<img th:src="${user.userImg.getUrl()}" class="commentWriteUserImage">
 				<form action="/board/commentCreate" method="post">
 					<input type="hidden" name="boardId" th:value="${board.boardId}">
 					<div class="commentBox" id="commentBox">

@@ -24,6 +24,7 @@ import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.shoppingmall.board.dto.BoardRequestDTO.extractAndSaveHashtags;
 
@@ -41,8 +42,10 @@ public class BoardService {
 		this.userService = userService;
 	}
 	//저장
-	public void savePost(Board board){
-		repository.save(board);
+	@Transactional
+	public Board savePost(Board board){
+
+		return repository.save(board);
     }
 
 	// 역할에 따른 게시글 조회

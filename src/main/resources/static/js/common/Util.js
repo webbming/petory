@@ -46,6 +46,9 @@ export function createPostElement(post) {
           <div class="tit">${post.title}</div>
           <div class="content-preview">
             <p>${contentTextOnly}</p>
+            <div>
+                ${post.hashtag[0]}
+            </div>
           </div>
         </div>
         ${post.image ? `<img src="${post.image}" />` : ''}
