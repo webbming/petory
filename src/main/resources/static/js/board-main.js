@@ -186,7 +186,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             const clickedHashtag = e.target.textContent;
 
             // 해당 해시태그가 최근 검색 목록에 없으면 추가
-            if (![...searchHashtagList.children].some(li => li.textContent === clickedHashtag)) {
+            const isDuplicate = [...searchHashtagList.children].some(li => {
+                const existingTag = li.querySelector(".tagBtn")?.textContent.trim();
+                return existingTag === clickedHashtag;
+            });
+
+            // 중복이 아닐 경우에만 추가
+            if (!isDuplicate) {
                 const li = document.createElement("li");
                 li.classList.add("hashtag-item");  // 클래스 추가 (스타일링용)
 
@@ -196,6 +202,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             `;
                 searchHashtagList.appendChild(li);  // 최근 검색 목록에 해시태그 추가
             }
+
 
             // 해당 해시태그를 검색 쿼리로 사용하여 게시글 리스트 초기화 및 페이지 초기화
             hashtag = encodeURIComponent(clickedHashtag);
