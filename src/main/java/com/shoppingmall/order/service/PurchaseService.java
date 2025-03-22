@@ -242,13 +242,13 @@ public class PurchaseService {
 
 		//적용된 할인
 		totalPurchasePrice[0] = onePrice[0] - totalPrice;
-		if(totalPurchasePrice[0]!=0){
-		List<Coupon> coupon = couponRepo.findByUserId(userId);
-		Coupon coupons = coupon.get(0);
-		List<CouponList> couponLists = coupons.getCouponList();
-		CouponList couponList = couponLists.get(0);
-		couponList.setUsedAt(LocalDateTime.now());
-		couponListRepo.save(couponList);
+		if (totalPurchasePrice[0] != 0) {
+			List<Coupon> coupon = couponRepo.findByUserId(userId);
+			Coupon coupons = coupon.get(0);
+			List<CouponList> couponLists = coupons.getCouponList();
+			CouponList couponList = couponLists.get(0);
+			couponList.setUsedAt(LocalDateTime.now());
+			couponListRepo.save(couponList);
 		}
 
 		productList.forEach(product -> {
@@ -359,7 +359,7 @@ public class PurchaseService {
 		return returnsRepo.findAll(pageable);
 	}
 
-	public Page<CouponDto> getCoupon(Pageable pageable, String userId){
+	public Page<CouponDto> getCoupon(Pageable pageable, String userId) {
 		Page<Coupon> coupons = couponRepo.findByUserId(userId, pageable);
 		List<CouponDto> dtoList = coupons.getContent().stream()
 				.map(coupon -> {
@@ -380,28 +380,28 @@ public class PurchaseService {
 	}
 
 	//주문시 쿠폰리스트 반환
-  public List<CouponListDto> choiceCoupon(String userId) {
-	  List<Coupon> coupons = couponRepo.findByUserId(userId);
-	  List<CouponListDto> couponListDtos = new ArrayList<>();
+	public List<CouponListDto> choiceCoupon(String userId) {
+		List<Coupon> coupons = couponRepo.findByUserId(userId);
+		List<CouponListDto> couponListDtos = new ArrayList<>();
 
-	  //순서 맞춰주기!!
-	  coupons.forEach(coupon -> {
-		  coupon.getCouponList().forEach(couponList -> {
-			  CouponListDto dto = new CouponListDto(
-					  couponList.getId(),            // couponId
-					  couponList.getDiscount(),      // discount
-					  couponList.getCouponComment(), // couponComment
-					  couponList.getCouponName(),    // couponName
-					  couponList.getCreateAt(),      // createAt
-					  couponList.getUsedAt()        // usedAt
-			  );
-			  couponListDtos.add(dto);
-		  });
-	  });
+		//순서 맞춰주기!!
+		coupons.forEach(coupon -> {
+			coupon.getCouponList().forEach(couponList -> {
+				CouponListDto dto = new CouponListDto(
+						couponList.getId(),            // couponId
+						couponList.getDiscount(),      // discount
+						couponList.getCouponComment(), // couponComment
+						couponList.getCouponName(),    // couponName
+						couponList.getCreateAt(),      // createAt
+						couponList.getUsedAt()        // usedAt
+				);
+				couponListDtos.add(dto);
+			});
+		});
 		return couponListDtos;
-  }
+	}
 
-  //주문 완료시 반환 정보 변환
+	//주문 완료시 반환 정보 변환
 	public List<PurchaseReadyDto> orderPage(Object sessionOrderObj) {
 		List<PurchaseReadyDto> orderData = new ArrayList<>();
 		if (sessionOrderObj instanceof List<?>) {
@@ -416,5 +416,19 @@ public class PurchaseService {
 
 	public Integer onDeliveryCount(String userId) {
 		return productRepo.countByUserIdAndDeliveryStatus(userId);
+	}
+
+	//전체 주문 취소
+	public String cancelAll(Long purchaseId, String userId) {
+		Purchase purchases = purchaseRepo.findByPurchaseId(purchaseId).get(0);
+		System.out.println(purchases.getPurchaseProduct().get(0).getCreateAt());
+		if(purchases!=null){
+			purchases.getPurchaseProduct().forEach(purchaseProduct -> {
+				purchaseProduct.setCancelAt(LocalDateTime.now());
+				purchaseProduct.setCancelReason("취소");
+			});
+			purchaseRepo.save(purchases);
+		}
+		return "success";
 	}
 }

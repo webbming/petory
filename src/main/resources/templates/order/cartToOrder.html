@@ -97,10 +97,20 @@
             background: #ccc;
             margin: 10px 15px 20px 10px;
         }
+        /* 결제 금액 영역 CSS 수정 */
         .custom-summary-item {
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: space-between; /* 제목은 왼쪽, 금액은 오른쪽 정렬 */
             margin-bottom: 10px;
+        }
+        .custom-summary-item span:first-child {
+            min-width: 100px;
+            text-align: left;
+        }
+        .custom-summary-item span:last-child {
+            min-width: 80px;
+            text-align: right;
         }
         .custom-total {
             font-weight: bold;
@@ -183,13 +193,18 @@
 				<div class="custom-product-info">
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].imageUrl'" th:value="${product.imageUrl}">
 					<p>상품명: <span name="productName" th:text="${product.productName}"></span></p>
-					<p>수량: <span name="quantity" th:text="${product.quantity}"></span></p>
+					<br>
+					<!-- &nbsp;를 사용한 띄어쓰기 예시 -->
+					<p>수 &nbsp;&nbsp; 량: <span name="quantity" th:text="${product.quantity}"></span></p>
 					<!-- 각 상품 데이터를 배열 형태로 전송하기 위해 name에 인덱스 추가 -->
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].productName'" th:value="${product.productName}">
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].quantity'" th:value="${product.quantity}">
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].productId'" th:value="${product.productId}">
 				</div>
-				<p><span th:text="${product.price}"></span>원</p>
+				<!-- product-price 클래스: JS로 천단위 콤마 포맷 적용, 원본 값은 그대로 전송 -->
+				<p>
+					<span class="product-price" th:text="${product.price}"></span> 원
+				</p>
 				<input type="hidden" th:name="'product[' + ${iterStat.index} + '].price'" th:value="${product.price}">
 			</div>
 			<!-- 주문자 정보 -->
@@ -211,15 +226,15 @@
 			<div class="custom-form-group">
 				<div class="custom-input-row">
 					<label for="receiverName">수령인:</label>
-					<input type="text" name="receiverName" id="receiverName" th:text="${nickname}" placeholder="받는 사람">
+					<input type="text" name="receiverName" id="receiverName" th:value="${nickname}" placeholder="받는 사람">
 				</div>
 				<div class="custom-input-row">
 					<label for="receiverPhone">전화번호:</label>
-					<input type="text" name="receiverPhone" id="receiverPhone" th:text="${receiverPhone}" placeholder="휴대번호 입력 (-제외)">
+					<input type="text" name="receiverPhone" id="receiverPhone" th:value="${receiverPhone}" placeholder="휴대번호 입력 (-제외)">
 				</div>
 				<div class="custom-input-row">
 					<label for="receiver_addr">주소:</label>
-					<input type="text" name="receiverAddr" id="receiver_addr" th:text="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" readonly>
+					<input type="text" name="receiverAddr" id="receiver_addr" th:value="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" readonly>
 					<button type="button" onclick="execDaumPostcode()">주소 검색</button>
 				</div>
 				<div class="custom-input-row">
@@ -288,12 +303,13 @@
 		</form>
 	</div>
 
-	<!-- 결제 금액 -->
+	<!-- 결제 금액 영역 -->
 	<div class="custom-order-right-section">
 		<div class="custom-title">결제 금액</div>
 		<div class="custom-summary-item">
 			<span>총 제품 금액</span>
-			<span id="totalProductPrice" th:text="${totalProductPrice}">0원</span>
+			<!-- 화면상에는 "0원"으로 표시 -->
+			<span id="totalProductPrice">0원</span>
 		</div>
 		<div class="custom-summary-item">
 			<span>쿠폰 할인</span>
@@ -309,7 +325,7 @@
 		</div>
 		<div class="custom-summary-item custom-total">
 			<span>총 결제 금액</span>
-			<span id="totalPrice" th:text="${totalPrice}"></span>
+			<span id="totalPrice">0원</span>
 		</div>
 		<div class="custom-note">
 			위 제품의 구매 조건을 확인하였으며, 결제 및 <br>개인 정보 제3자 제공에 모두 동의합니다.
@@ -317,27 +333,57 @@
 		</div>
 		<button type="submit" form="orderForm" class="custom-purchase-btn" id="pay">결제하기</button>
 		<script>
-			const totalSumPrice = document.getElementById('totalPrice').textContent;
-            const totalPurchase = 0;
-            var updateTotal = totalSumPrice;
-            document.getElementById('totalPrice').textContent = totalSumPrice + ' 원';
+			// 숫자에 천 단위 콤마 추가 함수
+            function numberWithCommas(x) {
+              return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            // 원본 값을 저장할 전역 변수(또는 data-attribute 사용)
+            let updateTotal;
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // 각 제품 가격에 대해 화면 표기와 함께 원본 값을 data-original에 저장
+                const productPriceElements = document.querySelectorAll('.product-price');
+                let totalProductSum = 0;
+                productPriceElements.forEach(el => {
+                    let rawPrice = el.textContent.trim();
+                    let num = parseInt(rawPrice.replace(/,/g, ''), 10);
+                    if (!isNaN(num)) {
+                        el.textContent = numberWithCommas(num);
+                        el.setAttribute('data-original', num);
+                        totalProductSum += num;
+                    }
+                });
+                // 총 제품 금액 원본 값을 data-original에 저장하고 화면에는 " 원" 추가하여 표기
+                const totalProductEl = document.getElementById('totalProductPrice');
+                totalProductEl.textContent = numberWithCommas(totalProductSum) + '원';
+                totalProductEl.setAttribute('data-original', totalProductSum);
+
+                // 결제 금액 초기값 (원본 숫자 그대로) 저장 및 화면 표기
+                updateTotal = totalProductSum;
+                const totalPriceEl = document.getElementById('totalPrice');
+                totalPriceEl.textContent = numberWithCommas(updateTotal) + '원';
+            });
+
+            // 쿠폰 선택 이벤트 (할인 적용)
             document.getElementById('coupon-select').addEventListener('change', function() {
                 var couponDetails = document.getElementById('coupon-details');
                 var selectedValue = this.value;
-                // 선택된 값이 있을 경우 처리
+                // 총 제품 금액의 원본 숫자는 data-original에서 읽음
+                const totalProductSum = parseInt(document.getElementById('totalProductPrice').getAttribute('data-original'), 10);
                 if (selectedValue) {
                     couponDetails.style.display = 'block';
-                    updateTotal = totalSumPrice - 5000;
-                    document.getElementById('couponDiscount').textContent = '-5000 원';
-                    if(updateTotal <= 0){
+                    updateTotal = totalProductSum - 5000; // 할인 5000 적용
+                    document.getElementById('couponDiscount').textContent = '-5000원';
+                    if (updateTotal <= 0) {
                         updateTotal = 0;
                     }
-                    document.getElementById('totalPrice').textContent = `${updateTotal} 원`;
+                    document.getElementById('totalPrice').textContent = numberWithCommas(updateTotal) + '원';
                 } else {
                     couponDetails.style.display = 'none';
-                    document.getElementById('couponDiscount').textContent = '-0 원';
-                    updateTotal = totalSumPrice;
-                    document.getElementById('totalPrice').textContent = `${updateTotal} 원`;
+                    document.getElementById('couponDiscount').textContent = '-0원';
+                    updateTotal = totalProductSum;
+                    document.getElementById('totalPrice').textContent = numberWithCommas(updateTotal) + '원';
                 }
             });
 
@@ -364,8 +410,7 @@
             function execDaumPostcode() {
                 new daum.Postcode({
                     oncomplete: function(data) {
-                        var addr = data.address;
-                        document.getElementById('receiver_addr').value = addr;
+                        document.getElementById('receiver_addr').value = data.address;
                     }
                 }).open();
             }
@@ -374,25 +419,20 @@
             function toggleCustomRequest() {
                 const deliveryRequest = document.getElementById('deliveryRequest');
                 const customInput = document.querySelector('.delivery-request-custom');
-                if (deliveryRequest.value === 'custom') {
-                    customInput.style.display = 'block';
-                } else {
-                    customInput.style.display = 'none';
-                }
+                customInput.style.display = (deliveryRequest.value === 'custom') ? 'block' : 'none';
             }
 
             // 폼 제출 이벤트
             function submitOrder(event) {
                 event.preventDefault();
                 const agreeCheckbox = document.getElementById('agreeTerms');
-
                 if (!agreeCheckbox.checked) {
                     alert('결제 및 개인정보 제3자 제공에 동의해주세요.');
                     return;
-                } else if(document.getElementById('deliveryRequest').value === ""){
+                } else if (document.getElementById('deliveryRequest').value === "") {
                     alert('배송 요청 사항을 작성해주세요.');
                     return;
-                } else if(paymentMethodInput.value === ""){
+                } else if (paymentMethodInput.value === "") {
                     alert('결제수단을 선택해 주세요.');
                     return;
                 }
@@ -406,25 +446,20 @@
                     formData.set('deliveryMessage', customText);
                 }
 
-                formData.forEach((value, key) => {
-                    console.log(key, value);  // 각 key와 value를 출력해서 확인
-                });
-
-                // 오른쪽 섹션의 결제 금액 데이터 추가
+                // 파라미터로 전송할 때는 각 금액의 data-original 값을 사용(원본 숫자 그대로)
                 const paymentData = {
-                    totalProductPrice: document.getElementById('totalProductPrice').textContent.replace('원', '').replace(/,/g, ''),
-                    couponDiscount: document.getElementById('couponDiscount').textContent.replace('원', '').replace(/,/g, ''),
-                    pointsUsed: document.getElementById('pointsUsed').textContent.replace('원', '').replace(/,/g, ''),
-                    shippingFee: document.getElementById('shippingFee').textContent.replace('원', '').replace(/,/g, ''),
+                    totalProductPrice: document.getElementById('totalProductPrice').getAttribute('data-original'),
+                    couponDiscount: document.getElementById('couponDiscount').textContent.replace(/,/g, '').replace('원','').trim(),
+                    pointsUsed: document.getElementById('pointsUsed').textContent.replace(/,/g, '').replace('원','').trim(),
+                    shippingFee: document.getElementById('shippingFee').textContent.replace(/,/g, '').replace('원','').trim(),
                     totalPrice: updateTotal
                 };
 
                 Object.entries(paymentData).forEach(([key, value]) => {
                     formData.append(key, value);
-                    console.log(`${key}: ${value}`);
+                    console.log(key, value);
                 });
 
-                // 백엔드로 전송
                 fetch('/order/rest/process', {
                     method: 'POST',
                     body: formData
@@ -447,7 +482,6 @@
 	</div>
 </div>
 <div th:replace="fragment/footer :: footerFragment"></div>
-
 <!-- Daum Postcode API 스크립트 추가 -->
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </body>

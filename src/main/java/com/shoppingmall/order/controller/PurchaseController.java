@@ -117,6 +117,16 @@ return "order/adminOrder";
 	return "redirect:/order/one?purchaseProductId=" + purchaseProductId;
 	}
 
+	@PostMapping("/cancelAll")
+	public String cancelAll(@RequestParam(name = "purchaseId")Long purchaseId,
+													Authentication authentication,
+													RedirectAttributes redirectAttributes){
+	String userId = authentication.getName();
+	service.cancelAll(purchaseId, userId);
+		redirectAttributes.addAttribute("purchaseId", purchaseId);
+	return "redirect:/order/orders/{purchaseId}";
+	}
+
 	//userId 기준 주문 검색
 	@GetMapping("/orders/userId")
 	public String orderListByUserId(

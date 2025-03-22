@@ -241,9 +241,9 @@
 				</td>
 				<td>
 					<div th:if="${purchase.purchaseProduct[0].cancelAt==null}">
-					<form action="order/cancelAll" method="post">
-						<input type="hidden" name="purchaseId" th:value="${purchaseId}">
-						<button class="cancel-button">결제 취소</button>
+					<form action="/order/cancelAll" method="post">
+						<input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}">
+						<button type="submit" class="cancel-button">결제 취소</button>
 					</form>
 					</div>
 					<div th:if="${purchase.purchaseProduct[0].cancelAt != null}" th:text="취소">
@@ -319,7 +319,6 @@
 			<thead>
 			<tr>
 				<th>상품명</th>
-				<th>옵션</th>
 				<th>수량</th>
 				<th>가격</th>
 				<th>배송상태</th>
@@ -328,7 +327,6 @@
 			<tbody>
 			<tr th:each="item : ${item}">
 				<td th:text="${item.productName}"></td>
-				<td th:text="${item.option}"></td>
 				<td th:text="${item.quantity}"></td>
 				<td th:text="|${item.price} 원|"></td>
 				<td th:text="${item.deliveryStatus}"></td>

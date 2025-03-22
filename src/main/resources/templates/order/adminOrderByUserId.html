@@ -103,7 +103,6 @@
 							<div th:each="currentItem : ${item}" th:if="${currentItem.purchase != null and currentItem.purchase.purchaseId == purchase.purchaseId}" class="product-item">
 								<div><strong>상품번호:</strong> <span th:text="${currentItem.productId}"></span></div>
 								<div><strong>상품명:</strong> <span th:text="${currentItem.productName}"></span></div>
-								<div><strong>옵션:</strong> <span th:text="${currentItem.option == null ? '없음': currentItem.option}"></span></div>
 								<div><strong>수량:</strong> <span th:text="${currentItem.quantity}"></span></div>
 								<div><strong>가격:</strong> <span th:text="${currentItem.totalPrice}"></span></div>
 								<div><strong>배송상태:</strong> <span th:text="${currentItem.deliveryStatus}"></span></div>
