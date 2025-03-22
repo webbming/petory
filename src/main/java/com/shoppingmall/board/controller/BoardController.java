@@ -354,7 +354,7 @@ public class BoardController {
 
 	@GetMapping("/list")
 	public ResponseEntity<ApiResponse<?>> boardList(@ModelAttribute BoardRequestDTO.Search boardRequestDTO , Authentication authentication) {
-
+		System.out.println(boardRequestDTO.getHashtag());
 		PostType postType =
 				boardRequestDTO.getCategoryId().equals("시사상식") ||
 						boardRequestDTO.getCategoryId().equals("공지") ?

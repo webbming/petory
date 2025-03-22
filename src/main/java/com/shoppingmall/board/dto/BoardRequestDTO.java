@@ -84,6 +84,7 @@ public class BoardRequestDTO {
     private String sort;
     private String search;
     private String period;
+    private String hashtag;
     private PostType postType;
     private String categoryId;
   }

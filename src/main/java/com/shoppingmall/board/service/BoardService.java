@@ -65,7 +65,8 @@ public class BoardService {
 		Specification<Board> spec = Specification.where(BoardSpec.hasCategory(dto.getCategoryId()))
 				.and(BoardSpec.hasPostType(dto.getPostType()))
 				.and(BoardSpec.createdAfter(startDate))
-				.and(BoardSpec.titleContains(dto.getSearch()));
+				.and(BoardSpec.titleContains(dto.getSearch()))
+				.and(BoardSpec.hasHashtag(dto.getHashtag()));
 		return repository.findAll(spec , pageable);
 	}
 

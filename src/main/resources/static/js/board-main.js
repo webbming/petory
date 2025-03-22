@@ -6,13 +6,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     let page = 0;
     const size = 5;
     const boardList = document.querySelector(".exposure_tag ul");
+    const searchHashtagList = document.querySelector(".exposure_hashtag ul");
     const rigList = document.querySelector(".rig ol");
     let currentCategory = "all"; // 기본적으로 전체 카테고리로 설정
     let searchQuery = ""; // 기본 검색어
     let sortOrder = "최신순"; // 기본적으로 최신순
     let period = "1개월"; // 기본적으로 1개월
-// 기본 게시글 로딩
+    let hashtag = "";
+    const hashtagList = [];
 
+    // 기본 게시글 로딩
     await loadMorePosts();
 
     const finalSearchBtn = document.querySelector(".final-searchBtn");
@@ -28,22 +31,21 @@ document.addEventListener("DOMContentLoaded", async function () {
         searchQuery = searchValue;
         sortOrder = sortValue;
         period = periodValue;
-
+        hashtag = "";
         // 검색할 때 기존 게시글 제거 & 페이지 초기화
         boardList.innerHTML = "";
         page = 0;
 
-        await loadMorePosts()
-    })
-
+        await loadMorePosts();
+    });
 
     // 게시글을 불러오는 함수
-   async function loadMorePosts() {
+    async function loadMorePosts() {
         if (isLoading) return;
         isLoading = true;
 
         try {
-            const response = await fetch(`/board/list?page=${page}&size=${size}&categoryId=${currentCategory}&sort=${sortOrder}&search=${searchQuery}&period=${period}`, {
+            const response = await fetch(`/board/list?page=${page}&size=${size}&categoryId=${currentCategory}&sort=${sortOrder}&search=${searchQuery}&period=${period}&hashtag=${hashtag}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -51,10 +53,12 @@ document.addEventListener("DOMContentLoaded", async function () {
                 credentials: "include"
             });
             const {data} = await response.json();
-            console.log(data)
+            console.log(data);
 
             if (data.length > 0) {
-                data.forEach(post => {  boardList.appendChild(createPostElement(post)); });
+                data.forEach(post => {
+                    boardList.appendChild(createPostElement(post));
+                });
                 page++;
 
                 window.addEventListener("scroll", handleScroll);
@@ -63,8 +67,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 const div = document.createElement("div");
                 div.classList.add("myboard-empty");
-                div.innerHTML = `<p>검색된 결과가 없습니다.</p>`
-                boardList.appendChild(div)
+                div.innerHTML = `<p>검색된 결과가 없습니다.</p>`;
+                boardList.appendChild(div);
             }
         } catch (e) {
             console.error(e + " 목록을 불러오지 못했습니다.");
@@ -72,7 +76,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             isLoading = false;
         }
     }
-
 
     // 오른쪽 인기글 고정 9개
     async function loadBoardBest(type) {
@@ -86,9 +89,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (data.length > 0) {
                 data.forEach((post, index) => rigList.appendChild(createTop9PostElement(post,index)));
             } else {
-
+                // 처리할 필요 없음
             }
-
         } catch (e) {
             console.error(e);
         }
@@ -102,7 +104,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     categoryBtns.forEach((btn) => {
         btn.addEventListener("click", async (e) => {
-
             // 모든 버튼에서 'active' 클래스를 제거하고 클릭한 버튼에 'active' 추가
             categoryBtns.forEach(btn => {
                 btn.classList.remove("active");
@@ -112,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             // 선택한 카테고리 타입을 설정
             currentCategory = e.target.dataset.type;
             console.log(currentCategory);
-
+            hashtag = "";
             // 게시글 리스트 초기화 및 페이지 초기화
             boardList.innerHTML = "";
             page = 0; // 페이지 초기화
@@ -126,11 +127,64 @@ document.addEventListener("DOMContentLoaded", async function () {
     window.addEventListener("scroll", handleScroll);
 
     async function handleScroll() {
-      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-      if (scrollTop + clientHeight >= scrollHeight - 10) {
-        await loadMorePosts();
-      }
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 10) {
+            await loadMorePosts();
+        }
     }
 
-    window.addEventListener("scroll" ,scrollTabEffect )
+    window.addEventListener("scroll" ,scrollTabEffect);
+
+    searchHashtagList.addEventListener("click", async (e) => {
+        console.log(e.target);  // 클릭된 요소 확인
+
+        // 클릭된 요소가 LI 또는 LI 내부의 button인 경우 처리
+        let clickedHashtag = e.target.textContent.trim();
+
+        // 클릭된 요소가 button이면, 부모 LI에서 텍스트를 가져오기
+        if (e.target.closest("button")) {
+            clickedHashtag = e.target.closest("li").textContent.trim();
+        }
+
+        if (clickedHashtag) {
+            hashtag = encodeURIComponent(clickedHashtag);  // URL 인코딩
+
+            // 게시글 목록 초기화
+            boardList.innerHTML = "";
+            page = 0;  // 페이지 초기화
+
+            // 해당 해시태그에 맞는 게시글 로딩
+            await loadMorePosts();
+
+            // 해시태그 초기화 (리셋)
+            hashtag = "";
+        }
+    });
+
+// 게시글 내 해시태그 클릭 시 처리
+    boardList.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("tagBtn")) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const clickedHashtag = e.target.textContent;
+
+            // 해당 해시태그가 최근 검색 목록에 없으면 추가
+            if (![...searchHashtagList.children].some(li => li.textContent === clickedHashtag)) {
+                const li = document.createElement("li");
+                li.innerHTML = `<button class="tagBtn">${clickedHashtag}</button>`;
+                searchHashtagList.appendChild(li);  // 최근 검색 목록에 해시태그 추가
+            }
+
+            // 해당 해시태그를 검색 쿼리로 사용하여 게시글 리스트 초기화 및 페이지 초기화
+            hashtag = encodeURIComponent(clickedHashtag);
+            boardList.innerHTML = "";
+            page = 0;
+
+            await loadMorePosts();  // 게시글 로딩
+
+            hashtag = "";  // 해시태그 초기화 (리셋)
+        }
+    });
+
 });
