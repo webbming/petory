@@ -109,12 +109,16 @@ document.addEventListener("DOMContentLoaded", async function () {
                 btn.classList.remove("active");
             });
             btn.classList.add("active");
-
+            let datatype = btn.dataset.type;
+            if(datatype === "all"){
+                hashtag = "";
+            }
             // 선택한 카테고리 타입을 설정
             currentCategory = e.target.dataset.type;
             console.log(currentCategory);
             // 게시글 리스트 초기화 및 페이지 초기화
             boardList.innerHTML = "";
+
             page = 0; // 페이지 초기화
 
             // 해당 카테고리에 맞는 게시글을 불러옴
@@ -149,28 +153,27 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
             return;  // 검색 실행 안 함
         }
+        if(e.target.classList.contains("tagBtn")){
+            e.preventDefault();
+            e.stopPropagation()
+            // 클릭된 요소가 LI 또는 LI 내부의 button인 경우 처리
+            let clickedHashtag = e.target.textContent.trim();
 
-        // 클릭된 요소가 LI 또는 LI 내부의 button인 경우 처리
-        let clickedHashtag = e.target.textContent.trim();
+            if (clickedHashtag) {
+                hashtag = encodeURIComponent(clickedHashtag);  // URL 인코딩
 
-        // 클릭된 요소가 button이면, 부모 LI에서 텍스트를 가져오기
-        if (e.target.closest("button")) {
-            clickedHashtag = e.target.closest("li").textContent.trim();
+                // 게시글 목록 초기화
+                boardList.innerHTML = "";
+                page = 0;  // 페이지 초기화
+
+                console.log(`🔎 검색 실행: ${hashtag}`);
+
+                // 해당 해시태그에 맞는 게시글 로딩
+                await loadMorePosts();
+            }
         }
 
-        if (clickedHashtag) {
-            hashtag = encodeURIComponent(clickedHashtag);  // URL 인코딩
 
-            // 게시글 목록 초기화
-            boardList.innerHTML = "";
-            page = 0;  // 페이지 초기화
-
-            // 해당 해시태그에 맞는 게시글 로딩
-            await loadMorePosts();
-
-            // 해시태그 초기화 (리셋)
-            hashtag = "";
-        }
     });
 
 
