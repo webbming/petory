@@ -137,6 +137,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     searchHashtagList.addEventListener("click", async (e) => {
         console.log(e.target);  // 클릭된 요소 확인
 
+        // X 버튼을 클릭한 경우, 해당 LI만 삭제하고 검색 실행 안 함
+        if (e.target.classList.contains("closeBtn")) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // X 버튼이 속한 LI가 `searchHashtagList` 내부인지 확인 후 삭제
+            const li = e.target.closest("li");
+            if (li && searchHashtagList.contains(li)) {
+                li.remove();
+            }
+            return;  // 검색 실행 안 함
+        }
+
         // 클릭된 요소가 LI 또는 LI 내부의 button인 경우 처리
         let clickedHashtag = e.target.textContent.trim();
 
@@ -160,6 +173,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     });
 
+
 // 게시글 내 해시태그 클릭 시 처리
     boardList.addEventListener("click", async (e) => {
         if (e.target.classList.contains("tagBtn")) {
@@ -171,7 +185,12 @@ document.addEventListener("DOMContentLoaded", async function () {
             // 해당 해시태그가 최근 검색 목록에 없으면 추가
             if (![...searchHashtagList.children].some(li => li.textContent === clickedHashtag)) {
                 const li = document.createElement("li");
-                li.innerHTML = `<button class="tagBtn">${clickedHashtag}</button>`;
+                li.classList.add("hashtag-item");  // 클래스 추가 (스타일링용)
+
+                li.innerHTML = `
+                <button class="tagBtn">${clickedHashtag}</button>
+                <button class="closeBtn">X</button>
+            `;
                 searchHashtagList.appendChild(li);  // 최근 검색 목록에 해시태그 추가
             }
 
