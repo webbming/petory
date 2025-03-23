@@ -150,6 +150,7 @@ public class BoardController {
 		Board boards =boardService.savePost(boardRequestDTO.toEntity(user, postType));
 		model.addAttribute("boardDto", boards);
 		model.addAttribute("user", user);
+		
 		return "redirect:/board/read?boardId=" + boards.getBoardId();
 	}
 	
@@ -215,7 +216,7 @@ public class BoardController {
 		Board board = boardService.getPostById(boardId);
 		final String[] hashtags = {""};
 		board.getHashtag().forEach(hashtag -> {
-			hashtags[0] = hashtags[0] + " " + hashtag;
+			hashtags[0] = hashtag + " " + hashtags[0];
 		});
 		
 		model.addAttribute("hashtags", hashtags[0]);
