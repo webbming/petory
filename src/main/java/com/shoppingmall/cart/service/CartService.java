@@ -65,8 +65,8 @@ public class CartService {
     public CartDTO removeProductFromCart(User user, Long cartItemId) {
         Cart cart = user.getCart();
         
-        cart.getCartItems().removeIf(item -> item.getId().equals(cartItemId));
         cartItemRepository.deleteById(cartItemId);  // CartItem 삭제
+        cart.getCartItems().removeIf(item -> item.getId().equals(cartItemId));
         
         return getCartByUser(user);  // 변경된 장바구니 데이터 리턴
     }

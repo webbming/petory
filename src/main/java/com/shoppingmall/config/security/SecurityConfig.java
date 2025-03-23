@@ -104,7 +104,7 @@ public class SecurityConfig {
                 // 팀원별 기능 페이지 - 모두 접근 가능 설정
                 // ex) /cart/** -> cart 부터 아래의 하위 경로 허용
                 // ex) /cart    -> cart 경로 허용
-
+                
                 .requestMatchers("/cart/**").permitAll()// 수민님
                 .requestMatchers("/cart/cart/**").permitAll()
                 .requestMatchers("/product/**" , "/products/**").permitAll() // 진호님
@@ -117,6 +117,9 @@ public class SecurityConfig {
                 // Swagger 문서 접근 허용
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
+            	// FAQ 페이지에 접근 허용
+                .requestMatchers("/faq").permitAll()
+                
                 // 그 외 모든 요청은 인증 필요
                 .anyRequest().permitAll()
         );
