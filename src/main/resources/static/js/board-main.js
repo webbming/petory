@@ -109,13 +109,16 @@ document.addEventListener("DOMContentLoaded", async function () {
                 btn.classList.remove("active");
             });
             btn.classList.add("active");
-
+            let datatype = btn.dataset.type;
+            if(datatype === "all"){
+                hashtag = "";
+            }
             // 선택한 카테고리 타입을 설정
             currentCategory = e.target.dataset.type;
             console.log(currentCategory);
-            hashtag = "";
             // 게시글 리스트 초기화 및 페이지 초기화
             boardList.innerHTML = "";
+
             page = 0; // 페이지 초기화
 
             // 해당 카테고리에 맞는 게시글을 불러옴
@@ -138,28 +141,41 @@ document.addEventListener("DOMContentLoaded", async function () {
     searchHashtagList.addEventListener("click", async (e) => {
         console.log(e.target);  // 클릭된 요소 확인
 
-        // 클릭된 요소가 LI 또는 LI 내부의 button인 경우 처리
-        let clickedHashtag = e.target.textContent.trim();
+        // X 버튼을 클릭한 경우, 해당 LI만 삭제하고 검색 실행 안 함
+        if (e.target.classList.contains("closeBtn")) {
+            e.preventDefault();
+            e.stopPropagation();
 
-        // 클릭된 요소가 button이면, 부모 LI에서 텍스트를 가져오기
-        if (e.target.closest("button")) {
-            clickedHashtag = e.target.closest("li").textContent.trim();
+            // X 버튼이 속한 LI가 `searchHashtagList` 내부인지 확인 후 삭제
+            const li = e.target.closest("li");
+            if (li && searchHashtagList.contains(li)) {
+                li.remove();
+            }
+            return;  // 검색 실행 안 함
+        }
+        if(e.target.classList.contains("tagBtn")){
+            e.preventDefault();
+            e.stopPropagation()
+            // 클릭된 요소가 LI 또는 LI 내부의 button인 경우 처리
+            let clickedHashtag = e.target.textContent.trim();
+
+            if (clickedHashtag) {
+                hashtag = encodeURIComponent(clickedHashtag);  // URL 인코딩
+
+                // 게시글 목록 초기화
+                boardList.innerHTML = "";
+                page = 0;  // 페이지 초기화
+
+                console.log(`🔎 검색 실행: ${hashtag}`);
+
+                // 해당 해시태그에 맞는 게시글 로딩
+                await loadMorePosts();
+            }
         }
 
-        if (clickedHashtag) {
-            hashtag = encodeURIComponent(clickedHashtag);  // URL 인코딩
 
-            // 게시글 목록 초기화
-            boardList.innerHTML = "";
-            page = 0;  // 페이지 초기화
-
-            // 해당 해시태그에 맞는 게시글 로딩
-            await loadMorePosts();
-
-            // 해시태그 초기화 (리셋)
-            hashtag = "";
-        }
     });
+
 
 // 게시글 내 해시태그 클릭 시 처리
     boardList.addEventListener("click", async (e) => {
@@ -170,11 +186,23 @@ document.addEventListener("DOMContentLoaded", async function () {
             const clickedHashtag = e.target.textContent;
 
             // 해당 해시태그가 최근 검색 목록에 없으면 추가
-            if (![...searchHashtagList.children].some(li => li.textContent === clickedHashtag)) {
+            const isDuplicate = [...searchHashtagList.children].some(li => {
+                const existingTag = li.querySelector(".tagBtn")?.textContent.trim();
+                return existingTag === clickedHashtag;
+            });
+
+            // 중복이 아닐 경우에만 추가
+            if (!isDuplicate) {
                 const li = document.createElement("li");
-                li.innerHTML = `<button class="tagBtn">${clickedHashtag}</button>`;
+                li.classList.add("hashtag-item");  // 클래스 추가 (스타일링용)
+
+                li.innerHTML = `
+                <button class="tagBtn">${clickedHashtag}</button>
+                <button class="closeBtn">X</button>
+            `;
                 searchHashtagList.appendChild(li);  // 최근 검색 목록에 해시태그 추가
             }
+
 
             // 해당 해시태그를 검색 쿼리로 사용하여 게시글 리스트 초기화 및 페이지 초기화
             hashtag = encodeURIComponent(clickedHashtag);
@@ -183,7 +211,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             await loadMorePosts();  // 게시글 로딩
 
-            hashtag = "";  // 해시태그 초기화 (리셋)
+
         }
     });
 
