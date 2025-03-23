@@ -72,6 +72,7 @@ public class CartController {
     @PostMapping("/items/{productId}/add")
     @ResponseBody
     public ResponseEntity<CartDTO> addToCart(Authentication authentication, @PathVariable Long productId, @RequestParam int quantity , HttpSession session) {
+
         String userId = getUserId(authentication);
         User user = userService.getUser(userId);
 
@@ -84,7 +85,7 @@ public class CartController {
 
     // 상품 삭제
     @DeleteMapping("/items/{cartItemId}/remove")
-    public  ResponseEntity<CartDTO> removeFormCart(Authentication authentication, @PathVariable Long cartItemId , HttpSession session) {
+    public  ResponseEntity<CartDTO> removeFromCart(Authentication authentication, @PathVariable Long cartItemId , HttpSession session) {
         String userId = getUserId(authentication);
         User user = userService.getUser(userId);
 
