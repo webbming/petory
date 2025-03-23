@@ -1,6 +1,8 @@
 package com.shoppingmall.board.service;
 
+import com.shoppingmall.board.dto.BoardRequestDTO;
 import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.board.dto.BoardSpec;
 import com.shoppingmall.user.model.UserRoleType;
 import com.shoppingmall.user.service.UserService;
 import java.time.LocalDateTime;
@@ -15,12 +17,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.repository.BoardRepository;
 import com.shoppingmall.user.model.User;
 import com.shoppingmall.user.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.shoppingmall.board.dto.BoardRequestDTO.extractAndSaveHashtags;
 
 @Service
 public class BoardService {
@@ -36,58 +42,32 @@ public class BoardService {
 		this.userService = userService;
 	}
 	//저장
-	public void savePost(Board board){
-		repository.save(board);
+	@Transactional
+	public Board savePost(Board board){
+
+		return repository.save(board);
     }
 
 	// 역할에 따른 게시글 조회
-	public Page<Board> getPostsByRole(int page, int size, String category, String sort, String search, String period, UserRoleType role) {
-		Sort sorting;
-		// 정렬 기준 설정
-		if ("인기순".equals(sort)) {
-			sorting = Sort.by(Sort.Direction.DESC, "likeCount");
-		} else {
-			sorting = Sort.by(Sort.Direction.DESC, "createdAt");
-		}
+	public Page<Board> getPosts(BoardRequestDTO.Search dto) {
+		Sort sort = "인기순".equals(dto.getSort())
+				? Sort.by(Sort.Direction.DESC, "likeCount")
+				: Sort.by(Sort.Direction.DESC, "createdAt");
 		// 페이지와 정렬 기준 설정
-		Pageable pageable = PageRequest.of(page, size, sorting);
+
+		Pageable pageable = PageRequest.of(dto.getPage(), dto.getSize(), sort);
 
 		// 기간 설정
-		LocalDateTime startDate = null;
-		if (period != null && !period.isEmpty() && !"all".equals(period)) {
-			startDate = getStartDateForPeriod(period);
-		}
+		LocalDateTime startDate = (dto.getPeriod() != null && !"all".equals(dto.getPeriod()))
+				? getStartDateForPeriod(dto.getPeriod())
+				: null;
 
-		if (search != null && !search.isEmpty()) {
-			// 카테고리별 검색 + 역할 필터링
-			if (!"all".equals(category)) {
-				return repository.findByCategoryIdAndUserRoleAndCreatedAtAfterAndTitleContaining(
-						category, role, startDate, search, pageable);
-			} else {
-				// 전체 카테고리 검색 + 역할 필터링
-				return repository.findByUserRoleAndCreatedAtAfterAndTitleContaining(
-						role, startDate, search, pageable);
-			}
-		} else {
-			// 검색어 없이 카테고리와 역할만 필터링
-			if (startDate != null) {
-				// 기간 필터링 적용 + 역할 필터링
-				if (!"all".equals(category)) {
-					return repository.findByCategoryIdAndUserRoleAndCreatedAtAfter(
-							category, role, startDate, pageable);
-				} else {
-					return repository.findByUserRoleAndCreatedAtAfter(role, startDate, pageable);
-				}
-			} else {
-				// 기간 필터링 없음, 역할만 필터링
-				if (!"all".equals(category)) {
-					return repository.findByCategoryIdAndUserRole(category, role, pageable);
-				} else {
-					// 카테고리 필터링 없이 역할만 필터링
-					return repository.findByUserRole(role, pageable);
-				}
-			}
-		}
+		Specification<Board> spec = Specification.where(BoardSpec.hasCategory(dto.getCategoryId()))
+				.and(BoardSpec.hasPostType(dto.getPostType()))
+				.and(BoardSpec.createdAfter(startDate))
+				.and(BoardSpec.titleContains(dto.getSearch()))
+				.and(BoardSpec.hasHashtag(dto.getHashtag()));
+		return repository.findAll(spec , pageable);
 	}
 
 
@@ -218,13 +198,13 @@ public class BoardService {
 	}
 	
 	//수정
-	public Board updatePost(Long boardId, String title, String content, String categoryId, Set<String> hashtag) {
-		Board board = repository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("Invalid board Id"));
-		board.setTitle(title);
-		board.setContent(content);
-		board.setCategoryId(categoryId);
-		board.setHashtag(hashtag);
-		return repository.save(board);
+	public void updatePost(BoardRequestDTO.Update boardRequestDTO) {
+		Board board = repository.findById(boardRequestDTO.getBoardId()).orElseThrow(() -> new IllegalArgumentException("Invalid board Id"));
+		board.setTitle(boardRequestDTO.getTitle());
+		board.setContent(board.getContent());
+		board.setCategoryId(board.getCategoryId());
+		board.setHashtag(extractAndSaveHashtags(boardRequestDTO.getHashtag()));
+		repository.save(board);
 	}
 	
 	//삭제
