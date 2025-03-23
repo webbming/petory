@@ -109,7 +109,6 @@ public class PurchaseService {
 			purchases = purchaseRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			deliveries = deliveryRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			products = productRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseProductIdDesc(userId, pageable);
-			System.out.println(products.get());
 		} else {
 			purchases = purchaseRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			deliveries = deliveryRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
@@ -131,7 +130,6 @@ public class PurchaseService {
 		} else {
 			deliveryState = "배송취소";
 		}
-		System.out.println("SER" + "안녕" + deliveryState);
 		PurchaseProduct product = productRepo.findByPurchaseProductId(purchaseProductId).get(0);
 		product.setDeliveryStatus(deliveryState);
 		productRepo.save(product);
@@ -282,8 +280,6 @@ public class PurchaseService {
 			products.setQuantity(Integer.parseInt(product.getQuantity()));
 			productRepo.save(products);
 		});
-
-		System.out.println("주문이 처리되었습니다. 사용자 ID: " + userId);
 		return purchase.getPurchaseId();
 	}
 
@@ -291,7 +287,6 @@ public class PurchaseService {
 		String deliveryStatus = "배송중";
 		List<PurchaseProduct> products = productRepo.findByDeliveryStatusAndUserIdOrderByPurchaseProductIdDesc(deliveryStatus, userId);
 		products.forEach(dto -> {
-			System.out.println(dto.getProductName());
 		});
 		return products;
 	}
@@ -303,7 +298,7 @@ public class PurchaseService {
 		product.setPurchaseConform("구매확정");
 		productRepo.save(product);
 	}
-
+//취소/반품 선택
 	public void createExchangeRequest(PurchaseReturnsDto dto, String userId) {
 		PurchaseReturns returns = new PurchaseReturns();
 		StringBuilder imagePaths = new StringBuilder();
@@ -414,18 +409,19 @@ public class PurchaseService {
 		return orderData;
 	}
 
-	public Integer onDeliveryCount(String userId) {
-		return productRepo.countByUserIdAndDeliveryStatus(userId);
-	}
-
 	//전체 주문 취소
 	public String cancelAll(Long purchaseId, String userId) {
 		Purchase purchases = purchaseRepo.findByPurchaseId(purchaseId).get(0);
-		System.out.println(purchases.getPurchaseProduct().get(0).getCreateAt());
 		if(purchases!=null){
 			purchases.getPurchaseProduct().forEach(purchaseProduct -> {
+				PurchaseReturns returns = new PurchaseReturns();
 				purchaseProduct.setCancelAt(LocalDateTime.now());
 				purchaseProduct.setCancelReason("취소");
+				returns.setPurchaseProduct(purchaseProduct);
+				returns.setCancelReason("취소");
+				returns.setReturnsContent("전체취소");
+				returns.setUserId(userId);
+				returnsRepo.save(returns);
 			});
 			purchaseRepo.save(purchases);
 		}

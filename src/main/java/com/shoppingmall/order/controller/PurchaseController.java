@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -185,16 +186,14 @@ return "order/adminOrder";
 	//환불 요청
 	@PostMapping("/returns")
 	public  String purchaseReturns(@ModelAttribute PurchaseReturnsDto dto,
-									 Authentication authentication,
-									 Model model) {
+									 Authentication authentication) {
 	 service.createExchangeRequest(dto, authentication.getName());
 	return "redirect:/order/orders/userId";
 	}
 	
 	//관리자용 환불 리스트
 	@GetMapping("/returnsList")
-	public String exchangeList(Model model,
-							   Pageable pageable) {
+	public String returnsList(Model model, @PageableDefault(page = 0, size = 5) Pageable pageable) {
 		model.addAttribute("returns", service.getAllReturns(pageable));
 		return "order/purchaseCancelAdmin";
 	}
@@ -202,7 +201,7 @@ return "order/adminOrder";
 	@GetMapping("/coupon")
 	public String coupon(Model model,
 						 Authentication authentication,
-						 Pageable pageable){
+						 @PageableDefault(page = 0, size = 5) Pageable pageable){
 	String userId = authentication.getName();
 	model.addAttribute("coupons", service.getCoupon(pageable, userId));
 	return "order/coupon";

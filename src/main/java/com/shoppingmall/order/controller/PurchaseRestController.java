@@ -19,26 +19,6 @@ public class PurchaseRestController {
 
   final PurchaseService service;
 
-    @GetMapping("/api/coupon")
-    public ResponseEntity<Integer> couponApi(Authentication authentication){
-      String userId = authentication.getName();
-      List<CouponListDto> couponLists = service.choiceCoupon(userId);
-      final int[] couponQuantity = {0};
-      couponQuantity[0] = 0;
-      couponLists.forEach(quantity -> {
-        if(quantity.getUsedAt()==null){
-            couponQuantity[0]++;
-        }
-      });
-      return ResponseEntity.ok(couponQuantity[0]);
-    };
-    //배송중 개수 api
-    @GetMapping("/api/onDeliveryCount")
-    public ResponseEntity<Integer> onDeliveryCount(Authentication authentication){
-      String userId = authentication.getName();
-      return ResponseEntity.ok(service.onDeliveryCount(userId));
-    }
-
     @PostMapping("/deliveryChange")
     public ResponseEntity<String> deliveryState(@RequestBody Map<String, String> request){
       String deliveryState = request.get("deliveryState");
@@ -65,7 +45,6 @@ public class PurchaseRestController {
       Map<String, Object> response = new HashMap<>();
       response.put("success", true);
       response.put("purchaseId", purchaseId);
-      System.out.println("purchaseId" + purchaseId);
       return ResponseEntity.ok(response);
     } catch (Exception e) {
       return ResponseEntity.badRequest().body("{\"success\":false, \"message\":\"" + e.getMessage() + "\"}");

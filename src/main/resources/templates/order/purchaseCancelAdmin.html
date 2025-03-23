@@ -114,7 +114,7 @@
         </table>
 
         <!-- 페이지 네비게이션 컨트롤 -->
-        <div style="margin-top: 20px;">
+        <div th:if="${returns.totalPages > 1}" style="margin-top: 20px;">
           <ul class="pagination">
             <li th:classappend="${returns.first} ? 'disabled'">
               <a th:href="@{/order/returnsList(page=${returns.number-1})}">&laquo;</a>

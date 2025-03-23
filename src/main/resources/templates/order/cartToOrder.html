@@ -194,15 +194,13 @@
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].imageUrl'" th:value="${product.imageUrl}">
 					<p>상품명: <span name="productName" th:text="${product.productName}"></span></p>
 					<br>
-					<!-- &nbsp;를 사용한 띄어쓰기 예시 -->
-					<p>수 &nbsp;&nbsp; 량: <span name="quantity" th:text="${product.quantity}"></span></p>
+					<p>수&nbsp;&nbsp;&nbsp;량: <span name="quantity" th:text="${product.quantity}"></span></p>
 					<!-- 각 상품 데이터를 배열 형태로 전송하기 위해 name에 인덱스 추가 -->
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].productName'" th:value="${product.productName}">
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].quantity'" th:value="${product.quantity}">
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].productId'" th:value="${product.productId}">
 				</div>
-				<!-- product-price 클래스: JS로 천단위 콤마 포맷 적용, 원본 값은 그대로 전송 -->
-				<p>
+				&nbsp;&nbsp;&nbsp;&nbsp;<p>
 					<span class="product-price" th:text="${product.price}"></span> 원
 				</p>
 				<input type="hidden" th:name="'product[' + ${iterStat.index} + '].price'" th:value="${product.price}">
