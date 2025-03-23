@@ -155,8 +155,9 @@
       margin-top: -30px;
     }
 
-    .exposure_tag > ul li {
+    .exposure_tag > ul li:not(.no-result) {
       width: calc(50% - 17px);
+      border-top: 1px solid #d9d9d9;
       border-bottom: 1px solid #d9d9d9;
       box-sizing: border-box;
     }
@@ -252,6 +253,13 @@
       border-radius: 6px;
       border: 1px solid #cdcdcd;
     }
+    
+    .no-result {
+	    color: #494949; /* 기본 텍스트 색상 */
+	    font-size: 18px; /* 원하는 폰트 크기 */
+
+	}
+    
   </style>
 </head>
 <body>
@@ -271,10 +279,12 @@
         </article>
 
 
-      <div class="total total-container">
-        <div class="store-container">
+      <div class="total total-container" >
+        <div class="store-container" data-type="store">
           <div class="search-tit"><strong>스토어</strong></div>
             <ul class="product_list" >
+             <!-- 데이터가 없을 때 보여줄 메시지 -->
+              <li class="no-result" th:if="${#lists.isEmpty(productList)}">검색된 상품이 없습니다.</li>
                 <li th:each=" product : ${productList}">
                   <a th:href="@{/products/{id}(id=${product.productId})}">
                     <div class="img">
@@ -288,14 +298,16 @@
                 </li>
             </ul>
           <div class="search-more">
-            <a>스토어 더보기</a>
+            <a href="/products">스토어 더보기</a>
           </div>
         </div>
 
-        <div class="community-container">
+        <div class="community-container" data-type="community">
           <div class="search-tit"><strong>커뮤니티</strong></div>
           <div class="exposure_tag">
             <ul>
+            <!-- 데이터가 없을 때 보여줄 메시지 -->
+             <li class="no-result" th:if="${#lists.isEmpty(boardList)}">검색된 게시물이 없습니다.</li>
               <li th:each="board : ${boardList}">
                 <a th:href="@{/board/read?boardId={boardId}(boardId=${board.boardId})}">
                     <div class="wrap">
@@ -321,7 +333,7 @@
             </ul>
           </div>
           <div class="search-more">
-            <a>커뮤니티 더보기</a>
+            <a href="/board/board">커뮤니티 더보기</a>
           </div>
         </div>
       </div>

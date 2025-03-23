@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>FAQ</title>
+<link rel="stylesheet" href="/css/layout/common.css">
+<link rel="stylesheet" type="text/css" th:href="@{/css/faq.css}">
+</head>
+<body>
+<div th:replace="fragment/header :: headerFragment"></div>
+<div class="container">
+	<div class="faq_cantainer">
+		<div class="pm-section">
+			 <h1>FAQ</h1>
+			 <p style="text-align: center; margin-bottom: 25px; color: #fff; font-size: 30px; font-weight: 800;">자주 묻는 질문</p>
+				<section class="wrap">
+					<article>
+						<ul class="faq_list">
+							<li><a class="active" data-topic="community">커뮤니티</a></li>
+							<li><a data-topic="store">스토어</a></li>
+							<li><a data-topic="membership">회원관리</a></li>
+						</ul>
+						<ul class="qa_list" id="faqList">
+						<!-- 커뮤니티 -->
+							<li class="community">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									커뮤니티는 어떤 곳인가요?
+								</div>
+								<div class="drop">
+									라이펫 커뮤니티는 라이펫이 보호자님의 환견/환묘 케어에 실제로 도움이 되는 서비스로 거듭나고자 만들어졌습니다. 커뮤니티 내에서 아이들을 위한 양질의 정보가 선순환되고 케어에 힘을 보탤 수 있는 서비스를 제공할 수 있도록 노력하겠습니다.
+								</div>
+							</li>
+							<li class="community">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									회원이 아니어도 커뮤니티를 이용할 수 있나요?
+								</div>
+								<div class="drop">
+									회원이 아닌 경우 게시글의 조회만 가능합니다. 회원가입을 통해 제한 없이 게시글을 조회하고 다른 보호자님들과 소통해보세요.
+								</div>
+							</li>
+							<li class="community">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									게시글을 작성하려면 어떻게 해야 하나요?
+								</div>
+								<div class="drop">
+									로그인 후 커뮤니티 페이지에서 '글쓰기'버튼을 클릭하면 작성할 수 있습니다.
+								</div>
+							</li>
+							<li class="community">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									작성한 게시글을 수정하거나 삭제할 수 있나요?
+								</div>
+								<div class="drop">
+									네! 내 게시글 목록에서 수정 및 삭제가 가능합니다.
+								</div>
+							</li>
+							<li class="community">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+								다른 사용자의 게시글에 댓글을 달 수 있나요?
+								</div>
+								<div class="drop">
+									네! 로그인한 상태에서 댓글을 남길 수 있습니다.
+								</div>
+							</li>
+							<li class="community">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									커뮤니티 이용 시 주의할 점이 있나요?
+								</div>
+								<div class="drop">
+									욕설, 비방, 허위 정보 게시 시 이용이 제한될 수 있습니다.
+								</div>
+							</li>
+						<!-- 스토어 -->
+							<li class="store">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									주문 내역은 어디에서 확인할 수 있나요?
+								</div>
+								<div class="drop">
+									마이페이지 > '주문/배송' 에서 각 주문 건별로 정보를 확인할 수 있습니다.
+								</div>
+							</li>
+							<li class="store">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									상품은 어떻게 구매하나요?
+								</div>
+								<div class="drop">
+									장바구니에 담은 후 결제 페이지에서 결제하시면 됩니다.
+								</div>
+							</li>
+							<li class="store">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									반려동물 용품 이외의 상품도 판매하나요?
+								</div>
+								<div class="drop">
+									현재는 반려동물 관련 용품만 판매하고 있습니다.
+								</div>
+							</li>
+							<li class="store">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									배송 기간은 얼마나 걸리나요?
+								</div>
+								<div class="drop">
+									보통 결제 완료 후 2~5일 이내 배송됩니다.
+								</div>
+							</li>
+							<li class="store">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									교환/반품은 어떻게 하나요?
+								</div>
+								<div class="drop">
+									상품 수령 후 7일 이내에 신청 가능합니다. (단, 사용한 상품은 불가능)
+								</div>
+							</li>
+						<!-- 회원 관리 -->
+							<li class="membership">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									회원 가입은 무료인가요?
+								</div>
+								<div class="drop">
+									네! 회원 가입은 무료이며, 누구나 가입할 수 있습니다.
+								</div>
+							</li>
+							<li class="membership">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									비밀번호를 잊어버렸어요. 어떻게 해야 하나요?
+								</div>
+								<div class="drop">
+									로그인 페이지에서 ‘비밀번호 찾기’를 통해 재설정할 수 있습니다.
+								</div>
+							</li>
+							<li class="membership">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									회원 탈퇴는 어떻게 하나요?
+								</div>
+								<div class="drop">
+									 ‘마이페이지 > 회원정보’에서 회원 탈퇴를 신청할 수 있습니다.
+								</div>
+							</li>
+							<li class="membership">
+								<div class="head" style="display: block;">
+									<span>Q. </span>
+									회원 등급이나 혜택이 있나요?
+								</div>
+								<div class="drop">
+									 추후 등급별 혜택을 제공할 예정입니다.
+								</div>
+							</li>
+						</ul>
+						
+						<div class="paging" id="faqPaging">
+						    <span><a class="prev"></a></span>
+						    <a class="pageNum on">1</a>
+						    <span><a class="next"></a></span>
+						</div>
+					</article>
+			</section>
+		</div>
+	</div>
+</div>
+<div th:replace="fragment/footer :: footerFragment"></div>
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+	    const heads = document.querySelectorAll(".qa_list .head"); // 각 질문 항목
+	    
+	    heads.forEach(function(head) {
+	        head.addEventListener("click", function() {
+	            const drop = head.nextElementSibling; // 해당 질문의 답변
+	            
+	            // 다른 질문이 열려있다면, 그 답변을 닫음
+	            heads.forEach(function(otherHead) {
+	                const otherDrop = otherHead.nextElementSibling;
+	                if (otherDrop !== drop) {
+	                    otherDrop.style.display = "none";
+	                    otherHead.classList.remove("rotated");
+	                }
+	            });
+	
+	            // 현재 클릭된 질문의 답변 펼치기/접기
+	            drop.style.display = (drop.style.display === "block") ? "none" : "block";
+	            head.classList.toggle("rotated");
+	        });
+	    });
+	
+	    const faqItems = document.querySelectorAll(".faq_list li a"); // 각 FAQ 항목
+	    const qaLists = document.querySelectorAll(".qa_list li"); // 각 질문에 대한 답변
+	    
+	    faqItems.forEach(function(item) {
+	        item.addEventListener("click", function() {
+	            const selectedTopic = item.getAttribute("data-topic"); // 선택한 주제
+	            
+	            // 모든 qa 항목 숨기기
+	            qaLists.forEach(function(qaItem) {
+	                qaItem.style.display = "none";
+	            });
+	
+	            // 선택한 주제의 qa 항목만 보이게 하기
+	            const selectedQa = document.querySelectorAll(`.${selectedTopic}`);
+	            
+	            // 'display: block'을 주어 보이게 함
+	            selectedQa.forEach(function(qa) {
+	                qa.style.display = "block";
+	            });
+	
+	            // 활성화된 FAQ 항목 스타일 변경
+	            faqItems.forEach(function(faqItem) {
+	                faqItem.classList.remove("active");
+	            });
+	            item.classList.add("active");
+	        });
+	    });
+	
+	    // 처음 페이지 로드 시 커뮤니티 항목 보이기
+	    const firstTopic = document.querySelector('.faq_list li a[data-topic="community"]');
+	    firstTopic.click();
+	});
+</script>
+</body>
+</html>

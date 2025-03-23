@@ -9,6 +9,7 @@ import com.shoppingmall.board.model.Comment;
 import com.shoppingmall.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -64,4 +65,5 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
   Page<Board> findByCategoryIdAndUserRoleAndCreatedAtAfterAndTitleContaining(String category, UserRoleType role, LocalDateTime startDate, String search, Pageable pageable);
 
 
+    Page<Board> findAll(Specification<Board> spec, Pageable pageable);
 }

@@ -1,0 +1,217 @@
+.faq_cantainer{
+	background-color: #68A5FE;
+	height: 400px;
+	opacity: 0.8;
+	margin-bottom: 20px; /* faq 박스 아래로 간격 추가 */
+}
+
+article {
+    display: block;
+    unicode-bidi: isolate;
+}
+
+#text{
+	font-size: 16px;
+}
+body {
+    background-color: #fff;
+    margin: 0;
+    height: 100%;
+    font-size: 15px;
+    min-height: 100vh;
+    color: #343434;
+    flex-direction: column;
+}
+
+h1{
+	text-align: center;
+	color: #fff;
+	font-size: 60px;
+}
+
+.wrap {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-direction: column;
+}
+
+.wrap:first-child > article {
+    padding: 28px 40px;
+}
+
+.wrap > article {
+    flex-grow: 1;
+    padding: 24px 40px;
+    background-color: #fff;
+    box-shadow: 0px 0px 36px 5px rgba(174, 174, 174, 0.16);
+    -webkit-box-shadow: 0px 0px 36px 5px rgba(174, 174, 174, 0.16);
+    border-radius: 12px;
+    min-width: 575px;
+}
+
+.faq_list {
+    display: flex;
+    justify-content: center;
+    margin: 12px 0 20px;
+}
+
+.faq_list li + li {
+    margin-left: 12px;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+
+.faq_list li a.active {
+    color: #5299FF;
+    border-color: #5299FF;
+    background-color: #EDF4FF;
+}
+
+.faq_list li a {
+  	display: block;
+    padding: 7px 9px 7px 9px;
+    color: #808080;
+    font-weight: 600;
+    line-height: 130%;
+    font-size: 18px;
+    border-radius: 60px;
+    border: 1.5px solid #808080;
+    background-position: left 7px center;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    text-align: center; /* 텍스트를 가운데 정렬 */
+}
+
+.faq_list a {
+    text-decoration: none;
+    color: currentColor;
+    cursor: pointer;
+}
+.qa_list li {
+    padding: 0;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    min-height: 58px;
+    padding: 14px 0;
+    border-bottom: 2px solid #F6F6F6; /* 여기에서 줄을 추가 */
+    padding-bottom: 8px; /* 줄과 텍스트 사이의 여백 */
+}
+.qa_list li:last-child {
+    border-bottom: none !important;
+}
+
+.qa_list li .head {
+    display: flex;
+    position: relative;
+    justify-content: space-between; /* 질문 왼쪽, 아이콘 오른쪽 */
+    width: 100%; /* 전체 너비 사용 */
+    cursor: pointer;
+    font-size: 19px;
+    font-weight: bold;
+    align-items: center; /* 텍스트와 아이콘이 세로로 맞춰지도록 */
+}
+
+.qa_list li .head span {
+    color: #68A5FE;
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 22px;
+    margin-right: 12px;
+    margin-top: 0;
+    width: auto;
+    text-align: center;
+}
+
+
+
+.qa_list li .head::after {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-image: url('/images/faq_arrow.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    right: 12px; /* 오른쪽 끝에 배치 */
+    top: 50%;
+    transform: translateY(-50%); /* 세로로 가운데 정렬 */
+    transition: transform 0.3s ease-in-out;
+}
+
+.qa_list li .head.rotated::after {
+    transform: rotate(180deg); /* 회전 효과 */
+}
+
+.qa_list li .drop {
+    margin-left: 30px;
+    width: calc(100% - 30px);
+    margin-top: 12px;
+    margin-bottom: 12px;
+    background-color: #F1F6FC;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 18px;
+    line-height: 1.5em;
+    display: none;
+    transition: all 0.5s ease-in-out; /* 애니메이션 효과 */
+}
+
+.drop {
+    display: none; /* 초기 상태에서 숨김 */
+    /* 나머지 스타일 */
+}
+
+.paging {
+    display: flex; /* 페이지 버튼을 가로로 나열 */
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center;
+    margin-top: 20px;
+}
+
+.paging a {
+    text-decoration: none;
+    color: #333; /* 버튼 색상 */
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.paging .on {
+    background-color: #007bff; /* 활성화된 페이지 번호 색상 */
+    color: white;
+}
+
+.paging span {
+    display: inline-block;
+}
+
+.paging .prev, .paging .next {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    padding: 5px 10px; /* 버튼 크기 조정 */
+    display: flex; /* 이미지와 텍스트가 있을 경우 정렬을 쉽게 하기 위해 사용 */
+    justify-content: center;
+    align-items: center;
+    width: 25px; /* 고정된 너비 */
+    height: 25px; /* 고정된 높이 */
+}
+.paging .prev {
+    background-image: url('/images/paging_arrow.svg');
+    background-size: contain; /* 이미지 크기 조정 */
+    
+}
+
+.paging .next {
+    background-image: url('/images/paging_arrow.svg');
+    background-size: contain; /* 이미지 크기 조정 */
+    transform: rotate(180deg); 
+}

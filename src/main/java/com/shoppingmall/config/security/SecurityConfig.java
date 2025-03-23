@@ -123,6 +123,9 @@ public class SecurityConfig {
                 // Swagger 문서 접근 허용
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
+            	// FAQ 페이지에 접근 허용
+                .requestMatchers("/faq").permitAll()
+                
                 // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()
         );

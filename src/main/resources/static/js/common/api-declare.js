@@ -63,6 +63,16 @@ export async  function loadWishlist(){
   }
 }
 
+function formatBirthDate(birthString) {
+  if (!birthString || birthString.length !== 6) {
+    return "정보 없음";
+  }
+
+  const year = birthString.substring(0, 4);
+  const month = birthString.substring(4, 6);
+
+  return `${year}년 ${parseInt(month)}월`;
+}
 
 // 펫 리스트 렌더링 함수 분리
 export async function loadPetList() {
@@ -82,10 +92,16 @@ export async function loadPetList() {
 
       if (result.data.length !== 0) {
         const petElements = result.data.map((pet) => `
-            <div class="box" data-item-id="${pet.id}">
+            <div class="box" data-item-id="${pet.id}" 
+                data-pet-name="${pet.name}" 
+                data-pet-gender="${pet.gender || ''}" 
+                data-pet-age="${pet.age || ''}" 
+                data-pet-birth="${pet.birth || ''}" 
+                data-pet-species="${pet.species || ''}"
+                data-pet-type="${pet.type || ''}">
               <div class="name">${pet.name}</div>
               <div class="img" style="cursor: pointer">
-                <img src="https://img.lifet.co.kr/profile/default.png?w=420&h=420" alt="">
+                <img src="https://img.lifet.co.kr/profile/default.png?w=420&h=420" alt="${pet.name}">
               </div>
               <button type="button" class="layer_open"></button>
               <ul class="layer_modify" style="display: none">
@@ -99,6 +115,9 @@ export async function loadPetList() {
 
         // 새로 추가된 요소들에 이벤트 리스너 다시 바인딩
         setupPetListeners();
+
+        // 펫 이미지 클릭 시 모달 오픈 기능 추가
+        setupPetModalListeners();
       }
     }
   } catch (e) {
@@ -156,6 +175,74 @@ function setupPetListeners() {
           await loadPetList();
         } else {
           alert("펫 삭제에 실패했습니다.");
+        }
+      }
+    });
+  });
+}
+
+/// 펫 이미지 클릭 시 모달 열기 이벤트 설정
+function setupPetModalListeners() {
+  const petImages = document.querySelectorAll(".box .img");
+
+  petImages.forEach(imgDiv => {
+    imgDiv.addEventListener("click", function(e) {
+      const box = this.closest(".box");
+      const petId = box.dataset.itemId;
+      const petName = box.dataset.petName;
+      const petGender = box.dataset.petGender;
+      const petAge = box.dataset.petAge;
+      const petBirth = box.dataset.petBirth;
+      const petSpecies = box.dataset.petSpecies;
+      const petType = box.dataset.petType;
+
+      // 모달 열기
+      const petModal = document.getElementById("petModal");
+      if (petModal) {
+        petModal.style.display = "block";
+
+        // 모달에 펫 정보 표시
+        const nameElement = petModal.querySelector("#petName");
+        const detailsElement = petModal.querySelector("#petDetails");
+
+        if (nameElement) {
+          nameElement.textContent = petName;
+        }
+
+        if (detailsElement) {
+          // 모든 정보를 표시
+          let detailsHtml = "";
+
+          // 종류 (강아지/고양이)
+          if (petType) {
+            const petTypeName = petType === 'dog' ? '강아지' : petType === 'cat' ? '고양이' : petType;
+            detailsHtml += `<div><strong>종류 :</strong> ${petTypeName}</div>`;
+          }
+
+          // 품종
+          if (petSpecies) {
+            detailsHtml += `<div><strong>품종 :</strong> ${petSpecies}</div>`;
+          }
+
+          // 성별
+          if (petGender) {
+            const genderText = petGender === 'male' ? '남아' : petGender === 'female' ? '여아' : petGender;
+            detailsHtml += `<div><strong>성별 :</strong> ${genderText}</div>`;
+          }
+
+          // 나이
+          if (petAge) {
+            detailsHtml += `<div><strong>나이 :</strong> ${petAge}살</div>`;
+          }
+
+          // 생년월일
+          if (petBirth) {
+            const formattedBirth = formatBirthDate(petBirth);
+            detailsHtml += `<div><strong>출생 :</strong> ${formattedBirth}</div>`;
+          }
+
+          // HTML 내용으로 설정
+          detailsElement.innerHTML = detailsHtml || "상세 정보 없음";
         }
       }
     });

@@ -130,13 +130,13 @@
                     <!-- 해시태그 입력 -->
                     <div class="mb-3">
                         <div class="hashtag-note">* 여러 해시태그를 입력할 경우, 공백으로 구분해주세요.</div>
-                        <input type="text" id="hashtags" name="hashtags" class="hashtag-input" th:value="${board.hashtag}" placeholder="예: #육아 #일상">
+                        <input type="text" id="hashtags" name="hashtags" class="hashtag-input" th:value="${hashtags}" placeholder="예: #육아 #일상">
                     </div>
 
                     <!-- 버튼 -->
                     <div class="d-flex">
                         <button type="submit" class="btn btn-primary">✅ 게시글 작성</button>
-                        <a th:href="@{/board/board(keyword=${keyword}, category=${category})}" class="btn btn-secondary">❌ 취소</a>
+                        <a th:href="@{/board/read(boardId = ${board.boardId})}" class="btn btn-secondary" onClick="confirmDelete(event, this)">❌ 취소</a>
                     </div>
                 </form>
             </div>
@@ -149,6 +149,14 @@
 <script src="https://cdn.ckbox.io/ckbox/2.6.1/ckbox.js" crossorigin></script>
 <script src="/js/write.js"></script>
 <script>
+function confirmDelete(event, element) {
+	event.preventDefault();
+	let userConfirm = confirm("지금 중단하면 수정했던 내용이 사라집니다.\n계속하시겠습니까?");
+	if (userConfirm) {
+		window.location.href = element.href;
+	}
+}
+
     /*
         // CKEditor 초기화
         ClassicEditor.create( document.querySelector( '#editor' ), {
