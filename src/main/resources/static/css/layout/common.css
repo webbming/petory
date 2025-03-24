@@ -20,9 +20,11 @@ html, body {
 body {
   background-color: #fff;
   margin: 0; height: 100%;
+  font-family: 'Arial', sans-serif; 
+  letter-spacing: -1px;
   font-size: 14px;
   min-height: 100vh;
-  color: #343434;
+  color: #494949;
   /* 스크롤 바 밀림 현상  항상 스크롤바 표시로 */
   overflow-y: scroll;
   min-width: 1200px;
@@ -412,12 +414,11 @@ footer a.logo img {
   height: 37px;
   margin-right: -600px;
   padding: 8px 12px 8px 32px;
-  color: black;
-  font-size: 16px;
-  font-weight: 500;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
   line-height: 130%;
   border-radius: 40px;
-  border: 1px solid black;
-  background: #fff url("../../images/ui/edit.png") no-repeat left 8px center;
+  background: #68a5fe url("../../images/ui/write_icon.png") no-repeat left 8px center;
   background-size: 20px;
 }
