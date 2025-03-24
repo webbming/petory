@@ -51,7 +51,7 @@ public interface PurchaseProductRepository extends JpaRepository<PurchaseProduct
   @Query("SELECT p FROM PurchaseProduct p WHERE p.deliveryStatus = '배송중' AND p.userId = :userId ORDER BY p.purchase.purchaseId DESC")
   Page<PurchaseProduct> findByUserIdAndDeliveryStatusOrderByPurchaseIdDesc(@Param("userId") String userId, Pageable pageable);
 
-
+  Page<PurchaseProduct> findByDeliveryStatusOrderByPurchaseProductIdDesc(String deliveryStatus, Pageable pageable);
 
 }
 
