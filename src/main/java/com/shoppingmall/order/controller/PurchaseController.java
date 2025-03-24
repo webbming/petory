@@ -208,4 +208,10 @@ return "order/adminOrder";
 	model.addAttribute("coupons", service.getCoupon(pageable, userId));
 	return "order/coupon";
 	}
+
+@GetMapping("/admin/onDeliveryList")
+public String adminOnDeliveryList(Model model){
+model.addatributes(service.adminOnDeliveryList());
+return adminOnDeliveryList;
+}
 }
