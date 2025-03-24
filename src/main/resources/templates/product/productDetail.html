@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org/"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <title>상품 상세</title>
@@ -255,12 +256,12 @@
 
     <!-- 우측 하단 고정 버튼들 -->
     <div class="fixed-action-buttons">
-      <a th:href="@{'/products/edit/' + ${product.productId}}">수정하기</a>
+      <a th:href="@{'/products/edit/' + ${product.productId}}" sec:authorize="hasRole('ADMIN')">수정하기</a>
       <form th:action="@{'/products/delete/' + ${product.productId}}"
             method="post"
             onsubmit="return confirm('상품을 삭제하시겠습니까?');">
         <input type="hidden" name="_method" value="delete"/>
-        <button type="submit">삭제하기</button>
+        <button type="submit" sec:authorize="hasRole('ADMIN')">삭제하기</button>
       </form>
       <a id="openReviewModalBtnFixed" href="javascript:void(0);" onclick="openReviewModal()">리뷰 작성하기</a>
       <a href="/products">목록으로</a>
