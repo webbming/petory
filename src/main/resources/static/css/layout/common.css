@@ -161,7 +161,8 @@ i { font-style: inherit; }
 }
 
 .nav-item.community {
-  display: flex;
+  display: flex !important;
+  width: 80px;
   align-items: center;
 }
 

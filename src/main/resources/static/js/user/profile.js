@@ -4,21 +4,11 @@ import {loadTopInfo} from "../common/api-declare.js";
 import {loadWishlist} from "../common/api-declare.js";
 import {loadPetList , bindHeart} from "../common/api-declare.js";
 
-document.addEventListener("DOMContentLoaded" ,  async () =>{
-
+document.addEventListener("DOMContentLoaded", async () => {
   await loadTopInfo();
   await loadWishlist();
   await loadPetList();
   bindHeart();
-
-
-
-
-
-
-})
-
-document.addEventListener("DOMContentLoaded", async (e) => {
   modalUtil();
 });
 

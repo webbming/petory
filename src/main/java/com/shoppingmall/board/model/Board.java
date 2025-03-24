@@ -1,6 +1,7 @@
 package com.shoppingmall.board.model;
 
 import com.shoppingmall.board.dto.BoardResponseDTO;
+import com.shoppingmall.board.dto.PostType;
 import com.shoppingmall.user.utils.TimeUtils;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,7 @@ import com.shoppingmall.user.model.User;
 @Entity
 @Table(name = "board")
 @Getter @Setter
+
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +41,9 @@ public class Board {
 
     @Column(length = 500)
     private Set<String> hashtag;
+
+    @Enumerated(EnumType.STRING)
+    private PostType postType;
 
     @Column(name = "comment_count", nullable = false)
     private Integer commentCount = 0;
@@ -76,7 +81,7 @@ public class Board {
     }
 
 
-    public Board(String title, String image, String nickname, String content, Set<String> hashtag, String categoryId, User user) {
+    public Board(String title, String image, String nickname, String content, Set<String> hashtag, String categoryId, User user , PostType postType) {
         this.title = title;
         this.image = image;
         this.nickname = nickname;
@@ -84,6 +89,7 @@ public class Board {
         this.hashtag = hashtag;
         this.categoryId = categoryId;
         this.user = user;
+        this.postType = postType;
         this.commentCount = 0;  // 기본값
         this.viewCount = 0;     // 기본값
         this.likeCount = 0;     // 기본값

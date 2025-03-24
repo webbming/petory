@@ -177,6 +177,18 @@
       font-size: 16px;
       font-weight: 500;
     }
+    .content-preview button {
+      padding: 4px;
+      background-color: #68a5fe;
+      border-radius: 5px;
+      color: white;
+      margin-top: 10px;
+
+    }
+    .content-preview button:hover{
+      background-color: #2e6da4;
+      transition: 0.2s;
+    }
 
     .myboard-empty {
       margin-top: 100px;
@@ -192,6 +204,54 @@
     .content-wrapper img {
       max-width: 100%;
       height: auto;
+    }
+    .exposure_hashtag > span:nth-child(1) {
+      margin-top: 10px;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    .exposure_hashtag > ul {
+      display: flex;
+      margin-top: 10px;
+    }
+    .exposure_hashtag > ul li {
+      margin-right: 5px;
+      display: inline-block;
+      padding: 4px;
+      background-color: #68a5fe;
+      border-radius: 5px;
+      color: white;
+    }
+    .exposure_hashtag > ul li button{
+      color: white;
+
+    }
+    .hashtag-item {
+      display: flex;
+      align-items: center;
+      margin: 5px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+    }
+
+
+
+    .closeBtn {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 10px;
+      line-height: 1;
+    }
+
+    .hashtag-item:hover .closeBtn {
+      visibility: visible;
     }
 
   </style>
@@ -234,6 +294,15 @@
               <button type="button" class="keyword " data-type="육아팁">육아팁</button>
               <button type="button" class="keyword " data-type="일상공유">일상공유</button>
               <button type="button" class="keyword " data-type="상품후기">상품후기</button>
+            </div>
+
+            <div class="exposure_hashtag">
+
+              <span>최근 검색한 해시태그</span>
+              <span>*검색 초기화는 검색 버튼 다시 눌러주세요.</span>
+              <ul>
+
+              </ul>
             </div>
 
             <div class="exposure_tag">

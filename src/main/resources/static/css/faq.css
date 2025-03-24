@@ -33,7 +33,7 @@ h1{
     display: flex;
     justify-content: flex-start;
     align-items: stretch;
-    flex-direction: column; 
+    flex-direction: column;
 }
 
 .wrap:first-child > article {
