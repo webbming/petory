@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <title>스토어</title>
@@ -766,8 +767,8 @@
  				</ul>
               <div class="sidebar-buttons">
                 <button id="togglePetBtn" type="button"></button>
-                <a href="/products/add">상품 추가</a>
-                <a href="/categories">카테고리 관리</a>
+                <a href="/products/add" sec:authorize="hasRole('ADMIN')">상품 추가</a>
+                <a href="/categories" sec:authorize="hasRole('ADMIN')">카테고리 관리</a>
               </div>
             </aside>
 

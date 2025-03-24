@@ -232,7 +232,6 @@ public class UserService {
 
       // 기존 이미지가 기본 이미지가 아닐 경우에만 삭제
       if (!isDefaultImage(existingUserImg.getUrl())) {
-        System.out.println("기본 이미지가아닌 유저가가진 사진 " +  existingUserImg.getUrl());
         deleteProfileImage(existingUserImg.getUrl());
 
       }
@@ -261,7 +260,6 @@ public class UserService {
 
         if(oldFile.exists()) {
           boolean delete = oldFile.delete();
-          System.out.println("기존이미지 삭제 여부 " + delete);
         }
 
       }
@@ -279,7 +277,6 @@ public class UserService {
       String filePath = basePath + File.separator + fileName;
       File destinationFile = new File(filePath);
 
-      System.out.println("저장된 대표 이미지 경로: " + filePath);
       // 파일 저장
       try{
         file.transferTo(destinationFile);
@@ -301,7 +298,6 @@ public class UserService {
   public Map<String, Object> getActivities(String type, String userId , Pageable pageable) {
     Map<String, Object> response = new HashMap<>();
     List<BoardResponseDTO> boardsDtos = null;
-    System.out.println("호출이되야지왜안되냐고");
     User user = getUser(userId);
     System.out.println(user.getNickname());
     System.out.println(user.getId());

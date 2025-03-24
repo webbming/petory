@@ -110,14 +110,14 @@ public class SecurityConfig {
 
                 .requestMatchers("/cart/cartCount").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
-                .requestMatchers("/products" , "/product").permitAll()
+                .requestMatchers("/products/*" , "/product" , "/products").permitAll()
                 // 게시판 페이지 허용
                 .requestMatchers("/board/main" , "/board/wiki" , "/board/best" ).permitAll()
                 // 게시판 api 허용
                 .requestMatchers("/board/list").permitAll()
-                .requestMatchers("/board/board/list/**") .permitAll()   // 준서님
+                .requestMatchers("/board/board/list/**").permitAll()   // 준서님
+                .requestMatchers("/board/read").permitAll()
                 .requestMatchers("/order/**").permitAll()// 성호님
-
                 // 정적 리소스 접근 허용
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**" , "/slick/**").permitAll()
                 // Swagger 문서 접근 허용
@@ -125,6 +125,7 @@ public class SecurityConfig {
 
             	// FAQ 페이지에 접근 허용
                 .requestMatchers("/faq").permitAll()
+
                 
                 // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()

@@ -48,10 +48,18 @@
 			</div><br><br>
 
 			<div class="likeContain">
-				<a href="#" th:if="${#lists.contains(board.likeContain, user.id)}" id="likeCount"
-					 class="likeButton" th:data-board-id="${board.boardId}" th:data-id="${user.id}">❤️ [[${board.likeCount}]]</a>
-				<a href="#" th:unless="${#lists.contains(board.likeContain, user.id)}" id="likeCount"
-					 class="likeButton" th:data-board-id="${board.boardId}" th:data-id="${user.id}">🤍 [[${board.likeCount}]]</a>
+				<th:block th:if="${user != null}">
+					<a href="#" th:if="${#lists.contains(board.likeContain, user.id)}" id="likeCount"
+						 class="likeButton" th:data-board-id="${board.boardId}" th:data-id="${user.id}">❤️ [[${board.likeCount}]]</a>
+					<a href="#" th:unless="${#lists.contains(board.likeContain, user.id)}" id="likeCount"
+						 class="likeButton" th:data-board-id="${board.boardId}" th:data-id="${user.id}">🤍 [[${board.likeCount}]]</a>
+				</th:block>
+				<!-- 비회원인 경우 좋아요 수만 표시 -->
+				<th:block th:if="${user == null}">
+					<span id="likeCount" class="likeButton">🤍 [[${board.likeCount}]]</span>
+				</th:block>
+
+				<!-- 댓글 아이콘 및 개수 - 모든 사용자에게 표시 -->
 				<a href="#" id="commentButton" class="commentButton">🗨️</a>
 				<span th:text="${board.commentCount}" class="boardCommentCount"></span>
 			</div>
@@ -61,7 +69,7 @@
 			<h3 class="comments">댓글</h3>
 
 			<div class="commentWrite">
-				<img th:src="${user.userImg.getUrl()}" class="commentWriteUserImage">
+				<img th:src="${user != null ? user.userImg.getUrl() : '/images/ui/my-page-user-basic.jpg'}" class="commentWriteUserImage">
 				<form action="/board/commentCreate" method="post">
 					<input type="hidden" name="boardId" th:value="${board.boardId}">
 					<div class="commentBox" id="commentBox">
@@ -72,7 +80,7 @@
 			</div>
 
 			<div class="commentList" th:each="comment : ${comment}">
-				<img th:src="${comment.user.userImg.url}" class="commentUserImage">
+				<img th:src="${user != null ? comment.user.userImg.url : '/images/ui/my-page-user-basic.jpg'}" class="commentUserImage">
 				<div class="comment">
 					<div class="commentNicknameCreatedAt">
 						<p class="commentNickname" th:text="${comment.nickname}"></p>

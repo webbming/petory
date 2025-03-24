@@ -145,20 +145,20 @@ public class BoardService {
 	//상세조회
 	public Board viewPost(Long boardId, User user) {
 		Board board = repository.findById(boardId).orElse(null);
+		if (board == null) {
+			throw new RuntimeException("게시글이 존재하지 않습니다.");
+		}
+
 		Set<Long> container = board.getViewContain();
-		
-		if(!container.contains(user.getId())) {
+
+		if (user != null && !container.contains(user.getId())) {
 			container.add(user.getId());
 			board.setViewContain(container);
-			int viewCount = board.getViewCount();
-			viewCount++;
-			board.setViewCount(viewCount);
-			board.setViewContain(container);
+			board.setViewCount(board.getViewCount() + 1);
 			return repository.save(board);
 		}
-		else {
-			return board;
-		}
+
+		return board;
     }
 	
 	//상세조회
