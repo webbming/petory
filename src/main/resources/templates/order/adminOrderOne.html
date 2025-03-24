@@ -78,7 +78,7 @@ td.purchase-number .full-height {
 					<strong>주문자 ID:</strong> <a th:href="@{/order/orders/userId?userId={userId}&admin={admin}(userId=${purchase.userId}, admin='admin')}" th:text="${purchase.userId}"></a></span>
 				</div>
 				<div class="info-section">
-					<strong>총 가격:</strong> <span th:text="${purchase.totalPrice}"></span>
+					<strong>총 가격:</strong> <span th:text="|${#numbers.formatInteger(purchase.totalPrice, 3, 'COMMA')} 원|"></span>
 				</div>
 				<div class="info-section">
 					<strong>주문 시간:</strong> <span th:text="${#temporals.format(purchase.purchaseProduct[0].createAt, 'yyyy-M-d a h시 mm분')}"></span>
@@ -116,6 +116,7 @@ td.purchase-number .full-height {
 	</table>
 </div>
 </div>
+</section>
 </div>
 <div th:replace="fragment/footer :: footerFragment"></div>
 <script type="module" src="/js/user/profile.js"></script>

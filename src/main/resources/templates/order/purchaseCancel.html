@@ -6,6 +6,31 @@
     <link rel="stylesheet" href="/css/layout/common.css">
     <link rel="stylesheet" href="/css/profile.css">
     <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 12px;
+            margin: 0 4px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #007bff;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .pagination a.active,
+        .pagination a:hover {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+        .pagination span {
+            color: #6c757d;
+        }
         .order-container {
           width: 100%;
           margin: 0 2px 0 5px;
@@ -114,20 +139,20 @@
                 </table>
 
                 <!-- 페이징 영역 -->
-                <div class="pagination" th:if="${purchase.totalPages > 1}">
+                <div class="pagination" th:if="${item.totalPages > 1}">
             <span th:if="${currentPage > 0}">
-              <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
+              <a th:href="@{/order/orders/userId(userId=${item.content[0].userId}, page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
                 이전
               </a>
             </span>
-                    <span th:each="pageNum : ${#numbers.sequence(0, purchase.totalPages - 1)}">
-              <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
+                    <span th:each="pageNum : ${#numbers.sequence(0, item.totalPages - 1)}">
+              <a th:href="@{/order/orders/userId(userId=${item.content[0].userId}, page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
                  th:text="${pageNum + 1}"
                  th:class="${pageNum == currentPage} ? 'active' : ''">
               </a>
             </span>
-                    <span th:if="${currentPage < purchase.totalPages - 1}">
-              <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
+                    <span th:if="${currentPage < item.totalPages - 1}">
+              <a th:href="@{/order/orders/userId(userId=${item.content[0].userId}, page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
                 다음
               </a>
             </span>

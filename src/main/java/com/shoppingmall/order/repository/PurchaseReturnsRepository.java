@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PurchaseReturnsRepository extends JpaRepository<PurchaseReturns, Long> {
-   PurchaseReturns findByUserId(String userId);
 }

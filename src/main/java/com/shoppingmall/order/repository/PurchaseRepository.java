@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,5 +34,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     // 취소되지 않은 주문을 내림차순으로 찾기 (페이징)
     Page<Purchase> findByCancelAtIsNullOrderByPurchaseIdDesc(Pageable pageable);
 
+    @Query("SELECT p FROM Purchase p WHERE p.userId = :userId AND p.deliveryStatus = '배송중' ORDER BY p.purchaseId DESC")
+    Page<Purchase> findByUserIdAndDeliveryStatusOrderByPurchaseIdDesc(@Param("userId") String userId, Pageable pageable);
 }
 

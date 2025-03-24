@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -100,7 +101,6 @@ public class PurchaseService {
 		Page<Purchase> purchases;
 		Page<PurchaseDelivery> deliveries;
 		Page<PurchaseProduct> products;
-
 		if (purchaseState.equals("all")) {
 			purchases = purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
 			deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
@@ -109,11 +109,22 @@ public class PurchaseService {
 			purchases = purchaseRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			deliveries = deliveryRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			products = productRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseProductIdDesc(userId, pageable);
-		} else {
+		} else if(purchaseState.equals("onDelivery")){
+			purchases = purchaseRepo.findByUserIdAndDeliveryStatusOrderByPurchaseIdDesc(userId, pageable);
+			products = productRepo.findByUserIdAndDeliveryStatusOrderByPurchaseIdDesc(userId, pageable);
+			List<PurchaseDelivery> deliveryList = purchases.getContent()
+					.stream()
+					.map(Purchase::getPurchaseDelivery) // OneToOne 관계이므로 직접 접근 가능
+					.filter(Objects::nonNull)           // 혹시 null인 경우 필터링
+					.collect(Collectors.toList());
+			deliveries = new PageImpl<>(deliveryList, pageable, purchases.getTotalElements());
+		}
+		else {
 			purchases = purchaseRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			deliveries = deliveryRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			products = productRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 		}
+
 		return PurchasePageDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)

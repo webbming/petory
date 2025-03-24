@@ -81,7 +81,7 @@ public String orderByPurchaseId(@PathVariable Long purchaseId,
 @GetMapping("/admin/orderList")
 public String orderAll(@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
 						 @RequestParam(name = "page", defaultValue = "0") int page,
-						 @RequestParam(name = "size", defaultValue = "8") int size,
+						 @RequestParam(name = "size", defaultValue = "5") int size,
 						 Model model){
 
 	Pageable pageable = PageRequest.of(page, size);
@@ -133,7 +133,7 @@ return "order/adminOrder";
 	public String orderListByUserId(
 									Authentication authentication,
 									@RequestParam(name = "page", defaultValue = "0") int page,
-									@RequestParam(name = "size", defaultValue = "8") int size,
+									@RequestParam(name = "size", defaultValue = "5") int size,
 									@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
 									@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
 									Model model) {
@@ -156,8 +156,8 @@ return "order/adminOrder";
 		//취소일 경우
 		if(purchaseState.equals("cancel")){
 			return "order/purchaseCancel";
+			// 일반 유저의 경우
 		}
-		// 일반 유저의 경우
 		return "order/orderListByUserIdByProductId";
 	}
 
@@ -175,6 +175,8 @@ return "order/adminOrder";
 	 model.addAttribute("result", productAndDeliveryDto);
 	return "order/orderResultOne";
 	}
+
+//	배송중
 	@GetMapping("/onDelivery")
 	public String onDelivery(Authentication authentication,
 							Model model){

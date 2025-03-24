@@ -36,4 +36,5 @@ public interface PurchaseDeliveryRepository extends JpaRepository<PurchaseDelive
 
   @Query("SELECT d FROM PurchaseDelivery d ORDER BY d.purchase.purchaseId DESC")
   Page<PurchaseDelivery> findByCancelAtIsNullOrderByPurchaseIdDesc(Pageable pageable);
+
 }
