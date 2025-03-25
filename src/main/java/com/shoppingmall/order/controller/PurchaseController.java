@@ -77,6 +77,17 @@ public String orderByPurchaseId(@PathVariable Long purchaseId,
 	return "order/orderResult";
 }
 
+	//관리자용주문번호 기준 주문검색
+	@GetMapping("/admin/orders/{purchaseId}")
+	public String orderByPurchaseId(@PathVariable Long purchaseId, Model model){
+		PurchaseAllDto purchaseAllDto = service.getOrderDetails(purchaseId);
+		model.addAttribute("delivery", purchaseAllDto.getPurchaseDelivery());
+		model.addAttribute("purchase", purchaseAllDto.getPurchase());
+		model.addAttribute("item", purchaseAllDto.getPurchaseProduct());
+		model.addAttribute("dto", purchaseAllDto);
+			return "order/adminOrderOne";
+}
+
 //전체 회원 리스트 주문 검색(전체별, 취소별, 주문요청별)
 @GetMapping("/admin/orderList")
 public String orderAll(@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
@@ -100,7 +111,7 @@ public String orderAll(@RequestParam(name = "purchaseState", required = false, d
 return "order/adminOrder";
 	}
 
-	//배송상태 변경
+	//관리자용 배송상태 변경
 	@PostMapping("/admin/deiveryChange")
 	public String deliveryChange(@RequestParam("deliveryState")String deliveryState,
 															 RedirectAttributes redirectAttributes,
@@ -118,6 +129,7 @@ return "order/adminOrder";
 	return "redirect:/order/one?purchaseProductId=" + purchaseProductId;
 	}
 
+//사용자별 취소 리스트 검색
 	@PostMapping("/cancelAll")
 	public String cancelAll(@RequestParam(name = "purchaseId")Long purchaseId,
 													Authentication authentication,
@@ -160,23 +172,37 @@ return "order/adminOrder";
 		}
 		return "order/orderListByUserIdByProductId";
 	}
+	@GetMapping("/admin/orders/userId")
+	public String adminOrderListByUserId(
+									@RequestParam(name = "userId") String userId,
+									@RequestParam(name = "page", defaultValue = "0") int page,
+									@RequestParam(name = "size", defaultValue = "5") int size,
+									@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
+									Model model) {
+		Pageable pageable = PageRequest.of(page, size);
+			PurchasePageDto dto = service.orderListByUserId(userId, purchaseState, pageable);
+			if(dto.getPurchase()==null){
+				model.addAttribute("purchase", new Purchase());
+			}else{
+				model.addAttribute("purchase", dto.getPurchase());
+			}
+			model.addAttribute("delivery", dto.getPurchaseDelivery());
+			model.addAttribute("item", dto.getPurchaseProduct());
+			model.addAttribute("currentPage", page);
+			model.addAttribute("totalPages", dto.getPurchase().getTotalPages());
+			model.addAttribute("pageSize", size);
+			return "order/adminOrderByUserId";
+	}
 
 	//주문번호 기준 상세보기
 	@GetMapping("/one")
-	public String purchaseNumber(Authentication authentication,
-								@RequestParam(name = "purchaseProductId") Long purchaseProductId,
+	public String purchaseNumber(@RequestParam(name = "purchaseProductId") Long purchaseProductId,
 								Model model){
-	String userId = authentication.getName();
-	 ProductAndDeliveryDto productAndDeliveryDto = service.purchaseNumber(userId, purchaseProductId);
-	 if(productAndDeliveryDto.equals("false")){
-		 model.addAttribute("message", "오류가 발생하여 다시 실행 바랍니다.");
-		 return "redirect:order";
-	 }
-	 model.addAttribute("result", productAndDeliveryDto);
+	 model.addAttribute("result", service.purchaseNumber(purchaseProductId));
 	return "order/orderResultOne";
 	}
 
-//	배송중
+	//소비자용 배송줄 리스트
 	@GetMapping("/onDelivery")
 	public String onDelivery(Authentication authentication,
 							Model model){
@@ -194,11 +220,11 @@ return "order/adminOrder";
 	}
 	
 	//관리자용 환불 리스트
-	@GetMapping("/returnsList")
-	public String returnsList(Model model, @PageableDefault(page = 0, size = 5) Pageable pageable) {
-		model.addAttribute("returns", service.getAllReturns(pageable));
-		return "order/purchaseCancelAdmin";
-	}
+@GetMapping("/admin/returnsList")
+public String returnsList(Model model, @PageableDefault(page = 0, size = 5) Pageable pageable) {
+	model.addAttribute("returns", service.getAllReturns(pageable));
+	return "order/purchaseCancelAdmin";
+}
 
 	@GetMapping("/coupon")
 	public String coupon(Model model,
@@ -208,7 +234,8 @@ return "order/adminOrder";
 	model.addAttribute("coupons", service.getCoupon(pageable, userId));
 	return "order/coupon";
 	}
-//배송준비중 리스트
+
+// 관리자용 배송 요청 리스트
 @GetMapping("/admin/orders/request")
 public String adminPurchaseRequest(Model model,  @PageableDefault(page = 0, size = 5)  Pageable pageable){
 model.addAttribute("item", service.adminPurchaseRequest(pageable));

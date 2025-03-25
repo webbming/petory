@@ -156,19 +156,14 @@ public class PurchaseService {
 		productRepo.save(product);
 	}
 
-	public ProductAndDeliveryDto purchaseNumber(String userId, Long purchaseProductId) {
+	public ProductAndDeliveryDto purchaseNumber(Long purchaseProductId) {
 		List<PurchaseProduct> products = productRepo.findByPurchaseProductId(purchaseProductId);
-		if (products.get(0).getUserId().equals(userId)) {
 			List<PurchaseDelivery> deliveries = deliveryRepo.findByPurchaseId(products.get(0).getPurchase().getPurchaseId());
 
 			return ProductAndDeliveryDto.builder()
 					.purchaseDelivery(deliveries)
 					.purchaseProduct(products)
 					.build();
-		}
-		return ProductAndDeliveryDto.builder()
-				.message("false")
-				.build();
 
 	}
 
