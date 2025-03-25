@@ -116,6 +116,7 @@ public class SecurityConfig {
                 // 게시판 api 허용
                 .requestMatchers("/board/list").permitAll()
                 .requestMatchers("/board/board/list/**") .permitAll()   // 준서님
+                .requestMatchers("/order/admin/**").hasRole("ADMIN")// 성호님
                 .requestMatchers("/order/**").permitAll()// 성호님
 
                 // 정적 리소스 접근 허용
