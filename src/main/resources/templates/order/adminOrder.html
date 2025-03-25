@@ -4,9 +4,8 @@
 	<meta charset="UTF-8">
 	<title>주문 상세 정보</title>
 	<link rel="stylesheet" href="/css/order/adminOrderResult.css">
-	<link rel="stylesheet" href="/css/layout/common.css">
 	<link rel="stylesheet" href="/css/profile.css">
-
+	<link rel="stylesheet" href="/css/layout/common.css">
 	<style>
 .pagination {
     display: flex;
@@ -150,6 +149,7 @@ background-color: #0056b333; /* 호버 시 색상 변경 */
 </section>
 </div>
 <div th:replace="fragment/footer :: footerFragment"></div>
+<div th:replace="fragment/profile-common :: modal"></div>
 <script type="module" src="/js/user/profile.js"></script>
 <script src="/js/user/address.js"></script>
 </body>
