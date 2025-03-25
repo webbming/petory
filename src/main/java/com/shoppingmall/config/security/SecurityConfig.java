@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
@@ -88,6 +91,7 @@ public class SecurityConfig {
 
 
 
+
         http
         	.rememberMe(remember -> remember
             .key("uniqueAndSecret") // 보안 키 설정
@@ -107,6 +111,7 @@ public class SecurityConfig {
                 // 사용자 관련 페이지
                 .requestMatchers("/users/agree", "/users", "/users/find/**", "/users/addr").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/find/**", "/api/users/check").permitAll()
+                .requestMatchers("/api/users").permitAll()
                 .requestMatchers("/search").permitAll()
                 // 팀원별 기능 페이지 - 모두 접근 가능 설정
                 // ex) /cart/** -> cart 부터 아래의 하위 경로 허용
@@ -137,7 +142,7 @@ public class SecurityConfig {
 
         // 폼 로그인 설정
         http.formLogin(form -> form
-                .loginPage("/login")                  // 로그인 페이지 경로
+                .loginPage("/login")
                 .loginProcessingUrl("/login/process") // 로그인 처리 경로
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)       // 로그인 실패 시 핸들러

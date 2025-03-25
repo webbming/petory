@@ -104,6 +104,7 @@
             <div class="card">
                 <h2 class="text-center">📝 게시글 수정</h2>
                 <form action="/board/update" method="POST" enctype="multipart/form-data" id="boardUpdateForm">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <input type="hidden" name="boardId" th:value="${board.boardId}">
 
                     <!-- 제목 입력 -->

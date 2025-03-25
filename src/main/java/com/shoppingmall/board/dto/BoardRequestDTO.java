@@ -55,7 +55,7 @@ public class BoardRequestDTO {
     private String title;
     private String categoryId;
     private String content;
-    private String hashtag;
+    private String hashtags;
   }
 
   @Getter

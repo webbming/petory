@@ -153,6 +153,8 @@ function setupPetListeners() {
   // 삭제 버튼 이벤트
   deleteBtns.forEach((btn) => {
     btn.addEventListener("click", async (e) => {
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
       e.preventDefault();
 
       const con = confirm("정말 삭제하시겠습니까?");
@@ -165,7 +167,8 @@ function setupPetListeners() {
           method: "DELETE",
           credentials: "include",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            [csrfHeader] : csrfToken
           },
           body: JSON.stringify({ id: petId })
         });

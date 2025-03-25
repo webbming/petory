@@ -203,7 +203,7 @@ public class BoardService {
 		board.setTitle(boardRequestDTO.getTitle());
 		board.setContent(board.getContent());
 		board.setCategoryId(board.getCategoryId());
-		board.setHashtag(extractAndSaveHashtags(boardRequestDTO.getHashtag()));
+		board.setHashtag(extractAndSaveHashtags(boardRequestDTO.getHashtags()));
 		repository.save(board);
 	}
 	

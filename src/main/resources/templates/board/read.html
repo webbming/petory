@@ -190,84 +190,45 @@
 		});
 	})
 
-	document.addEventListener("DOMContentLoaded", (e) =>{
+	document.addEventListener("DOMContentLoaded", (e) => {
 		const likesBtn = document.getElementById("likeCount");
 		const boardId = likesBtn.dataset.boardId;
 		const userId = likesBtn.dataset.id;
-		likesBtn.addEventListener("click" , async (e) =>{
+
+		likesBtn.addEventListener("click", async (e) => {
 			e.preventDefault();
 
 			const data = {
-				boardId : boardId,
-				userId : userId
-			}
+				boardId: boardId,
+				userId: userId
+			};
 
-			const response = await fetch(`/board/like` , {
-
-				method : "POST" ,
-				headers : {
-					"Content-Type" : "application/json",
-					[csrfHeader] : csrfToken
+			const response = await fetch(`/board/like`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					[csrfHeader]: csrfToken // CSRF 토큰 추가
 				},
-				body : JSON.stringify(data)
+				body: JSON.stringify(data)
+			});
 
-			})
-
-			const result = await response.json()
-
-			if(!response.ok){
-				console.log("데이터를 못받아왔씁니다")
+			// 응답이 리디렉션인 경우
+			if (response.redirected) {
+				window.location.href = response.url; // 로그인 페이지로 리디렉션
+				return; // 이후 코드를 실행하지 않도록 종료
 			}
 
-			if(result.data.contain === "contained"){
+			// JSON 응답 처리
+			const result = await response.json();
+
+			// 좋아요 상태에 따라 버튼 텍스트 변경
+			if (result.data.contain === "contained") {
 				likesBtn.textContent = `❤️ ${result.data.likeCount}`;
-			}
-			else {
+			} else {
 				likesBtn.textContent = `🤍 ${result.data.likeCount}`;
 			}
+		});
+	});
 
-
-		})
-	})
-	document.addEventListener("DOMContentLoaded", (e) =>{
-		const likeButtons = document.querySelectorAll(".commentLikeCount");
-
-		likeButtons.forEach(likesBtn => {
-			const commentId = likesBtn.dataset.commentId;
-			const userId = likesBtn.dataset.id;
-
-			likesBtn.addEventListener("click" , async (e) =>{
-				e.preventDefault();
-
-				const data = {
-					commentId : commentId,
-					userId : userId
-				}
-				const response = await fetch(`/board/commentLike` , {
-
-					method : "POST" ,
-					headers : {
-						"Content-Type" : "application/json",
-						[csrfHeader] : csrfToken
-					},
-					body : JSON.stringify(data)
-
-				})
-
-				const result = await response.json()
-
-				if(!response.ok){
-					console.log("데이터를 못받아왔씁니다")
-				}
-
-				if(result.data.contain === "contained"){
-					likesBtn.textContent = `❤️ ${result.data.commentLikeCount}`;
-				}
-				else {
-					likesBtn.textContent = `🤍 ${result.data.commentLikeCount}`;
-				}
-			})
-		})
-	})
 </script>
 </html>
