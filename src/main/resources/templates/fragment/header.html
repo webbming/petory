@@ -13,7 +13,10 @@
           <div class="top-links">
             <div class="top-link" sec:authorize="isAuthenticated()">
               <a th:text="${#authentication.principal.nickname}">님</a>님&nbsp;
-              <a onclick="window.location.href='/logout'">로그아웃</a>
+              <form id="logoutForm" th:action="@{/logout}" method="POST">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+              </form>
+              <a href="#" onclick="document.getElementById('logoutForm').submit();">로그아웃</a>
             </div>
             <div class="top-link" sec:authorize="!isAuthenticated()">
               <a onclick="window.location.href='/login'">로그인</a>
@@ -24,8 +27,7 @@
           <div class="header-container">
             <div class="left-section">
               <a href="/" class="logo">
-                <img src="/images/ui/petAdd-dog.png" width="40" height="40">
-                <span class="logo-text">에이콘</span>
+                <span class="logo-text">펫토리</span>
               </a>
               <ul class="nav-menu">
                 <li class="nav-item community">
@@ -49,11 +51,7 @@
               </div>
 
               <div class="user-actions">
-                <div class="icon-button">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z" fill="#333333"/>
-                  </svg>
-                </div>
+
 
                 <div class="icon-button">
                   <a href="/cart">

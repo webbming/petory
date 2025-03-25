@@ -9,10 +9,13 @@ loginForm.addEventListener("submit" , async(e) =>{
     // URL 인코딩된 폼 데이터로 변환
     const urlEncodedData = new URLSearchParams(formData).toString();
 
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     const response = await fetch("/login/process", {
         method: "POST",
         headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded",
+            [csrfHeader] : csrfToken
         },
         body: urlEncodedData // JSON 대신 URL 인코딩된 폼 데이터 사용
     });

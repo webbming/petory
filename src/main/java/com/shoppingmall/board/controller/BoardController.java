@@ -193,14 +193,17 @@ public class BoardController {
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
 		System.out.println("상세조회 됨");
-		        User user = userService.getUser(auth.getName());
+						User user = null;
+						if(auth != null){
+							user = userService.getUser(auth.getName());
+						}
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
 		        
-		        if(board.getUser().getId().equals(user.getId())) {
+		        if(user != null && board.getUser().getId().equals(user.getId())) {
 		        	model.addAttribute("master", "master");
 		        }
-		        
+
 		        System.out.println(board.getContent());
 		        
 		        model.addAttribute("board", board);

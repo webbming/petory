@@ -3,6 +3,8 @@
       xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   <title>상품 상세</title>
   <link rel="stylesheet" href="/css/layout/common.css">
   <!-- Swiper CSS -->
@@ -332,6 +334,8 @@
 <div th:replace="fragment/footer :: footerFragment"></div>
 
 <script>
+  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
   document.addEventListener("DOMContentLoaded", function(){
     /* 스와이퍼 초기화 */
     var galleryThumbs = new Swiper('.gallery-thumbs', {
@@ -444,16 +448,26 @@
           alert('상품 정보를 찾을 수 없습니다.');
           return;
         }
+        const logined = await fetch("/api/users")
+        if(logined.status === 401){
+          alert("로그인이 필요합니다.")
+          window.location.href = "/login"
+          return;
+        }
+
         const response = await fetch(`/wishlist/add`, {
           method:'POST',
           headers : {
-            "Content-Type" : "application/json"
+            "Content-Type" : "application/json",
+            [csrfHeader] : csrfToken
           },
           body : JSON.stringify({productId: Number(productId)})
         });
+
         const data = await response.json();
         if(response.status === 400){
           console.log("찜 목록 추가 실패", data);
+          alert(data.data.error)
         }
         if(response.status === 200){
           console.log("찜 하기 성공!", data);
@@ -467,21 +481,37 @@
   function addToCart() {
     let productId = "[[${product.productId}]]";
     let quantity = document.getElementById("quantity").value;
-    fetch(`/cart/items/${productId}/add?quantity=${quantity}`, { method:"POST" })
+
+    // 먼저 로그인 상태 확인 (사용자 정보 API 호출)
+    fetch("/api/users")
     .then(response => {
-      if(!response.ok){
-        throw new Error("네트워크 응답이 올바르지 않습니다.");
+      if (response.status === 401) {
+        // 로그인하지 않은 경우
+        alert("로그인이 필요합니다.");
+        window.location.href = "/login"; // 로그인 페이지로 리디렉션
+        return Promise.reject("로그인 필요"); // Promise를 reject하여 이후 코드 실행 방지
       }
-      return response.json();
+      // 로그인 상태일 경우 장바구니 추가 요청
+      return fetch(`/cart/items/${productId}/add?quantity=${quantity}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // JSON 데이터 전송을 위한 Content-Type 설정
+          [csrfHeader]: csrfToken // CSRF 토큰 추가
+        }
+      });
+    })
+    .then(response => {
+      // 장바구니 추가 요청에 대한 응답 처리
+      if (!response.ok) {
+        throw new Error("장바구니 추가에 실패했습니다."); // 오류 처리
+      }
+      return response.json(); // JSON 응답 파싱
     })
     .then(data => {
+      // 장바구니에 추가 성공 시 알림
       alert("장바구니에 상품이 추가되었습니다!");
-      console.log("업데이트된 장바구니:", data);
+      console.log("업데이트된 장바구니:", data); // 업데이트된 장바구니 데이터 출력
     })
-    .catch(error => {
-      console.error("Error:", error);
-      alert("오류가 발생했습니다.");
-    });
   }
 
   /* 이미지 팝업 열기/닫기 */
