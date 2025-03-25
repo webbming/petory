@@ -208,10 +208,10 @@ return "order/adminOrder";
 	model.addAttribute("coupons", service.getCoupon(pageable, userId));
 	return "order/coupon";
 	}
-
-@GetMapping("/admin/onDeliveryList")
-public String adminOnDeliveryList(Model model){
-model.addatributes(service.adminOnDeliveryList());
-return adminOnDeliveryList;
+//배송준비중 리스트
+@GetMapping("/admin/orders/request")
+public String adminPurchaseRequest(Model model,  @PageableDefault(page = 0, size = 5)  Pageable pageable){
+model.addAttribute("item", service.adminPurchaseRequest(pageable));
+return "order/adminPurchaseRequest";
 }
 }

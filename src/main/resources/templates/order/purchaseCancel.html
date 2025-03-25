@@ -142,7 +142,7 @@
                 <div class="pagination" th:if="${item.totalPages > 1}">
             <span th:if="${currentPage > 0}">
               <a th:href="@{/order/orders/userId(userId=${item.content[0].userId}, page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
-                이전
+                &laquo;
               </a>
             </span>
                     <span th:each="pageNum : ${#numbers.sequence(0, item.totalPages - 1)}">
@@ -153,7 +153,7 @@
             </span>
                     <span th:if="${currentPage < item.totalPages - 1}">
               <a th:href="@{/order/orders/userId(userId=${item.content[0].userId}, page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
-                다음
+                &raquo;
               </a>
             </span>
                 </div>

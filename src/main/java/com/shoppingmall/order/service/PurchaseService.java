@@ -440,8 +440,8 @@ public class PurchaseService {
 	}
 
 //관리자용 배송중 출력 리스트
-public Page<purchaseProduct> adminOnDeliveryList(){
-String deliveryStatus = '배송중';
-return productrepo.findByDeliveryStatusOrderByPurchaseProductIdDesc(deliveryStatus);
+public Page<PurchaseProduct> adminPurchaseRequest(Pageable pageable){
+String deliveryStatus = "배송준비중";
+return productRepo.findByDeliveryStatusOrderByPurchaseProductIdDesc(deliveryStatus, pageable);
 }
 }
