@@ -53,5 +53,6 @@ public interface PurchaseProductRepository extends JpaRepository<PurchaseProduct
 
   Page<PurchaseProduct> findByDeliveryStatusOrderByPurchaseProductIdDesc(String deliveryStatus, Pageable pageable);
 
+  int countByDeliveryStatus(String deliveryStatus);
 }
 

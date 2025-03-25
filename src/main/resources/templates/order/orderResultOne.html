@@ -323,18 +323,18 @@
 									<h2>배송 정보 수정</h2>
 									<form id="editForm" th:action="@{/order/rest/receiverChange}" method="post" onsubmit="saveAndGoBack(event)">
 										<input type="hidden" name="purchaseProductId" th:value="${result.purchaseProduct[0].purchaseProductId}">
-										<input type="hidden" name="purchaseId" th:value="${result.purchaseProduct[0].purchase.purchaseId}">
+										<input type="hidden" name="purchaseId" th:value="${result.purchaseProduct[0].purchase.purchaseId}" required>
 										<label for="receiverName">수령인 이름:</label>
-										<input type="text" id="receiverName" name="receiverName" th:value="${result.purchaseDelivery[0].receiverName}">
+										<input type="text" id="receiverName" name="receiverName" th:value="${result.purchaseDelivery[0].receiverName}" required>
 										<label for="receiverPhone">수령인 전화번호:</label>
-										<input type="text" id="receiverPhone" name="receiverPhone" th:value="${result.purchaseDelivery[0].receiverPhone}">
+										<input type="text" id="receiverPhone" name="receiverPhone" th:value="${result.purchaseDelivery[0].receiverPhone}" required>
 										<label for="receiverAddr">배송 주소:</label>
 										<input type="text" id="receiverAddr" name="receiverAddr" th:value="${result.purchaseDelivery[0].receiverAddr}" readonly>
 										<button type="button" class="address-search-btn" onclick="searchAddress()">주소 검색</button>
 										<label for="receiverAddrDetail">상세 주소:</label>
-										<input type="text" id="receiverAddrDetail" name="receiverAddrDetail" placeholder="상세 주소를 입력하세요">
+										<input type="text" id="receiverAddrDetail" name="receiverAddrDetail" placeholder="상세 주소를 입력하세요" required>
 										<label for="deliveryMessage">배송 요청 사항:</label>
-										<input type="text" id="deliveryMessage" name="deliveryMessage" th:value="${result.purchaseDelivery[0].deliveryMessage}">
+										<input type="text" id="deliveryMessage" name="deliveryMessage" th:value="${result.purchaseDelivery[0].deliveryMessage}" required>
 										<button type="submit">저장</button>
 										<button type="button" class="cancel" onclick="closeModal()">취소</button>
 									</form>

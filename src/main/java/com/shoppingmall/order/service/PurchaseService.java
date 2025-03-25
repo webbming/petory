@@ -207,7 +207,10 @@ public class PurchaseService {
 			delivery.setDeliveryMessage("경비실에 맡겨주세요");
 		} else if (cartDto.getDeliveryMessage().equals("contact")) {
 			delivery.setDeliveryMessage("배송 완료 전 전 연락 바랍니다");
-		} else {
+		} else if (cartDto.getDeliveryMessage().isEmpty()){
+			delivery.setDeliveryMessage("요청사항이 없습니다");
+		}
+		else {
 			delivery.setDeliveryMessage(cartDto.getDeliveryMessage());
 		}
 
@@ -434,9 +437,9 @@ public class PurchaseService {
 		return "success";
 	}
 
-//관리자용 배송중 출력 리스트
-public Page<PurchaseProduct> adminPurchaseRequest(Pageable pageable){
-String deliveryStatus = "배송준비중";
-return productRepo.findByDeliveryStatusOrderByPurchaseProductIdDesc(deliveryStatus, pageable);
-}
+//관리자용 배송 요청 출력 리스트
+	public Page<PurchaseProduct> adminPurchaseRequest(Pageable pageable){
+	String deliveryStatus = "배송준비중";
+	return productRepo.findByDeliveryStatusOrderByPurchaseProductIdDesc(deliveryStatus, pageable);
+	}
 }

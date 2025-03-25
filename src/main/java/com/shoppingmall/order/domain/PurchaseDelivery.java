@@ -17,14 +17,19 @@ public class PurchaseDelivery {
     @JoinColumn(name = "purchase_id") // 주문 ID (FK)
     private Purchase purchase;
 
+    @Column(nullable = false)
     private String userId;
 
+    @Column(nullable = false, length = 10)
     private String receiverName; // 수령인 이름
 
+    @Column(nullable = false, length = 15)
     private String receiverPhone; // 수령인 전화번호
 
+    @Column(nullable = false, length = 50)
     private String receiverAddr; // 수령인 주소
 
+    @Column(nullable = false)
     private String deliveryMessage; // 배송 메시지
 
     private String deliveryStatus; // 배송 상태
