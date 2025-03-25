@@ -1,6 +1,17 @@
 
 // 모달 유틸리티 함수 수정
 export function modalUtil() {
+  const modalBtn = document.querySelector("#saveNickname")
+
+  modalBtn.addEventListener("click",  async e=>{
+    e.preventDefault()
+    const response = await fetch("/api/users/me/profile" , {
+      method : "POST",
+      headers : {
+
+      }
+    })
+  })
   // 공용 모달을 관리할 객체
   const modals = {
     nickname: document.getElementById("nicknameModal"),

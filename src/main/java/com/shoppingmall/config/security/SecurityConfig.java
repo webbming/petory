@@ -18,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
@@ -80,7 +81,10 @@ public class SecurityConfig {
         http.httpBasic(auth -> auth.disable());
 
         // CSRF 보호 비활성화
-        http.csrf(csrf -> csrf.disable());
+        http.csrf(csrf -> csrf
+              .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+
+        );
 
 
 

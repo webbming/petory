@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 	<title>게시글 상세</title>
 	<link rel="stylesheet" href="/css/layout/common.css">
 	<link rel="stylesheet" href="/css/board/read.css">
@@ -71,6 +73,7 @@
 			<div class="commentWrite">
 				<img th:src="${user != null ? user.userImg.getUrl() : '/images/ui/my-page-user-basic.jpg'}" class="commentWriteUserImage">
 				<form action="/board/commentCreate" method="post">
+					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 					<input type="hidden" name="boardId" th:value="${board.boardId}">
 					<div class="commentBox" id="commentBox">
 						<textarea id="content" name="content" rows="3" class="commentWriteContent" placeholder="댓글을 입력해주세요" required></textarea>
@@ -117,6 +120,8 @@
 
 </body>
 <script>
+	const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 	function confirmDelete(event, element) {
 		event.preventDefault();
 		let userConfirm = confirm("정말 삭제하시겠습니까?");
@@ -153,7 +158,8 @@
 				fetch(`/board/commentUpdate`, {
 					method: "POST",
 					headers: {
-						"Content-Type": "application/json"
+						"Content-Type": "application/json",
+						[csrfHeader] : csrfToken
 					},
 					body: JSON.stringify({
 						commentId: commentId,
@@ -200,7 +206,8 @@
 
 				method : "POST" ,
 				headers : {
-					"Content-Type" : "application/json"
+					"Content-Type" : "application/json",
+					[csrfHeader] : csrfToken
 				},
 				body : JSON.stringify(data)
 
@@ -240,7 +247,8 @@
 
 					method : "POST" ,
 					headers : {
-						"Content-Type" : "application/json"
+						"Content-Type" : "application/json",
+						[csrfHeader] : csrfToken
 					},
 					body : JSON.stringify(data)
 

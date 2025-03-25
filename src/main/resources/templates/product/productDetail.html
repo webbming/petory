@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   <title>상품 상세</title>
   <link rel="stylesheet" href="/css/layout/common.css">
   <!-- Swiper CSS -->
@@ -331,6 +333,8 @@
 <div th:replace="fragment/footer :: footerFragment"></div>
 
 <script>
+  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
   document.addEventListener("DOMContentLoaded", function(){
     /* 스와이퍼 초기화 */
     var galleryThumbs = new Swiper('.gallery-thumbs', {
@@ -446,7 +450,8 @@
         const response = await fetch(`/wishlist/add`, {
           method:'POST',
           headers : {
-            "Content-Type" : "application/json"
+            "Content-Type" : "application/json",
+            [csrfHeader] : csrfToken
           },
           body : JSON.stringify({productId: Number(productId)})
         });
@@ -466,7 +471,7 @@
   function addToCart() {
     let productId = "[[${product.productId}]]";
     let quantity = document.getElementById("quantity").value;
-    fetch(`/cart/items/${productId}/add?quantity=${quantity}`, { method:"POST" })
+    fetch(`/cart/items/${productId}/add?quantity=${quantity}`, { method:"POST" ,headers : { [csrfHeader] : csrfToken} })
     .then(response => {
       if(!response.ok){
         throw new Error("네트워크 응답이 올바르지 않습니다.");

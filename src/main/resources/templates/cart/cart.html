@@ -3,6 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>장바구니</title>
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 	<link rel="stylesheet" href="/css/layout/common.css">
 	<link rel="stylesheet" type="text/css" th:href="@{/css/cart.css}">
 </head>
@@ -94,6 +96,8 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+	const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 	// 주문 데이터 전송 함수
     function order(event) {
         // 체크된 행만 선택
@@ -206,6 +210,9 @@
         $.ajax({
             url: `/cart/items/${itemId}/update`,
             method: 'PUT',
+						headers :{
+							[csrfHeader] : csrfToken
+						},
             data: { quantity: quantity },
             success: function(response) {
                 console.log('AJAX 요청 성공');
@@ -269,6 +276,9 @@
         $.ajax({
             url: `/cart/items/${itemId}/remove`,
             method: 'DELETE',
+						headers : {
+							[csrfHeader] : csrfToken
+						},
             success: function(response) {
                 console.log(response);
                 alert('상품이 삭제되었습니다!');
@@ -288,6 +298,9 @@
             url: '/cart/items/remove',
             method: 'DELETE',
             contentType: 'application/json',
+						headers : {
+							[csrfHeader] : csrfToken
+						},
             data: JSON.stringify(selectedItems),
             success: function(response) {
                 console.log(response);

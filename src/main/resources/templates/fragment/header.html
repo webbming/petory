@@ -13,7 +13,10 @@
           <div class="top-links">
             <div class="top-link" sec:authorize="isAuthenticated()">
               <a th:text="${#authentication.principal.nickname}">님</a>님&nbsp;
-              <a onclick="window.location.href='/logout'">로그아웃</a>
+              <form id="logoutForm" th:action="@{/logout}" method="POST">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+              </form>
+              <a href="#" onclick="document.getElementById('logoutForm').submit();">로그아웃</a>
             </div>
             <div class="top-link" sec:authorize="!isAuthenticated()">
               <a onclick="window.location.href='/login'">로그인</a>

@@ -110,6 +110,7 @@ i { font-style: inherit; }
 .top-link {
   margin-left: 15px;
   color: #666;
+  display: flex;
   cursor: pointer;
   font-size: 12px;
 }
