@@ -258,6 +258,7 @@ export let mypageTopInfo = null;
 
 function updateMyPageTopInfo(data) {
   document.querySelector(".nickname").textContent = data.data.nickname
+  document.querySelector(".right_info > .user-pet > span").textContent = data.data.nickname
   document.querySelector(".delivery").textContent = data.data.onDeliveryStatusCount
   document.querySelector(".coupon").textContent = data.data.couponCount
   document.querySelector(".coupon_count").textContent = data.data.couponCount + '개';

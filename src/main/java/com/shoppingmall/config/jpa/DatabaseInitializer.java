@@ -110,68 +110,121 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         if (categoryRepository.count() == 0) {
             List<Category> categories = List.of(
-                    new Category(null, "사료", PetType.DOG, new ArrayList<>())
+                    new Category(null, "고양이사료", PetType.CAT, new ArrayList<>()),
+                    new Category(null, "고양이간식", PetType.CAT, new ArrayList<>()),
+                    new Category(null, "고양이용품", PetType.CAT, new ArrayList<>()),
+                    new Category(null, "강아지사료", PetType.DOG, new ArrayList<>()),
+                    new Category(null, "강아지간식", PetType.DOG, new ArrayList<>()),
+                    new Category(null, "강아지용품", PetType.DOG, new ArrayList<>())
             );
             categoryRepository.saveAll(categories); // 카테고리 저장
         }
 
 // 저장된 카테고리를 가져옴
-        Category category = categoryRepository.findByCategoryName("사료")
+        Category category = categoryRepository.findByCategoryName("고양이사료")
                 .orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category2 = categoryRepository.findByCategoryName("고양이간식")
+            .orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category3 = categoryRepository.findByCategoryName("고양이용품")
+            .orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category4 = categoryRepository.findByCategoryName("강아지사료")
+            .orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category5 = categoryRepository.findByCategoryName("강아지간식")
+            .orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category6 = categoryRepository.findByCategoryName("강아지용품")
+            .orElseThrow(() -> new RuntimeException("Category not found"));
 
         if (subcategoryRepository.count() == 0) {
             List<Subcategory> subcategories = List.of(
-                    new Subcategory(null, category, "건식 사료", "강아지 건식 사료"),
-                    new Subcategory(null, category, "습식 사료", "강아지 습식 사료")
+                    new Subcategory(null, category, "키튼(1세미만)", "키튼 (1세미만)"),
+                    new Subcategory(null, category, "어덜트(1~7세)", "어덜트 (1 ~ 7세)"),
+                    new Subcategory(null, category, "전연령", "전연령"),
+                    new Subcategory(null, category, "주식캔", "주식캔"),
+
+                    new Subcategory(null, category2, "간식파우치", "간식파우치"),
+                    new Subcategory(null, category2, "간식캔", "간식캔"),
+                    new Subcategory(null, category2, "영양/기능", "영양/기능"),
+                    new Subcategory(null, category2, "덴탈간식", "덴탈간식"),
+
+                    new Subcategory(null, category3, "낚시대/레이저", "낚시대/레이저"),
+                    new Subcategory(null, category3, "모래", "모래"),
+                    new Subcategory(null, category3, "스크래쳐/박스", "스크래쳐/박스"),
+                    new Subcategory(null, category3, "터널/사냥본능", "터널/사냥본능"),
+
+                    new Subcategory(null, category4, "퍼피(1세미만)", "터널/사냥본능"),
+                    new Subcategory(null, category4, "어덜트(1~7세)", "터널/사냥본능"),
+                    new Subcategory(null, category4, "시니어(7세이상)", "터널/사냥본능"),
+                    new Subcategory(null, category4, "습식사료", "터널/사냥본능"),
+
+                    new Subcategory(null, category5, "껌", "껌"),
+                    new Subcategory(null, category5, "뼈간식", "뼈간식"),
+                    new Subcategory(null, category5, "영양/기능", "영양/기능"),
+                    new Subcategory(null, category5, "덴탈껌", "덴탈껌"),
+
+                    new Subcategory(null, category6, "장난감", "장난감"),
+                    new Subcategory(null, category6, "산책용품", "산책용품"),
+                    new Subcategory(null, category6, "배변용품", "배변용품"),
+                    new Subcategory(null, category6, "하우스/방석", "하우스/방석")
+
+
+
+
             );
             subcategoryRepository.saveAll(subcategories);
         }
 
         if (productRepository.count() == 0) {
-            Subcategory subcategory = subcategoryRepository.findBySubcategoryName("건식 사료")
-                    .orElseThrow(() -> new RuntimeException("Subcategory not found"));
+
+            List<Subcategory> subcategories = new ArrayList<>();
+
+            for (int i = 1; i < 25; i++) {
+                Subcategory subcategory = subcategoryRepository.findBySubcategoryId(Long.valueOf(i)).orElseThrow(() -> new RuntimeException("Subcategory not found"));
+                subcategories.add(subcategory);
+            }
+
+
 
             List<Product> products = new ArrayList<>(); // ArrayList로 초기화
             products.add(new Product(
                     null, "고양이 화장실 청소용 스쿱", 25000, "스쿱", "스쿱", "고양이 모래에서 배변을 걸러내기 위한 스쿱",
                     0, new ArrayList<>(List.of("/images/product/1.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
-                    category, subcategory, PetType.DOG
+                    category, subcategories.get(10), PetType.CAT
             ));
             products.add(new Product(
                     null, "고양이 배변에 잘 붙는 모래!", 28000, "고양이 모래", "고양이 화장실에 이 모래를 써보세요", "이 모래는 아주 부드럽고 고양이들이 좋아해요",
                     0, new ArrayList<>(List.of("/images/product/2.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
-                    category, subcategory, PetType.DOG
+                    category3, subcategories.get(9), PetType.CAT
             ));
             // 나머지 제품들도 동일한 방식으로 추가
             products.add(new Product(
                     null, "고양이들이 좋아하는 사료 유아용", 30000, "1", "고단백 사료", "근육 발달을 돕는 사료",
                     0, new ArrayList<>(List.of("/images/product/3.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
-                    category, subcategory, PetType.DOG
+                    category, subcategories.get(0), PetType.CAT
             ));
             products.add(new Product(
                     null, "고양이들이 좋아하는 사료 전연령", 22000, "전연령용", "오가닉 사료", "자연 원료로 만든 건강한 사료",
                     0, new ArrayList<>(List.of("/images/product/4.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
-                    category, subcategory, PetType.DOG
+                    category, subcategories.get(2), PetType.CAT
             ));
             products.add(new Product(
                     null, "반려견 반려묘 바닥 패드", 26000, "성묘/성견용", "패드", "패드",
                     0, new ArrayList<>(List.of("/images/product/11.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
-                    category, subcategory, PetType.CAT
+                    category, subcategories.get(23), PetType.DOG
             ));
             products.add(new Product(
                     null, "강아지 털방석 노랑색", 29000, "성견용", "강아지들이 좋아해요", "푹신푹신 방석",
                     0, new ArrayList<>(List.of("/images/product/12.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
-                    category, subcategory, PetType.CAT
+                    category6, subcategories.get(23), PetType.DOG
             ));
             products.add(new Product(
                     null, "강아지 빗", 31000, "퍼피용", "강아지용 빗", "애견 빗",
                     0, new ArrayList<>(List.of("/images/product/13.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
-                    category, subcategory, PetType.CAT
+                    category6, subcategories.get(19), PetType.DOG
             ));
             products.add(new Product(
                     null, "반려묘 반려견 담요", 32000, "1", "담요", "담요",
                     0, new ArrayList<>(List.of("/images/product/14.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
-                    category, subcategory, PetType.CAT
+                    category6, subcategories.get(23), PetType.DOG
             ));
 
             productRepository.saveAll(products);  // DB에 Product 데이터 삽입

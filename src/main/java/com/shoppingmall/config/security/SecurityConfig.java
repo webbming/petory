@@ -124,8 +124,8 @@ public class SecurityConfig {
                 .requestMatchers("/board/main" , "/board/wiki" , "/board/best" ).permitAll()
                 // 게시판 api 허용
                 .requestMatchers("/board/list").permitAll()
-                .requestMatchers("/order/**").permitAll()// 성호님
                 .requestMatchers("/order/admin/**").hasRole("ADMIN")// 성호님
+                .requestMatchers("/order/**").permitAll()// 성호님
                 .requestMatchers("/board/board/list/**").permitAll()   // 준서님
                 .requestMatchers("/board/read").permitAll()
 
@@ -141,6 +141,7 @@ public class SecurityConfig {
                 // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()
         );
+
 
         // 폼 로그인 설정
         http.formLogin(form -> form
