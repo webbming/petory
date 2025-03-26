@@ -1,5 +1,6 @@
 package com.shoppingmall.user.service;
 
+import ch.qos.logback.core.util.COWArrayList;
 import com.shoppingmall.board.dto.BoardResponseDTO;
 import com.shoppingmall.board.model.Board;
 import com.shoppingmall.board.model.Comment;
@@ -30,6 +31,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -144,9 +147,17 @@ public class UserService {
         canUseCouponCount[0]++;
       }
     });
-
-    int onDeliveryStatusCount = purchaseProductRepository.countByUserIdAndDeliveryStatus(userId);
-    System.out.println(onDeliveryStatusCount);
+    int onDeliveryStatusCount = 0;
+    Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    if (!authorities.isEmpty() && authorities.iterator().next().getAuthority().equals("ROLE_USER")) {
+      onDeliveryStatusCount = purchaseProductRepository.countByUserIdAndDeliveryStatus(userId);
+      System.out.println("user");
+    }
+    else if(!authorities.isEmpty() && authorities.iterator().next().getAuthority().equals("ROLE_ADMIN")){
+      String deliveryStatus = "배송준비중";
+      onDeliveryStatusCount = purchaseProductRepository.countByDeliveryStatus(deliveryStatus);
+      System.out.println("admin");
+    }
 
     return UserResponseDTO.MypageInfo.builder()
             .onDeliveryStatusCount(onDeliveryStatusCount)
@@ -232,7 +243,6 @@ public class UserService {
 
       // 기존 이미지가 기본 이미지가 아닐 경우에만 삭제
       if (!isDefaultImage(existingUserImg.getUrl())) {
-        System.out.println("기본 이미지가아닌 유저가가진 사진 " +  existingUserImg.getUrl());
         deleteProfileImage(existingUserImg.getUrl());
 
       }
@@ -261,7 +271,6 @@ public class UserService {
 
         if(oldFile.exists()) {
           boolean delete = oldFile.delete();
-          System.out.println("기존이미지 삭제 여부 " + delete);
         }
 
       }
@@ -279,7 +288,6 @@ public class UserService {
       String filePath = basePath + File.separator + fileName;
       File destinationFile = new File(filePath);
 
-      System.out.println("저장된 대표 이미지 경로: " + filePath);
       // 파일 저장
       try{
         file.transferTo(destinationFile);
@@ -301,7 +309,6 @@ public class UserService {
   public Map<String, Object> getActivities(String type, String userId , Pageable pageable) {
     Map<String, Object> response = new HashMap<>();
     List<BoardResponseDTO> boardsDtos = null;
-    System.out.println("호출이되야지왜안되냐고");
     User user = getUser(userId);
     System.out.println(user.getNickname());
     System.out.println(user.getId());

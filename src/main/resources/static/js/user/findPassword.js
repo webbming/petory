@@ -4,6 +4,8 @@ import {apiClient} from "../common/api.js";
 const findPasswordForm = document.querySelector("#findPasswordForm")
 
 findPasswordForm.addEventListener("submit" , async (e) =>{
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     e.preventDefault();
     const error = document.querySelector(".error")
     const userId = document.querySelector("#userId").value.trim();
@@ -16,9 +18,18 @@ findPasswordForm.addEventListener("submit" , async (e) =>{
     error.innerHTML = "";
     error.style.display = "block";
     error.textContent = "잠시만 기다려 주세요...";
+
     try{
 
-        const response = await apiClient.post("/api/users/find/pass", jsonData)
+        const result = await fetch("/api/users/find/pass", {
+            method : "POST",
+            headers : {
+                "Content-Type" : "application/json",
+                [csrfHeader] : csrfToken
+            },
+            body : JSON.stringify(jsonData)
+        })
+        const response = await result.json()
 
         if(response.status === "success"){
             error.innerHTML = "";

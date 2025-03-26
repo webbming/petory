@@ -23,9 +23,10 @@ public class Purchase {
 
     private String userId; // 사용자 ID (단순한 String)
 
+    @Column(nullable = false)
     private Integer totalPrice; // 총 가격
 
-//    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createAt; // 주문 생성 시간
 
     private LocalDateTime cancelAt; // 주문 취소 시간

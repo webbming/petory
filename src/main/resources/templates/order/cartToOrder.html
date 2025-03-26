@@ -68,7 +68,14 @@
             box-sizing: border-box;
         }
         .custom-form-group select {
-            width: 100%;
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+		.custom-form-group select {
+            width: 80%;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -131,6 +138,9 @@
         .custom-purchase-btn:hover {
             background-color: #0056b3;
         }
+        .delivery-request-custom-text {
+			margin-left: 90px;
+        }
         .custom-note {
             font-size: 12px;
             color: #666;
@@ -175,9 +185,6 @@
             display: none;
             margin-top: 10px;
         }
-        .custom-card-select.active {
-            display: block;
-        }
 	</style>
 </head>
 <body>
@@ -200,7 +207,7 @@
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].quantity'" th:value="${product.quantity}">
 					<input type="hidden" th:name="'product[' + ${iterStat.index} + '].productId'" th:value="${product.productId}">
 				</div>
-				&nbsp;&nbsp;&nbsp;&nbsp;<p>
+				&nbsp;<p>
 					<span class="product-price" th:text="${product.price}"></span> 원
 				</p>
 				<input type="hidden" th:name="'product[' + ${iterStat.index} + '].price'" th:value="${product.price}">
@@ -211,11 +218,11 @@
 			<div class="custom-form-group">
 				<div class="custom-input-row">
 					<label for="userId">주문자 ID</label>
-					<input type="text" id="userId" name="userId" th:value="${userId}">
+					<input type="text" id="userId" name="userId" th:value="${userId}" readonly>
 				</div>
 				<div class="custom-input-row">
 					<label for="phone">전화번호:</label>
-					<input type="text" id="phone" name="userPhone" th:value="${userPhone}">
+					<input type="text" id="phone" name="userPhone" th:value="${userPhone}" required>
 				</div>
 			</div>
 			<!-- 배송지 정보 -->
@@ -224,24 +231,24 @@
 			<div class="custom-form-group">
 				<div class="custom-input-row">
 					<label for="receiverName">수령인:</label>
-					<input type="text" name="receiverName" id="receiverName" th:value="${nickname}" placeholder="받는 사람">
+					<input type="text" name="receiverName" id="receiverName" th:value="${nickname}" placeholder="받는 사람" required>
 				</div>
 				<div class="custom-input-row">
 					<label for="receiverPhone">전화번호:</label>
-					<input type="text" name="receiverPhone" id="receiverPhone" th:value="${receiverPhone}" placeholder="휴대번호 입력 (-제외)">
+					<input type="text" name="receiverPhone" id="receiverPhone" th:value="${receiverPhone}" placeholder="휴대번호 입력 (-제외)" required>
 				</div>
 				<div class="custom-input-row">
 					<label for="receiver_addr">주소:</label>
-					<input type="text" name="receiverAddr" id="receiver_addr" th:value="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" readonly>
+					<input type="text" name="receiverAddr" id="receiver_addr" th:value="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" readonly required>
 					<button type="button" onclick="execDaumPostcode()">주소 검색</button>
 				</div>
 				<div class="custom-input-row">
 					<label for="receiver_addr_detail">상세 주소:</label>
-					<input type="text" name="receiverAddrDetail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요">
+					<input type="text" name="receiverAddrDetail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요" required>
 				</div>
 				<div class="custom-input-row">
 					<label for="deliveryRequest">배송 요청:</label>
-					<select id="deliveryRequest" name="deliveryMessage" onchange="toggleCustomRequest()">
+					<select id="deliveryRequest" name="deliveryMessage" onchange="toggleCustomRequest()" class="deliveryMessageOption">
 						<option value="">선택하세요</option>
 						<option value="door">문 앞에 놓아주세요</option>
 						<option value="guard">경비실에 맡겨주세요</option>
@@ -250,7 +257,7 @@
 					</select>
 				</div>
 				<div class="custom-form-group delivery-request-custom">
-					<input type="text" id="customDeliveryRequest" name="customDeliveryRequest" placeholder="요청 사항을 입력하세요">
+					<input type="text" id="customDeliveryRequest" name="customDeliveryRequest" placeholder="요청 사항을 입력하세요" class="delivery-request-custom-text">
 				</div>
 			</div>
 
@@ -258,7 +265,7 @@
 			<div class="custom-title">쿠폰</div>
 			<hr class="custom-section-divider">
 			<div class="custom-form-group">
-				<select name="coupon" id="coupon-select">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="coupon" id="coupon-select">
 					<option value="">쿠폰을 선택해주세요.</option>
 					<option th:each="coupon: ${coupon}"
 							th:if="${coupon.usedAt==null}"

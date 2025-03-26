@@ -153,6 +153,8 @@ function setupPetListeners() {
   // 삭제 버튼 이벤트
   deleteBtns.forEach((btn) => {
     btn.addEventListener("click", async (e) => {
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
       e.preventDefault();
 
       const con = confirm("정말 삭제하시겠습니까?");
@@ -165,7 +167,8 @@ function setupPetListeners() {
           method: "DELETE",
           credentials: "include",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            [csrfHeader] : csrfToken
           },
           body: JSON.stringify({ id: petId })
         });
@@ -270,6 +273,7 @@ export function bindHeart(){
 
   heartBtns.forEach(btn => {
     btn.addEventListener("click", async (e) => { // ✅ click 이벤트 사용!
+
       const button = e.target;
       const isLiked = button.classList.contains("active");
       const listItem = button.closest("li"); // 가장 가까운 <li> 찾기
@@ -295,20 +299,31 @@ export function bindHeart(){
 
 
 async function addToWishlist(productId) {
+  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
   const response = await fetch("/wishlist/add", {
     method: "POST",
     credentials: "include",
-    headers: {"Content-Type": "application/json"},
+    headers: {
+      "Content-Type": "application/json",
+      [csrfHeader] : csrfToken
+
+    },
     body: JSON.stringify({productId : Number(productId)})
   });
   if (!response.ok) throw new Error("찜 추가 요청 실패");
 }
 
 async function removeFromWishlist(productId) {
+  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
   const response = await fetch("/wishlist/remove", {
     method: "DELETE",
     credentials: "include",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      [csrfHeader] : csrfToken
+    },
     body: JSON.stringify({ productId : Number(productId) })
   });
 

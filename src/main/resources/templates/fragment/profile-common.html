@@ -40,9 +40,18 @@
                     </div>
                     <h3>장바구니</h3>
                   </div>
-                  <div class="inner">
+                  <div class="inner" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                     <div class="inner-img">
-                        <a href="/order/onDelivery">
+                        <a href="/order/admin/orders/request">
+                        <img src="/images/ui/my-page-delivery.png" >
+                      </a>
+                      <span class="quantity delivery"></span>
+                    </div>
+                    <h3>배송 요청</h3>
+                  </div>
+                    <div class="inner" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <div class="inner-img">
+                        <a href="/order/admin/orders/request">
                         <img src="/images/ui/my-page-delivery.png" >
                       </a>
                       <span class="quantity delivery"></span>
@@ -77,10 +86,10 @@
                   </li>
                   <li>
                     <span>나의 쇼핑 정보</span>
-                      <a href="/order/admin/orderList">관리자용 주문/배송 리스트</a>
-                      <a href="/order/orders/userId">주문/배송</a>
-                      <a href="/order/orders/userId?purchaseState=cancel">취소/반품</a>
-                      <a href="/order/returnsList">관리자용 취소/반품</a>
+                      <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" href="/order/admin/orderList">관리자용 주문/배송 리스트</a>
+                      <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" href="/order/admin/returnsList">관리자용 취소/반품</a>
+                      <a th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" href="/order/orders/userId">주문/배송</a>
+                      <a th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" href="/order/orders/userId?purchaseState=cancel">취소/반품</a>
                   </li>
                   <li>
                     <span>나의 정보</span>
@@ -186,7 +195,7 @@
                   <h2>닉네임</h2>
                 <input type="text" id="newNickname" name="nickname" placeholder="새 닉네임 입력">
                 <span class="error">이미 존재하는 닉네임 입니다.</span>
-                <button id="saveNickname" disabled>저장</button>
+                <button id="saveNickname" >저장</button>
               </div>
             </div>
 

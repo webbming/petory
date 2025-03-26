@@ -13,10 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,12 +22,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -191,17 +187,23 @@ public class BoardController {
 	//상세페이지 이동
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
-		User user = userService.getUser(auth.getName());
-		Board board = boardService.viewPost(boardId, user);
-		List<Comment> comment = commentService.getComment(boardId);
+		System.out.println("상세조회 됨");
+						User user = null;
+						if(auth != null){
+							user = userService.getUser(auth.getName());
+						}
+		        Board board = boardService.viewPost(boardId, user);
+		        List<Comment> comment = commentService.getComment(boardId);
 		        
-		if(board.getUser().getId().equals(user.getId())) {
-		    model.addAttribute("master", "master");
-		}
+		        if(user != null && board.getUser().getId().equals(user.getId())) {
+		        	model.addAttribute("master", "master");
+		        }
+
+		        System.out.println(board.getContent());
 		        
-		model.addAttribute("board", board);
-		model.addAttribute("comment", comment);
-		model.addAttribute("user", user);
+		        model.addAttribute("board", board);
+		        model.addAttribute("comment", comment);
+		        model.addAttribute("user", user);
 
 	    return "board/read";
 	}

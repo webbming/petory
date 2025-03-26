@@ -5,6 +5,7 @@ import {loadWishlist} from "../common/api-declare.js";
 import {loadPetList , bindHeart} from "../common/api-declare.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+
   await loadTopInfo();
   await loadWishlist();
   await loadPetList();

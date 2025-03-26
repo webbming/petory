@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
@@ -80,7 +84,11 @@ public class SecurityConfig {
         http.httpBasic(auth -> auth.disable());
 
         // CSRF 보호 비활성화
-        http.csrf(csrf -> csrf.disable());
+        http.csrf(csrf -> csrf
+              .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+
+        );
+
 
 
 
@@ -103,6 +111,7 @@ public class SecurityConfig {
                 // 사용자 관련 페이지
                 .requestMatchers("/users/agree", "/users", "/users/find/**", "/users/addr").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/find/**", "/api/users/check").permitAll()
+                .requestMatchers("/api/users").permitAll()
                 .requestMatchers("/search").permitAll()
                 // 팀원별 기능 페이지 - 모두 접근 가능 설정
                 // ex) /cart/** -> cart 부터 아래의 하위 경로 허용
@@ -110,13 +119,15 @@ public class SecurityConfig {
 
                 .requestMatchers("/cart/cartCount").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
-                .requestMatchers("/products" , "/product").permitAll()
+                .requestMatchers("/products/*" , "/product" , "/products").permitAll()
                 // 게시판 페이지 허용
                 .requestMatchers("/board/main" , "/board/wiki" , "/board/best" ).permitAll()
                 // 게시판 api 허용
                 .requestMatchers("/board/list").permitAll()
-                .requestMatchers("/board/board/list/**") .permitAll()   // 준서님
                 .requestMatchers("/order/**").permitAll()// 성호님
+                .requestMatchers("/order/admin/**").hasRole("ADMIN")// 성호님
+                .requestMatchers("/board/board/list/**").permitAll()   // 준서님
+                .requestMatchers("/board/read").permitAll()
 
                 // 정적 리소스 접근 허용
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**" , "/slick/**").permitAll()
@@ -125,6 +136,7 @@ public class SecurityConfig {
 
             	// FAQ 페이지에 접근 허용
                 .requestMatchers("/faq").permitAll()
+
                 
                 // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()
@@ -132,7 +144,7 @@ public class SecurityConfig {
 
         // 폼 로그인 설정
         http.formLogin(form -> form
-                .loginPage("/login")                  // 로그인 페이지 경로
+                .loginPage("/login")
                 .loginProcessingUrl("/login/process") // 로그인 처리 경로
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)       // 로그인 실패 시 핸들러

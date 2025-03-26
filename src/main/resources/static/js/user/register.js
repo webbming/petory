@@ -19,7 +19,6 @@ function updateErrorMessages(){
   Object.keys(errorState).forEach(fieldName =>{
 
     const inputField = document.querySelector( `[name="${fieldName}"]`)
-    console.log(inputField)
     if (!errorState[fieldName]){
       inputField.classList.remove("input-error")
       return;
@@ -41,6 +40,8 @@ function updateErrorMessages(){
 
 inputs.forEach(input =>{
   input.addEventListener("blur" , async (e) =>{
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     e.preventDefault();
     const fieldName = e.target.name;
     const fieldValue = e.target.value.trim()
@@ -69,6 +70,7 @@ inputs.forEach(input =>{
             method : "POST",
             headers : {
               "Content-Type" : "application/json",
+              [csrfHeader]:csrfToken
             },
             body : JSON.stringify(data)
           });
@@ -117,9 +119,14 @@ document.querySelector("#registerForm").addEventListener("submit" , async (e) =>
   const formObj = Object.fromEntries(formData);
 
   try{
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     const response = await fetch("/api/users" , {
       method : "POST",
-      headers : {"Content-Type" : "application/json"},
+      headers : {
+        "Content-Type" : "application/json",
+        [csrfHeader]:csrfToken
+      },
       body : JSON.stringify(formObj)
     });
 

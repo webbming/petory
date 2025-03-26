@@ -20,7 +20,6 @@ import com.shoppingmall.user.model.User;
 @Entity
 @Table(name = "board")
 @Getter @Setter
-
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,10 +58,12 @@ public class Board {
 
     @Lob
     @Column(name = "view_contain")
+    @Builder.Default
     private Set<Long> viewContain = new HashSet<Long>();
 
     @Lob
     @Column(name = "like_contain")
+    @Builder.Default
     private Set<Long> likeContain = new HashSet<Long>();
 
     @Column(name = "created_at", updatable = false)
@@ -75,6 +76,7 @@ public class Board {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 

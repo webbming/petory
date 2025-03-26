@@ -18,10 +18,19 @@ public class CouponList {
     @Column(name = "couponList_id")
     private Long id;
 
+    @Column(nullable = false, length = 20)
     private String couponName;
+
+    @Column(nullable = false)
     private int discount;
+
+    @Column(nullable = false, length = 100)
     private String couponComment;
+
+    @Column(nullable = false)
     private LocalDateTime createAt;
+
+
     private LocalDateTime usedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

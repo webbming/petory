@@ -8,6 +8,8 @@ const findIdForm = document.querySelector("#findIdForm");
 findIdForm.addEventListener("submit" , async (e) =>{
 
     e.preventDefault();
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     const question = document.querySelector("#question").value;
     const answer = document.querySelector("#answer").value.trim();
     const userDisplay = document.querySelector("#userIdDisplay")
@@ -18,12 +20,21 @@ findIdForm.addEventListener("submit" , async (e) =>{
         answer : answer
     }
 
+
     try{
-        const result = await apiClient.post("/api/users/find/id", data)
+        const response = await fetch("/api/users/find/id", {
+            method:"POST",
+            headers : {
+                "Content-Type" : "application/json",
+                [csrfHeader] : csrfToken
+            },
+            body : JSON.stringify(data)
+        })
 
         userDisplay.textContent = "";
         noIdMessage.style.display = "none";
         resultContainer.style.display = "none";
+        const result = await response.json()
 
         if(result.status === "success"){
             userDisplay.textContent = `조회된 아이디 : ${result.data}`;

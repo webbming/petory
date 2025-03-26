@@ -2,6 +2,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>펫 등록</title>
   <link rel="stylesheet" href="/css/layout/common.css">
   <link rel="stylesheet" href="/css/pet.css">
@@ -122,6 +124,8 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     // 상태 관리 변수들
     let selectedAnimal = null;
     let currentIndex = 0;
@@ -228,7 +232,8 @@
           const response = await fetch("/api/pets", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              [csrfHeader] : csrfToken
             },
             body: JSON.stringify(jsonData)
           });

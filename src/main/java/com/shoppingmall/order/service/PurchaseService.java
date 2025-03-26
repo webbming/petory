@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -100,7 +101,6 @@ public class PurchaseService {
 		Page<Purchase> purchases;
 		Page<PurchaseDelivery> deliveries;
 		Page<PurchaseProduct> products;
-
 		if (purchaseState.equals("all")) {
 			purchases = purchaseRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
 			deliveries = deliveryRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
@@ -109,11 +109,22 @@ public class PurchaseService {
 			purchases = purchaseRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			deliveries = deliveryRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			products = productRepo.findByCancelAtIsNotNullAndUserIdOrderByPurchaseProductIdDesc(userId, pageable);
-		} else {
+		} else if(purchaseState.equals("onDelivery")){
+			purchases = purchaseRepo.findByUserIdAndDeliveryStatusOrderByPurchaseIdDesc(userId, pageable);
+			products = productRepo.findByUserIdAndDeliveryStatusOrderByPurchaseIdDesc(userId, pageable);
+			List<PurchaseDelivery> deliveryList = purchases.getContent()
+					.stream()
+					.map(Purchase::getPurchaseDelivery) // OneToOne 관계이므로 직접 접근 가능
+					.filter(Objects::nonNull)           // 혹시 null인 경우 필터링
+					.collect(Collectors.toList());
+			deliveries = new PageImpl<>(deliveryList, pageable, purchases.getTotalElements());
+		}
+		else {
 			purchases = purchaseRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			deliveries = deliveryRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 			products = productRepo.findByCancelAtIsNullAndUserIdOrderByPurchaseIdDesc(userId, pageable);
 		}
+
 		return PurchasePageDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
@@ -145,19 +156,14 @@ public class PurchaseService {
 		productRepo.save(product);
 	}
 
-	public ProductAndDeliveryDto purchaseNumber(String userId, Long purchaseProductId) {
+	public ProductAndDeliveryDto purchaseNumber(Long purchaseProductId) {
 		List<PurchaseProduct> products = productRepo.findByPurchaseProductId(purchaseProductId);
-		if (products.get(0).getUserId().equals(userId)) {
 			List<PurchaseDelivery> deliveries = deliveryRepo.findByPurchaseId(products.get(0).getPurchase().getPurchaseId());
 
 			return ProductAndDeliveryDto.builder()
 					.purchaseDelivery(deliveries)
 					.purchaseProduct(products)
 					.build();
-		}
-		return ProductAndDeliveryDto.builder()
-				.message("false")
-				.build();
 
 	}
 
@@ -201,7 +207,10 @@ public class PurchaseService {
 			delivery.setDeliveryMessage("경비실에 맡겨주세요");
 		} else if (cartDto.getDeliveryMessage().equals("contact")) {
 			delivery.setDeliveryMessage("배송 완료 전 전 연락 바랍니다");
-		} else {
+		} else if (cartDto.getDeliveryMessage().isEmpty()){
+			delivery.setDeliveryMessage("요청사항이 없습니다");
+		}
+		else {
 			delivery.setDeliveryMessage(cartDto.getDeliveryMessage());
 		}
 
@@ -426,5 +435,11 @@ public class PurchaseService {
 			purchaseRepo.save(purchases);
 		}
 		return "success";
+	}
+
+//관리자용 배송 요청 출력 리스트
+	public Page<PurchaseProduct> adminPurchaseRequest(Pageable pageable){
+	String deliveryStatus = "배송준비중";
+	return productRepo.findByDeliveryStatusOrderByPurchaseProductIdDesc(deliveryStatus, pageable);
 	}
 }

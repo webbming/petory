@@ -24,8 +24,10 @@ public class PurchaseReturns {
     @JoinColumn(name="purchaseProduct_Id")
     private PurchaseProduct purchaseProduct;
 
+    @Column(nullable = false)
     private String cancelReason;
 
+    @Column(nullable = false)
     private String userId;
 
     @Column(length = 1000)
@@ -34,5 +36,6 @@ public class PurchaseReturns {
     // 저장된 이미지 경로들을 콤마(,)로 구분하여 저장 (간단한 예시)
     private String returnsImagePaths;
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createAt;
 }

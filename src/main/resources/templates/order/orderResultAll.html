@@ -2,169 +2,391 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/css/layout/common.css">
+	<link rel="stylesheet" href="/css/profile.css">
 	<title>주문 상세 정보</title>
+	<!-- Daum 우편번호 서비스 스크립트 -->
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<script>
+		function openModal() {
+			document.getElementById("editModal").style.display = "flex";
+		}
+		function closeModal() {
+			document.getElementById("editModal").style.display = "none";
+		}
+		window.onclick = function(event) {
+			let modal = document.getElementById("editModal");
+			if (event.target === modal) {
+				closeModal();
+			}
+		}
+		// 주소 검색 함수
+		function searchAddress() {
+			new daum.Postcode({
+				oncomplete: function(data) {
+					document.getElementById("receiverAddr").value = data.address; // 기본 주소 입력
+				}
+			}).open();
+		}
+		// 저장 후 이전 페이지로 돌아가기
+		function saveAndGoBack(event) {
+			event.preventDefault(); // 기본 폼 제출 방지
+			let form = document.getElementById("editForm");
+			let formData = new FormData(form);
+			fetch(form.action, {
+				method: 'POST',
+				body: formData
+			}).then(response => {
+				if (response.ok) {
+					alert("배송정보가 수정되었습니다.");
+					location.reload();
+				} else {
+					alert("저장에 실패했습니다.");
+				}
+			}).catch(error => {
+				console.error("Error:", error);
+				alert("오류가 발생했습니다.");
+			});
+		}
+	</script>
 	<style>
-		/* 주문 상세정보 페이지 스타일 - 클래스명을 'order-container'로 변경 */
-        .order-container {
-          max-width: 1200px;
-          margin: 30px auto;
-          padding: 20px;
-          background-color: #ffffff;
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .order-container h1 {
-          text-align: center;
-          color: #333;
-          margin-bottom: 20px;
-        }
-        .order-container a.button {
-          display: inline-block;
-          background-color: #007bff;
-          color: #fff;
-          text-decoration: none;
-          padding: 10px 15px;
-          border-radius: 5px;
-          box-shadow: 0 2px 4px rgba(0, 123, 255, 0.4);
-          transition: background-color 0.3s, box-shadow 0.3s;
-        }
-        .order-container a.button:hover {
-          background-color: #0056b3;
-          box-shadow: 0 4px 8px rgba(0, 123, 255, 0.6);
-        }
-        .order-container table {
-          width: 100%;
-          border-collapse: separate;
-          border-spacing: 0;
-          margin-top: 20px;
-          background-color: #fafafa;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
-        }
-        .order-container table thead th {
-          background-color: #f5f5f5;
-          color: #333;
-          padding: 12px;
-          border-bottom: 2px solid #ddd;
-          text-align: center;
-        }
-        .order-container table tbody td {
-          padding: 12px;
-          text-align: center;
-          border-bottom: 1px solid #eee;
-        }
-        .order-container table tbody tr:hover {
-          background-color: #f0f8ff;
-        }
-        .order-container td > div {
-          background-color: #fff;
-          border: 1px solid #ddd;
-          padding: 10px;
-          margin: 5px 0;
-          border-radius: 5px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        .order-container .pagination {
-          margin-top: 20px;
-          text-align: center;
-        }
-        .order-container .pagination a {
-          display: inline-block;
-          margin: 0 5px;
-          padding: 8px 12px;
-          color: #007bff;
-          text-decoration: none;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          transition: background-color 0.3s, color 0.3s;
-        }
-        .order-container .pagination a:hover,
-        .order-container .pagination a.active {
-          background-color: #007bff;
-          color: #fff;
-          border-color: #007bff;
-        }
+		.order-image {
+			width: 50px;
+			height: 50px;
+		}
+		.title {
+			margin: 0 0 0 10px;
+		}
+		/* 모달 스타일 */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.6);
+			justify-content: center;
+			align-items: center;
+			animation: fadeIn 0.3s ease-out;
+		}
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+		.modal-content {
+			background-color: #fff;
+			margin: 0 auto;
+			padding: 30px;
+			width: 450px;
+			border-radius: 12px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+			position: relative;
+			transform: translateY(-20px);
+			animation: slideIn 0.3s ease-out;
+		}
+		@keyframes slideIn {
+			from { transform: translateY(-50px); opacity: 0; }
+			to { transform: translateY(0); opacity: 1; }
+		}
+		.close {
+			position: absolute;
+			top: 15px;
+			right: 20px;
+			font-size: 28px;
+			color: #888;
+			cursor: pointer;
+			transition: color 0.2s;
+		}
+		.close:hover {
+			color: #333;
+		}
+		.modal-content h2 {
+			font-size: 22px;
+			color: #333;
+			margin-bottom: 20px;
+			font-weight: 600;
+		}
+		.modal-content label {
+			display: block;
+			font-size: 14px;
+			color: #555;
+			margin-bottom: 5px;
+			font-weight: 500;
+		}
+		.modal-content input[type="text"] {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 15px;
+			border: 1px solid #ddd;
+			border-radius: 6px;
+			font-size: 14px;
+			box-sizing: border-box;
+			transition: border-color 0.2s;
+		}
+		.modal-content input[type="text"]:focus {
+			border-color: #007bff;
+			outline: none;
+			box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+		}
+		.modal-content button {
+			padding: 10px 20px;
+			border: none;
+			border-radius: 6px;
+			font-size: 14px;
+			cursor: pointer;
+			transition: background-color 0.2s;
+		}
+		.modal-content button[type="submit"] {
+			background-color: #007bff;
+			color: white;
+		}
+		.modal-content button[type="submit"]:hover {
+			background-color: #0056b3;
+		}
+		.modal-content button.cancel {
+			background-color: #f1f3f5;
+			color: #555;
+			margin-left: 10px;
+		}
+		.modal-content button.cancel:hover {
+			background-color: #e2e6ea;
+		}
+		.address-search-btn {
+			background-color: #007bff;
+			color: white;
+			padding: 8px 15px;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			margin-left: 10px;
+			vertical-align: middle;
+		}
+		.address-search-btn:hover {
+			background-color: #0056b3;
+		}
+		.order-container {
+			width: 100%;
+			margin: 0 5px 0 15px;
+			height: 800px;
+			align-items: center;
+			justify-content: center;
+			background-color: white;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+		}
+		.title {
+			font-size: 24px;
+			font-weight: bold;
+			margin-bottom: 20px;
+			color: #333;
+		}
+		.main-link {
+			display: block;
+			text-align: right;
+			margin-bottom: 20px;
+			color: #007bff;
+			text-decoration: none;
+		}
+		.main-link:hover {
+			text-decoration: underline;
+			color: #0056b3;
+		}
+		.section {
+			margin-bottom: 30px;
+		}
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+		}
+		th, td {
+			padding: 12px;
+			text-align: center;
+			vertical-align: middle;
+			border-bottom: 1px solid #e0e0e0;
+		}
+		th {
+			background-color: #f8f8f8;
+			font-weight: bold;
+			color: #333;
+		}
+		td {
+			color: #666;
+		}
+		.button {
+			padding: 8px 15px;
+			background-color: #007bff;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 14px;
+		}
+		.button:hover {
+			background-color: #0056b3;
+		}
+		.cancel-text {
+			color: #999;
+			font-style: italic;
+		}
+		.status-preparing {
+			color: #007bff;
+			font-weight: bold;
+		}
+		.status-other {
+			color: #666;
+		}
 	</style>
 </head>
 <body>
-<h1>주문 상세정보</h1>
-<div class="order-container">
-	<p>
-		<a href="/order" class="button">메인페이지로</a>
-	</p>
-	<!-- Purchase 리스트 출력 -->
-	<h2>주문 목록</h2>
-	<form action="/order/admin/orderList" method="get">
-		<label for="searchAll">관리자용 전체 주문 관리:</label>
-		<select id="searchAll" name="purchaseState">
-			<option value="all">전체</option>
-			<option value="cancel">취소</option>
-			<option value="purchase">주문</option>
-		</select>
-		<button type="submit">조회</button>
-	</form>
-	<h4>주문 번호 클릭시 상세 내용 확인 가능</h4>
-	<table>
-		<thead>
-		<tr>
-			<th>주문번호</th>
-			<th>주문자 ID</th>
-			<th>주문시간</th>
-			<th>주문정보</th>
-			<th>결제가격</th>
-			<th>상세보기</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr th:each="purchase : ${purchase}">
-			<td th:text="${purchase.purchaseId}"></td>
-			<td>
-				<a th:href="@{/order/orders/userId?userId={userId}&admin={admin}(userId=${purchase.userId}, admin='admin')}"
-				   th:text="${purchase.userId}"></a>
-			</td>
-			<td th:utext="${#temporals.format(purchase.purchaseProduct[0].createAt, 'yyyy-M-d') + '<br>' + #temporals.format(purchase.purchaseProduct[0].createAt, 'a h시 mm분')}"></td>
-			<td>
-				<div th:text="purchase.purchaseProduct.productName"></div>
-				<div th:each="i : ${item}">
-					<div th:if="${i.purchase.purchaseId == purchase.purchaseId}">
-						<div>상품 이름: <span th:text="${i.productName}"></span></div>
-						<br>
-						<div>배송상태: <span th:text="${i.deliveryStatus}"></span></div>
-						<div th:if="${i.cancelAt != null}">
-							<span th:utext="${'취소/반품 시간 : ' + #temporals.format(i.cancelAt, 'yyyy-M-d')  + '<br>' + #temporals.format(i.cancelAt, 'a h시 mm분')}"></span>
-							<span th:text="${i.cancelReason}"></span>
-						</div>
-					</div>
+<div th:replace="fragment/header :: headerFragment"></div>
+<div class="container">
+	<section class="pm-section">
+		<div th:replace="fragment/profile-common :: mypage-top"></div>
+		<div class="mypage-bottom-content">
+			<div th:replace="fragment/profile-common :: mypage-sidebar"></div>
+			<div class="order-container">
+				<div class="section">
+					<div class="title">주문 목록</div>
+					<table>
+						<thead>
+						<tr>
+							<th>주문번호</th>
+							<th>주문자 ID</th>
+							<th>총 가격</th>
+							<th>결제 시간</th>
+							<th>결제 상태</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td th:text="${result.purchaseProduct[0].purchaseProductId}"></td>
+							<td th:text="${result.purchaseProduct[0].userId}"></td>
+							<!-- 가격 표시 시 data-price와 price-format 클래스로 JS 적용 -->
+							<td class="price-format" data-price="${result.purchaseProduct[0].price}"></td>
+							<td th:utext="${result.purchaseProduct[0].cancelAt != null ? '취소 시각: ' + #temporals.format(result.purchaseProduct[0].cancelAt, 'yyyy-M-d') + '<br>' + #temporals.format(result.purchaseProduct[0].cancelAt, 'a h시 mm분') : '주문 시각: ' + #temporals.format(result.purchaseProduct[0].createAt, 'yyyy-M-d') + '<br>' + #temporals.format(result.purchaseProduct[0].createAt, 'a h시 mm분')}"></td>
+							<td>
+										<span th:if="${result.purchaseProduct[0].cancelAt == null}">
+											<form th:action="@{/order/orders/{purchaseProductId}(purchaseProductId=${result.purchaseProduct[0].purchaseProductId})}" method="post">
+												<button type="submit" class="button">주문 취소</button>
+											</form>
+										</span>
+								<span th:unless="${result.purchaseProduct[0].cancelAt == null}" class="cancel-text">취소 완료</span>
+							</td>
+						</tr>
+						</tbody>
+					</table>
 				</div>
-			</td>
-			<td th:text="${purchase.totalPrice}"></td>
-			<td>
-				<form th:action="@{/order/orders/{purchaseId}(purchaseId=${purchase.purchaseId})}" method="get">
-					<input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}" />
-					<input type="hidden" name="admin" value="admin" />
-					<button type="submit">상세보기</button>
-				</form>
-			</td>
-		</tr>
-		</tbody>
-	</table>
-	<!-- 페이징 추가 -->
-	<div class="pagination" th:if="${purchase.totalPages > 1}">
-      <span th:if="${currentPage > 0}">
-        <a th:href="@{/order/admin/orderList(page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">이전</a>
-      </span>
-		<span th:each="pageNum : ${#numbers.sequence(0, purchase.totalPages - 1)}">
-        <a th:href="@{/order/admin/orderList(page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
-		   th:text="${pageNum + 1}"
-		   th:class="${pageNum == currentPage} ? 'active' : ''"></a>
-      </span>
-		<span th:if="${currentPage < purchase.totalPages - 1}">
-        <a th:href="@{/order/admin/orderList(page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">다음</a>
-      </span>
-	</div>
+
+				<!-- 배송 정보 -->
+				<div class="section">
+					<div class="title">배송 정보</div>
+					<table>
+						<thead>
+						<tr>
+							<th>수령인 이름</th>
+							<th>수령인 전화번호</th>
+							<th>배송 상태</th>
+							<th>배송 주소</th>
+							<th>배송 요청 사항</th>
+							<th>배송 정보</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td name="receiverName" th:text="${result.purchaseDelivery[0].receiverName}"></td>
+							<td name="receiverPhone" th:text="${result.purchaseDelivery[0].receiverPhone}"></td>
+							<td>
+								<span th:class="${result.purchaseProduct[0].deliveryStatus == '배송준비중'} ? 'status-preparing' : 'status-other'" th:text="${result.purchaseProduct[0].deliveryStatus}"></span>
+							</td>
+							<td name="receiverAddr" th:text="${result.purchaseDelivery[0].receiverAddr}"></td>
+							<td name="deliveryMessage" th:text="${result.purchaseDelivery[0].deliveryMessage}"></td>
+							<td>
+										<span th:if="${result.purchaseProduct[0].deliveryStatus == '배송준비중' && result.purchaseProduct[0].cancelReason == null}">
+											<button class="button" onclick="openModal()">정보수정</button>
+										</span>
+								<span th:if="${result.purchaseProduct[0].deliveryStatus != '배송준비중'}" th:text="${result.purchaseProduct[0].deliveryStatus}" class="status-other"></span>
+							</td>
+
+							<div id="editModal" class="modal">
+								<div class="modal-content">
+									<span class="close" onclick="closeModal()">×</span>
+									<h2>배송 정보 수정</h2>
+									<form id="editForm" th:action="@{/order/rest/receiverChange}" method="post" onsubmit="saveAndGoBack(event)">
+										<input type="hidden" name="purchaseProductId" th:value="${result.purchaseProduct[0].purchaseProductId}">
+										<input type="hidden" name="purchaseId" th:value="${result.purchaseProduct[0].purchase.purchaseId}">
+										<label for="receiverName">수령인 이름:</label>
+										<input type="text" id="receiverName" name="receiverName" th:value="${result.purchaseDelivery[0].receiverName}" required>
+										<label for="receiverPhone">수령인 전화번호:</label>
+										<input type="text" id="receiverPhone" name="receiverPhone" th:value="${result.purchaseDelivery[0].receiverPhone}" required>
+										<label for="receiverAddr">배송 주소:</label>
+										<input type="text" id="receiverAddr" name="receiverAddr" th:value="${result.purchaseDelivery[0].receiverAddr}" readonly required>
+										<button type="button" class="address-search-btn" onclick="searchAddress()">주소 검색</button>
+										<label for="receiverAddrDetail">상세 주소:</label>
+										<input type="text" id="receiverAddrDetail" name="receiverAddrDetail" placeholder="상세 주소를 입력하세요" required>
+										<label for="deliveryMessage">배송 요청 사항:</label>
+										<input type="text" id="deliveryMessage" name="deliveryMessage" th:value="${result.purchaseDelivery[0].deliveryMessage}" required>
+										<button type="submit">저장</button>
+										<button type="button" class="cancel" onclick="closeModal()">취소</button>
+									</form>
+								</div>
+							</div>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- 구매 상품 -->
+				<div class="section">
+					<div class="title">구매 상품</div>
+					<table>
+						<thead>
+						<tr>
+							<th>상품사진</th>
+							<th>상품명</th>
+							<th>수량</th>
+							<th>가격</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td><img th:src="@{${result.purchaseProduct[0].imageUrl}}" alt="이미지" class="order-image"/></td>
+							<td th:text="${result.purchaseProduct[0].productName}"></td>
+							<td th:text="${result.purchaseProduct[0].quantity}"></td>
+							<!-- 구매 상품 가격도 포맷팅 -->
+							<td class="price-format" data-price="${result.purchaseProduct[0].price}"></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</section>
 </div>
+<div th:replace="fragment/footer :: footerFragment"></div>
+<div th:replace="fragment/profile-common :: modal"></div>
 <script type="module" src="/js/board-best.js"></script>
 <script src="/js/nav.js"></script>
 </body>
+<!-- 가격 포맷팅 스크립트 -->
+<script>
+	// 숫자 포맷팅 함수: 입력값에 3자리마다 콤마를 넣고 "원"을 추가
+	function formatPrice(price) {
+		return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
+	}
+	// DOMContentLoaded 시, .price-format 요소의 data-price 값을 포맷팅 적용
+	document.addEventListener("DOMContentLoaded", function() {
+		const priceElements = document.querySelectorAll(".price-format");
+		priceElements.forEach(element => {
+			const rawPrice = element.getAttribute("data-price");
+			if (rawPrice) {
+				element.textContent = formatPrice(rawPrice);
+			}
+		});
+	});
+</script>
 </html>

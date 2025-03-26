@@ -63,10 +63,9 @@ public class JwtFilter extends OncePerRequestFilter {
     String role = jwtUtil.getRole(token);
     String expired = String.valueOf(jwtUtil.isExpired(token));
 
-    System.out.println("userId = " + userId);
-    System.out.println("role = " + role);
-    System.out.println(expired);
-    System.out.println("email = " + email);
+
+
+
 
     UserResponseDTO userResponseDTO = new UserResponseDTO();
     userResponseDTO.setUserId(userId);
