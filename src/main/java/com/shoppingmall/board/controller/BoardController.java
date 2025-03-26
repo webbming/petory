@@ -142,7 +142,6 @@ public class BoardController {
 	//등록
 	@PostMapping("/write")
 	public String writePost(@ModelAttribute BoardRequestDTO.Write boardRequestDTO, Authentication auth, Model model) {
-		System.out.println("입력한 해시태그 " + boardRequestDTO.getHashtags());
 		User user = userService.getUser(auth.getName());
 
 		PostType postType = user.getRole() == UserRoleType.ADMIN ? PostType.NOTICE : PostType.GENERAL;
@@ -192,20 +191,17 @@ public class BoardController {
 	//상세페이지 이동
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
-		System.out.println("상세조회 됨");
-		        User user = userService.getUser(auth.getName());
-		        Board board = boardService.viewPost(boardId, user);
-		        List<Comment> comment = commentService.getComment(boardId);
+		User user = userService.getUser(auth.getName());
+		Board board = boardService.viewPost(boardId, user);
+		List<Comment> comment = commentService.getComment(boardId);
 		        
-		        if(board.getUser().getId().equals(user.getId())) {
-		        	model.addAttribute("master", "master");
-		        }
+		if(board.getUser().getId().equals(user.getId())) {
+		    model.addAttribute("master", "master");
+		}
 		        
-		        System.out.println(board.getContent());
-		        
-		        model.addAttribute("board", board);
-		        model.addAttribute("comment", comment);
-		        model.addAttribute("user", user);
+		model.addAttribute("board", board);
+		model.addAttribute("comment", comment);
+		model.addAttribute("user", user);
 
 	    return "board/read";
 	}

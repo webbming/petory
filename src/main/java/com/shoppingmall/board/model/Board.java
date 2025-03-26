@@ -45,12 +45,15 @@ public class Board {
     @Enumerated(EnumType.STRING)
     private PostType postType;
 
+    @Builder.Default
     @Column(name = "comment_count", nullable = false)
     private Integer commentCount = 0;
 
+    @Builder.Default
     @Column(name = "view_count")
     private Integer viewCount = 0;
 
+    @Builder.Default
     @Column(name = "like_count")
     private Integer likeCount = 0;
 
