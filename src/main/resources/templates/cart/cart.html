@@ -137,7 +137,8 @@
         fetch('/order/orders', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			[csrfHeader]: csrfToken
             },
             body: JSON.stringify(orderData)
         })

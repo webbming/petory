@@ -86,11 +86,7 @@ public class SecurityConfig {
         // CSRF 보호 비활성화
         http.csrf(csrf -> csrf
               .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-
         );
-
-
-
 
         http
         	.rememberMe(remember -> remember
@@ -174,8 +170,6 @@ public class SecurityConfig {
         // CORS 설정 (프론트엔드 개발용)
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-
-
         return http.build();
     }
 
@@ -186,7 +180,6 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.addAllowedHeader("*");  // 모든 헤더 허용
         configuration.setAllowCredentials(true);  // 자격 증명 허용
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);  // 모든 경로에 CORS 설정 적용
 
