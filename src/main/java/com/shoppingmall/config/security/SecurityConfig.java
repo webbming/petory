@@ -53,16 +53,13 @@ public class SecurityConfig {
       this.customOAuth2UserService = customOAuth2UserService;
       this.successHandler = successHandler;
 
-
   }
-
     @Bean
     public MultipartFilter multipartFilter() {
         MultipartFilter multipartFilter = new MultipartFilter();
         multipartFilter.setMultipartResolverBeanName("multipartResolver");
         return multipartFilter;
     }
-
 
   @Bean
   public HttpFirewall allowSemicolonHttpFirewall() {
@@ -75,7 +72,6 @@ public class SecurityConfig {
   public BCryptPasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
-
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
