@@ -577,7 +577,9 @@
     const form = e.target;
     const formData = new FormData(form);
     const url = form.action;
-    fetch(url, { method:'POST', body:formData })
+    fetch(url, { method:'POST', body:formData, headers: {
+      [csrfHeader]: csrfToken  // ✅ CSRF 토큰 추가
+    } })
     .then(resp => resp.json())
     .then(data => {
       console.log("댓글 등록 성공:", data);
