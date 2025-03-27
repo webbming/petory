@@ -222,7 +222,7 @@
 				</div>
 				<div class="custom-input-row">
 					<label for="phone">전화번호:</label>
-					<input type="text" id="phone" name="userPhone" th:value="${userPhone}" required>
+					<input type="text" id="phone" name="userPhone" th:value="${userPhone}" >
 				</div>
 			</div>
 			<!-- 배송지 정보 -->
@@ -231,20 +231,20 @@
 			<div class="custom-form-group">
 				<div class="custom-input-row">
 					<label for="receiverName">수령인:</label>
-					<input type="text" name="receiverName" id="receiverName" th:value="${nickname}" placeholder="받는 사람" required>
+					<input type="text" name="receiverName" id="receiverName" th:value="${nickname}" placeholder="받는 사람" >
 				</div>
 				<div class="custom-input-row">
 					<label for="receiverPhone">전화번호:</label>
-					<input type="text" name="receiverPhone" id="receiverPhone" th:value="${receiverPhone}" placeholder="휴대번호 입력 (-제외)" required>
+					<input type="text" name="receiverPhone" id="receiverPhone" th:value="${receiverPhone}" placeholder="휴대번호 입력 (-제외)" >
 				</div>
 				<div class="custom-input-row">
 					<label for="receiver_addr">주소:</label>
-					<input type="text" name="receiverAddr" id="receiver_addr" th:value="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" readonly required>
+					<input type="text" name="receiverAddr" id="receiver_addr" th:value="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" >
 					<button type="button" onclick="execDaumPostcode()">주소 검색</button>
 				</div>
 				<div class="custom-input-row">
 					<label for="receiver_addr_detail">상세 주소:</label>
-					<input type="text" name="receiverAddrDetail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요" required>
+					<input type="text" name="receiverAddrDetail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요" >
 				</div>
 				<div class="custom-input-row">
 					<label for="deliveryRequest">배송 요청:</label>
