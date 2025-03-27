@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -83,7 +84,13 @@ public class SecurityConfig {
         // 기본 HTTP 인증 비활성화
         http.httpBasic(auth -> auth.disable());
 
-        // CSRF 보호 비활성화
+      http.csrf(csrf -> csrf
+              .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+              .ignoringRequestMatchers(new AntPathRequestMatcher("/order/rest/process"))
+      );
+
+
+      // CSRF 보호 비활성화
         http.csrf(csrf -> csrf
               .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 
