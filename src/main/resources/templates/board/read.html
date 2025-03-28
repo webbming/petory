@@ -103,9 +103,9 @@
 													 onClick="confirmDelete(event, this)">삭제</a>
                      </span>
 
-						<a href="#" th:if="${#lists.contains(comment.likeContain, user.id)}" class="commentLikeCount"
+						<a href="/board/commentLike" th:if="${#lists.contains(comment.likeContain, user.id)}" class="commentLikeCount"
 							 th:data-comment-id="${comment.commentId}" th:data-id="${user.id}">❤️ [[${comment.likeCount}]]</a>
-						<a href="#" th:unless="${#lists.contains(comment.likeContain, user.id)}" class="commentLikeCount"
+						<a href="/board/commentLike" th:unless="${#lists.contains(comment.likeContain, user.id)}" class="commentLikeCount"
 							 th:data-comment-id="${comment.commentId}" th:data-id="${user.id}">🤍 [[${comment.likeCount}]]</a>
 					</div>
 				</div>
@@ -119,6 +119,7 @@
 <div th:replace="fragment/footer :: footerFragment"></div>
 
 </body>
+
 <script>
 	const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 	const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
@@ -228,6 +229,46 @@
 				likesBtn.textContent = `🤍 ${result.data.likeCount}`;
 			}
 		});
+
+
+		const likeButtons = document.querySelectorAll(".commentLikeCount");
+
+		likeButtons.forEach(likesBtn => {
+			const commentId = likesBtn.dataset.commentId;
+			const userId = likesBtn.dataset.id;
+
+			likesBtn.addEventListener("click" , async (e) =>{
+				e.preventDefault();
+
+				const data = {
+					commentId : commentId,
+					userId : userId
+				}
+				const response = await fetch(`/board/commentLike` , {
+
+					method : "POST" ,
+					headers : {
+						"Content-Type" : "application/json",
+						[csrfHeader] : csrfToken
+					},
+					body : JSON.stringify(data)
+
+				})
+
+				const result = await response.json()
+
+				if(!response.ok){
+					console.log("데이터를 못받아왔씁니다")
+				}
+
+				if(result.data.contain === "contained"){
+					likesBtn.textContent = `❤️ ${result.data.commentLikeCount}`;
+				}
+				else {
+					likesBtn.textContent = `🤍 ${result.data.commentLikeCount}`;
+				}
+			})
+		})
 	});
 
 </script>

@@ -31,6 +31,8 @@ public ResponseEntity<Map<String, String>> cartToPurchase(@RequestBody List<Purc
 session.setAttribute("orderDto", dtos);
 	Map<String, String> response = new HashMap<>();
 	response.put("result", "good");
+	System.out.println(session.getAttributeNames().toString());
+
 	return ResponseEntity.ok(response);
 }
 
@@ -38,6 +40,8 @@ session.setAttribute("orderDto", dtos);
 @GetMapping("/cartToOrder")
 public String orderPage(Model model, HttpSession session,
 						Authentication authentication) {
+	System.out.println(session.getAttribute("orderDto"));
+	System.out.println("bbbbbbbbbb" + authentication.getName());
 	// 세션에 저장된 주문 데이터를 불러와 모델에 담기
 	Object sessionOrderObj = session.getAttribute("orderDto");
 	String userId = authentication.getName();
