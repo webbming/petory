@@ -84,20 +84,11 @@ public class SecurityConfig {
         // 기본 HTTP 인증 비활성화
         http.httpBasic(auth -> auth.disable());
 
+      // CSRF 보호 비활성화
       http.csrf(csrf -> csrf
               .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
               .ignoringRequestMatchers(new AntPathRequestMatcher("/order/rest/process"))
       );
-
-
-      // CSRF 보호 비활성화
-        http.csrf(csrf -> csrf
-              .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-
-        );
-
-
-
 
         http
         	.rememberMe(remember -> remember

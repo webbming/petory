@@ -292,11 +292,9 @@ public class PurchaseService {
 		return purchase.getPurchaseId();
 	}
 
-	public List<PurchaseProduct> onDelivery(String userId) {
+	public Page<PurchaseProduct> onDelivery(String userId, Pageable pageable) {
 		String deliveryStatus = "배송중";
-		List<PurchaseProduct> products = productRepo.findByDeliveryStatusAndUserIdOrderByPurchaseProductIdDesc(deliveryStatus, userId);
-		products.forEach(dto -> {
-		});
+		Page<PurchaseProduct> products = productRepo.findByDeliveryStatusAndUserIdOrderByPurchaseProductIdDesc(deliveryStatus, userId, pageable);
 		return products;
 	}
 

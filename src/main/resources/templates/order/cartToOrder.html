@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
 	<meta charset="UTF-8">
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="_csrf" content="${_csrf.token}" />
-	<meta name="_csrf_header" content="${_csrf.headerName}" />
 	<link rel="stylesheet" href="/css/layout/common.css">
 	<title>주문/결제</title>
 	<style>
@@ -225,7 +225,7 @@
 				</div>
 				<div class="custom-input-row">
 					<label for="phone">전화번호:</label>
-					<input type="text" id="phone" name="userPhone" th:value="${userPhone}" >
+					<input type="text" id="phone" name="userPhone" th:value="${userPhone}" required>
 				</div>
 			</div>
 			<!-- 배송지 정보 -->
@@ -234,20 +234,20 @@
 			<div class="custom-form-group">
 				<div class="custom-input-row">
 					<label for="receiverName">수령인:</label>
-					<input type="text" name="receiverName" id="receiverName" th:value="${nickname}" placeholder="받는 사람" >
+					<input type="text" name="receiverName" id="receiverName" th:value="${nickname}" placeholder="받는 사람" required>
 				</div>
 				<div class="custom-input-row">
 					<label for="receiverPhone">전화번호:</label>
-					<input type="text" name="receiverPhone" id="receiverPhone" th:value="${receiverPhone}" placeholder="휴대번호 입력 (-제외)" >
+					<input type="text" name="receiverPhone" id="receiverPhone" th:value="${receiverPhone}" placeholder="휴대번호 입력 (-제외)" required>
 				</div>
 				<div class="custom-input-row">
 					<label for="receiver_addr">주소:</label>
-					<input type="text" name="receiverAddr" id="receiver_addr" th:value="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" >
+					<input type="text" name="receiverAddr" id="receiver_addr" th:value="${receiverAddr}" placeholder="주소를 입력하세요" autocomplete="street-address" required readonly>
 					<button type="button" onclick="execDaumPostcode()">주소 검색</button>
 				</div>
 				<div class="custom-input-row">
 					<label for="receiver_addr_detail">상세 주소:</label>
-					<input type="text" name="receiverAddrDetail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요" >
+					<input type="text" name="receiverAddrDetail" id="receiver_addr_detail" placeholder="상세 주소를 입력하세요" required>
 				</div>
 				<div class="custom-input-row">
 					<label for="deliveryRequest">배송 요청:</label>
@@ -434,8 +434,6 @@
             function submitOrder(event) {
             const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 			const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-			console.log("CSRF Header:", csrfHeader);
-			console.log("CSRF Token:", csrfToken);
 
                 event.preventDefault();
                 const agreeCheckbox = document.getElementById('agreeTerms');

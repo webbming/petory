@@ -54,7 +54,6 @@ public String orderPage(Model model, HttpSession session,
 			data.setImageUrl(imageUrl);
 		}
 	});
-
 	model.addAttribute("coupon", service.choiceCoupon(userId));
 	model.addAttribute("product", orderData);
 	model.addAttribute("userId", userId);
@@ -202,13 +201,14 @@ return "order/adminOrder";
 	return "order/orderResultOne";
 	}
 
-	//소비자용 배송줄 리스트
+	//소비자용 배송중 리스트
 	@GetMapping("/onDelivery")
 	public String onDelivery(Authentication authentication,
+							 @PageableDefault(page = 0, size = 5) Pageable pageable,
 							Model model){
 		String userId = authentication.getName();
-		model.addAttribute("item", service.onDelivery(userId));
-		return "order/orderListByUserIdByProductId";
+		model.addAttribute("item", service.onDelivery(userId, pageable));
+		return "order/orderListOnDelivery";
 	}
 
 	//환불 요청
