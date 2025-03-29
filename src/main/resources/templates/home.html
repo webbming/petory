@@ -13,8 +13,8 @@
   <script type="text/javascript" src="/slick/slick.min.js"></script>
 </head>
 <body>
-<div th:replace="fragment/header :: headerFragment"></div>
-<div th:replace="fragment/nav :: navFragment" class="nav-var"></div>
+<div th:replace="~{fragment/header :: headerFragment}"></div>
+<div th:replace="~{fragment/nav :: navFragment}" class="nav-var"></div>
 <div class="container">
   <div class="pm-section">
     <section>
@@ -79,7 +79,7 @@
   </div>
 </div>
 
-<div th:replace="fragment/footer :: footerFragment"></div>
+<div th:replace="~{fragment/footer :: footerFragment}"></div>
 <script type="module" src="/js/home.js"></script>
 <script type="module" src="/js/nav.js"></script>
 <script>

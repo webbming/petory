@@ -25,7 +25,7 @@ export function createPostElement(post) {
     const li = document.createElement("li");
   // 모든 HTML 태그 제거 및 스타일 속성 제거를 위한 개선된 방법
   let contentTextOnly = post.content;
-  
+  console.log(post.image);
   // 이미지/figure 태그 제거
   contentTextOnly = contentTextOnly.replace(/<figure.*?>.*?<\/figure>/g, '');
 

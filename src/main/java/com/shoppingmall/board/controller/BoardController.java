@@ -138,6 +138,7 @@ public class BoardController {
 	//등록
 	@PostMapping("/write")
 	public String writePost(@ModelAttribute BoardRequestDTO.Write boardRequestDTO, Authentication auth, Model model) {
+		System.out.println(boardRequestDTO.getContent());
 		User user = userService.getUser(auth.getName());
 
 		PostType postType = user.getRole() == UserRoleType.ADMIN ? PostType.NOTICE : PostType.GENERAL;
@@ -188,14 +189,14 @@ public class BoardController {
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
 		System.out.println("상세조회 됨");
-						User user = null;
-						if(auth != null){
-							user = userService.getUser(auth.getName());
-						}
+				User user = null;
+				if(auth != null){
+					user = userService.getUser(auth.getName());
+				}
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
 		        
-		        if(user != null && board.getUser().getId().equals(user.getId())) {
+		        if((user != null && board.getUser().getId().equals(user.getId())) || auth.getName().equals("admin")) {
 		        	model.addAttribute("master", "master");
 		        }
 

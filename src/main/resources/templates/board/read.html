@@ -31,7 +31,6 @@
 				</div>
 				<div class="createdAt">
 					<span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}" class="boardCreatedAt"></span>
-					<span><a>공유</a></span>
 				</div>
 				<hr>
 			</div>
@@ -41,7 +40,7 @@
 			</div><br><br>
 
 			<span th:each="hashtag : ${board.hashtag}">
-               <p class="boardHashtag" th:text="${hashtag}"></p>
+               <span class="boardHashtag" th:text="${hashtag}"></span>
             </span><br><br>
 
 			<div class="buttons" th:if="${master} != null">
