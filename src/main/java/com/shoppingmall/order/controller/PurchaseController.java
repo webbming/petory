@@ -175,14 +175,15 @@ return "order/adminOrder";
 		}
 		return "order/orderListByUserIdByProductId";
 	}
+
 	@GetMapping("/admin/orders/userId")
 	public String adminOrderListByUserId(
-									@RequestParam(name = "userId") String userId,
 									@RequestParam(name = "page", defaultValue = "0") int page,
 									@RequestParam(name = "size", defaultValue = "5") int size,
 									@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
 									Model model) {
 		Pageable pageable = PageRequest.of(page, size);
+		String userId = "userId";
 			PurchasePageDto dto = service.orderListByUserId(userId, purchaseState, pageable);
 			if(dto.getPurchase()==null){
 				model.addAttribute("purchase", new Purchase());
@@ -218,9 +219,11 @@ return "order/adminOrder";
 	//환불 요청
 	@PostMapping("/returns")
 	public  String purchaseReturns(@ModelAttribute PurchaseReturnsDto dto,
-									 Authentication authentication) {
-	 service.createExchangeRequest(dto, authentication.getName());
-	return "redirect:/order/orders/userId";
+									 Authentication authentication,
+								   @PageableDefault(page = 0, size = 5) Pageable pageable,
+								   Model model) {
+	 model.addAttribute("item", service.createExchangeRequest(dto, authentication.getName(), pageable));
+	return "order/orderList";
 	}
 	
 	//관리자용 환불 리스트

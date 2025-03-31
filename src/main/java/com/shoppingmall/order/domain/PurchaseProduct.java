@@ -24,18 +24,18 @@ public class PurchaseProduct {
 
     private String userId;
 
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private String productName;
 
     private String option; // 상품 옵션
 
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private int quantity; // 수량
 
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private int price; // 가격
 
-//    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createAt; // 주문 생성 시간
 
     private String cancelReason;

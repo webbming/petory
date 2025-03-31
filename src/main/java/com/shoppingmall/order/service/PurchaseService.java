@@ -306,7 +306,7 @@ public class PurchaseService {
 		productRepo.save(product);
 	}
 //취소/반품 선택
-	public void createExchangeRequest(PurchaseReturnsDto dto, String userId) {
+	public Page createExchangeRequest(PurchaseReturnsDto dto, String userId, Pageable pageable) {
 		PurchaseReturns returns = new PurchaseReturns();
 		StringBuilder imagePaths = new StringBuilder();
 		PurchaseProduct product = productRepo.findByPurchaseProductId(dto.getPurchaseProductId()).get(0);
@@ -354,6 +354,8 @@ public class PurchaseService {
 		}
 		returns.setReturnsImagePaths(imagePaths.toString());
 		returnsRepo.save(returns);
+
+		return productRepo.findByUserIdOrderByPurchaseIdDesc(userId, pageable);
 	}
 
 	//취소/횐불/교환요청 확인
