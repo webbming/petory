@@ -131,16 +131,16 @@
 					<ul>
 						<!-- 이전 페이지 버튼 -->
 						<li th:if="${coupons.hasPrevious()}">
-							<a th:href="@{/coupon(page=${coupons.number - 1}, size=${coupons.size})}">Previous</a>
+							<a th:href="@{/order/coupon(page=${coupons.number - 1}, size=${coupons.size})}">Previous</a>
 						</li>
 						<!-- 페이지 번호 반복 출력 -->
 						<li th:each="i : ${#numbers.sequence(0, coupons.totalPages - 1)}"
 							th:classappend="${i} == ${coupons.number} ? 'active'">
-							<a th:href="@{/coupon(page=${i}, size=${coupons.size})}" th:text="${i + 1}">1</a>
+							<a th:href="@{/order/coupon(page=${i}, size=${coupons.size})}" th:text="${i + 1}">1</a>
 						</li>
 						<!-- 다음 페이지 버튼 -->
 						<li th:if="${coupons.hasNext()}">
-							<a th:href="@{/coupon(page=${coupons.number + 1}, size=${coupons.size})}">Next</a>
+							<a th:href="@{/order/coupon(page=${coupons.number + 1}, size=${coupons.size})}">Next</a>
 						</li>
 					</ul>
 				</div>
