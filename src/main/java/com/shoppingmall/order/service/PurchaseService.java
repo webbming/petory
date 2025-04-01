@@ -88,7 +88,6 @@ public class PurchaseService {
 		List<Purchase> purchases = purchaseRepo.findByPurchaseId(purchaseId);
 		List<PurchaseDelivery> deliveries = deliveryRepo.findByPurchaseId(purchaseId);
 		List<PurchaseProduct> products = productRepo.findByPurchaseId(purchaseId);
-
 		return PurchaseAllDto.builder()
 				.purchase(purchases)
 				.purchaseDelivery(deliveries)
@@ -360,7 +359,7 @@ public class PurchaseService {
 
 	//취소/횐불/교환요청 확인
 	public Page<PurchaseReturns> getAllReturns(Pageable pageable) {
-		return returnsRepo.findAll(pageable);
+		return returnsRepo.findAllByOrderByPurchaseReturnsIdDesc(pageable);
 	}
 
 	public Page<CouponDto> getCoupon(Pageable pageable, String userId) {
@@ -427,9 +426,11 @@ public class PurchaseService {
 				purchaseProduct.setCancelAt(LocalDateTime.now());
 				purchaseProduct.setCancelReason("취소");
 				returns.setPurchaseProduct(purchaseProduct);
+				returns.setCreateAt(LocalDateTime.now());
 				returns.setCancelReason("취소");
 				returns.setReturnsContent("전체취소");
 				returns.setUserId(userId);
+				productRepo.save(purchaseProduct);
 				returnsRepo.save(returns);
 			});
 			purchaseRepo.save(purchases);
@@ -441,5 +442,9 @@ public class PurchaseService {
 	public Page<PurchaseProduct> adminPurchaseRequest(Pageable pageable){
 	String deliveryStatus = "배송준비중";
 	return productRepo.findByDeliveryStatusOrderByPurchaseProductIdDesc(deliveryStatus, pageable);
+	}
+
+	public Page<PurchaseProduct> userOrderList(String userId, Pageable pageable) {
+		return productRepo.findByUserIdOrderByPurchaseProductIdDesc(userId, pageable);
 	}
 }

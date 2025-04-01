@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="/css/layout/common.css">
 	<link rel="stylesheet" href="/css/profile.css">
@@ -229,10 +231,41 @@
 							</td>
 							<td>
 								<div th:if="${purchase.purchaseProduct[0].cancelAt == null}">
-									<form action="/order/cancelAll" method="post">
+									<form id="cancelForm" action="/order/cancelAll" method="post">
+										<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 										<input type="hidden" name="purchaseId" th:value="${purchase.purchaseId}">
-										<button type="submit" class="cancel-button">결제 취소</button>
+										<button type="submit" class="cancel-button" onclick="orderAllCancel(event)">결제 취소</button>
 									</form>
+
+									<script>
+									const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+									const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+                                    function orderAllCancel(e) {
+                                        e.preventDefault(); // 기본 제출 방지
+
+                                        if (!confirm("정말 결제를 취소하시겠습니까?")) {
+                                            return; // 사용자가 취소 선택 시 함수 종료
+                                        }
+
+                                        let form = document.getElementById("cancelForm"); // form 요소 가져오기
+                                        let formData = new FormData(form);
+
+                                        fetch(form.action, {
+                                            method: 'POST',
+                                            headers: {
+                                               [csrfHeader] : csrfToken
+                                            },
+                                            body: formData
+                                        }).then(response => {
+											alert("취소되었습니다.");
+											location.reload();
+                                        }).catch(error => {
+                                            console.error("Error:", error);
+                                                console.log(response)
+                                            alert("오류가 발생했습니다.");
+                                        });
+                                    }
+									</script>
 								</div>
 								<div th:if="${purchase.purchaseProduct[0].cancelAt != null}" th:text="취소"></div>
 							</td>
@@ -270,6 +303,7 @@
 									<span class="close" onclick="closeModal()">×</span>
 									<h2>배송 정보 수정</h2>
 									<form id="editForm" th:action="@{/order/rest/receiverChange}" method="post" onsubmit="saveAndGoBack(event)">
+										<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 										<input type="hidden" name="purchaseProductId" th:value="${delivery.purchase.purchaseProduct[0].purchaseProductId}">
 										<input type="hidden" name="purchaseId" th:value="${delivery.purchase.purchaseId}">
 										<label for="receiverName">수령인 이름:</label>
@@ -323,6 +357,8 @@
 <div th:replace="fragment/footer :: footerFragment"></div>
 <div th:replace="fragment/profile-common :: modal"></div>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="module" src="/js/user/profile.js"></script>
+<script src="/js/user/address.js"></script>
 <script>
 	function openModal() {
         document.getElementById("editModal").style.display = "flex";
@@ -351,6 +387,9 @@
         let formData = new FormData(form);
         fetch(form.action, {
             method: 'POST',
+		    headers: {
+                 [csrfHeader] : csrfToken
+                 },
             body: formData
         }).then(response => {
             if (response.ok) {
@@ -364,10 +403,6 @@
             alert("오류가 발생했습니다.");
         });
     }
-</script>
-<script type="module" src="/js/user/profile.js"></script>
-<script src="/js/user/address.js"></script>
-<script>
 	// 3자리마다 ','를 넣고 '원'을 붙이는 함수
     function formatPrice(price) {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' 원';

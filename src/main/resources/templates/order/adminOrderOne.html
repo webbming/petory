@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 	<title>주문 상세 정보</title>
 	<link rel="stylesheet" href="/css/order/adminOrderResult.css">
 	<link rel="stylesheet" href="/css/layout/common.css">
@@ -92,7 +94,8 @@ td.purchase-number .full-height {
 					<div class="orderStatus"><strong>주문상태: </strong> <span th:text="${currentItem.cancelAt != null ? currentItem.cancelReason : '주문'}"></span></div>
 					<div><strong>배송상태: </strong> <span th:text="${currentItem.deliveryStatus}"></span></div>
 					<div>
-					<form action="/order/admin/deiveryChange" method="POST" class="delivery">
+					<form action="/order/admin/deliveryChange" method="POST" class="delivery">
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input type="hidden" name="purchaseProductId" th:value="${currentItem.purchaseProductId}"/>
 						<select name="deliveryState">
 							<option value="onDelivery">배송중</option>
