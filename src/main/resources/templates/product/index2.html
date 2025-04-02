@@ -722,7 +722,7 @@
                     th:classappend="${(currentCategory != null) and (cat.categoryId == currentCategory.categoryId)} ? ' active' : ''">
                   <a th:href="@{'/products/category/' + ${cat.categoryId} (petType=${selectedPetType}, sort='newest')}">
                     <!-- 예: 아이콘 -->
-                    <img th:if="${cat.categoryName.contains('고양이')}"
+ 					<img th:if="${cat.categoryName.contains('고양이')}"
                          src="/images/product/categorycat.svg"
                          alt="고양이아이콘"
                          style="width:30px; height:30px; margin-right:6px;">
@@ -892,7 +892,7 @@
       {
         label: `
           <span style="position: relative; display:inline-block; width:100%; text-align:center;">
-            <img src="/images/ui/categorycat.svg" alt="고양이"
+            <img src="/images/product/categorycat.svg" alt="고양이"
                  style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:24px; height:24px;" />
             고양이
           </span>
@@ -903,7 +903,8 @@
       {
         label: `
           <span style="position: relative; display:inline-block; width:100%; text-align:center;">
-            <img src="/images/ui/categorydog.svg" alt="강아지"
+
+            <img src="/images/product/categorydog.svg" alt="강아지"
                  style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:24px; height:24px;" />
             강아지
           </span>
