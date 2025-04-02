@@ -140,7 +140,7 @@ i { font-style: inherit; }
 
 }
 
-.img-wrap img{
+.logo-img > img{
   width: 80px;
   height: 80px;
 }
