@@ -125,8 +125,10 @@ i { font-style: inherit; }
 }
 
 .left-section {
+  position: relative;
   display: flex;
   align-items: center;
+
 }
 
 .logo {
@@ -134,8 +136,14 @@ i { font-style: inherit; }
   align-items: center;
   margin-right: 30px;
   text-decoration: none;
+  position: absolute;
+
 }
 
+.logo-img > img{
+  width: 80px;
+  height: 80px;
+}
 .logo svg {
   fill: #4B89DC;
   margin-right: 5px;
@@ -150,6 +158,7 @@ i { font-style: inherit; }
 .nav-menu {
   display: flex;
   list-style-type: none;
+  padding-left: 100px;
 }
 
 .nav-item {
@@ -275,7 +284,6 @@ footer .cptxt {
 
 footer .inner > article + article {
   margin-left: 123px;
-  margin-top: 20px;
 
 }
 
@@ -304,7 +312,7 @@ footer .sns-area{
   align-items: flex-end;
   position: absolute;
   right: 0;
-  top: 35px;
+  top: 0;
   z-index: 1;
 }
 

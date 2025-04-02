@@ -30,7 +30,7 @@ public class PurchaseReturns {
     @Column(nullable = false)
     private String userId;
 
-    @Column(length = 1000)
+    @Column(length = 500)
     private String returnsContent;
 
     // 저장된 이미지 경로들을 콤마(,)로 구분하여 저장 (간단한 예시)

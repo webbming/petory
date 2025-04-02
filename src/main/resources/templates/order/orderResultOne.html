@@ -3,6 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 	<link rel="stylesheet" href="/css/layout/common.css">
 	<link rel="stylesheet" href="/css/profile.css">
 	<title>주문 상세 정보</title>
@@ -41,6 +43,9 @@
 
 			fetch(form.action, {
 				method: 'POST',
+				headers: {
+                 [csrfHeader] : csrfToken
+                 },
 				body: formData
 			}).then(response => {
 				if (response.ok) {
@@ -277,6 +282,7 @@
 							<td>
 										<span th:if="${result.purchaseProduct[0].cancelAt == null}">
 											<form th:action="@{/order/orders/{purchaseProductId}(purchaseProductId=${result.purchaseProduct[0].purchaseProductId})}" method="post">
+												<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 												<button type="submit" class="button">주문 취소</button>
 											</form>
 										</span>
@@ -322,6 +328,7 @@
 									<span class="close" onclick="closeModal()">×</span>
 									<h2>배송 정보 수정</h2>
 									<form id="editForm" th:action="@{/order/rest/receiverChange}" method="post" onsubmit="saveAndGoBack(event)">
+										<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 										<input type="hidden" name="purchaseProductId" th:value="${result.purchaseProduct[0].purchaseProductId}">
 										<input type="hidden" name="purchaseId" th:value="${result.purchaseProduct[0].purchase.purchaseId}" required>
 										<label for="receiverName">수령인 이름:</label>
@@ -394,4 +401,6 @@
 		});
 	});
 </script>
+<script type="module" src="/js/user/profile.js"></script>
+<script src="/js/user/address.js"></script>
 </html>

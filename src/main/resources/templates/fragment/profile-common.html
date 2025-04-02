@@ -51,7 +51,7 @@
                   </div>
                     <div class="inner" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
                     <div class="inner-img">
-                        <a href="/order/admin/orders/request">
+                        <a href="/order/onDelivery">
                         <img src="/images/ui/my-page-delivery.png" >
                       </a>
                       <span class="quantity delivery"></span>
@@ -100,7 +100,7 @@
 
             <!-- 기본 마이페이지 -->
               <div class="right_info" th:fragment="mypage-mainInfo">
-                <h2>진후님의 반려동물</h2>
+                <h2 class="user-pet"><span></span>님의 반려동물</h2>
                 <a class="new_pet" href="/pets">펫 등록</a>
                 <div class="animal_list">
                   <div class="last-div">

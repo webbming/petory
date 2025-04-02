@@ -191,6 +191,11 @@
             width: 50px;
             height: 50px;
         }
+        .pagination li.active a {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
     </style>
 </head>
 <body>
@@ -285,18 +290,19 @@
                     </tbody>
                 </table>
                 <!-- 페이징 -->
-                <div class="pagination" th:if="${purchase.totalPages != null && purchase.totalPages > 1}">
-                        <span th:if="${currentPage > 0}">
-                            <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">&laquo;</a>
-                        </span>
-                    <span th:each="pageNum : ${#numbers.sequence(0, purchase.totalPages - 1)}">
-                            <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
-                               th:text="${pageNum + 1}"
-                               th:class="${pageNum == currentPage} ? 'active' : ''"></a>
-                        </span>
-                    <span th:if="${currentPage < purchase.totalPages - 1}">
-                            <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">&raquo;</a>
-                        </span>
+                <div th:if="${item.totalPages > 1}" style="margin-top: 20px;">
+                    <ul class="pagination">
+                        <li th:if="${!item.first}">
+                            <a th:href="@{/order/orders/userId(page=${item.number-1})}">&laquo;</a>
+                        </li>
+                        <li th:each="i : ${#numbers.sequence(1, item.totalPages)}"
+                            th:classappend="${item.number+1 == i} ? 'active'">
+                            <a th:href="@{/order/orders/userId(page=${i-1})}" th:text="${i}"></a>
+                        </li>
+                        <li th:if="${!item.last}">
+                            <a th:href="@{/order/orders/userId(page=${item.number+1})}">&raquo;</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

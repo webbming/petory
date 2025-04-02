@@ -1,5 +1,6 @@
 package com.shoppingmall.product.repository;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,6 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
 	List<Subcategory> findByCategory(Category category);
 	Optional<Subcategory> findBySubcategoryNameAndCategory(String subcategoryName, Category category);
 	List<Subcategory> findByCategory_PetType(PetType petType);
+
+	Optional<Subcategory> findBySubcategoryId(long i);
 }

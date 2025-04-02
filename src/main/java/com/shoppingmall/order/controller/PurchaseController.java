@@ -1,9 +1,11 @@
 package com.shoppingmall.order.controller;
 import com.shoppingmall.order.domain.Purchase;
+import com.shoppingmall.order.domain.PurchaseReturns;
 import com.shoppingmall.order.dto.*;
 import com.shoppingmall.order.service.PurchaseService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,6 +33,8 @@ public ResponseEntity<Map<String, String>> cartToPurchase(@RequestBody List<Purc
 session.setAttribute("orderDto", dtos);
 	Map<String, String> response = new HashMap<>();
 	response.put("result", "good");
+	System.out.println(session.getAttributeNames().toString());
+
 	return ResponseEntity.ok(response);
 }
 
@@ -38,6 +42,8 @@ session.setAttribute("orderDto", dtos);
 @GetMapping("/cartToOrder")
 public String orderPage(Model model, HttpSession session,
 						Authentication authentication) {
+	System.out.println(session.getAttribute("orderDto"));
+	System.out.println("bbbbbbbbbb" + authentication.getName());
 	// 세션에 저장된 주문 데이터를 불러와 모델에 담기
 	Object sessionOrderObj = session.getAttribute("orderDto");
 	String userId = authentication.getName();
@@ -54,7 +60,6 @@ public String orderPage(Model model, HttpSession session,
 			data.setImageUrl(imageUrl);
 		}
 	});
-
 	model.addAttribute("coupon", service.choiceCoupon(userId));
 	model.addAttribute("product", orderData);
 	model.addAttribute("userId", userId);
@@ -112,7 +117,7 @@ return "order/adminOrder";
 	}
 
 	//관리자용 배송상태 변경
-	@PostMapping("/admin/deiveryChange")
+	@PostMapping("/admin/deliveryChange")
 	public String deliveryChange(@RequestParam("deliveryState")String deliveryState,
 															 RedirectAttributes redirectAttributes,
 								 @RequestParam("purchaseProductId")Long purchaseProductId,
@@ -130,56 +135,67 @@ return "order/adminOrder";
 	}
 
 //사용자별 취소 리스트 검색
-	@PostMapping("/cancelAll")
-	public String cancelAll(@RequestParam(name = "purchaseId")Long purchaseId,
-													Authentication authentication,
-													RedirectAttributes redirectAttributes){
+@PostMapping("/cancelAll")
+@ResponseBody
+public ResponseEntity<?> cancelAll(@RequestParam(name = "purchaseId") Long purchaseId,
+								   Authentication authentication) {
 	String userId = authentication.getName();
 	service.cancelAll(purchaseId, userId);
-		redirectAttributes.addAttribute("purchaseId", purchaseId);
-	return "redirect:/order/orders/{purchaseId}";
-	}
+	return ResponseEntity.ok().body(Map.of("message", "결제가 취소되었습니다."));
+}
 
 	//userId 기준 주문 검색
+//	@GetMapping("/orders/userId")
+//	public String orderListByUserId(
+//									Authentication authentication,
+//									@RequestParam(name = "page", defaultValue = "0") int page,
+//									@RequestParam(name = "size", defaultValue = "5") int size,
+//									@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
+//									@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
+//									Model model) {
+//			Pageable pageable = PageRequest.of(page, size);
+//			String userId = authentication.getName();
+//			PurchasePageDto dto = service.orderListByUserId(userId, purchaseState, pageable);
+//			if(dto.getPurchase()==null){
+//				model.addAttribute("purchase", new Purchase());
+//			}else{
+//				model.addAttribute("purchase", dto.getPurchase());
+//			}
+//			model.addAttribute("delivery", dto.getPurchaseDelivery());
+//			model.addAttribute("item", dto.getPurchaseProduct());
+//			model.addAttribute("currentPage", page);
+//			model.addAttribute("totalPages", dto.getPurchase().getTotalPages());
+//			model.addAttribute("pageSize", size);
+//		if (admin.equals("admin")) {
+//			return "order/adminOrderByUserId";
+//		}
+//		//취소일 경우
+//		if(purchaseState.equals("cancel")){
+//			return "order/purchaseCancel";
+//			// 일반 유저의 경우
+//		}
+//		return "order/orderListByUserIdByProductId";
+//	}
 	@GetMapping("/orders/userId")
 	public String orderListByUserId(
 									Authentication authentication,
+									@PageableDefault(page = 0, size = 5)  Pageable pageable,
+									Model model) {
+			String userId = authentication.getName();
+			model.addAttribute("item", service.userOrderList(userId, pageable));
+		return "order/userOrderList";
+	}
+
+	@GetMapping("/admin/orders/userId")
+	public String adminOrderListByUserId(
+									@RequestParam(name = "userId", required = false, defaultValue = "id") String id,
 									@RequestParam(name = "page", defaultValue = "0") int page,
 									@RequestParam(name = "size", defaultValue = "5") int size,
 									@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
-									@RequestParam(name = "admin", required = false, defaultValue = "user") String admin,
+									Authentication authentication,
 									Model model) {
 		Pageable pageable = PageRequest.of(page, size);
 		String userId = authentication.getName();
-			PurchasePageDto dto = service.orderListByUserId(userId, purchaseState, pageable);
-			if(dto.getPurchase()==null){
-				model.addAttribute("purchase", new Purchase());
-			}else{
-				model.addAttribute("purchase", dto.getPurchase());
-			}
-			model.addAttribute("delivery", dto.getPurchaseDelivery());
-			model.addAttribute("item", dto.getPurchaseProduct());
-			model.addAttribute("currentPage", page);
-			model.addAttribute("totalPages", dto.getPurchase().getTotalPages());
-			model.addAttribute("pageSize", size);
-		if (admin.equals("admin")) {
-			return "order/adminOrderByUserId";
-		}
-		//취소일 경우
-		if(purchaseState.equals("cancel")){
-			return "order/purchaseCancel";
-			// 일반 유저의 경우
-		}
-		return "order/orderListByUserIdByProductId";
-	}
-	@GetMapping("/admin/orders/userId")
-	public String adminOrderListByUserId(
-									@RequestParam(name = "userId") String userId,
-									@RequestParam(name = "page", defaultValue = "0") int page,
-									@RequestParam(name = "size", defaultValue = "5") int size,
-									@RequestParam(name = "purchaseState", required = false, defaultValue = "all") String purchaseState,
-									Model model) {
-		Pageable pageable = PageRequest.of(page, size);
 			PurchasePageDto dto = service.orderListByUserId(userId, purchaseState, pageable);
 			if(dto.getPurchase()==null){
 				model.addAttribute("purchase", new Purchase());
@@ -202,30 +218,36 @@ return "order/adminOrder";
 	return "order/orderResultOne";
 	}
 
-	//소비자용 배송줄 리스트
+	//소비자용 배송중 리스트
 	@GetMapping("/onDelivery")
 	public String onDelivery(Authentication authentication,
+							 @PageableDefault(page = 0, size = 5) Pageable pageable,
 							Model model){
 		String userId = authentication.getName();
-		model.addAttribute("item", service.onDelivery(userId));
-		return "order/orderListByUserIdByProductId";
+		model.addAttribute("item", service.onDelivery(userId, pageable));
+		return "order/orderListOnDelivery";
 	}
 
 	//환불 요청
 	@PostMapping("/returns")
 	public  String purchaseReturns(@ModelAttribute PurchaseReturnsDto dto,
-									 Authentication authentication) {
-	 service.createExchangeRequest(dto, authentication.getName());
-	return "redirect:/order/orders/userId";
+									 Authentication authentication,
+								   @PageableDefault(page = 0, size = 5) Pageable pageable,
+								   Model model) {
+	 model.addAttribute("item", service.createExchangeRequest(dto, authentication.getName(), pageable));
+	return "order/orderList";
 	}
 	
 	//관리자용 환불 리스트
 @GetMapping("/admin/returnsList")
 public String returnsList(Model model, @PageableDefault(page = 0, size = 5) Pageable pageable) {
-	model.addAttribute("returns", service.getAllReturns(pageable));
+	System.out.println(132215253);
+	model.addAttribute("item", service.getAllReturns(pageable));
+	System.out.println(service.getAllReturns(pageable).getTotalPages());
+	Page<PurchaseReturns> purchaseReturns = service.getAllReturns(pageable);
 	return "order/purchaseCancelAdmin";
 }
-
+	//쿠폰 정보 확인
 	@GetMapping("/coupon")
 	public String coupon(Model model,
 						 Authentication authentication,

@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -83,14 +84,11 @@ public class SecurityConfig {
         // 기본 HTTP 인증 비활성화
         http.httpBasic(auth -> auth.disable());
 
-        // CSRF 보호 비활성화
-        http.csrf(csrf -> csrf
+      // CSRF 보호 비활성화
+      http.csrf(csrf -> csrf
               .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-
-        );
-
-
-
+              .ignoringRequestMatchers(new AntPathRequestMatcher("/order/rest/process"))
+      );
 
         http
         	.rememberMe(remember -> remember
@@ -124,8 +122,8 @@ public class SecurityConfig {
                 .requestMatchers("/board/main" , "/board/wiki" , "/board/best" ).permitAll()
                 // 게시판 api 허용
                 .requestMatchers("/board/list").permitAll()
-                .requestMatchers("/order/**").permitAll()// 성호님
                 .requestMatchers("/order/admin/**").hasRole("ADMIN")// 성호님
+                .requestMatchers("/order/**").permitAll()// 성호님
                 .requestMatchers("/board/board/list/**").permitAll()   // 준서님
                 .requestMatchers("/board/read").permitAll()
 
@@ -141,6 +139,7 @@ public class SecurityConfig {
                 // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()
         );
+
 
         // 폼 로그인 설정
         http.formLogin(form -> form

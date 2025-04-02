@@ -2,9 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <title>주문 상세 정보</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-    <title>주문 상세 정보</title>
     <link rel="stylesheet" href="/css/layout/common.css">
     <link rel="stylesheet" href="/css/profile.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -285,18 +286,19 @@
                     </tbody>
                 </table>
                 <!-- 페이징 -->
-                <div class="pagination" th:if="${purchase.totalPages != null && purchase.totalPages > 1}">
-                        <span th:if="${currentPage > 0}">
-                            <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">&laquo;</a>
-                        </span>
-                    <span th:each="pageNum : ${#numbers.sequence(0, purchase.totalPages - 1)}">
-                            <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
-                               th:text="${pageNum + 1}"
-                               th:class="${pageNum == currentPage} ? 'active' : ''"></a>
-                        </span>
-                    <span th:if="${currentPage < purchase.totalPages - 1}">
-                            <a th:href="@{/order/orders/userId(userId=${purchase.content[0].userId}, page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">&raquo;</a>
-                        </span>
+                <div th:if="${item.totalPages > 1}" style="margin-top: 20px;">
+                    <ul class="pagination">
+                        <li th:if="${!item.first}">
+                            <a th:href="@{/order/onDelivery(page=${item.number-1})}">&laquo;</a>
+                        </li>
+                        <li th:each="i : ${#numbers.sequence(1, item.totalPages)}"
+                            th:classappend="${item.number+1 == i} ? 'active'">
+                            <a th:href="@{/order/onDelivery(page=${i-1})}" th:text="${i}"></a>
+                        </li>
+                        <li th:if="${!item.last}">
+                            <a th:href="@{/order/onDelivery(page=${item.number+1})}">&raquo;</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -304,18 +306,18 @@
 </div>
 <div th:replace="fragment/footer :: footerFragment"></div>
 <div th:replace="fragment/profile-common :: modal"></div>
+<script type="module" src="/js/user/profile.js"></script>
+<script src="/js/user/address.js"></script>
 <script>
     // 구매 확정 함수
-            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-			const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     function purchaseConfirm(purchaseProductId) {
         if (confirm("구매를 확정하시겠습니까?")) {
             fetch("/order/rest/purchaseConform", {
                 method: "POST",
-                headers: {
-                'Content-Type': 'application/json'
-                 , [csrfHeader] : csrfToken
+                headers: { "Content-Type": "application/json",
+                [csrfHeader] : csrfToken
                  },
+
                 body: JSON.stringify({ purchaseProductId: purchaseProductId })
             })
             .then(response => response.json())
@@ -387,7 +389,6 @@
         });
     });
 </script>
-<script type="module" src="/js/user/profile.js"></script>
-<script src="/js/user/address.js"></script>
+
 </body>
 </html>

@@ -8,62 +8,67 @@
     <link rel="stylesheet" href="/css/profile.css">
 
     <style>
-        .pagination {
+        .order-wrapper {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            margin-top: 20px;
+            flex-direction: column;
+            width: 100%;
         }
-        .pagination a {
-            padding: 8px 12px;
-            margin: 0 4px;
-            border: 1px solid #ddd;
-            text-decoration: none;
-            color: #007bff;
-            border-radius: 4px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .pagination a.active,
-        .pagination a:hover {
-            background-color: #007bff;
-            color: #fff;
-            border-color: #007bff;
-        }
-        .pagination span {
-            color: #6c757d;
-        }
-        td.purchase-number {
-        position: relative; /* 내부 자식 요소의 절대 위치 기준 */
-        }
-        td.info-cell {
-        vertical-align: middle;
-        }
-        td.purchase-number .full-height {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        }
-        .rounded-button {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff33; /* 버튼 배경색 */
-        color: black; /* 텍스트 색상 */
-        border: none; /* 테두리 제거 */
-        border-radius: 25px; /* 둥근 모서리 */
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        }
+                .pagination {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 10px;
+                    margin-top: 20px;
+                }
+                .pagination a {
+                    padding: 8px 12px;
+                    margin: 0 4px;
+                    border: 1px solid #ddd;
+                    text-decoration: none;
+                    color: #007bff;
+                    border-radius: 4px;
+                    transition: background-color 0.3s, color 0.3s;
+                }
+                .pagination a.active,
+                .pagination a:hover {
+                    background-color: #007bff;
+                    color: #fff;
+                    border-color: #007bff;
+                }
+                .pagination span {
+                    color: #6c757d;
+                }
+                td.purchase-number {
+                position: relative; /* 내부 자식 요소의 절대 위치 기준 */
+                }
+                td.info-cell {
+                vertical-align: middle;
+                }
+                td.purchase-number .full-height {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                }
+                .rounded-button {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff33; /* 버튼 배경색 */
+                color: black; /* 텍스트 색상 */
+                border: none; /* 테두리 제거 */
+                border-radius: 25px; /* 둥근 모서리 */
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                }
 
-        .rounded-button:hover {
-        background-color: #0056b333; /* 호버 시 색상 변경 */
-        }
+                .rounded-button:hover {
+                background-color: #0056b333; /* 호버 시 색상 변경 */
+                }
     </style>
 </head>
 <body>
@@ -73,6 +78,7 @@
         <div th:replace="fragment/profile-common :: mypage-top"></div>
         <div class="mypage-bottom-content">
             <div th:replace="fragment/profile-common :: mypage-sidebar"></div>
+            <div class="order-wrapper">
             <div class="order-container">
                 <h2>주문 리스트</h2>
                 <table>
@@ -131,22 +137,23 @@
         </div>
             <div class="pagination" th:if="${item.totalPages > 1}">
             <span th:if="${currentPage > 0}">
-              <a th:href="@{/order/orders/userId(userId=${item.content[0].userId}, page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
+              <a th:href="@{/order/orders/userId(page=${currentPage - 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
                 &laquo;
               </a>
             </span>
                 <span th:each="pageNum : ${#numbers.sequence(0, item.totalPages - 1)}">
-              <a th:href="@{/order/orders/userId(userId=${item.content[0].userId}, page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
+              <a th:href="@{/order/orders/userId(page=${pageNum}, size=${pageSize}, purchaseState=${param.purchaseState})}"
                  th:text="${pageNum + 1}"
                  th:class="${pageNum == currentPage} ? 'active' : ''">
               </a>
             </span>
-                <span th:if="${currentPage < item.totalPages - 1}">
+                <span th:if="${currentPage < item.totalPages - 1 && currentPage > 0}">
               <a th:href="@{/order/orders/userId(userId=${item.content[0].userId}, page=${currentPage + 1}, size=${pageSize}, purchaseState=${param.purchaseState})}">
                 &raquo;
               </a>
             </span>
             </div>
+        </div>
         </div>
     </section>
 </div>

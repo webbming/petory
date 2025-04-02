@@ -257,13 +257,29 @@ function setupPetModalListeners() {
 export let mypageTopInfo = null;
 
 function updateMyPageTopInfo(data) {
-  document.querySelector(".nickname").textContent = data.data.nickname
-  document.querySelector(".delivery").textContent = data.data.onDeliveryStatusCount
-  document.querySelector(".coupon").textContent = data.data.couponCount
-  document.querySelector(".coupon_count").textContent = data.data.couponCount + '개';
-  document.querySelector(".cartQuantity").textContent = data.data.cartQuantity
-  document.querySelector(".mypage-top .img img").src = data.data.url;
-  document.querySelector(".profile-default .default-img img").src = data.data.url;
+
+  // 각 요소별로 안전하게 텍스트/속성 설정
+  const updateElementText = (selector, text) => {
+    const element = document.querySelector(selector);
+    if (element) element.textContent = text;
+  };
+
+  const updateElementSrc = (selector, src) => {
+    const element = document.querySelector(selector);
+    if (element) element.src = src;
+  };
+
+  // 텍스트 업데이트
+  updateElementText(".nickname", data.data.nickname);
+  updateElementText(".right_info > .user-pet > span", data.data.nickname);
+  updateElementText(".delivery", data.data.onDeliveryStatusCount);
+  updateElementText(".coupon", data.data.couponCount);
+  updateElementText(".coupon_count", data.data.couponCount + '개');
+  updateElementText(".cartQuantity", data.data.cartQuantity);
+
+  // 이미지 업데이트
+  updateElementSrc(".mypage-top .img img", data.data.url);
+  updateElementSrc(".profile-default .default-img img", data.data.url);
 
 }
 
@@ -331,22 +347,38 @@ async function removeFromWishlist(productId) {
 }
 
 export async function loadTopInfo(){
-  if(mypageTopInfo){
-    updateMyPageTopInfo(mypageTopInfo)
-    return;
-  }
-  try{
-    const response = await fetch("/api/users/me/profile/MyPageTopInfo" ,{
-      method : "GET",
-      credentials:"include"
+  try {
+    // 마이페이지 상단 요소들 중 하나라도 존재하는지 확인
+    const topInfoElements = [
+      document.querySelector(".nickname"),
+      document.querySelector(".right_info > .user-pet > span"),
+      document.querySelector(".delivery"),
+      document.querySelector(".coupon"),
+      document.querySelector(".cartQuantity")
+    ];
+
+    // 상단 정보 요소가 하나도 없으면 함수 종료
+    if (!topInfoElements.some(el => el !== null)) {
+      return;
+    }
+
+    // 이미 데이터가 있으면 바로 업데이트
+    if (mypageTopInfo) {
+      updateMyPageTopInfo(mypageTopInfo);
+      return;
+    }
+
+    const response = await fetch("/api/users/me/profile/MyPageTopInfo", {
+      method: "GET",
+      credentials: "include"
     });
 
-    if(response.status === 200){
-      mypageTopInfo = await response.json()
-      console.log(mypageTopInfo)
-      updateMyPageTopInfo(mypageTopInfo)
+    if (response.status === 200) {
+      mypageTopInfo = await response.json();
+      console.log(mypageTopInfo);
+      updateMyPageTopInfo(mypageTopInfo);
     }
-  }catch (e){
-    console.error(e)
+  } catch (e) {
+    console.error("마이페이지 상단 정보 로드 중 오류:", e);
   }
 }

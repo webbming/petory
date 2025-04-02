@@ -93,23 +93,23 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="req : ${returns.content}">
-            <td><strong><span th:text="${req.purchaseProduct.purchase.purchaseId}"></span></strong></td>
-            <td><span th:text="${req.userId}"></span></td>
+          <tr th:each="item : ${item}">
+            <td><strong><span th:text="${item.purchaseProduct.purchase.purchaseId}"></span></strong></td>
+            <td><span th:text="${item.userId}"></span></td>
             <td>
-              <span th:text="${req.purchaseProduct.cancelReason}"></span><br>
-              <span th:text="${#temporals.format(req.purchaseProduct.cancelAt, 'yyyy-M-d a h시 mm분')}"></span>
+              <span th:text="${item.cancelReason}"></span><br>
+              <span th:text="${#temporals.format(item.createAt, 'yyyy-M-d a h시 mm분')}"></span>
             </td>
-            <td th:text="${req.returnsContent}"></td>
+            <td th:if="${item.returnsContent!=null? item.returnsContent: '-'}"></td>
             <td>
-              <div th:if="${req.returnsImagePaths != null}">
+              <div th:if="${item.returnsImagePaths != null}">
                 <img class="return-img" th:each="path : ${#strings.arraySplit(req.returnsImagePaths, ',')}"
                      th:src="@{${path}}"
                      style="max-width: 100px; max-height: 100px; margin: 2px;" alt="업로드 이미지"/>
               </div>
             </td>
             <td>
-              <a class="button" th:href="@{/order/orders/{purchaseId}?admin=admin(purchaseId=${req.purchaseProduct.purchase.purchaseId})}">
+              <a class="button" th:href="@{/order/orders/{purchaseId}?admin=admin(purchaseId=${item.purchaseProduct.purchase.purchaseId})}">
                 주문정보보기
               </a>
             </td>
@@ -118,17 +118,17 @@
         </table>
 
         <!-- 페이지 네비게이션 컨트롤 -->
-        <div th:if="${returns.totalPages > 1}" style="margin-top: 20px;">
+        <div th:if="${item.totalPages > 1}" style="margin-top: 20px;">
           <ul class="pagination">
-            <li th:if="${!returns.first}">
-              <a th:href="@{/order/returnsList(page=${returns.number-1})}">&laquo;</a>
+            <li th:if="${!item.first}">
+              <a th:href="@{/order/returnsList(page=${item.number-1})}">&laquo;</a>
             </li>
-            <li th:each="i : ${#numbers.sequence(1, returns.totalPages)}"
-                th:classappend="${returns.number+1 == i} ? 'active'">
+            <li th:each="i : ${#numbers.sequence(1, item.totalPages)}"
+                th:classappend="${item.number+1 == i} ? 'active'">
               <a th:href="@{/order/returnsList(page=${i-1})}" th:text="${i}"></a>
             </li>
-            <li th:if="${!returns.last}">
-              <a th:href="@{/order/returnsList(page=${returns.number+1})}">&raquo;</a>
+            <li th:if="${!item.last}">
+              <a th:href="@{/order/returnsList(page=${item.number+1})}">&raquo;</a>
             </li>
           </ul>
         </div>
