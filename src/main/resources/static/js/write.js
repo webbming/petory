@@ -36,7 +36,7 @@ const LICENSE_KEY =
 		'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NDQ3NjE1OTksImp0aSI6IjZhMTE2NDczLTg3ZmYtNGI0Ni1hMzc5LTM1MjM4MTZiNDliYiIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6ImQ5ZTlhM2YxIn0.Sxm4uczUB3fcpykBLjLl7MltOS0HnbPd8UvOPU-UGkA-mUYiQ_zy5cF6NhdMbexEcupS-BWy8Dp9PI_Vp-8Ewg';
 
 const CLOUD_SERVICES_TOKEN_URL =
-		'https://s37l0_wh2lwz.cke-cs.com/token/dev/5e10f3814168f56ddb5492186bf5f476a30eb16b0acde210a12c6aadb074?limit=10';
+		'https://6sfieu_jvil1.cke-cs.com/token/dev/6196d9a99a480afff920e3cd8685ebbdfc6929946e782ff1c442643f12a2?limit=10';
 
 const editorConfig = {
 	toolbar: {
