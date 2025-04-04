@@ -8,7 +8,7 @@
 - 유저는 반려동물에 대한 정보를 공유하거나 필요한 물품을 구매할 수 있습니다.
 
 ## 🏗️ 서버 아키텍처 (Mermaid)
-![서버 구조도](https://github.com/soncastle/shoppingmall/blob/main/images/서버구조도.png?raw=true)
+![서버 구조도](https://github.com/soncastle/shoppingmall/blob/main/images/ui/서버구조도.png?raw=true)
 
 ## 🛠️ 기술 스택
 
