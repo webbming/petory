@@ -11,10 +11,10 @@
 
 | 구분        | 스택                                                         |
 |-------------|--------------------------------------------------------------|
-| **Backend** | Java 17, Spring Boot 3.x, Spring Security, JPA, MyBatis     |
-| **Frontend**| HTML, CSS, JavaScript (Thymeleaf or JSP)                    |
+| **Backend** | Java 17, Spring Boot 3.x, Spring Security, JPA , RESTful API |
+| **Frontend**| HTML, CSS, JavaScript (Thymeleaf)                            |
 | **Database**| MariaDB, MySQL                                               |
-| **DevOps**  | Docker, GitHub Actions, AWS EC2/S3 (선택)                    |
+| **DevOps**  | Docker, GitHub Actions, AWS EC2/S3                           |
 | **Tool**    | IntelliJ IDEA, Eclipse, Git, Postman                         |
 | **API 문서**| Springdoc OpenAPI (Swagger UI)                               |
 
@@ -51,9 +51,12 @@
   - 프로필 수정 및 활동기록
 
 - ➕  **장바구니**
+  - 상품 추가/삭제 및 수량 업데이트
+  - 장바구니 세션 관리
   
 - 📦  **주문**
-
+  - 주문 및 결제 처리
+  - 배송 관련 , 회원 쿠폰 관리
 
 
 ---
