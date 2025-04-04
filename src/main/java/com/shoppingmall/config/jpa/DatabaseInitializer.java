@@ -186,8 +186,8 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             List<Product> products = new ArrayList<>(); // ArrayList로 초기화
             products.add(new Product(
-                    null, "고양이 화장실 청소용 스쿱", 25000, "스쿱", "스쿱", "고양이 모래에서 배변을 걸러내기 위한 스쿱",
-                    0, new ArrayList<>(List.of("/images/product/1.jpg")), new ArrayList<>(), LocalDateTime.now(), BigDecimal.ZERO,
+            		null, "고양이 화장실 청소용 스쿱", 25000, "스쿱", "스쿱", "고양이 모래에서 배변을 걸러내기 위한 스쿱",
+                    0, new ArrayList<>(List.of("/images/product/s1.jpg","/images/product/s2.jpg","/images/product/s3.jpg","/images/product/s4.jpg")), new ArrayList<>(List.of("/images/product/s5.png","/images/product/s6.jpg","/images/product/s1.jpg","/images/product/s2.jpg")), LocalDateTime.now(), BigDecimal.ZERO,
                     category, subcategories.get(10), PetType.CAT
             ));
             products.add(new Product(
