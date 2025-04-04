@@ -28,9 +28,9 @@
 |----------|-------------|-------------------------------------------|
 | 손성호 | 팀장 / 주문  | [@soncastle](https://github.com/soncastle) |
 | 김진후 | 팀원 / 회원  | [@murphscall](https://github.com/murphscall) |
-| 유수민 | 팀원 / 장바구니 | -                                         |
-| 천진호 | 팀원 / 스토어 | -                                         |
-| 김준서 | 팀원 / 커뮤니티 | -                                         |
+| 유수민 | 팀원 / 장바구니 |[@webbming](https://github.com/webbming)|
+| 천진호 | 팀원 / 스토어 | [@jinbba95](https://github.com/jinbba95)|
+| 김준서 | 팀원 / 커뮤니티 | [@shane5522](https://github.com/shane5522)|
 
 ---
 
