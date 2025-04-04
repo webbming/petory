@@ -1,1 +1,1 @@
-<h2 align="left">도커 기반의 반려동물 주문형 웹서비스</h1>
+<h2 align="left">펫토리 (PetTory)</h1>
