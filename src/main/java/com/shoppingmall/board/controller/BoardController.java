@@ -13,10 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,12 +22,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -142,7 +138,7 @@ public class BoardController {
 	//등록
 	@PostMapping("/write")
 	public String writePost(@ModelAttribute BoardRequestDTO.Write boardRequestDTO, Authentication auth, Model model) {
-		System.out.println("입력한 해시태그 " + boardRequestDTO.getHashtags());
+		System.out.println(boardRequestDTO.getContent());
 		User user = userService.getUser(auth.getName());
 
 		PostType postType = user.getRole() == UserRoleType.ADMIN ? PostType.NOTICE : PostType.GENERAL;
@@ -193,14 +189,14 @@ public class BoardController {
 	@GetMapping("/read")
 	public String readPost(Authentication auth, @RequestParam("boardId") Long boardId, Model model) {
 		System.out.println("상세조회 됨");
-						User user = null;
-						if(auth != null){
-							user = userService.getUser(auth.getName());
-						}
+				User user = null;
+				if(auth != null){
+					user = userService.getUser(auth.getName());
+				}
 		        Board board = boardService.viewPost(boardId, user);
 		        List<Comment> comment = commentService.getComment(boardId);
 		        
-		        if(user != null && board.getUser().getId().equals(user.getId())) {
+		        if((user != null && board.getUser().getId().equals(user.getId())) || auth.getName().equals("admin")) {
 		        	model.addAttribute("master", "master");
 		        }
 
