@@ -1,8 +1,6 @@
 # 🐾 펫토리 (Petory)
 
-<img src="src/main/resources/static/images/ui/petory.png" alt="Petory 이미지" width="200"/>
 
----
 
 ## 📌 프로젝트 소개
 
