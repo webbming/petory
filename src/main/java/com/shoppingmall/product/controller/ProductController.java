@@ -1,9 +1,11 @@
 package com.shoppingmall.product.controller;
 
+import com.shoppingmall.oauth2.model.CustomOAuth2User;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -368,11 +372,23 @@ public class ProductController {
     public String addReview(@PathVariable Long productId,
                             @ModelAttribute Review review,
                             @RequestParam("imageFile") MultipartFile imageFile,
-                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-    	
-        review.setUserId(userDetails.getUser().getId());
-        review.setProductId(productId);
+                             Authentication authentication) {
 
+        Long userId = null;
+
+        if (authentication != null) {
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof CustomUserDetails) {
+                userId = ((CustomUserDetails) principal).getUser().getId();
+            } else if (principal instanceof CustomOAuth2User) {
+                userId = ((CustomOAuth2User) principal).getOAuth2Response().getId();
+            }
+        }
+
+
+        review.setUserId(userId);
+        review.setProductId(productId);
         reviewService.saveReview(review, imageFile);
         return "redirect:/products/" + productId;
     }
@@ -390,12 +406,22 @@ public class ProductController {
         @PathVariable Long productId,
         @PathVariable Long reviewId,
         @RequestParam String content,
-        @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
+        Authentication authentication) {
         Map<String, Object> result = new HashMap<>();
+        Long userId = null;
+        String nickname = null;
+        if(authentication != null) {
+            Object principal = authentication.getPrincipal();
+
+            if(principal instanceof CustomUserDetails) {
+                userId = ((CustomUserDetails) principal).getUser().getId();
+                nickname = ((CustomUserDetails) principal).getUser().getNickname();
+            }else if(principal instanceof CustomOAuth2User) {
+                userId = ((CustomOAuth2User) principal).getOAuth2Response().getId();
+                nickname = ((CustomOAuth2User) principal).getOAuth2Response().getNickname();
+            }
+        }
         try {
-            Long userId = userDetails.getUser().getId();
-            String nickname = userDetails.getUser().getNickname();
             reviewService.addComment(reviewId, content, userId, nickname);
             result.put("status", "success");
             result.put("userId", userId);

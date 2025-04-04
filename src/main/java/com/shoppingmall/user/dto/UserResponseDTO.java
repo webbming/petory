@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 public class UserResponseDTO {
 
-
+  private long id;
   private String userId;
   private String email;
   private String nickname;
