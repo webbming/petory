@@ -12,19 +12,11 @@
 
 ## 🛠️ 기술 스택
 
-### 💻 Backend
-- Java 17
-- Spring Boot 3.x
-- Spring Security
-- Spring Data JPA / MyBatis
-- MariaDB / MySQL
-
-### 🌐 Frontend
-- HTML/CSS/JS
-- Thymeleaf or JSP  
-(※ 실제 사용 기술로 수정!)
-
-### ☁️ DevOps
-- Docker
-- GitHub Actions (CI)
-- AWS or o
+| 구분        | 스택                                                         |
+|-------------|--------------------------------------------------------------|
+| **Backend** | Java 17, Spring Boot 3.x, Spring Security, JPA, MyBatis     |
+| **Frontend**| HTML, CSS, JavaScript (Thymeleaf or JSP)                    |
+| **Database**| MariaDB, MySQL                                               |
+| **DevOps**  | Docker, GitHub Actions, AWS EC2/S3 (선택)                    |
+| **Tool**    | IntelliJ IDEA, Eclipse, Git, Postman                         |
+| **API 문서**| Springdoc OpenAPI (Swagger UI)                               |
