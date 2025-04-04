@@ -1,11 +1,13 @@
-# 펫토리 (Petory) 🐾
+# 🐶😺 펫토리 (Petory)
 
+- **펫토리**는 반려동물 **용품 판매**와 **커뮤니티 기능**을 통합한 플랫폼입니다.  
+- 사용자는 반려동물에 대한 정보를 공유하거나, 필요한 용품을 구매할 수 있습니다.
 
+## 📌 프로젝트 개요
+- **프로젝트명:** 펫토리
+- **개발 기간:** 2025.02 ~ 2025.04 (총 8주)
+- **팀 구성:** 총 5명 (팀장 1명, 팀원 4명)
 
-## 📌 프로젝트 소개
-
-- 반려동물 커뮤니티와 쇼핑몰이 통합된 웹 서비스입니다.  
-- 유저는 반려동물에 대한 정보를 공유하거나 필요한 물품을 구매할 수 있습니다.
 
 ## 🛠️ 기술 스택
 
@@ -18,25 +20,25 @@
 | **Tool**     | ![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white) ![Eclipse](https://img.shields.io/badge/Eclipse-2C2255?style=for-the-badge&logo=eclipse&logoColor=white) ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white) |
 | **API 문서** | ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black) |
 
-
-## 🏗️ 서버 아키텍처 (Mermaid)
-![서버 구조도](https://github.com/soncastle/shoppingmall/blob/master/src/main/resources/static/images/ui/서버구조도.PNG?raw=true)
-
-## 👥 팀원 소개
+## 👥역할 분담
 
 | 이름     | 역할        | GitHub                                   |
 |----------|-------------|-------------------------------------------|
-| 손성호 | 팀장 / 주문  | [@soncastle](https://github.com/soncastle) |
-| 김진후 | 팀원 / 회원  | [@murphscall](https://github.com/murphscall) |
-| 유수민 | 팀원 / 장바구니 |[@webbming](https://github.com/webbming)|
-| 천진호 | 팀원 / 스토어 | [@jinbba95](https://github.com/jinbba95)|
-| 김준서 | 팀원 / 커뮤니티 | [@shane5522](https://github.com/shane5522)|
+| SH | 팀장 / 주문  | [@soncastle](https://github.com/soncastle) |
+| JH | 팀원 / 회원  | [@murphscall](https://github.com/murphscall) |
+| SM | 팀원 / 장바구니 |[@webbming](https://github.com/webbming)|
+| JH | 팀원 / 스토어 | [@jinbba95](https://github.com/jinbba95)|
+| JS | 팀원 / 커뮤니티 | [@shane5522](https://github.com/shane5522)|
 
----
+## 🎯 프로젝트 핵심 목표
+
+- 반려동물 용품 구매와 정보 공유가 가능한 **커뮤니티 기반 통합 플랫폼** 개발  
+- **도커 기반의 CI/CD 자동화 환경** 구축으로 안정적인 서비스 제공  
+- **접근 권한 분리**를 통한 보안성과 관리 효율성 향상
 
 ## ✨ 주요 기능
 
-- 🛒 **반려동물 용품 스토어**
+- 🛒 **스토어**
   - 상품 목록, 상세 페이지
   - 상품 찜 , 리뷰 및 별점
 
@@ -59,8 +61,6 @@
   - 배송 관련 , 회원 쿠폰 관리
 
 
----
-
 ## 🔧 핵심 기술 및 구현 내용
 
 - 🔐 **Spring Security 기반 로그인 시스템 구현**
@@ -69,7 +69,6 @@
 - 🔄 **RESTful API 설계 및 Swagger 연동**
 - 📦 **Docker로 환경 분리 및 배포 자동화**
 
----
 
 ## 주요 페이지
 
@@ -101,4 +100,4 @@
 - ✅ Redis 세션 저장소 전환
 - ✅ React 기반 프론트 리팩토링
 - ✅ 관리자 페이지 분리 및 통계 기능 추가
-
+- ✅ 모바일 고려려
