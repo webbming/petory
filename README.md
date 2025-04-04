@@ -26,9 +26,11 @@
 
 | 이름     | 역할        | GitHub                                   |
 |----------|-------------|-------------------------------------------|
-| 김진후 | 팀장 / 백엔드 | [@soncastle](https://github.com/soncastle) |
-| 홍길동 | 프론트엔드   | [@honggildong](https://github.com/honggildong) |
-| 이몽룡 | 디자이너     | -                                         |
+| 손성호 | 팀장 / 주문  | [@soncastle](https://github.com/soncastle) |
+| 김진후 | 팀원 / 회원  | [@honggildong](https://github.com/honggildong) |
+| 유수민 | 팀원 / 장바구니     | -                                         |
+| 천진호 | 팀원 / 스토어     | -                                         |
+| 김준서 | 팀원 / 커뮤니티     | -                                         |
 
 ---
 
