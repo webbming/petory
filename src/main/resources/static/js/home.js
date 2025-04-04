@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           <li>
             <a href="/products/${product.productId}">
               <div class="img">
-                  <img src=${product.imageUrl}>
+                  <img src=${product.imageUrl[0]}>
                   <span>스토어 리뷰</span>
               </div>
               <div class="pro_name">
