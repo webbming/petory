@@ -9,6 +9,32 @@
 - **팀 구성:** 총 5명 (팀장 1명, 팀원 4명)
 
 
+## 🎯 프로젝트 핵심 목표
+
+- 반려동물 용품 구매와 정보 공유가 가능한 **커뮤니티 기반 통합 플랫폼** 개발  
+- **도커 기반의 CI/CD 자동화 환경** 구축으로 안정적인 서비스 제공  
+- **접근 권한 분리**를 통한 보안성과 관리 효율성 향상
+  
+## 🏗️ 아키텍처
+
+- **Spring MVC 패턴**: Controller → Service → Repository → DB 흐름
+- **DTO, Entity 분리**: 데이터 구조 명확화 및 불필요한 의존성 제거
+- **AWS RDS(MariaDB)**: 안정적인 데이터 관리
+- **Docker + EC2**: 서버 배포 및 관리
+
+## 🧩 디자인 패턴
+
+- **싱글톤 패턴**: Service, Repository에서 빈 단일 인스턴스 관리
+- **MVC 패턴**: 요청과 응답 분리로 유지보수성 향상
+- **DTO 패턴**: 계층 간 데이터 전달 시 의존성 제거
+
+## 👤 내 역할
+
+- **장바구니 기능 개발**
+  - 사용자가 장바구니에 상품을 추가, 삭제 및 수량을 업데이트 할 수 있도록 구현
+  - 장바구니 총 금액 계산 및 세션 관리 기능 개발
+  - 장바구니 조회 및 관리 API 설계 및 구현
+
 ## 🛠️ 기술 스택
 
 | 구분         | 스택                                                                                                                                                                                                                  |
@@ -20,23 +46,6 @@
 | **Tool**     | ![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white) ![Eclipse](https://img.shields.io/badge/Eclipse-2C2255?style=for-the-badge&logo=eclipse&logoColor=white) ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white) |
 | **API 문서** | ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black) |
 
-## 👥역할 분담
-
-| 이름     | 역할        | GitHub                                   |
-|----------|-------------|-------------------------------------------|
-| SH | 팀장 / 주문  | [@soncastle](https://github.com/soncastle) |
-| JH | 팀원 / 회원  | [@murphscall](https://github.com/murphscall) |
-| SM | 팀원 / 장바구니 |[@webbming](https://github.com/webbming)|
-| JH | 팀원 / 스토어 | [@jinbba95](https://github.com/jinbba95)|
-| JS | 팀원 / 커뮤니티 | [@shane5522](https://github.com/shane5522)|
-
----
-
-## 🎯 프로젝트 핵심 목표
-
-- 반려동물 용품 구매와 정보 공유가 가능한 **커뮤니티 기반 통합 플랫폼** 개발  
-- **도커 기반의 CI/CD 자동화 환경** 구축으로 안정적인 서비스 제공  
-- **접근 권한 분리**를 통한 보안성과 관리 효율성 향상
 
 ## ✨ 주요 기능
 
